@@ -1,0 +1,55 @@
+[
+    {
+        "productName" : "Chourouk",
+        "productImg" : "/images/chourouk-1L.png"
+    },
+    {
+        "productName" : "Chourouk",
+        "productImg" : "/images/chourouk-10L.png"
+    },
+    {
+        "productName" : "Chourouk",
+        "productImg" : "/images/chourouk-25L.png"
+    },
+    {
+        "productName" : "Chourouk",
+        "productImg" : "/images/chourouk-1L.png"
+    },
+    {
+        "productName" : "Nouarti",
+        "productImg" : "/images/nouarti-1L.png"
+    },
+    {
+        "productName" : "Nouarti",
+        "productImg" : "/images/nouarti-1L-fill.png"
+    },
+    {
+        "productName" : "Nouarti",
+        "productImg" : "/images/nouarti-2L.png"   
+    },
+    {
+        "productName" : "Nouarti",
+        "productImg" : "/images/nouarti-2L-fill.png"
+    },
+    {
+        "productName" : "Nouarti",
+        "productImg" : "/images/nouarti-5L.png"   
+    },
+    {
+        "productName" : "Nouarti",
+        "productImg" : "/images/nouarti-5L-fill.png"
+    },
+    {
+        "productName" : "Ouad fes",
+        "productImg" : "/images/ouedfes-1L.png"
+    },
+    {
+        "productName" : "Dika",
+        "productImg" : "/images/dika-500ML.png"
+    },
+    {
+        "productName" : "Dika",
+        "productImg" : "/images/dika-5L.png"
+    }
+
+]

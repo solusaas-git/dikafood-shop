@@ -1,0 +1,111 @@
+.reviews-div-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 80px var(--section-padding);
+
+    .reviews {
+        width: 100%;
+        max-width: var(--section-max-width);
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+        align-items: center;
+
+        >.container {
+            max-width: var(--section-max-width);
+            // padding: 0 var(--section-padding);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+
+            >.reviews-header {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                align-items: center;
+                justify-content: center;
+
+                >h2 {
+                    color: var(--dark-green-7);
+                }
+
+                >span {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 8px;
+                    background-color: var(--light-yellow-2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+            >.reviews-container {
+                overflow: hidden;
+                width: 100%;
+                border-radius: 4px;
+                display: flex;
+                gap: 20px;
+                position: relative;
+                height: 380px;
+
+                >.reviews-wrapper {
+                    display: flex;
+                    width: 100%;
+                    gap: 20px;
+                    animation: scroll-left 15s linear infinite;
+                    min-width: fit-content;
+                    position: absolute;
+                }
+                >.reviews-wrapper2 {
+                    position: absolute;
+                    display: flex;
+                    width: 100%;
+                    gap: 20px;
+                    animation: scroll-loop 15s linear infinite;
+                    min-width: fit-content;
+                }
+            }
+        }
+    }
+
+    @keyframes scroll-left {
+        0% {
+            transform: translateX(calc(0% + 20px));
+        }
+
+        100% {
+            transform: translateX(calc(-100% - 20px));
+        }
+    }
+    @keyframes scroll-loop {
+        0% {
+            transform: translateX(calc(100% + 20px));
+        }
+
+        100% {
+            transform: translateX(calc(0% + 20px));
+        }
+    }
+}
+
+
+
+
+@media screen and (min-width : 0px) and (max-width : 430px) {
+    .reviews-div-container {
+        padding: 60px var(--section-padding);
+        .reviews {
+            padding: 0;
+            // padding-bottom: 60px;
+        }
+
+        .reviews-container {
+            padding-top: 0px;
+            overflow: hidden;
+            height: 350px;
+        }
+    }
+}

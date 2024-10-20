@@ -1,0 +1,42 @@
+[
+    {
+        "reviewImg" : "/images/review1.png",
+        "reviewName" : "Imane Alaoui",
+        "reviewRating" : "/images/rating.png",
+        "comment" : "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats. Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats."
+    },
+    {
+        "reviewImg" : "/images/review2.png",
+        "reviewName" : "Leonhard Oiler",
+        "reviewRating" : "/images/rating.png",
+        "theme" : "reverse",
+        "comment" : "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats. Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats."
+    },
+    {
+        "reviewImg" : "/images/review3.png",
+        "reviewName" : "Olivier Giroud",
+        "reviewRating" : "/images/rating.png",
+        "comment" : "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats. Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats."
+    },
+    {
+        "reviewImg" : "/images/review4.png",
+        "reviewName" : "Meryem zahar",
+        "theme" : "reverse",
+        "reviewRating" : "/images/rating.png",
+        "comment" : "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats. Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats."
+    }
+    ,
+    {
+        "reviewImg" : "/images/review5.png",
+        "reviewName" : "Jean Paul",
+        "reviewRating" : "/images/rating.png",
+        "comment" : "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats. Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats."
+    },
+    {
+        "reviewImg" : "/images/review6.png",
+        "reviewName" : "hakim ziyach",
+        "reviewRating" : "/images/rating.png",
+        "theme" : "reverse",
+        "comment" : "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats. Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk. Elle ajoute une profondeur unique à mes plats."
+    }
+]
