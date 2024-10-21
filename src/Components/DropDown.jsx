@@ -1,6 +1,6 @@
 import "./drop-down.scss"
-import { ReactComponent as ArrowIcon } from "../assets/arrow.svg"
 import { useEffect, useRef, useState } from "react";
+import { PiCaretUp } from "react-icons/pi";
 
 
 export default function DropDown({ options, defaultValue }) {
@@ -38,7 +38,10 @@ export default function DropDown({ options, defaultValue }) {
         <div className="dropdown" ref={dropDownRef}>
             <div className={classList.join(" ")} onClick={toggleDropdown}>
                 {selectedOption || defaultValue}
-                <ArrowIcon className={isOpen ? 'arrow Up' : 'arrow'} />
+                <span className={isOpen ? 'arrow Up' : 'arrow'}>
+                    <PiCaretUp />
+                </span>
+
             </div>
             {isOpen && (
                 <ul className="dropdown-menu">

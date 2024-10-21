@@ -55,7 +55,7 @@ export default function Marque() {
                 >
                     {
                         marques.map((marque, index) => (
-                            <div className={index === currentIndex ? "content active" : "content"}>
+                            <div key={index} className={index === currentIndex ? "content active" : "content"}>
                                 <div className="text">
                                     <p>
                                         {marque.descp}

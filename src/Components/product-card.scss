@@ -14,6 +14,7 @@ $background-color_3: var(--dark-yellow-1);
 	background-color: $background-color_1;
 	position: relative;
 	overflow: hidden;
+	cursor: pointer; 
 
 	>.img-product {
 		height: 354px;

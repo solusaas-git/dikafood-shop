@@ -147,13 +147,13 @@ $background-color_2: var(--light-yellow-1);
 			>.review-header {
 				top: auto;
 				bottom: 0px;
+				align-self: flex-end;
 			}
 
 			>.comment {
 				padding: 36px 36px 48px 36px;
 			}
 
-			align-self: flex-end;
 		}
 	}
 }

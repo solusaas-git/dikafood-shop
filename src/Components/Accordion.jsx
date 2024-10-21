@@ -30,13 +30,14 @@ const Accordion = ({ items }) => {
                 items.map((item, index) => {
                     if (openIndex === index) {
                         return (
-                            <div className="accordion-content">
+                            <div className="accordion-content" key={index}>
                                 <p>
                                     {item.content}
                                 </p>
                             </div>
                         )
                     }
+                    else return (<div key={index}></div>);
                 })
             }
         </div>

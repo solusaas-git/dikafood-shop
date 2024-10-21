@@ -26,6 +26,7 @@ export default function HeroSection() {
                     products.map((p, index) => (
                         <h1
                             className={index === currentIndex ? "active" : ""}
+                            key={index}
                         >{p.productName} Huile d’Olive Extra Vièrge Le goût <span>Authentique</span></h1>
                     ))
                 }
@@ -35,6 +36,7 @@ export default function HeroSection() {
                     {
                         products.map((product, index) => (
                             <ProductCard
+                                onclick={() => setCurrentIndex(index)}
                                 key={index}
                                 productImg={product.productImg}
                                 productName={product.productName}
@@ -46,8 +48,8 @@ export default function HeroSection() {
                     }
                 </div>
                 <div className="arrows">
-                    <button className="arrow-left" onClick={minus}><ArrowIcon /></button>
-                    <button className="arrow-right" onClick={plus}><ArrowIcon /></button>
+                    <button className={currentIndex === 0 ? "arrow-left disabled" : "arrow-left"} onClick={minus}><ArrowIcon /></button>
+                    <button className={currentIndex === products.length - 1 ? "arrow-right disabled" : "arrow-right"} onClick={plus}><ArrowIcon /></button>
                 </div>
             </div>
         </div>

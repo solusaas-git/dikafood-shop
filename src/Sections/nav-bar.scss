@@ -85,14 +85,14 @@ $background-color_1: #08441ce6;
 
 				>div {
 					position: absolute;
-					width: calc(100% + (2 * var(--section-padding)));
+					width: 430px;
+					transform: translate(20%);
 					display: flex;
 					flex-direction: column;
 					gap: 24PX;
 					padding: 30px 27px;
 					background-color: $background-color_1;
 					top: 60px;
-					left: calc(100% + var(--section-padding));
 					z-index: 2;
 					align-items: center;
 					transition: 0.4s ease-in-out;
@@ -113,7 +113,7 @@ $background-color_1: #08441ce6;
 				}
 
 				>div.active {
-					left: calc(0px - var(--section-padding));
+					transform: translate(-85%);
 				}
 			}
 		}
@@ -146,14 +146,14 @@ $background-color_1: #08441ce6;
 
 				>div {
 					position: absolute;
-					width: calc(100% + (2 * var(--section-padding)));
+					width: 1010px;
+					transform: translate(20%);
 					display: flex;
 					flex-direction: column;
 					gap: 24PX;
 					padding: 30px 27px;
 					background-color: $background-color_1;
 					top: 60px;
-					left: calc(100% + var(--section-padding));
 					z-index: 2;
 					align-items: center;
 					transition: 0.3s ease-in-out;
@@ -174,7 +174,7 @@ $background-color_1: #08441ce6;
 				}
 
 				>div.active {
-					left: calc(0px - var(--section-padding));
+					transform: translate(-93%);
 				}
 			}
 		}

@@ -5,6 +5,7 @@ import { ReactComponent as AuthenticIcon } from "../assets/authentique.svg";
 import Benefit from "../Components/Benefit";
 import Line from "../Components/Line";
 import CurvedLine from "../Components/CurvedLine";
+import { Fragment } from "react";
 
 export default function NewBenefits() {
     const benefits = [
@@ -32,7 +33,6 @@ export default function NewBenefits() {
     ]
     let theme = "";
     let lineTheme = "";
-    console.log(benefits.length - 1)
     return (
         <div className="new-benefits">
             <Line theme={"top-left"} />
@@ -57,7 +57,7 @@ export default function NewBenefits() {
                                 lineTheme = "none"
                             }
                             return (
-                                <>
+                                <Fragment key={index}>
                                     <Benefit
                                         theme={theme}
                                         key={index}
@@ -67,7 +67,7 @@ export default function NewBenefits() {
                                         title={b.title}
                                         descp={b.descp} />
                                     <CurvedLine theme={lineTheme} />
-                                </>
+                                </Fragment>
                             )
                         })
                     }

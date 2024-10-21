@@ -13,9 +13,8 @@ import Form from './Sections/Form';
 import Footer from './Sections/Footer';
 import { useState } from 'react';
 import Mention from './Components/Mention';
-// import { Routes } from "react-router-dom";
-// import Product from './Pages/Product';
-// import Home from './Pages/Home';
+import { Routes } from "react-router-dom";
+
 
 function App() {
   const [isOpenNav, setIsOpenNav] = useState(false);
@@ -23,9 +22,10 @@ function App() {
   const OnOpenNav = () => {
     setIsOpenNav(p => !p)
   }
-  const onCloseNav = ()=>{
+  const onCloseNav = () => {
     setIsOpenNav(false)
   }
+
   return (
     <BrowserRouter>
       <div className="App">
@@ -34,26 +34,27 @@ function App() {
           <div className="overLay"></div>
         }
         <NavBar isOpen={isOpenNav} onClick={OnOpenNav} onClose={onCloseNav} />
-        <div className='container'>
-          <div className="overlay"></div>
-          <HeroSection />
-        </div>
-        <Marque />
-        <NewBenefits />
-        <Reviews />
-        <Form />
-        <FAQ />
-        <Footer />
-        <Mention />
-        {/*<Routes>
+        <Routes>
           <Route path="/" element={
-            <Home />
-          } />
-          <Route path='/boutique' element={
             <>
-              <Product />
+              <div className='container'>
+                <div className="overlay"></div>
+                <HeroSection />
+              </div>
+              <Marque />
+              <NewBenefits />
+              <Reviews />
+              <Form />
+              <FAQ />
+              <Footer />
+              <Mention />
+            </>
+          } />
+          <Route path='/blog' element={
+            <>
+              <div className='title-large not-yet'>En train de construction</div>
             </>} />
-        </Routes> */}
+        </Routes>
       </div>
     </BrowserRouter>
   );

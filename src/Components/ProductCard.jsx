@@ -1,10 +1,10 @@
 import Button from "./Button"
 import "./product-card.scss"
 
-export default function ProductCard({ productName, productImg, theme, style, buttonIcon }) {
+export default function ProductCard({ productName, productImg, theme, style, buttonIcon, onclick }) {
     const classList = ["product-card", theme];
     return (
-        <div className={classList.join(" ")} style={style}>
+        <div className={classList.join(" ")} style={style} onClick={onclick}>
             <div className="img-product">
                 <img src={productImg} alt="chourouk 1L" />
             </div>
