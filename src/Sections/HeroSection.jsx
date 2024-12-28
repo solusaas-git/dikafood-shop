@@ -27,7 +27,7 @@ export default function HeroSection() {
                         <h1
                             className={index === currentIndex ? "active" : ""}
                             key={index}
-                        >{p.productName} Huile d’Olive Extra Vièrge Le goût <span>Authentique</span></h1>
+                        > <span>DikaFood</span> L’excellence des huiles marocaines</h1>
                     ))
                 }
             </div>

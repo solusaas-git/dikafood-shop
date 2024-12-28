@@ -1,55 +1,70 @@
 [
     {
         "productName" : "Chourouk",
-        "productImg" : "/images/chourouk-1L.png"
+        "productImg" : "/images/chourouk-1L.png",
+        "productDsc" : "Chourouk"
     },
     {
         "productName" : "Chourouk",
-        "productImg" : "/images/chourouk-10L.png"
+        "productImg" : "/images/chourouk-10L.png",
+        "productDsc" : "Chourouk"
+
     },
     {
         "productName" : "Chourouk",
-        "productImg" : "/images/chourouk-25L.png"
+        "productImg" : "/images/chourouk-25L.png",
+        "productDsc" : "Chourouk"
+        
     },
     {
         "productName" : "Chourouk",
-        "productImg" : "/images/chourouk-1L.png"
+        "productImg" : "/images/chourouk-1L.png",
+        "productDsc" : "Chourouk"
     },
     {
-        "productName" : "Nouarti",
-        "productImg" : "/images/nouarti-1L.png"
+        "productName" : "Nouarati",
+        "productImg" : "/images/nouarti-1L.png",
+        "productDsc" : "Chourouk"
     },
     {
-        "productName" : "Nouarti",
-        "productImg" : "/images/nouarti-1L-fill.png"
+        "productName" : "Nouarati",
+        "productImg" : "/images/nouarti-1L-fill.png",
+        "productDsc" : "Chourouk"
     },
     {
-        "productName" : "Nouarti",
-        "productImg" : "/images/nouarti-2L.png"   
+        "productName" : "Nouarati",
+        "productImg" : "/images/nouarti-2L.png",
+        "productDsc" : "Chourouk"
     },
     {
-        "productName" : "Nouarti",
-        "productImg" : "/images/nouarti-2L-fill.png"
+        "productName" : "Nouarati",
+        "productImg" : "/images/nouarti-2L-fill.png",
+        "productDsc" : "Chourouk"
     },
     {
-        "productName" : "Nouarti",
-        "productImg" : "/images/nouarti-5L.png"   
+        "productName" : "Nouarati",
+        "productImg" : "/images/nouarti-5L.png",
+        "productDsc" : "Chourouk" 
     },
     {
-        "productName" : "Nouarti",
-        "productImg" : "/images/nouarti-5L-fill.png"
+        "productName" : "Nouarati",
+        "productImg" : "/images/nouarti-5L-fill.png",
+        "productDsc" : "Chourouk"
     },
     {
-        "productName" : "Ouad fes",
-        "productImg" : "/images/ouedfes-1L.png"
+        "productName" : "Oued Fès",
+        "productImg" : "/images/ouedfes-1L.png",
+        "productDsc" : "Chourouk"
     },
     {
         "productName" : "Dika",
-        "productImg" : "/images/dika-500ML.png"
+        "productImg" : "/images/dika-500ML.png",
+        "productDsc" : "Chourouk"
     },
     {
         "productName" : "Dika",
-        "productImg" : "/images/dika-5L.png"
+        "productImg" : "/images/dika-5L.png",
+        "productDsc" : "Chourouk"
     }
 
 ]

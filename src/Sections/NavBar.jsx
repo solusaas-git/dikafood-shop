@@ -2,6 +2,7 @@ import "./nav-bar.scss";
 import Button from '../Components/Button'
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { ReactComponent as Logo } from "../assets/logo.svg";  // Add this import
 import { ReactComponent as MenuIcon } from "../assets/menu.svg";
 import { House, ShoppingBag, PaperPlaneTilt, DownloadSimple, EnvelopeSimple } from "@phosphor-icons/react";
 
@@ -45,22 +46,21 @@ export default function NavBar({ onClick, isOpen, onClose }) {
             <div className='nav-bar'>
                 <div className='logo'>
                     <a href="/">
-                        <span>Dika</span>
-                        food
+                    <Logo />
                     </a>
                 </div>
                 <div className='menu'>
                     <Button
                         buttonIcon={<House weight="light" />}
                         link={"/"}
-                        buttonName={"Acceuil"}
+                        buttonName={"Accueil"}
                         theme={"button-comp-link"}
                         size={"small"}
                         btnRef={homeRef} />
                     <Button
                         buttonIcon={<ShoppingBag weight="light" />}
                         link={"/boutique"}
-                        buttonName={"boutique"}
+                        buttonName={"Boutique"}
                         theme={"button-comp-link"}
                         size={"small"}
                         btnRef={shopRef} />
@@ -73,8 +73,8 @@ export default function NavBar({ onClick, isOpen, onClose }) {
                         btnRef={blogRef} />
                 </div>
                 <div className="cta">
-                    <Button buttonIcon={<EnvelopeSimple size={"20px"} weight="light" />} link={"#form"} buttonName={"contactez nous"} theme={"button-comp-secondary-white-bg"} size={"button-comp-small"} />
-                    <Button buttonIcon={<DownloadSimple size={"20px"} weight="light" />} buttonName={"télécharger le catalogue"} theme={"button-comp-primary"} size={"button-comp-small"} />
+                    <Button buttonIcon={<EnvelopeSimple size={"20px"} weight="light" />} link={"#footer"} buttonName={"contactez nous"} theme={"button-comp-secondary-white-bg"} size={"button-comp-small"} />
+                    <Button buttonIcon={<DownloadSimple size={"20px"} weight="light" />} link={"#form"}buttonName={"Télécharger le catalogue"} theme={"button-comp-primary"} size={"button-comp-small"} />
                 </div>
 
                 <div className="menu-phone">
@@ -86,14 +86,14 @@ export default function NavBar({ onClick, isOpen, onClose }) {
                             <Button
                                 buttonIcon={<House weight="light" />}
                                 link={"/"}
-                                buttonName={"Acceuil"}
+                                buttonName={"Accueil"}
                                 theme={"button-comp-link"}
                                 size={"small"}
                                 btnRef={homePhoneRef} />
                             <Button
                                 buttonIcon={<ShoppingBag weight="light" />}
                                 link={"/boutique"}
-                                buttonName={"boutique"}
+                                buttonName={"Boutique"}
                                 theme={"button-comp-link"}
                                 size={"small"}
                                 btnRef={shopPhoneRef} />
@@ -109,13 +109,15 @@ export default function NavBar({ onClick, isOpen, onClose }) {
                             <Button
                                 buttonIcon={<EnvelopeSimple size={"20px"} weight="light" />}
                                 onClick={onClose}
-                                link={"#form"}
-                                buttonName={"contactez nous"}
+                                link={"#footer"}
+                                buttonName={"Contactez nous"}
                                 theme={"button-comp-secondary-white-bg"}
                                 size={"button-comp-small"} />
                             <Button
                                 buttonIcon={<DownloadSimple size={"20px"} weight="light" />}
-                                buttonName={"télécharger le catalogue"}
+                                onClick={onClose}
+                                link={"#form"}
+                                buttonName={"Télécharger le catalogue"}
                                 theme={"button-comp-primary"}
                                 size={"button-comp-small"} />
                         </div>

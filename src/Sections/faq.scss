@@ -38,6 +38,10 @@ $background-color_1: var(--light-yellow-2);
 				color: $color_1;
 			}
 		}
+		>.p {
+			font-size: 20px;
+    		line-height: 2;
+		}
 
 		>.faq-text {
 			width: 500px;
@@ -48,6 +52,7 @@ $background-color_1: var(--light-yellow-2);
 			align-items: flex-start;
 			text-align: left;
 			color: $color_2;
+			
 		}
 	}
 }

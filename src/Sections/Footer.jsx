@@ -1,5 +1,6 @@
 import Button from "../Components/Button"
 import Field from "../Components/Field"
+import { ReactComponent as Logo } from "../assets/dikafood-logo-dark.svg";
 import MessageField from "../Components/MessageField"
 import "./footer.scss"
 import { ReactComponent as HomeIcon } from "../assets/house.svg"
@@ -39,18 +40,15 @@ export default function Footer() {
     }, [pathname]);
     return (
         <div className="footer-container">
-            <div className="footer">
+            <div className="footer" id="footer">
                 <div className="footer-body">
                     <div className="footer-left">
                         <div>
                             <div className='logo'>
-                                <span>Dika</span>
-                                food
+                                <Logo />
                             </div>
                             <p>
-                                Je suis impressionné par la qualité de l'huile gridnon
-                                d'olive Chourouk. Elle ajoute une profondeur unique à mes plats.
-                                Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk.
+                            Nous vous proposons une sélection d’huiles d’exception issues des meilleures plantations du Maroc. Que vous soyez amateur d’huile d’olive ou à la recherche d’une huile de tournesol pure, DikaFood est votre partenaire de confiance pour des produits de qualité supérieure.
                                 
                             </p>
                         </div>
@@ -58,7 +56,7 @@ export default function Footer() {
                             <Button
                                 link={"/"}
                                 buttonIcon={<HomeIcon />}
-                                buttonName={"Acceuil"}
+                                buttonName={"Accueil"}
                                 theme={"button-comp-link"}
                                 size={"small"}
                                 btnRef={homeRef1} />
@@ -81,34 +79,30 @@ export default function Footer() {
                     <ul className="other-info">
                         <li>
                             <span><EnvelopeSimple color="var(--dark-green-7)" /></span>
-                            <a href="/">
-                                contact@dikafood.com
+                            <a href="mailto:contact@dikafood.com">
+                                Contact@dikafood.com
                             </a>
                         </li>
                         <li>
                             <span><Phone color="var(--dark-green-7)" /></span>
-                            <a href="/">
-                                +1 (923) 602-8348
+                            <a href="tel:+212661373204">
+                                +212 (661) 37 32 04
                             </a>
                         </li>
                         <li>
                             <span><Phone color="var(--dark-green-7)" /></span>
-                            <a href="/">
-                                +1 (923) 602-8348
+                            <a href="tel:+212535942682">
+                                +212 (535) 94 26 82
                             </a>
                         </li>
                         <li>
                             <span><MapPin color="var(--dark-green-7)" /></span>
-                            <a href="/">
-                                Ouad Fez, Avenue Example, Rue Exemple, Fes, Maroc
+                            <a href="https://maps.app.goo.gl/mJRgbWpwp2ZVFtnx8">
+                                18 Rue Zenata Quartier Industriel Dokkarat<br/>
+                                Fes, Maroc
                             </a>
                         </li>
-                        <li>
-                            <span><MapPin color="var(--dark-green-7)" /></span>
-                            <a href="/">
-                                Ouad Fez, Avenue Example, Rue Exemple, Fes, Maroc
-                            </a>
-                        </li>
+                        
                     </ul>
                     <form action="">
                         <Field placeholder={"prénom"} inputName={"prénom"} Icon={<User color="var(--dark-green-7)" />} />

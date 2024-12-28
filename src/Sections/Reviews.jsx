@@ -67,7 +67,7 @@ export default function Reviews() {
                                 stroke="var(--dark-green-1)"
                             />
                         </span>
-                        <h2 className='title-small'>Customers Feedback</h2>
+                        <h2 className='title-small'>Témoignages Clients</h2>
                     </div>
                     <div className="reviews-container">
                         <div

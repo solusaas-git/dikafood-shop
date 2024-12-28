@@ -177,6 +177,13 @@ $background-color_4: var(--light-yellow-2);
 
 }
 
+.logo {
+    svg {
+        width: 200px;
+        height: auto;
+    }
+}
+
 @media screen and (min-width : 0px) and (max-width : 430px) {
 	.footer-container {
 		overflow: hidden;

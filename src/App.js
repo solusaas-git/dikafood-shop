@@ -52,7 +52,11 @@ function App() {
           } />
           <Route path='/blog' element={
             <>
-              <div className='title-large not-yet'>En train de construction</div>
+              <div className='title-large not-yet'>En construction</div>
+            </>} />
+            <Route path='/boutique' element={
+            <>
+              <div className='title-large not-yet'>En construction</div>
             </>} />
         </Routes>
       </div>

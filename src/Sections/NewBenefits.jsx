@@ -1,6 +1,7 @@
 import "./new-benefits.scss"
 import { ReactComponent as TreeIcon } from "../assets/tree.svg";
 import { ReactComponent as HomeIcon } from "../assets/home.svg";
+import { ReactComponent as Leaf } from "../assets/Leaf.svg"
 import { ReactComponent as AuthenticIcon } from "../assets/authentique.svg";
 import Benefit from "../Components/Benefit";
 import Line from "../Components/Line";
@@ -13,28 +14,30 @@ export default function NewBenefits() {
             image1: "/images/image1.png",
             image2: "/images/image2.png",
             Icon: <TreeIcon />,
-            title: "Ouad Fes Huile d’Olive Extra Vièrge Le goût Authentique",
-            descp: "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk.Elle ajoute une profondeur unique à mes plats.Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk.Elle ajoute une profondeur unique à mes plats."
+            title: "Récolte Manuelle",
+            descp: "Nos olives sont cueillies à la main pour préserver toute leur fraîcheur et leur qualité."
         },
         {
             image1: "/images/image3.png",
             image2: "/images/image4.png",
             Icon: <HomeIcon />,
-            title: "Ouad Fes Huile d’Olive Extra Vièrge Le goût Authentique",
-            descp: "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk.Elle ajoute une profondeur unique à mes plats.Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk.Elle ajoute une profondeur unique à mes plats."
+            title: "Pressage à Froid",
+            descp: "Nos huiles d’olive sont obtenues par première pression à froid, un processus qui garantit une huile riche en nutriments."
         },
         {
             image1: "/images/image5.png",
             image2: "/images/image6.png",
             Icon: <AuthenticIcon />,
-            title: "Ouad Fes Huile d’Olive Extra Vièrge Le goût Authentique",
-            descp: "Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk.Elle ajoute une profondeur unique à mes plats.Je suis impressionné par la qualité de l'huile gridnon d'olive Chourouk.Elle ajoute une profondeur unique à mes plats."
+            title: "Engagement pour la Qualité",
+            descp: "Nous contrôlons chaque étape du processus, de la culture à la mise en bouteille, pour vous offrir une huile exceptionnelle."
         }
     ]
     let theme = "";
     let lineTheme = "";
     return (
+                        
         <div className="new-benefits">
+
             <Line theme={"top-left"} />
             <div className="container">
                 <div className="benefits-container">
@@ -75,5 +78,8 @@ export default function NewBenefits() {
             </div>
             <Line theme={(benefits.length - 1) % 2 === 0 ? "bottom-right" : "bottom-left"} />
         </div>
+        
+                        
+        
     )
 }
