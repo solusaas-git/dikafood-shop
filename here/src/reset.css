@@ -1,0 +1,80 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-variant-numeric: lining-nums proportional-nums;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-weight: 500;
+}
+
+#root {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* All text elements get Chillax with increased weight */
+p,
+span,
+a,
+button,
+input,
+textarea,
+label,
+li {
+    font-family: var(--font-heading);
+    font-weight: 500;
+}
+
+/* Buttons get slightly bolder weight */
+button,
+input,
+textarea {
+    font-family: var(--font-heading);
+    font-weight: 600;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+form {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+}
+
+/* Headings keep their individual weights as defined in components */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
+    font-weight: normal;
+    font-family: var(--font-heading);
+}
+
+a {
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+}

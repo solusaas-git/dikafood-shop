@@ -1,0 +1,48 @@
+// Import or define color variables
+$color-light-yellow: var(--light-yellow-1);
+$color-dark-yellow: var(--dark-yellow-1);
+$color-brand-green: #A8CB38;
+$color-dark-green: #08441C;
+
+.product-carousel {
+    z-index: 10;
+    flex: 0 1 55%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 20px 0;
+
+    .product-container {
+        display: flex;
+        gap: 24px;
+        animation: scroll-left 60s linear infinite;
+        width: 100%;
+        position: relative;
+        
+        &:hover {
+            animation-play-state: paused;
+        }
+    }
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes scroll-right {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.product-container {
+    animation: scroll-right 60s linear infinite !important;
+}

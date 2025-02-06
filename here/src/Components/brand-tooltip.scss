@@ -1,0 +1,121 @@
+.brand-tooltip {
+    position: fixed;
+    width: 320px;
+    background-color: var(--light-yellow-2);
+    border: 1px solid var(--dark-yellow-1);
+    border-radius: 16px;
+    padding: 24px;
+    z-index: 999999;
+    transform: translate(-50%, -100%);
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid var(--light-yellow-2);
+    }
+
+    .brand-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 16px;
+
+        .icon-wrapper {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-yellow-3);
+            border-radius: 8px;
+            
+            svg {
+                color: var(--dark-yellow-1);
+            }
+        }
+
+        .brand-title {
+            flex: 1;
+
+            h3 {
+                font-size: 24px;
+                color: var(--dark-green-7);
+                margin-bottom: 4px;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+
+            span {
+                font-size: 15px;
+                color: var(--dark-green-6);
+                font-style: italic;
+            }
+        }
+    }
+
+    .description {
+        font-size: 15px;
+        color: var(--dark-green-7);
+        line-height: 1.5;
+
+        p {
+            margin: 0 0 16px 0;
+            color: var(--dark-green-6);
+        }
+        
+        .specs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+            .spec-badge {
+                background-color: var(--light-yellow-1);
+                border: 1px solid var(--dark-yellow-1);
+                border-radius: 10px;
+                padding: 16px;
+                transition: all 0.2s ease;
+                
+                .badge-label {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-size: 11px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.8px;
+                    color: var(--dark-green-7);
+                    margin-bottom: 8px;
+                    font-weight: 600;
+                    background-color: var(--dark-yellow-1);
+                    padding: 6px 10px;
+                    border-radius: 6px;
+                    border: 1px solid var(--dark-yellow-1);
+
+                    svg {
+                        color: var(--dark-green-7);
+                    }
+                }
+
+                .badge-value {
+                    display: block;
+                    color: var(--dark-green-7);
+                    font-size: 14px;
+                    line-height: 1.5;
+                    margin-top: 8px;
+                    font-weight: 500;
+                }
+
+                &:hover {
+                    transform: translateY(-1px);
+                }
+            }
+        }
+    }
+} 

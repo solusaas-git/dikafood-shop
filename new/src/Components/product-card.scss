@@ -1,0 +1,139 @@
+$color_1: var(--dark-green-1);
+$color_2: var(--dark-green-7);
+$background-color_1: var(--light-yellow-1);
+$background-color_2: var(--light-yellow-2);
+$background-color_3: var(--dark-yellow-1);
+
+.product-card {
+	display: flex;
+	flex-direction: column;
+	max-width: 368px;
+	height: 448px;
+	border-radius: 16px;
+	transition: 0.3s ease-in-out;
+	background-color: $background-color_1;
+	position: relative;
+	overflow: hidden;
+	cursor: pointer; 
+
+	>.img-product {
+		height: 354px;
+		transition: 0.2s ease-in-out;
+		padding: 20px 0px;
+
+		>img {
+			height: 100%;
+		}
+	}
+
+	>.product-card-footer {
+		background-color: $background-color_2;
+		border-radius: 0px 0px 8px 8px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		border-top: 1px solid var(--dark-green-1);
+		min-height: 94px;
+
+		>.product-card-text {
+			color: $color_1;
+			font-weight: 400;
+			font-size: 22px;
+			height: 100%;
+			display: inline;
+			padding: 24px;
+			align-items: center;
+			width: 100%;
+			text-align: left;
+
+			>span {
+				font-weight: 700;
+			}
+		}
+	}
+
+	>.product-link {
+		position: absolute;
+		background-color: $background-color_3;
+		height: 48px;
+		border-radius: 0px 0px 16px 16px;
+		width: 100%;
+		bottom: -48px;
+		transition: 0.2s ease-in-out;
+
+		>button {
+			padding-bottom: 0px;
+
+			>a {
+				>p {
+					color: $color_2;
+					flex-direction: row-reverse;
+				}
+			}
+		}
+	}
+
+	&:hover {
+		.img-product {
+			height: 306px;
+		}
+
+		.product-link {
+			bottom: 0px;
+		}
+	}
+}
+
+.product-card.static {
+	min-width: 272px;
+	height: 272px;
+
+	>.img-product {
+		width: 100%;
+		height: 100%;
+	}
+
+	>.product-card-footer {
+		display: none;
+	}
+
+	>.product-link {
+		display: none;
+	}
+
+	&:hover {
+		.img-product {
+			height: 100%;
+		}
+	}
+}
+
+@media screen and (min-width : 0px) and (max-width : 430px) {
+	.product-card {
+		max-width: 248px;
+		height: 312px;
+
+		>.img-product {
+			height: 240px;
+		}
+
+		>.product-card-footer {
+			min-height: 71px;
+
+			>.product-card-text {
+				font-size: 18px;
+				padding: 12px 18px;
+			}
+		}
+
+		&:hover {
+			.img-product {
+				height: 200px;
+			}
+		}
+
+		>.product-link {
+			height: 40px;
+		}
+	}
+}

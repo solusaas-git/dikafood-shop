@@ -1,0 +1,25 @@
+.new-benefits {
+    padding-top: 80px;
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    >.container {
+        width: 100%;
+        padding: 0 var(--section-padding);
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        >.benefits-container{
+            max-width: var(--section-max-width);
+            width: 100%;
+        }
+    }
+}
+
+@media screen and (min-width : 0px) and (max-width : 430px) {
+    .new-benefits {
+        overflow: hidden;
+        width: 100%;
+    }
+}
