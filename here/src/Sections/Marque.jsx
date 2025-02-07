@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { SunHorizon, Waves, Plant } from "@phosphor-icons/react";
 import BrandTooltip from '../Components/BrandTooltip';
 import "./marque.scss";
@@ -11,6 +11,8 @@ export default function Marque() {
     const [activeCard, setActiveCard] = useState(null);
     const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
     const containerRef = useRef(null);
+    const sectionRef = useRef(null);
+    const [imageLoaded, setImageLoaded] = useState({});
 
     const handleMouseDown = (e) => {
         setIsDragging(true);
@@ -109,6 +111,21 @@ export default function Marque() {
 
     const duplicatedMarques = [...marques, ...marques, ...marques];
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsPaused(!entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <div className="marque-container">
             <div className='marque'>
@@ -122,6 +139,9 @@ export default function Marque() {
                 <div 
                     ref={containerRef}
                     className="brands-container"
+                    role="region"
+                    aria-label="Nos marques défilantes"
+                    tabIndex="0"
                     style={{
                         animationPlayState: isPaused ? 'paused' : 'running',
                         cursor: isDragging ? 'grabbing' : 'grab'
@@ -133,14 +153,26 @@ export default function Marque() {
                 >
                     {duplicatedMarques.map((brand, index) => (
                         <div 
-                            key={`${brand.title}-${index}`} 
+                            key={`${brand.title}-${index}`}
                             className="brand-card"
+                            role="article"
+                            aria-label={`Marque ${brand.title}`}
+                            tabIndex="0"
                             onMouseEnter={() => handleMouseEnter(brand)}
                             onMouseLeave={handleMouseLeave}
                             onMouseMove={handleCardMouseMove}
                         >
                             <div className="brand-image">
-                                <img src={brand.image} alt={brand.title} />
+                                <img 
+                                    src={brand.image} 
+                                    alt={brand.title}
+                                    onLoad={() => setImageLoaded(prev => ({...prev, [brand.title]: true}))}
+                                    onError={(e) => {
+                                        e.target.src = '/images/fallback-logo.svg';
+                                        console.error(`Failed to load image for ${brand.title}`);
+                                    }}
+                                    className={!imageLoaded[brand.title] ? 'loading' : ''}
+                                />
                             </div>
                         </div>
                     ))}

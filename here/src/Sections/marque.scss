@@ -3,11 +3,15 @@ $background-color_1: var(--light-yellow-2);
 
 .marque-container {
 	width: 100%;
-	padding: 32px 0;
+	padding: 80px 0;
 	display: flex;
 	justify-content: center;
 	position: relative;
-	background-color: var(--light-yellow-1);
+	background: linear-gradient(
+		to bottom,
+		var(--light-yellow-1) 0%,
+		var(--light-yellow-2) 100%
+	);
 	z-index: 1;
 	border-top: 1px solid var(--dark-yellow-1);
 	border-bottom: 1px solid var(--dark-yellow-1);
@@ -25,52 +29,47 @@ $background-color_1: var(--light-yellow-2);
 			rgba(255, 255, 255, 0.8) 0%,
 			transparent 70%
 		);
-		opacity: 0.4;
+		opacity: 0.6;
 		pointer-events: none;
 	}
 
 	.marque {
 		position: relative;
 		z-index: 2;
-		margin-top: 80px;
+		margin-top: 0;
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		gap: 40px;
+		align-items: center;
+		gap: 60px;
 		max-width: var(--max-width);
 		width: 100%;
 		overflow: hidden;
 
 		.marque-title {
-			margin-bottom: 24px;
-			width: 100vw;
+			margin-bottom: 0;
+			width: 100%;
 			position: relative;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			gap: 8px;
-			left: 50%;
-			right: 50%;
-			margin-left: -50vw;
-			margin-right: -50vw;
-			position: relative;
+			gap: 16px;
 
-			// Gradient lines
 			&::before,
 			&::after {
 				content: '';
 				position: absolute;
 				top: 50%;
 				transform: translateY(-50%);
-				height: 5px;
-				width: 50vw;
+				height: 4px;
+				width: 40vw;
 				background: linear-gradient(
 					to var(--direction, right),
 					transparent,
-					var(--dark-yellow-1) 2%,
-					var(--dark-yellow-1) 98%,
+					var(--dark-yellow-1) 15%,
+					var(--dark-yellow-1) 85%,
 					transparent
 				);
+				opacity: 0.8;
 			}
 
 			&::before {
@@ -84,12 +83,12 @@ $background-color_1: var(--light-yellow-2);
 			}
 
 			.title-content {
-				padding: 0 24px;
+				padding: 0 32px;
 				z-index: 1;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				gap: 8px;
+				gap: 16px;
 				position: relative;
 				background-color: var(--light-yellow-1);
 
@@ -98,6 +97,7 @@ $background-color_1: var(--light-yellow-2);
 					font-weight: 600;
 					color: var(--dark-green-7);
 					margin: 0;
+					text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 				}
 
 				p {
@@ -106,22 +106,23 @@ $background-color_1: var(--light-yellow-2);
 					font-weight: 500;
 					max-width: 600px;
 					margin: 0;
-					line-height: 1.4;
+					line-height: 1.5;
 					text-align: center;
+					text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 				}
 			}
 		}
 
 		.brands-container {
 			display: flex;
-			gap: 32px;
+			gap: 40px;
 			overflow-x: hidden;
-			padding: 32px 0;
-			padding-left: 0;
-			cursor: pointer;
+			padding: 40px 0;
+			cursor: grab;
+			animation: scroll 80s linear infinite;
 			
-			&:active {
-				cursor: grabbing;
+			&:hover {
+				animation-play-state: paused;
 			}
 
 			.brand-card {
@@ -129,19 +130,20 @@ $background-color_1: var(--light-yellow-2);
 				width: 320px;
 				height: 200px;
 				background-color: white;
-				border-radius: 16px;
+				border-radius: 20px;
 				padding: 40px;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				position: relative;
-				border: 1px solid var(--dark-yellow-1);
-				transition: all 0.3s ease;
-				opacity: 1;
+				border: 1px solid rgba(var(--dark-yellow-1-rgb), 0.2);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 				&:hover {
-					transform: translateY(-4px);
-					z-index: 2;
+					transform: translateY(-4px) scale(1.02);
+					box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+					border-color: var(--dark-yellow-1);
 				}
 
 				.brand-image {
@@ -172,6 +174,9 @@ $background-color_1: var(--light-yellow-2);
 					top: -20px;
 					transition: all 0.1s ease;
 					opacity: 1 !important;
+					backdrop-filter: blur(8px);
+					border: 1px solid rgba(255, 255, 255, 0.1);
+					background: rgba(0, 0, 0, 0.85);
 					
 					&::after {
 						content: '';
@@ -217,40 +222,40 @@ $background-color_1: var(--light-yellow-2);
 						display: block !important;
 					}
 				}
-			}
 
-			&:hover {
-				.brand-card:not(:hover) {
-					opacity: 0.5;
-					transform: scale(0.95);
+				&.loading {
+					background: linear-gradient(90deg,
+						var(--light-yellow-1) 0%,
+						var(--light-yellow-2) 50%,
+						var(--light-yellow-1) 100%
+					);
+					background-size: 200% 100%;
+					animation: loading 1.5s infinite;
 				}
 			}
-
-			@keyframes scroll {
-				0% {
-					transform: translateX(0);
-				}
-				100% {
-					transform: translateX(calc(-100% / 3));
-				}
-			}
-
-			animation: scroll 40s linear infinite;
 		}
 	}
 
 	@media (max-width: 768px) {
+		padding: 60px 0;
+
 		.marque {
-			flex-direction: column;
 			gap: 40px;
 
-			.marque-title h2 {
-				writing-mode: horizontal-tb;
-				transform: none;
-			}
+			.marque-title {
+				&::before,
+				&::after {
+					width: 30vw;
+				}
 
-			.brands-container {
-				grid-template-columns: 1fr;
+				.title-content {
+					h2 {
+						font-size: 36px;
+					}
+					p {
+						font-size: 18px;
+					}
+				}
 			}
 		}
 	}
@@ -281,5 +286,61 @@ $background-color_1: var(--light-yellow-2);
 				}
 			}
 		}
+	}
+}
+
+@keyframes loading {
+	0% { background-position: 200% 0; }
+	100% { background-position: -200% 0; }
+}
+
+@media (hover: none) {
+	.brands-container {
+		-webkit-overflow-scrolling: touch;
+		scroll-snap-type: x mandatory;
+		
+		.brand-card {
+			&:active {
+				transform: scale(0.98);
+			}
+			
+			&:hover {
+				transform: none;
+				box-shadow: none;
+			}
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.brands-container {
+		animation: none;
+		
+		.brand-card {
+			transition: none;
+			
+			&:hover {
+				transform: none;
+			}
+		}
+	}
+}
+
+@keyframes scroll {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(calc(-320px * 5 - 40px * 5));
+	}
+}
+
+.brands-container[style*="cursor: grabbing"] {
+	animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.brands-container {
+		animation: scroll 80s linear infinite;
 	}
 }

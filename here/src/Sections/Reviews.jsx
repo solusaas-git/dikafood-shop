@@ -1,90 +1,59 @@
+import { useState, useRef, useEffect } from 'react';
+import { ChatCircleText } from "@phosphor-icons/react";
+import CardReview from '../Components/CardReview';
+import reviewsData from '../data/reviews.json';
 import "./reviews.scss";
-import reviewsInfo from "../data/reviews.json";
-import { ReactComponent as ChatDots } from "../assets/chatDots.svg"
-import Review from "../Components/Review";
-import { useEffect, useRef, useState } from "react";
-
 
 export default function Reviews() {
-    const reviewsWrapperRef = useRef(null);
-    const reviewsWrapper2Ref = useRef(null);
     const [isPaused, setIsPaused] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+    const containerRef = useRef(null);
 
     useEffect(() => {
-        const wrapper = reviewsWrapperRef.current;
-        const wrapper2 = reviewsWrapper2Ref.current;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsVisible(entry.isIntersecting);
+                setIsPaused(!entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
 
-        // Handle mouse events
-        const handleMouseOver = () => setIsPaused(true);
-        const handleMouseOut = () => setIsPaused(false);
-
-        // Handle touch events
-        const handleTouchStart = () => setIsPaused(true);
-        const handleTouchEnd = () => setIsPaused(false);
-
-        if (wrapper) {
-            wrapper.addEventListener('mouseover', handleMouseOver);
-            wrapper.addEventListener('mouseout', handleMouseOut);
-            wrapper.addEventListener('touchstart', handleTouchStart);
-            wrapper.addEventListener('touchend', handleTouchEnd);
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
         }
 
-        if (wrapper2) {
-            wrapper2.addEventListener('mouseover', handleMouseOver);
-            wrapper2.addEventListener('mouseout', handleMouseOut);
-            wrapper2.addEventListener('touchstart', handleTouchStart);
-            wrapper2.addEventListener('touchend', handleTouchEnd);
-        }
-
-        return () => {
-            if (wrapper) {
-                wrapper.removeEventListener('mouseover', handleMouseOver);
-                wrapper.removeEventListener('mouseout', handleMouseOut);
-                wrapper.removeEventListener('touchstart', handleTouchStart);
-                wrapper.removeEventListener('touchend', handleTouchEnd);
-            }
-
-            if (wrapper2) {
-                wrapper2.removeEventListener('mouseover', handleMouseOver);
-                wrapper2.removeEventListener('mouseout', handleMouseOut);
-                wrapper2.removeEventListener('touchstart', handleTouchStart);
-                wrapper2.removeEventListener('touchend', handleTouchEnd);
-            }
-        };
+        return () => observer.disconnect();
     }, []);
-    
+
+    // Double the reviews array to ensure smooth infinite scroll
+    const duplicatedReviews = [...reviewsData, ...reviewsData];
+
     return (
-        <div className="reviews-div-container">
-            <div className="reviews">
-                <div className="container">
-                    <div className="reviews-header">
-                        <span>
-                            <ChatDots
-                                height={32}
-                                width={32}
-                                color="var(--dark-yellow-1)"
-                                weight="fill"
-                                stroke="var(--dark-green-1)"
-                            />
-                        </span>
-                        <h2 className='title-small'>Témoignages Clients</h2>
-                    </div>
-                    <div className="reviews-container">
-                        <div
-                            className="reviews-wrapper"
-                            style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
-                            ref={reviewsWrapperRef}>
-                            <Review options={reviewsInfo} />
-                        </div>
-                        <div
-                            className="reviews-wrapper2"
-                            style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
-                            ref={reviewsWrapper2Ref}>
-                            <Review options={reviewsInfo} />
-                        </div>
+        <section className="reviews-section" ref={containerRef}>
+            <div className="container">
+                <div className="section-header">
+                    <ChatCircleText size={32} weight="duotone" />
+                    <h2>Témoignages Clients</h2>
+                    <p>Découvrez ce que nos clients disent de nos produits</p>
+                </div>
+
+                <div 
+                    className="reviews-carousel"
+                    onMouseEnter={() => setIsPaused(true)}
+                    onMouseLeave={() => setIsPaused(false)}
+                >
+                    <div className={`reviews-track ${isPaused ? 'paused' : ''}`}>
+                        {duplicatedReviews.map((review, index) => (
+                            <div 
+                                key={`${review.id}-${index}`}
+                                className="review-slide"
+                            >
+                                <CardReview review={review} />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
-        </div>
-    )
+        </section>
+    );
 }

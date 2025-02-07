@@ -1,51 +1,38 @@
-import "./new-benefits.scss"
-import { Tree, House, Medal, Leaf } from "@phosphor-icons/react";
+import { memo } from 'react';
+import "./new-benefits.scss";
+import { benefitsData } from '../data/benefits';
+import BenefitCard from '../components/BenefitCard';
 
-export default function NewBenefits() {
-    const benefits = [
-        {
-            Icon: <Tree size={32} weight="duotone" />,
-            title: "Récolte Traditionnelle",
-            descp: "Cueillette à la main pour préserver la qualité.",
-        },
-        {
-            Icon: <House size={32} weight="duotone" />,
-            title: "Pressage à Froid",
-            descp: "Première pression à froid pour une huile riche en nutriments.",
-        },
-        {
-            Icon: <Medal size={32} weight="duotone" />,
-            title: "Qualité Premium",
-            descp: "Un contrôle rigoureux à chaque étape.",
-        },
-        {
-            Icon: <Leaf size={32} weight="duotone" />,
-            title: "100% Naturel",
-            descp: "Sans additifs ni conservateurs.",
-        }
-    ];
-
+const NewBenefits = memo(() => {
     return (
-        <div className="new-benefits">
+        <section 
+            className="new-benefits"
+            aria-labelledby="benefits-title"
+        >
             <div className="container">
                 <div className="section-header">
-                    <h2>Notre Engagement Qualité</h2>
-                    <p>Découvrez ce qui rend notre huile d'olive exceptionnelle</p>
+                    <div className="title-content">
+                        <h2 id="benefits-title">Notre Engagement Qualité</h2>
+                        <p>Découvrez ce qui rend notre huile d'olive exceptionnelle</p>
+                    </div>
                 </div>
-                <div className="benefits-grid">
-                    {benefits.map((benefit, index) => (
-                        <div key={index} className="benefit-card">
-                            <div className="content">
-                                <div className="icon-wrapper">
-                                    {benefit.Icon}
-                                </div>
-                                <h3>{benefit.title}</h3>
-                                <p>{benefit.descp}</p>
-                            </div>
-                        </div>
+                <div 
+                    className="benefits-grid"
+                    role="region"
+                    aria-label="Nos avantages"
+                >
+                    {benefitsData.map((benefit) => (
+                        <BenefitCard
+                            key={benefit.id}
+                            {...benefit}
+                        />
                     ))}
                 </div>
             </div>
-        </div>
+        </section>
     );
-}
+});
+
+NewBenefits.displayName = 'NewBenefits';
+
+export default NewBenefits;
