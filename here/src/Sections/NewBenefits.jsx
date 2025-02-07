@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import "./new-benefits.scss";
 import { benefitsData } from '../data/benefits';
-import BenefitCard from '../components/BenefitCard';
+import BenefitCard from '../Components/BenefitCard';
 
 const NewBenefits = memo(() => {
     return (

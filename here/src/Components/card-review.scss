@@ -25,11 +25,38 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        position: relative;
         overflow: hidden;
+
+        &::before {
+            content: '"';
+            position: absolute;
+            top: 185px;
+            left: -8px;
+            font-size: 64px;
+            font-family: Georgia, serif;
+            color: var(--light-yellow-2);
+            line-height: 1;
+            z-index: 1;
+        }
+
+        &::after {
+            content: '"';
+            position: absolute;
+            bottom: -32px;
+            right: -8px;
+            font-size: 64px;
+            font-family: Georgia, serif;
+            color: var(--light-yellow-2);
+            line-height: 1;
+            z-index: 1;
+        }
 
         .review-header {
             margin-bottom: 24px;
             flex-shrink: 0;
+            position: relative;
+            z-index: 2;
 
             .author-info {
                 margin-bottom: 20px;
@@ -113,6 +140,8 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            position: relative;
+            z-index: 2;
             min-height: 0;
             overflow: hidden;
             
@@ -149,6 +178,9 @@
                 line-height: 1.6;
                 color: var(--dark-green-6);
                 margin: 0;
+                padding: 0 8px;
+                font-style: italic;
+                position: relative;
             }
         }
     }
@@ -161,6 +193,18 @@
         padding: 24px;
 
         .card-review {
+            &::before {
+                font-size: 56px;
+                top: 165px;
+                left: -6px;
+            }
+
+            &::after {
+                font-size: 56px;
+                bottom: -28px;
+                right: -6px;
+            }
+
             .review-header {
                 .author-info {
                     .author-details {
@@ -174,6 +218,7 @@
             .review-content {
                 .review-text {
                     font-size: 15px;
+                    padding: 0 6px;
                 }
             }
         }
