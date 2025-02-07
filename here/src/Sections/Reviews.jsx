@@ -41,6 +41,8 @@ export default function Reviews() {
                     className="reviews-carousel"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
+                    onTouchStart={() => setIsPaused(true)}
+                    onTouchEnd={() => setIsPaused(false)}
                 >
                     <div className={`reviews-track ${isPaused ? 'paused' : ''}`}>
                         {duplicatedReviews.map((review, index) => (

@@ -92,41 +92,112 @@
 }
 
 .reviews-section {
-    padding: 120px 0;
+    padding: 80px 0;
     background: linear-gradient(
         to bottom,
         var(--light-yellow-1),
         var(--light-yellow-2)
     );
     overflow: hidden;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 1px;
+        background: linear-gradient(
+            to right,
+            transparent,
+            var(--dark-yellow-1),
+            transparent
+        );
+        opacity: 0.2;
+        z-index: 1;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 1px;
+        background: linear-gradient(
+            to right,
+            transparent,
+            var(--dark-yellow-1),
+            transparent
+        );
+        opacity: 0.2;
+        z-index: 1;
+    }
 
     .container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
         padding: 0 24px;
+
+        @media (max-width: 768px) {
+            padding: 0 16px;
+        }
     }
 
     .section-header {
         text-align: center;
-        margin-bottom: 64px;
+        margin-bottom: 48px;
+        padding: 0 16px;
         
         svg {
             color: var(--dark-yellow-1);
             margin-bottom: 24px;
+            
+            @media (max-width: 768px) {
+                width: 28px;
+                height: 28px;
+                margin-bottom: 20px;
+            }
         }
 
         h2 {
-            font-size: 48px;
+            font-size: clamp(32px, 5vw, 48px);
             font-weight: 600;
             color: var(--dark-green-7);
             margin: 0 0 16px;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            
+            @media (max-width: 768px) {
+                margin: 0 0 12px;
+                max-width: 100%;
+            }
         }
 
         p {
-            font-size: 20px;
+            font-size: clamp(16px, 2.5vw, 20px);
             color: var(--dark-green-6);
             max-width: 600px;
             margin: 0 auto;
+            line-height: 1.5;
+            
+            @media (max-width: 768px) {
+                max-width: 100%;
+                padding: 0 8px;
+            }
+            
+            @media (max-width: 480px) {
+                br {
+                    display: none;
+                }
+            }
+        }
+
+        @media (max-width: 480px) {
+            margin-bottom: 32px;
         }
     }
 
@@ -135,6 +206,11 @@
         overflow: hidden;
         padding: 24px 0;
         margin: 0 -24px;
+
+        @media (max-width: 768px) {
+            padding: 16px 0;
+            margin: 0 -16px;
+        }
 
         &::before,
         &::after {
@@ -145,6 +221,14 @@
             height: 100%;
             z-index: 2;
             pointer-events: none;
+
+            @media (max-width: 1024px) {
+                width: 80px;
+            }
+
+            @media (max-width: 768px) {
+                width: 60px;
+            }
         }
 
         &::before {
@@ -170,6 +254,11 @@
             width: max-content;
             padding: 0 12px;
 
+            @media (max-width: 768px) {
+                gap: 16px;
+                padding: 0 8px;
+            }
+
             &.paused {
                 animation-play-state: paused;
             }
@@ -180,6 +269,12 @@
 
                 &:hover {
                     transform: translateY(-8px);
+                }
+
+                @media (hover: none) {
+                    &:hover {
+                        transform: none;
+                    }
                 }
             }
         }
@@ -244,24 +339,13 @@
 
 @media (max-width: 768px) {
     .reviews-section {
-        padding: 80px 0;
+        padding: 60px 0;
+    }
+}
 
-        .section-header {
-            h2 {
-                font-size: 36px;
-            }
-
-            p {
-                font-size: 18px;
-            }
-        }
-
-        .reviews-carousel {
-            &::before,
-            &::after {
-                width: 60px;
-            }
-        }
+@media (max-width: 480px) {
+    .reviews-section {
+        padding: 40px 0;
     }
 }
 

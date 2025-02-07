@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Star, CheckCircle } from "@phosphor-icons/react";
+import { Star, CheckCircle, ArrowRight } from "@phosphor-icons/react";
 import "./card-review.scss";
 
 const formatRelativeTime = (dateString) => {
@@ -41,42 +41,50 @@ const CardReview = memo(({ review }) => {
                 <header className="review-header">
                     <div className="author-info">
                         <div className="author-details">
-                            <h3>{author.name}</h3>
-                            <p>{author.location}</p>
-                            {verified && (
-                                <span className="verified-badge">
-                                    <CheckCircle /> Achat vérifié
-                                </span>
-                            )}
+                            <div className="author-name-location">
+                                <h3>{author.name}</h3>
+                                <p>{author.location}</p>
+                                {verified && (
+                                    <span className="verified-badge">
+                                        <CheckCircle weight="duotone" /> Achat vérifié
+                                    </span>
+                                )}
+                            </div>
+                            <div className="rating-time">
+                                <div className="rating" aria-label={`Note: ${rating} sur 5`}>
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star 
+                                            key={i}
+                                            weight={i < rating ? "fill" : "regular"}
+                                            className={i < rating ? 'filled' : ''}
+                                        />
+                                    ))}
+                                </div>
+                                <time 
+                                    dateTime={date}
+                                    title={new Date(date).toLocaleDateString('fr-FR', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                >
+                                    {formatRelativeTime(date)}
+                                </time>
+                            </div>
                         </div>
-                    </div>
-                    <div className="review-meta">
-                        <div className="rating" aria-label={`Note: ${rating} sur 5`}>
-                            {[...Array(5)].map((_, i) => (
-                                <Star 
-                                    key={i}
-                                    weight={i < rating ? "fill" : "regular"}
-                                    className={i < rating ? 'filled' : ''}
-                                />
-                            ))}
-                        </div>
-                        <time 
-                            dateTime={date}
-                            title={new Date(date).toLocaleDateString('fr-FR', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })}
-                        >
-                            {formatRelativeTime(date)}
-                        </time>
                     </div>
                 </header>
 
                 <div className="review-content">
                     <div className="product-info">
-                        <p className="product-name">{product.name}</p>
-                        <p className="product-variant">{product.variant}</p>
+                        <p className="review-context">A donné son avis sur :</p>
+                        <a href={`/products/${product.id}`} className="product-link">
+                            <div className="product-details">
+                                <p className="product-name">{product.name}</p>
+                                <p className="product-variant">{product.variant}</p>
+                            </div>
+                            <ArrowRight className="forward-icon" weight="bold" />
+                        </a>
                     </div>
                     
                     <p className="review-text">{comment}</p>

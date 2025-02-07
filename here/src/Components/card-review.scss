@@ -1,17 +1,97 @@
 .card-review-container {
-    width: 360px;
+    width: 400px;
     min-height: 380px;
     height: auto;
-    padding: 32px;
     background: white;
     border-radius: 24px;
-    border: 1px solid var(--light-yellow-2);
+    border: 1px solid var(--dark-yellow-1);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+
+    @media (max-width: 1024px) {
+        width: 360px;
+    }
+
+    @media (max-width: 768px) {
+        width: 340px;
+        min-height: 360px;
+
+        .card-review {
+            .review-header {
+                padding: 24px;
+
+                .author-info .author-details {
+                    .author-name-location {
+                        h3 {
+                            font-size: 18px;
+                        }
+                        p {
+                            font-size: 15px;
+                        }
+                        .verified-badge {
+                            font-size: 13px;
+                            padding: 4px 12px;
+                        }
+                    }
+                    .rating-time {
+                        .rating svg {
+                            width: 18px;
+                            height: 18px;
+                        }
+                        time {
+                            font-size: 13px;
+                        }
+                    }
+                }
+            }
+
+            .review-content {
+                padding: 0 24px 24px;
+
+                .product-info {
+                    padding: 10px 14px;
+                    
+                    .review-context {
+                        font-size: 13px;
+                    }
+
+                    .product-link {
+                        .product-name {
+                            font-size: 15px;
+                        }
+                        .product-variant {
+                            font-size: 13px;
+                        }
+                        .forward-icon {
+                            width: 18px;
+                            height: 18px;
+                        }
+                    }
+                }
+
+                .review-text {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        width: 300px;
+        min-height: 340px;
+
+        .card-review {
+            .review-header {
+                padding: 20px;
+            }
+            .review-content {
+                padding: 0 20px 20px;
+            }
+        }
+    }
 
     &:hover {
         transform: translateY(-4px);
-        border-color: var(--dark-yellow-1);
+        border-color: var(--dark-green-7);
         background: rgba(255, 255, 255, 0.95);
     }
 
@@ -22,116 +102,102 @@
     }
 
     .card-review {
-        height: 100%;
         display: flex;
         flex-direction: column;
+        height: 100%;
         position: relative;
         overflow: hidden;
 
-        &::before {
-            content: '"';
-            position: absolute;
-            top: 185px;
-            left: -8px;
-            font-size: 64px;
-            font-family: Georgia, serif;
-            color: var(--light-yellow-2);
-            line-height: 1;
-            z-index: 1;
-        }
-
-        &::after {
-            content: '"';
-            position: absolute;
-            bottom: -32px;
-            right: -8px;
-            font-size: 64px;
-            font-family: Georgia, serif;
-            color: var(--light-yellow-2);
-            line-height: 1;
-            z-index: 1;
-        }
-
         .review-header {
+            padding: 32px;
             margin-bottom: 24px;
+            background: linear-gradient(
+                to bottom,
+                var(--light-yellow-1) 0%,
+                var(--light-yellow-2) 100%
+            );
+            border-bottom: 2px solid var(--dark-yellow-1);
+            border-radius: 24px 24px 0 0;
             flex-shrink: 0;
             position: relative;
             z-index: 2;
 
             .author-info {
-                margin-bottom: 20px;
+                margin-bottom: 0;
 
                 .author-details {
-                    h3 {
-                        font-size: 20px;
-                        font-weight: 600;
-                        color: var(--dark-green-7);
-                        margin: 0 0 6px;
-                        letter-spacing: -0.2px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    gap: 16px;
+
+                    .author-name-location {
+                        h3 {
+                            font-size: 20px;
+                            font-weight: 600;
+                            color: var(--dark-green-7);
+                            margin: 0 0 6px;
+                            letter-spacing: -0.2px;
+                        }
+
+                        p {
+                            font-size: 16px;
+                            color: var(--dark-green-5);
+                            margin: 0;
+                        }
                     }
 
-                    p {
-                        font-size: 16px;
-                        color: var(--dark-green-5);
-                        margin: 0;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-
-                    .verified-badge {
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 6px;
-                        font-size: 14px;
-                        color: var(--dark-green-6);
-                        margin-top: 8px;
-                        padding: 4px 12px;
-                        background: var(--light-yellow-1);
-                        border-radius: 20px;
-                        font-weight: 500;
-                        max-width: 100%;
-                        overflow: hidden;
-
+                    .rating {
+                        display: flex;
+                        gap: 4px;
+                        flex-shrink: 0;
+                        
                         svg {
-                            color: var(--dark-yellow-1);
-                            flex-shrink: 0;
+                            width: 20px;
+                            height: 20px;
+                            color: var(--light-yellow-2);
+                            stroke: var(--dark-green-6);
+                            stroke-width: 1.5;
+
+                            &.filled {
+                                color: var(--dark-yellow-1);
+                                stroke: var(--dark-green-6);
+                            }
                         }
                     }
                 }
-            }
 
-            .review-meta {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding-bottom: 20px;
-                border-bottom: 1px solid var(--light-yellow-2);
-
-                .rating {
-                    display: flex;
-                    gap: 4px;
-                    flex-shrink: 0;
+                .verified-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-size: 14px;
+                    color: var(--dark-green-7);
+                    margin-top: 12px;
+                    padding: 6px 14px;
+                    background: white;
+                    border: 1px solid var(--dark-yellow-1);
+                    border-radius: 20px;
+                    font-weight: 600;
                     
                     svg {
-                        width: 20px;
-                        height: 20px;
-                        color: var(--light-yellow-2);
-
-                        &.filled {
-                            color: var(--dark-yellow-1);
-                        }
+                        color: var(--dark-green-7);
+                        width: 16px;
+                        height: 16px;
                     }
                 }
 
-                time {
-                    font-size: 14px;
-                    color: var(--dark-green-5);
-                    font-weight: 500;
-                    white-space: nowrap;
+                .rating-time {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 8px;
+
+                    time {
+                        font-size: 14px;
+                        color: var(--dark-green-7);
+                        font-weight: 500;
+                    }
                 }
             }
         }
@@ -144,6 +210,7 @@
             z-index: 2;
             min-height: 0;
             overflow: hidden;
+            padding: 0 32px 32px;
             
             .product-info {
                 margin-bottom: 16px;
@@ -151,25 +218,62 @@
                 background: var(--light-yellow-1);
                 border-radius: 12px;
                 border: 1px solid var(--light-yellow-2);
-                flex-shrink: 0;
 
-                .product-name {
-                    font-weight: 600;
-                    color: var(--dark-green-7);
-                    margin: 0;
-                    font-size: 16px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-
-                .product-variant {
+                .review-context {
                     font-size: 14px;
                     color: var(--dark-green-6);
-                    margin: 4px 0 0;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
+                    margin: 0 0 4px;
+                }
+
+                .product-link {
+                    text-decoration: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    transition: all 0.2s ease;
+                    padding: 4px 0;
+
+                    .product-details {
+                        flex: 1;
+                        min-width: 0;
+                    }
+
+                    .forward-icon {
+                        width: 20px;
+                        height: 20px;
+                        color: var(--dark-green-7);
+                        opacity: 0;
+                        transform: translateX(-8px);
+                        transition: all 0.2s ease;
+                    }
+
+                    &:hover {
+                        .product-name {
+                            color: var(--dark-green-7);
+                            text-decoration: underline;
+                            text-decoration-color: var(--dark-green-7);
+                        }
+
+                        .forward-icon {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+
+                    .product-name {
+                        font-weight: 600;
+                        color: var(--dark-green-7);
+                        margin: 0;
+                        font-size: 16px;
+                        transition: color 0.2s ease;
+                    }
+
+                    .product-variant {
+                        font-size: 14px;
+                        color: var(--dark-green-6);
+                        margin: 4px 0 0;
+                    }
                 }
             }
 
@@ -181,45 +285,6 @@
                 padding: 0 8px;
                 font-style: italic;
                 position: relative;
-            }
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    .card-review-container {
-        width: 300px;
-        min-height: 340px;
-        padding: 24px;
-
-        .card-review {
-            &::before {
-                font-size: 56px;
-                top: 165px;
-                left: -6px;
-            }
-
-            &::after {
-                font-size: 56px;
-                bottom: -28px;
-                right: -6px;
-            }
-
-            .review-header {
-                .author-info {
-                    .author-details {
-                        h3 {
-                            font-size: 18px;
-                        }
-                    }
-                }
-            }
-
-            .review-content {
-                .review-text {
-                    font-size: 15px;
-                    padding: 0 6px;
-                }
             }
         }
     }
