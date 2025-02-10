@@ -25,35 +25,45 @@ export default function Reviews() {
         return () => observer.disconnect();
     }, []);
 
-    // Double the reviews array to ensure smooth infinite scroll
-    const duplicatedReviews = [...reviewsData, ...reviewsData];
+    // Quadruple the reviews array to ensure smooth infinite scroll
+    const duplicatedReviews = [...reviewsData, ...reviewsData, ...reviewsData, ...reviewsData];
 
     return (
         <section className="reviews-section" ref={containerRef}>
             <div className="container">
                 <div className="section-header">
-                    <ChatCircleText size={32} weight="duotone" />
-                    <h2>Témoignages Clients</h2>
-                    <p>Découvrez ce que nos clients disent de nos produits</p>
-                </div>
-
-                <div 
-                    className="reviews-carousel"
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                    onTouchStart={() => setIsPaused(true)}
-                    onTouchEnd={() => setIsPaused(false)}
-                >
-                    <div className={`reviews-track ${isPaused ? 'paused' : ''}`}>
-                        {duplicatedReviews.map((review, index) => (
-                            <div 
-                                key={`${review.id}-${index}`}
-                                className="review-slide"
-                            >
-                                <CardReview review={review} />
+                    <div className="title-container">
+                        <div className="title-content">
+                            <div className="title-wrapper">
+                                <ChatCircleText 
+                                    size={48} 
+                                    weight="duotone" 
+                                    className="title-icon"
+                                />
+                                <h2>Témoignages Clients</h2>
                             </div>
-                        ))}
+                            <p>Découvrez ce que nos clients disent de nos produits</p>
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div 
+                className="reviews-carousel"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+                onTouchStart={() => setIsPaused(true)}
+                onTouchEnd={() => setIsPaused(false)}
+            >
+                <div className={`reviews-track ${isPaused ? 'paused' : ''}`}>
+                    {duplicatedReviews.map((review, index) => (
+                        <div 
+                            key={`${review.id}-${index}`}
+                            className="review-slide"
+                        >
+                            <CardReview review={review} />
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

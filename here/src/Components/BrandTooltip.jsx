@@ -3,6 +3,8 @@ import { ListChecks, Target } from "@phosphor-icons/react";
 import './brand-tooltip.scss';
 
 export default function BrandTooltip({ brand, position }) {
+    if (!brand) return null;
+
     return (
         <div 
             className="brand-tooltip"
@@ -21,7 +23,7 @@ export default function BrandTooltip({ brand, position }) {
                     </div>
                     <div className="brand-title">
                         <h3>{brand.title}</h3>
-                        {brand.type && <span>{brand.type}</span>}
+                        <span className="brand-type">{brand.type}</span>
                     </div>
                 </div>
                 <div className="description">

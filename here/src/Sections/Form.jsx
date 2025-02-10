@@ -1,32 +1,25 @@
 import { memo } from 'react';
-import { DownloadSimple, At, User, Phone } from "@phosphor-icons/react";
+import {
+    ArrowDownRight,
+    At,
+    User,
+    Phone
+} from "@phosphor-icons/react";
 import Button from "../Components/Button";
 import Field from "../Components/Field";
+import CatalogCover from "./CatalogCover";
 import "./form.scss";
 
 const Form = memo(() => {
     return (
         <section className="form-section" id="form">
+
             <div className="form-container">
                 <div className="hero-side">
-                    <div className="content-wrapper">
-                        <h2 className="hero-title">
-                            Découvrez Notre <br />
-                            <span className="highlight">Catalogue Complet</span>
-                        </h2>
-                        <p className="hero-subtitle">
-                            Explorez notre sélection d'huiles d'olive premium et 
-                            découvrez l'excellence de nos produits artisanaux
-                        </p>
-                    </div>
-                    
-                    <div className="image-wrapper">
-                        <div className="image-container">
-                            <img 
-                                src="/images/oil.png" 
-                                alt="Huile d'olive en bouteille" 
-                                loading="lazy"
-                            />
+                    <div className="catalog-preview">
+                        <div className="catalog-wrapper">
+                            <CatalogCover />
+                            <div className="catalog-reflection"></div>
                         </div>
                     </div>
                 </div>
@@ -40,30 +33,30 @@ const Form = memo(() => {
 
                         <form className="download-form" onSubmit={(e) => e.preventDefault()}>
                             <div className="fields-container">
-                                <Field 
-                                    inputName="prenom" 
-                                    Icon={<User size={16} weight="regular" />} 
-                                    placeholder="Prénom" 
+                                <Field
+                                    inputName="prenom"
+                                    Icon={<User size={20} weight="duotone" />}
+                                    placeholder="Prénom"
                                 />
-                                <Field 
-                                    inputName="nom" 
-                                    Icon={<User size={16} weight="regular" />} 
-                                    placeholder="Nom" 
+                                <Field
+                                    inputName="nom"
+                                    Icon={<User size={20} weight="duotone" />}
+                                    placeholder="Nom"
                                 />
-                                <Field 
-                                    inputName="email" 
-                                    Icon={<At size={16} weight="regular" />} 
-                                    placeholder="Email" 
+                                <Field
+                                    inputName="email"
+                                    Icon={<At size={20} weight="duotone" />}
+                                    placeholder="Email"
                                 />
-                                <Field 
-                                    inputName="telephone" 
-                                    Icon={<Phone size={16} weight="regular" />} 
-                                    placeholder="Numéro de téléphone" 
+                                <Field
+                                    inputName="telephone"
+                                    Icon={<Phone size={20} weight="duotone" />}
+                                    placeholder="Numéro de téléphone"
                                 />
                             </div>
-                            
-                            <Button 
-                                buttonIcon={<DownloadSimple size={20} weight="regular" />}
+
+                            <Button
+                                buttonIcon={<ArrowDownRight size={28} weight="bold" />}
                                 buttonName="Télécharger le catalogue"
                                 theme="button-comp-primary"
                                 size="button-comp-small"

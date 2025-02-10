@@ -2,55 +2,110 @@ $background-color_4: var(--light-yellow-2);
 $color_2: var(--dark-green-7);
 
 .mention-container {
-    padding: 0px var(--section-padding);
     width: 100%;
-    background-color: $background-color_4;
+    background: var(--light-yellow-2);
     display: flex;
     justify-content: center;
-    >.mention {
+    border-top: 1px solid rgba(var(--dark-green-7-rgb), 0.1);
+    padding: 0 var(--section-padding);
+
+    .mention {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         width: 100%;
         max-width: var(--section-max-width);
-        height: 64px;
-        align-items: center;
-        // padding: 0px 115px;
+        min-height: 64px;
+        padding: 16px 0;
+        gap: 24px;
 
-        >.copyright {
-            font-size: 16px;
-            color: $color_2;
-            font-weight: 300;
-            line-height: 150%;
-            text-align: left;
+        .copyright {
+            font-size: 15px;
+            color: var(--dark-green-7);
+            font-weight: 400;
+            line-height: 1.5;
+            opacity: 0.8;
         }
 
-        >.menu {
+        .menu {
             display: flex;
-            gap: 32px;
+            gap: 24px;
+            flex-wrap: wrap;
+
+            .button-comp-link {
+                font-size: 14px;
+                color: var(--dark-green-7);
+                opacity: 0.8;
+                transition: all 0.3s ease;
+                padding: 4px 0;
+                border-radius: 0;
+                position: relative;
+
+                &:hover {
+                    opacity: 1;
+                    color: var(--dark-green-7);
+                    text-decoration: none;
+
+                    &::after {
+                        width: 100%;
+                    }
+                }
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 0;
+                    height: 1px;
+                    background-color: var(--dark-green-7);
+                    transition: width 0.3s ease;
+                }
+            }
         }
     }
-}
 
-@media screen and (min-width : 0px) and (max-width : 430px) {
-     .mention-container{
-        >.mention {
-			flex-direction: column;
-			padding: 24px 0px;
-			gap: 16px;
-			height: 116px;
-			justify-content: center;
+    @media screen and (max-width: 768px) {
+        .mention {
+            flex-direction: column;
+            text-align: center;
+            padding: 24px 0;
+            gap: 20px;
 
-			>.copyright {
-				font-size: 12px;
-			}
+            .copyright {
+                font-size: 14px;
+            }
 
-			>.menu {
-				>button {
-					>a {
-						font-size: 12px;
-					}
-				}
-			}
-		}
-     }
+            .menu {
+                gap: 16px;
+                justify-content: center;
+            }
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .mention {
+            padding: 20px 0;
+            gap: 16px;
+
+            .copyright {
+                font-size: 13px;
+            }
+
+            .menu {
+                gap: 12px;
+                
+                .button-comp-link {
+                    font-size: 13px;
+                    padding: 4px 0;
+                }
+            }
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            transition: none !important;
+        }
+    }
 }

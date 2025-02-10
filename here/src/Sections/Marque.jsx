@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SunHorizon, Waves, Plant } from "@phosphor-icons/react";
+import { SunHorizon, Waves, Plant, Buildings } from "@phosphor-icons/react";
 import BrandTooltip from '../Components/BrandTooltip';
 import "./marque.scss";
 
@@ -80,36 +80,33 @@ export default function Marque() {
         {
             title: "Chourouk",
             icon: <SunHorizon weight='duotone' size={32} />,
-            descp: <div className="description">
-                Huile de grignons d'olive Chourouk, une solution économique et pratique pour la cuisine de tous les jours.<br/>
-                <br/><b>•	Caractéristiques :</b> Polyvalente, bon rapport qualité-prix
-                <br/><b>•	Utilisation :</b> Cuisine quotidienne
-            </div>,
+            type: "Huile de grignons d'olive",
+            description: "Huile de grignons d'olive Chourouk, une solution économique et pratique pour la cuisine de tous les jours.",
+            characteristics: "Polyvalente • Économique • Stable",
+            usage: "Cuisine quotidienne • Friture",
             image: "/images/brands/chourouk-logo.svg",
         },
         {
             title: "Nouarati",
             icon: <SunHorizon weight='duotone' size={32} />,
-            descp: <div className="description">
-                Huile de tournesol Nouarati, riche en vitamine E et acides gras essentiels. Une option saine pour votre cuisine.<br/>
-                <br/><b>•	Caractéristiques :</b> 100% naturelle
-                <br/><b>•	Utilisation :</b> Polyvalente
-            </div>,
+            type: "Huile de tournesol",
+            description: "Huile de tournesol Nouarati, riche en vitamine E et acides gras essentiels. Une option saine pour votre cuisine.",
+            characteristics: "100% Naturelle • Riche en vitamine E • Légère",
+            usage: "Polyvalente • Friture • Pâtisserie",
             image: "/images/brands/nouarati-logo.svg",
         },
         {
             title: "Dika Extra Vièrge",
             icon: <SunHorizon weight='duotone' size={32} />,
-            descp: <div className="description">
-                Huile d'olive extra vierge Dika, première pression à froid. Une qualité supérieure pour vos plats.<br/>
-                <br/><b>•	Caractéristiques :</b> Pure, pressée à froid
-                <br/><b>•	Utilisation :</b> Salades et assaisonnements
-            </div>,
+            type: "Huile d'olive extra vierge",
+            description: "Huile d'olive extra vierge Dika, première pression à froid. Une qualité supérieure pour vos plats.",
+            characteristics: "Pure • Pressée à froid • Premium",
+            usage: "Salades • Assaisonnements • Cuisine fine",
             image: "/images/brands/dika-logo.svg",
         }
     ];
 
-    const duplicatedMarques = [...marques, ...marques, ...marques];
+    const duplicatedMarques = [...marques, ...marques, ...marques, ...marques];
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -131,7 +128,14 @@ export default function Marque() {
             <div className='marque'>
                 <div className="marque-title">
                     <div className="title-content">
-                        <h2>Nos Marques</h2>
+                        <div className="title-wrapper">
+                            <Buildings 
+                                size={48} 
+                                weight="duotone" 
+                                className="title-icon"
+                            />
+                            <h2>Nos Marques</h2>
+                        </div>
                         <p>Découvrez notre gamme complète d'huiles de qualité supérieure</p>
                     </div>
                 </div>
@@ -151,31 +155,33 @@ export default function Marque() {
                     onMouseLeave={handleMouseLeave}
                     onMouseMove={handleMouseMove}
                 >
-                    {duplicatedMarques.map((brand, index) => (
-                        <div 
-                            key={`${brand.title}-${index}`}
-                            className="brand-card"
-                            role="article"
-                            aria-label={`Marque ${brand.title}`}
-                            tabIndex="0"
-                            onMouseEnter={() => handleMouseEnter(brand)}
-                            onMouseLeave={handleMouseLeave}
-                            onMouseMove={handleCardMouseMove}
-                        >
-                            <div className="brand-image">
-                                <img 
-                                    src={brand.image} 
-                                    alt={brand.title}
-                                    onLoad={() => setImageLoaded(prev => ({...prev, [brand.title]: true}))}
-                                    onError={(e) => {
-                                        e.target.src = '/images/fallback-logo.svg';
-                                        console.error(`Failed to load image for ${brand.title}`);
-                                    }}
-                                    className={!imageLoaded[brand.title] ? 'loading' : ''}
-                                />
+                    <div className="brands-track">
+                        {duplicatedMarques.map((brand, index) => (
+                            <div 
+                                key={`${brand.title}-${index}`}
+                                className="brand-card"
+                                role="article"
+                                aria-label={`Marque ${brand.title}`}
+                                tabIndex="0"
+                                onMouseEnter={() => handleMouseEnter(brand)}
+                                onMouseLeave={handleMouseLeave}
+                                onMouseMove={handleCardMouseMove}
+                            >
+                                <div className="brand-image">
+                                    <img 
+                                        src={brand.image} 
+                                        alt={brand.title}
+                                        onLoad={() => setImageLoaded(prev => ({...prev, [brand.title]: true}))}
+                                        onError={(e) => {
+                                            e.target.src = '/images/fallback-logo.svg';
+                                            console.error(`Failed to load image for ${brand.title}`);
+                                        }}
+                                        className={!imageLoaded[brand.title] ? 'loading' : ''}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
             {activeCard && (

@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { Medal } from "@phosphor-icons/react";
 import "./new-benefits.scss";
 import { benefitsData } from '../data/benefits';
 import BenefitCard from '../Components/BenefitCard';
@@ -11,9 +12,18 @@ const NewBenefits = memo(() => {
         >
             <div className="container">
                 <div className="section-header">
-                    <div className="title-content">
-                        <h2 id="benefits-title">Notre Engagement Qualité</h2>
-                        <p>Découvrez ce qui rend notre huile d'olive exceptionnelle</p>
+                    <div className="title-container">
+                        <div className="title-content">
+                            <div className="title-wrapper">
+                                <Medal 
+                                    size={48} 
+                                    weight="duotone" 
+                                    className="title-icon"
+                                />
+                                <h2 id="benefits-title">Notre Engagement Qualité</h2>
+                            </div>
+                            <p>Découvrez ce qui rend notre huile d'olive exceptionnelle</p>
+                        </div>
                     </div>
                 </div>
                 <div 

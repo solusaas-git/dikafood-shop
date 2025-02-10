@@ -138,97 +138,120 @@
     }
 
     .container {
-        max-width: 1400px;
+        max-width: var(--section-max-width);
         margin: 0 auto;
-        padding: 0 24px;
+        padding: 0 var(--section-padding);
 
         @media (max-width: 768px) {
             padding: 0 16px;
         }
-    }
 
-    .section-header {
-        text-align: center;
-        margin-bottom: 48px;
-        padding: 0 16px;
-        
-        svg {
-            color: var(--dark-yellow-1);
-            margin-bottom: 24px;
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
             
-            @media (max-width: 768px) {
-                width: 28px;
-                height: 28px;
-                margin-bottom: 20px;
-            }
-        }
+            .title-container {
+                position: relative;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0 40px;
+                min-height: 80px;
 
-        h2 {
-            font-size: clamp(32px, 5vw, 48px);
-            font-weight: 600;
-            color: var(--dark-green-7);
-            margin: 0 0 16px;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            
-            @media (max-width: 768px) {
-                margin: 0 0 12px;
-                max-width: 100%;
-            }
-        }
+                &::before,
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    height: 4px;
+                    width: 35vw;
+                    background: linear-gradient(
+                        to var(--direction, right),
+                        transparent,
+                        var(--dark-yellow-1) 15%,
+                        var(--dark-yellow-1) 85%,
+                        transparent
+                    );
+                    opacity: 0.15;
+                    z-index: 1;
+                    pointer-events: none;
+                }
 
-        p {
-            font-size: clamp(16px, 2.5vw, 20px);
-            color: var(--dark-green-6);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.5;
-            
-            @media (max-width: 768px) {
-                max-width: 100%;
-                padding: 0 8px;
-            }
-            
-            @media (max-width: 480px) {
-                br {
-                    display: none;
+                &::before {
+                    right: calc(50% + 240px);
+                    --direction: left;
+                }
+
+                &::after {
+                    left: calc(50% + 240px);
+                    --direction: right;
+                }
+
+                .title-content {
+                    padding: 0 32px;
+                    z-index: 2;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 16px;
+                    position: relative;
+                    min-width: 400px;
+
+                    .title-wrapper {
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        width: 100%;
+
+                        .title-icon {
+                            color: var(--dark-yellow-1);
+                            --phosphor-color: var(--dark-yellow-1);
+                            --phosphor-color-secondary: rgba(var(--dark-yellow-1-rgb), 0.3);
+                            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                            flex-shrink: 0;
+                        }
+
+                        h2 {
+                            font-size: clamp(32px, 5vw, 42px);
+                            font-weight: 600;
+                            color: var(--dark-green-7);
+                            margin: 0;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    p {
+                        font-size: 20px;
+                        color: var(--dark-green-6);
+                        line-height: 1.5;
+                        max-width: 600px;
+                        margin: 0;
+                        text-align: center;
+                    }
                 }
             }
-        }
-
-        @media (max-width: 480px) {
-            margin-bottom: 32px;
         }
     }
 
     .reviews-carousel {
         position: relative;
+        width: 100vw;
+        margin-left: 50%;
+        transform: translateX(-50%);
         overflow: hidden;
         padding: 24px 0;
-        margin: 0 -24px;
-
-        @media (max-width: 768px) {
-            padding: 16px 0;
-            margin: 0 -16px;
-        }
 
         &::before,
         &::after {
             content: '';
             position: absolute;
             top: 0;
-            width: 120px;
+            width: 200px;
             height: 100%;
             z-index: 2;
             pointer-events: none;
-
-            @media (max-width: 1024px) {
-                width: 80px;
-            }
-
-            @media (max-width: 768px) {
-                width: 60px;
-            }
         }
 
         &::before {
@@ -254,27 +277,17 @@
             width: max-content;
             padding: 0 12px;
 
-            @media (max-width: 768px) {
-                gap: 16px;
-                padding: 0 8px;
-            }
-
             &.paused {
                 animation-play-state: paused;
             }
 
             .review-slide {
                 flex: 0 0 auto;
+                width: min(400px, 80vw);
                 transition: transform 0.3s ease;
 
                 &:hover {
                     transform: translateY(-8px);
-                }
-
-                @media (hover: none) {
-                    &:hover {
-                        transform: none;
-                    }
                 }
             }
         }
@@ -308,44 +321,81 @@
             }
         }
     }
-}
 
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-50% - 12px));
-    }
-}
+    @media screen and (max-width: 768px) {
+        padding: 60px 0;
 
-@media (prefers-reduced-motion: reduce) {
-    .reviews-track {
-        animation: none !important;
-    }
-}
+        .container {
+            .section-header {
+                .title-container {
+                    padding: 0 20px;
+                    
+                    &::before,
+                    &::after {
+                        width: 25vw;
+                        right: calc(50% + 180px);
+                    }
+                    &::after {
+                        left: calc(50% + 180px);
+                    }
 
-@media (max-width: 1024px) {
-    .reviews-section {
-        .reviews-carousel {
-            .reviews-track {
-                .review-slide {
-                    width: calc(50% - 12px);
+                    .title-content {
+                        min-width: unset;
+                        padding: 0 16px;
+                        
+                        .title-wrapper {
+                            h2 {
+                                font-size: clamp(28px, 4vw, 36px);
+                                white-space: normal;
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-}
 
-@media (max-width: 768px) {
-    .reviews-section {
-        padding: 60px 0;
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-50% - 12px));
+        }
     }
-}
 
-@media (max-width: 480px) {
-    .reviews-section {
-        padding: 40px 0;
+    @media (max-width: 1024px) {
+        .reviews-carousel {
+            &::before,
+            &::after {
+                width: 100px;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 60px 0;
+
+        .reviews-carousel {
+            &::before,
+            &::after {
+                width: 60px;
+            }
+
+            .reviews-track {
+                gap: 16px;
+                
+                .review-slide {
+                    width: 85vw;
+                }
+            }
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reviews-track {
+            animation: none !important;
+        }
     }
 }
 

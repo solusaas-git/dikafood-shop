@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import "./hero-section.scss";
 import ProductCarousel from '../Components/ProductCarousel';
 import Button from '../Components/Button';
-import { ShoppingBag } from "@phosphor-icons/react";
+import { DownloadSimple } from "@phosphor-icons/react";
 
 export default function HeroSection() {
     const handleMouseMove = useCallback((e) => {
@@ -35,6 +35,13 @@ export default function HeroSection() {
         };
     }, [handleMouseMove, handleMouseLeave]);
 
+    const scrollToForm = () => {
+        const formElement = document.querySelector('#form');
+        if (formElement) {
+            formElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
         <section className="hero-section">
             <div className="background-overlay" />
@@ -51,16 +58,15 @@ export default function HeroSection() {
                 </p>
                 <div className="cta-wrapper">
                     <Button
-                        buttonIcon={<ShoppingBag size={24} weight="bold" />}
-                        buttonName="Découvrir nos produits"
+                        buttonIcon={<DownloadSimple size={24} weight="bold" />}
+                        buttonName="Télécharger le catalogue"
                         theme="button-comp-primary"
                         size="button-comp-large"
-                        link="/boutique"
+                        onClick={scrollToForm}
                     />
                 </div>
             </div>
             <ProductCarousel />
-
         </section>
     );
 }

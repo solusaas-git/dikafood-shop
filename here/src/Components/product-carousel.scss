@@ -10,17 +10,44 @@ $color-dark-green: #08441C;
     width: 100%;
     position: relative;
     overflow: hidden;
-    padding: 20px 0;
+    padding: clamp(16px, 2vw, 20px) 0;
 
     .product-container {
         display: flex;
-        gap: 24px;
+        gap: clamp(16px, 2vw, 24px);
         animation: scroll-left 60s linear infinite;
         width: 100%;
         position: relative;
         
         &:hover {
             animation-play-state: paused;
+        }
+
+        // Scale down product cards responsively
+        .product-card {
+            width: clamp(260px, 30vw, 320px);
+            min-width: clamp(260px, 30vw, 320px);
+            height: clamp(360px, 45vw, 420px);
+            
+            .img-product {
+                height: clamp(200px, 25vw, 280px);
+            }
+
+            .product-card-content {
+                .product-name {
+                    font-size: clamp(18px, 2vw, 24px);
+                }
+
+                .product-type {
+                    font-size: clamp(14px, 1.5vw, 16px);
+                }
+            }
+
+            .product-link {
+                .product-price {
+                    font-size: clamp(16px, 1.8vw, 20px);
+                }
+            }
         }
     }
 }

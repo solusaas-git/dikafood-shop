@@ -16,8 +16,8 @@ export default function ProductCard({
             <div className="img-product">
                 <img src={productImg} alt={productName} />
                 <span className="volume-badge">
-                    <Drop size={18} weight="duotone" />
-                    {productVolume}
+                    <Drop size={16} weight="duotone" />
+                    <span className="volume-text">{productVolume}</span>
                 </span>
             </div>
             <div className="product-card-content">
@@ -26,10 +26,10 @@ export default function ProductCard({
             </div>
             <div className="product-link">
                 <div className="product-price">
-                    <Tag size={22} weight="duotone" />
-                    {productPrice}
+                    <Tag size={20} weight="duotone" />
+                    <span className="price-text">{productPrice}</span>
                 </div>
-                <ArrowUpRight size={24} weight="bold" />
+                <ArrowUpRight size={20} weight="bold" />
             </div>
         </div>
     )

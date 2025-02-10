@@ -92,58 +92,79 @@ $background-color_1: var(--light-yellow-2);
 				position: relative;
 				background-color: var(--light-yellow-1);
 
-				h2 {
-					font-size: clamp(42px, 5vw, 56px);
-					font-weight: 600;
-					color: var(--dark-green-7);
-					margin: 0;
-					text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				.title-wrapper {
+					display: flex;
+					align-items: center;
+					gap: 16px;
+
+					.title-icon {
+						color: var(--dark-yellow-1);
+					}
+
+					h2 {
+						font-size: clamp(42px, 5vw, 56px);
+						font-weight: 600;
+						color: var(--dark-green-7);
+						margin: 0;
+					}
 				}
 
 				p {
-					font-size: 20px;
+					font-size: clamp(16px, 2vw, 20px);
 					color: var(--dark-green-6);
 					font-weight: 500;
 					max-width: 600px;
 					margin: 0;
 					line-height: 1.5;
 					text-align: center;
-					text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 				}
 			}
 		}
 
 		.brands-container {
-			display: flex;
-			gap: 40px;
-			overflow-x: hidden;
+			position: relative;
+			width: 100%;
+			overflow: hidden;
 			padding: 40px 0;
 			cursor: grab;
-			animation: scroll 80s linear infinite;
-			
-			&:hover {
-				animation-play-state: paused;
+
+			.brands-track {
+				display: flex;
+				position: relative;
+				animation: scroll 80s linear infinite;
+				will-change: transform;
+				
+				> div {
+					margin-right: 40px;
+				}
+
+				> div:last-child {
+					margin-right: 0;
+				}
+
+				&:hover {
+					animation-play-state: paused;
+				}
 			}
 
 			.brand-card {
-				flex: 0 0 auto;
-				width: 320px;
-				height: 200px;
+				flex-shrink: 0;
+				width: clamp(280px, 30vw, 320px);
+				height: clamp(180px, 20vw, 200px);
 				background-color: white;
-				border-radius: 20px;
-				padding: 40px;
+				border-radius: clamp(16px, 2vw, 20px);
+				padding: clamp(32px, 4vw, 40px);
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				position: relative;
-				border: 1px solid rgba(var(--dark-yellow-1-rgb), 0.2);
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+				border: 2px solid var(--dark-yellow-1);
 				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 				&:hover {
-					transform: translateY(-4px) scale(1.02);
-					box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+					transform: translateY(-4px);
 					border-color: var(--dark-yellow-1);
+					background-color: var(--light-yellow-1);
 				}
 
 				.brand-image {
@@ -249,11 +270,11 @@ $background-color_1: var(--light-yellow-2);
 				}
 
 				.title-content {
-					h2 {
-						font-size: 36px;
-					}
-					p {
-						font-size: 18px;
+					.title-wrapper {
+						.title-icon {
+							width: clamp(36px, 4vw, 48px);
+							height: clamp(36px, 4vw, 48px);
+						}
 					}
 				}
 			}
@@ -331,16 +352,36 @@ $background-color_1: var(--light-yellow-2);
 		transform: translateX(0);
 	}
 	100% {
-		transform: translateX(calc(-320px * 5 - 40px * 5));
+		transform: translateX(calc(-50%));
 	}
 }
 
 .brands-container[style*="cursor: grabbing"] {
-	animation-play-state: paused;
+	.brands-track {
+		animation-play-state: paused;
+	}
 }
 
 @media (prefers-reduced-motion: no-preference) {
 	.brands-container {
 		animation: scroll 80s linear infinite;
+	}
+}
+
+@media (min-width: 1440px) {
+	.brands-track {
+		animation-duration: 100s !important;
+	}
+}
+
+@media (max-width: 1024px) {
+	.brands-track {
+		animation-duration: 60s !important;
+	}
+}
+
+@media (max-width: 768px) {
+	.brands-track {
+		animation-duration: 40s !important;
 	}
 }

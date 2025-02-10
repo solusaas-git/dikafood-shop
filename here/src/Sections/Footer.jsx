@@ -1,117 +1,168 @@
-import Button from "../Components/Button"
-import Field from "../Components/Field"
-import { ReactComponent as Logo } from "../assets/dikafood-logo-dark.svg";
-import MessageField from "../Components/MessageField"
-import "./footer.scss"
-import { ReactComponent as HomeIcon } from "../assets/house.svg"
-import { ReactComponent as ShopIcon } from "../assets/shop.svg"
-import { ReactComponent as BlogIcon } from "../assets/blog.svg"
 import { useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom"
+import "./footer.scss"
 
+// Components
+import Button from "../Components/Button"
+import Field from "../Components/Field"
+import MessageField from "../Components/MessageField"
 
-import { EnvelopeSimple, At, Phone, MapPin, User } from "@phosphor-icons/react"
+// Icons
+import { 
+    House, 
+    ShoppingBag, 
+    Article, 
+    EnvelopeSimple, 
+    At, 
+    Phone, 
+    MapPin, 
+    User,
+    ChatCircleText
+} from "@phosphor-icons/react"
+
+// Logo
+import { ReactComponent as Logo } from "../assets/dikafood-logo-dark.svg"
+
+const LogoComponent = () => (
+    <div className='logo'>
+        <Logo aria-label="DikaFood Logo" />
+        <span className="logo-fallback">
+            <span className="logo-text">DikaFood</span>
+            <span className="logo-underline"></span>
+        </span>
+    </div>
+)
 
 export default function Footer() {
-    const homeRef1 = useRef(null);
-    const shopRef1 = useRef(null);
-    const blogRef1 = useRef(null);
-    const location = useLocation();
-    const pathname = location.pathname;
+    // Navigation state management
+    const location = useLocation()
+    const homeRef = useRef(null)
+    const shopRef = useRef(null)
+    const blogRef = useRef(null)
+
+    // Handle active navigation state
     useEffect(() => {
+        const refs = [homeRef, shopRef, blogRef]
+        refs.forEach(ref => ref.current?.classList.remove('active'))
 
-        if (homeRef1.current) homeRef1.current.classList.remove('active');
-        if (shopRef1.current) shopRef1.current.classList.remove('active');
-        if (blogRef1.current) blogRef1.current.classList.remove('active');
-
-        switch (pathname) {
+        switch (location.pathname) {
             case '/':
-                if (homeRef1.current) homeRef1.current.classList.add('active');
-                break;
+                homeRef.current?.classList.add('active')
+                break
             case '/boutique':
-                if (shopRef1.current) shopRef1.current.classList.add('active');
-                break;
+                shopRef.current?.classList.add('active')
+                break
             case '/blog':
-                if (blogRef1.current) blogRef1.current.classList.add('active');
-                break;
+                blogRef.current?.classList.add('active')
+                break
             default:
-                break;
+                break
         }
-    }, [pathname]);
+    }, [location.pathname])
+
+    // Navigation links configuration
+    const navLinks = [
+        { ref: homeRef, path: "/", icon: <House weight="duotone" />, label: "Accueil" },
+        { ref: shopRef, path: "/boutique", icon: <ShoppingBag weight="duotone" />, label: "Boutique" },
+        { ref: blogRef, path: "/blog", icon: <Article weight="duotone" />, label: "Blog" }
+    ]
+
+    // Contact information configuration
+    const contactInfo = [
+        { icon: <EnvelopeSimple weight="duotone" />, href: "mailto:contact@dikafood.com", text: "Contact@dikafood.com" },
+        { icon: <Phone weight="duotone" />, href: "tel:+212661373204", text: "+212 (661) 37 32 04" },
+        { icon: <Phone weight="duotone" />, href: "tel:+212535942682", text: "+212 (535) 94 26 82" },
+        { 
+            icon: <MapPin weight="duotone" />, 
+            href: "https://maps.app.goo.gl/mJRgbWpwp2ZVFtnx8", 
+            text: "18 Rue Zenata Quartier Industriel Dokkarat, Fes, Maroc" 
+        }
+    ]
+
     return (
-        <div className="footer-container">
-            <div className="footer" id="footer">
-                <div className="footer-body">
-                    <div className="footer-left">
-                        <div>
-                            <div className='logo'>
-                                <Logo />
+        <footer className="footer-container">
+            <div className="footer">
+                <div className="section-header">
+                    <div className="title-container">
+                        <div className="title-content">
+                            <div className="title-wrapper">
+                                <ChatCircleText 
+                                    size={48} 
+                                    weight="duotone" 
+                                    className="title-icon"
+                                />
+                                <h2>Contactez-nous</h2>
                             </div>
-                            <p>
-                            Nous vous proposons une sélection d’huiles d’exception issues des meilleures plantations du Maroc. Que vous soyez amateur d’huile d’olive ou à la recherche d’une huile de tournesol pure, DikaFood est votre partenaire de confiance pour des produits de qualité supérieure.
-                                
-                            </p>
-                        </div>
-                        <div className='menu'>
-                            <Button
-                                link={"/"}
-                                buttonIcon={<HomeIcon />}
-                                buttonName={"Accueil"}
-                                theme={"button-comp-link"}
-                                size={"small"}
-                                btnRef={homeRef1} />
-                            <Button
-                                buttonIcon={<ShopIcon />}
-                                link={"/boutique"}
-                                buttonName={"Boutique"}
-                                theme={"button-comp-link"}
-                                size={"small"}
-                                btnRef={shopRef1} />
-                            <Button
-                                buttonIcon={<BlogIcon />}
-                                link={"/blog"}
-                                buttonName={"Blog"}
-                                theme={"button-comp-link"}
-                                size={"small"}
-                                btnRef={blogRef1} />
+                            <p>Nous sommes là pour vous aider</p>
                         </div>
                     </div>
-                    <ul className="other-info">
-                        <li>
-                            <span><EnvelopeSimple color="var(--dark-green-7)" /></span>
-                            <a href="mailto:contact@dikafood.com">
-                                Contact@dikafood.com
-                            </a>
-                        </li>
-                        <li>
-                            <span><Phone color="var(--dark-green-7)" /></span>
-                            <a href="tel:+212661373204">
-                                +212 (661) 37 32 04
-                            </a>
-                        </li>
-                        <li>
-                            <span><Phone color="var(--dark-green-7)" /></span>
-                            <a href="tel:+212535942682">
-                                +212 (535) 94 26 82
-                            </a>
-                        </li>
-                        <li>
-                            <span><MapPin color="var(--dark-green-7)" /></span>
-                            <a href="https://maps.app.goo.gl/mJRgbWpwp2ZVFtnx8">
-                                18 Rue Zenata Quartier Industriel Dokkarat<br/>
-                                Fes, Maroc
-                            </a>
-                        </li>
+                </div>
+
+                <div className="footer-body">
+                    {/* Left Section: Logo, Description, Navigation */}
+                    <div className="footer-left">
+                        <div>
+                            <LogoComponent />
+                            <p>
+                                Nous vous proposons une sélection d'huiles d'exception issues des meilleures 
+                                plantations du Maroc. Que vous soyez amateur d'huile d'olive ou à la recherche 
+                                d'une huile de tournesol pure, DikaFood est votre partenaire de confiance pour 
+                                des produits de qualité supérieure.
+                            </p>
+                        </div>
                         
+                        {/* Navigation Menu */}
+                        <nav className="menu">
+                            {navLinks.map(({ ref, path, icon, label }) => (
+                                <Button
+                                    key={path}
+                                    link={path}
+                                    buttonIcon={icon}
+                                    buttonName={label}
+                                    theme="button-comp-link"
+                                    size="small"
+                                    btnRef={ref}
+                                />
+                            ))}
+                        </nav>
+                    </div>
+
+                    {/* Contact Information */}
+                    <ul className="other-info">
+                        {contactInfo.map(({ icon, href, text }) => (
+                            <li key={href}>
+                                <span>{icon}</span>
+                                <a href={href}>{text}</a>
+                            </li>
+                        ))}
                     </ul>
-                    <form action="">
-                        <Field placeholder={"prénom"} inputName={"prénom"} Icon={<User color="var(--dark-green-7)" />} />
-                        <Field placeholder={"Nom"} inputName={"nom"} Icon={<User color="var(--dark-green-7)" />} />
-                        <Field placeholder={"Adresse mail"} inputName={"email"} Icon={<At color="var(--dark-green-7)" />} />
-                        <MessageField placeholder={"Message"} inputName={"message"} icon={<EnvelopeSimple color="var(--dark-green-7)" />} btnName={"Envoyer"} />
+
+                    {/* Contact Form */}
+                    <form>
+                        <Field 
+                            placeholder="Prénom" 
+                            inputName="prénom" 
+                            Icon={<User weight="duotone" />} 
+                        />
+                        <Field 
+                            placeholder="Nom" 
+                            inputName="nom" 
+                            Icon={<User weight="duotone" />} 
+                        />
+                        <Field 
+                            placeholder="Adresse mail" 
+                            inputName="email" 
+                            Icon={<At weight="duotone" />} 
+                        />
+                        <MessageField 
+                            placeholder="Message" 
+                            inputName="message" 
+                            icon={<EnvelopeSimple weight="duotone" />} 
+                            btnName="Envoyer" 
+                        />
                     </form>
                 </div>
             </div>
-        </div>
+        </footer>
     )
 }
