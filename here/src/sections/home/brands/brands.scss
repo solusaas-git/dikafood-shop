@@ -1,0 +1,360 @@
+@use "sass:map";
+
+// Variables
+$marque-colors: (
+	'text-primary': var(--dark-green-7),
+	'text-secondary': var(--dark-green-6),
+	'background-primary': var(--light-yellow-1),
+	'background-secondary': var(--light-yellow-2),
+	'border': var(--dark-yellow-1),
+	'accent': var(--dark-yellow-1)
+);
+
+// Animations
+@keyframes scroll {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(calc(-100% / 3)); }
+}
+
+@keyframes loading {
+	0% { background-position: 200% 0; }
+	100% { background-position: -200% 0; }
+}
+
+.brands-section {
+	padding: 80px 0;
+	width: 100%;
+	background: linear-gradient(
+		to bottom,
+		white 0%,
+		var(--light-yellow-1) 30%,
+		white 100%
+	);
+	position: relative;
+	overflow: hidden;
+
+	// Add subtle texture overlay
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: radial-gradient(
+			circle at top right,
+			rgba(0, 0, 0, 0.02) 0%,
+			transparent 70%
+		);
+		pointer-events: none;
+	}
+
+	.container {
+		max-width: var(--section-max-width);
+		margin: 0 auto;
+		padding: 0 var(--section-padding);
+		position: relative;
+
+		.carousel-container {
+			position: relative;
+			padding: 0 48px;
+
+			.carousel-control {
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background: white;
+				border: 1px solid var(--dark-yellow-1);
+				color: var(--dark-yellow-1);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				z-index: 2;
+
+				&:hover {
+					background: var(--dark-yellow-1);
+					color: white;
+				}
+
+				&.prev {
+					left: 0;
+				}
+
+				&.next {
+					right: 0;
+				}
+			}
+
+			.brands-carousel {
+				display: flex;
+				gap: 24px;
+				overflow-x: auto;
+				scroll-snap-type: x mandatory;
+				-webkit-overflow-scrolling: touch;
+				scrollbar-width: none;
+				cursor: grab;
+				padding: 20px 0;
+				position: relative;
+
+				&::-webkit-scrollbar {
+					display: none;
+				}
+
+				&.dragging {
+					cursor: grabbing;
+					scroll-behavior: auto;
+				}
+
+				.brand-card {
+					min-width: 300px;
+					scroll-snap-align: start;
+					background: white;
+					border: 1px solid var(--dark-yellow-1);
+					border-radius: 16px;
+					overflow: hidden;
+					transition: all 0.3s ease;
+					cursor: pointer;
+					position: relative;
+					z-index: 1;
+
+					&:hover {
+						z-index: 2;
+
+						.brand-content {
+							position: absolute;
+							left: 0;
+							right: 0;
+							background: white;
+							border: 1px solid var(--dark-yellow-1);
+							border-top: none;
+							border-radius: 0 0 16px 16px;
+
+							.expandable-content {
+								height: auto;
+								opacity: 1;
+								visibility: visible;
+								transform: translateY(0);
+							}
+						}
+					}
+
+					.brand-image {
+						width: 100%;
+						height: 200px;
+						overflow: hidden;
+						background: var(--light-yellow-1);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						padding: 24px;
+						border-bottom: 1px solid var(--dark-yellow-1);
+						position: relative;
+						z-index: 1;
+
+						img {
+							max-width: 100%;
+							max-height: 100%;
+							object-fit: contain;
+						}
+					}
+
+					.brand-content {
+						padding: 24px;
+						background: white;
+						transition: all 0.3s ease;
+
+						h3 {
+							font-size: 24px;
+							font-weight: 600;
+							color: var(--dark-green-7);
+							margin-bottom: 12px;
+						}
+
+						.expandable-content {
+							height: 0;
+							opacity: 0;
+							visibility: hidden;
+							transform: translateY(-10px);
+							transition: all 0.3s ease;
+
+							p {
+								font-size: 16px;
+								line-height: 1.6;
+								color: var(--dark-green-6);
+								margin-bottom: 24px;
+							}
+
+							.brand-specs {
+								display: flex;
+								flex-direction: column;
+								gap: 16px;
+
+								.spec-item {
+									display: flex;
+									flex-direction: column;
+									gap: 4px;
+									padding: 12px;
+									border: 1px solid var(--dark-yellow-1);
+									border-radius: 8px;
+									background: var(--light-yellow-1);
+
+									.spec-label {
+										font-size: 14px;
+										font-weight: 600;
+										color: var(--dark-yellow-1);
+									}
+
+									.spec-value {
+										font-size: 14px;
+										color: var(--dark-green-6);
+										line-height: 1.5;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Responsive styles
+	@media screen and (max-width: 768px) {
+		padding: 60px 0;
+
+		.container {
+			.carousel-container {
+				padding: 0 32px;
+
+				.carousel-control {
+					width: 32px;
+					height: 32px;
+				}
+
+				.brands-carousel {
+					gap: 16px;
+
+					.brand-card {
+						min-width: 260px;
+
+						&.expanded {
+							width: 520px;
+						}
+
+						.brand-image {
+							height: 160px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@media screen and (max-width: 480px) {
+		padding: 40px 0;
+
+		.container {
+			.carousel-container {
+				padding: 0 24px;
+
+				.brands-carousel {
+					gap: 12px;
+
+					.brand-card {
+						min-width: 220px;
+
+						&.expanded {
+							width: 440px;
+						}
+
+						.brand-image {
+							height: 140px;
+							padding: 16px;
+						}
+
+						.brand-content {
+							padding: 16px;
+
+							h3 {
+								font-size: 20px;
+								margin-bottom: 8px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.brands-section {
+		.brands-carousel {
+			scroll-behavior: auto;
+		}
+
+		.brand-card {
+			transition: none !important;
+		}
+	}
+}
+
+@media (max-width: 1024px) {
+	.marque-section .brands-container {
+		padding: 0 30px;
+
+		.brands-grid .brand-card {
+			min-width: 240px;
+			height: 160px;
+			padding: 30px;
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.marque-section {
+		padding: 60px 0;
+		
+		.brands-container {
+			padding: 0 20px;
+
+			.brands-grid .brand-card {
+				min-width: 200px;
+				height: 140px;
+				padding: 25px;
+			}
+		}
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.brands-container {
+		animation: scroll 80s linear infinite;
+	}
+}
+
+@media (min-width: 1440px) {
+	.brands-track {
+		animation-duration: 100s !important;
+	}
+}
+
+@media (max-width: 640px) {
+	.marque-section .brands-container {
+		padding: 20px;
+
+		.brands-star {
+			grid-template-columns: 1fr;
+			gap: 20px;
+
+			.brand-card {
+				aspect-ratio: 2/1;
+			}
+		}
+	}
+}

@@ -2,11 +2,22 @@ import './App.scss';
 import './global.scss';
 import './reset.css';
 import './classes.scss';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import NavBar from './Sections/NavBar';
-import Home from './Pages/Home';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import NavBar from './sections/shared/navbar/NavBar';
+import Home from './pages/home';
 import { useState, useEffect } from 'react';
-import CatalogPage from './Pages/CatalogPage';
+import CatalogPage from './pages/catalog';
+
+// Create a wrapper component to handle scroll restoration
+function ScrollToTop() {
+    const location = useLocation();
+    
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location.pathname]);
+    
+    return null;
+}
 
 function App() {
     const [isOpenNav, setIsOpenNav] = useState(false);
@@ -31,7 +42,8 @@ function App() {
     }, []);
 
     return (
-        <BrowserRouter future={{ v7_startTransition: true }}>
+        <Router>
+            <ScrollToTop />
             <div className="App">
                 {isOpenNav && <div className="overlay" onClick={handleNavClose} />}
                 
@@ -45,7 +57,7 @@ function App() {
 
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/catalogue" element={<CatalogPage />} />
+                    <Route path="/catalog" element={<CatalogPage />} />
                     <Route 
                         path="/blog" 
                         element={<div className="title-large not-yet">En construction</div>} 
@@ -56,7 +68,7 @@ function App() {
                     />
                 </Routes>
             </div>
-        </BrowserRouter>
+        </Router>
     );
 }
 

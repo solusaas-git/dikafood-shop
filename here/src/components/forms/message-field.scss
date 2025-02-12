@@ -1,0 +1,116 @@
+$color_1: var(--dark-green-1);
+$color_2: var(--dark-green-7);
+$background-color_1: white;
+$background-color_2: transparent;
+
+.message-field {
+	width: 100%;
+	background: var(--light-yellow-2);
+	border-radius: 12px;
+	border: 1px solid var(--dark-yellow-1);
+	transition: all 0.2s ease;
+	box-shadow: 0 1px 2px rgba(var(--dark-green-7-rgb), 0.03);
+	display: flex;
+	flex-direction: column;
+
+	.textarea-wrapper {
+		width: 100%;
+		position: relative;
+		display: flex;
+		align-items: flex-start;
+		padding: 16px;
+
+		.field-icon {
+			display: flex;
+			align-items: center;
+			margin-right: 12px;
+			margin-top: 4px;
+			transition: all 0.2s ease;
+
+			svg {
+				width: 20px;
+				height: 20px;
+				--phosphor-color: var(--dark-yellow-1);
+				--phosphor-color-secondary: var(--dark-green-7);
+			}
+		}
+
+		textarea {
+			flex: 1;
+			height: 120px;
+			font-size: 15px;
+			font-weight: 500;
+			color: var(--dark-green-7);
+			background: transparent;
+			border: none;
+			outline: none;
+			resize: none;
+			padding: 0;
+			line-height: 1.6;
+			letter-spacing: 0.01em;
+
+			&::placeholder {
+				color: var(--dark-green-5);
+				font-weight: 400;
+			}
+		}
+	}
+
+	&:hover {
+		border-color: var(--dark-yellow-2);
+		
+		.field-icon svg {
+			--phosphor-color: var(--dark-yellow-2);
+			--phosphor-color-secondary: var(--dark-green-7);
+		}
+	}
+
+	&:focus-within {
+		border-color: var(--dark-green-7);
+		box-shadow: 
+			0 1px 2px rgba(var(--dark-green-7-rgb), 0.05),
+			0 0 0 4px rgba(var(--dark-green-7-rgb), 0.08);
+
+		.field-icon svg {
+			--phosphor-color: var(--dark-green-7);
+			--phosphor-color-secondary: var(--dark-green-7);
+		}
+
+		textarea {
+			color: var(--dark-green-7);
+
+			&::placeholder {
+				color: var(--dark-green-4);
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.message-field {
+		.textarea-wrapper {
+			padding: 14px;
+
+			.field-icon svg {
+				width: 18px;
+				height: 18px;
+			}
+
+			textarea {
+				font-size: 14px;
+			}
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.message-field {
+		.textarea-wrapper {
+			padding: 12px;
+
+			textarea {
+				height: 100px;
+			}
+		}
+	}
+}

@@ -1,0 +1,292 @@
+.new-benefits {
+    padding: 80px 0 120px;
+    width: 100%;
+    background: linear-gradient(
+        135deg,
+        var(--dark-green-7) 0%,
+        var(--dark-green-6) 100%
+    );
+    position: relative;
+    color: white;
+    
+    // Add subtle texture overlay
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at top right,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 70%
+        );
+        pointer-events: none;
+    }
+
+    // Add decorative accent
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(var(--dark-yellow-1-rgb), 0.03) 50%,
+            transparent 100%
+        );
+        pointer-events: none;
+    }
+
+    // Focus styles for keyboard navigation
+    :focus-visible {
+        outline: 2px solid var(--light-yellow-1);
+        outline-offset: 2px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: var(--section-max-width);
+        padding: 0 var(--section-padding);
+        margin: 0 auto;
+        position: relative;
+
+        // Add subtle section divider
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(
+                to right,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+        }
+
+        .benefits-grid {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 310px);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            justify-content: center;
+            border-radius: 24px;
+            
+            @media (min-width: 1024px) {
+                grid-template-columns: repeat(4, 310px);
+            }
+            
+            .benefit-card {
+                height: 320px;
+                position: relative;
+                padding: 40px 56px 72px 40px;
+                background: var(--dark-green-7);
+                transition: all 0.3s ease;
+                overflow: hidden;
+
+                @media (hover: hover) {
+                    &:hover {
+                        .content {
+                            transform: translateY(-4px);
+                        }
+                    }
+                }
+
+                // Improved touch device handling
+                @media (hover: none) {
+                    &:active {
+                        background: rgba(255, 255, 255, 0.03);
+                    }
+                }
+
+                // Add background image container
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-size: cover;
+                    background-position: center;
+                    opacity: 0;
+                    transition: opacity 0.4s ease;
+                    z-index: 1;
+                }
+
+                // Define images for each card
+                &:nth-child(1)::before {
+                    background-image: url('/images/benefits/recolte.jpg');
+                }
+
+                &:nth-child(2)::before {
+                    background-image: url('/images/benefits/pressage.jpg');
+                }
+
+                &:nth-child(3)::before {
+                    background-image: url('/images/benefits/qualite.jpg');
+                }
+
+                &:nth-child(4)::before {
+                    background-image: url('/images/benefits/naturel.jpg');
+                }
+
+                .content {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 24px;
+                    position: relative;
+                    z-index: 2; // Place content above image
+                    transition: transform 0.3s ease;
+
+                    .text-content {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 16px;
+                        max-width: 85%;
+
+                        h3 {
+                            font-size: 24px;
+                            font-weight: 600;
+                            color: var(--dark-yellow-1);
+                            margin: 0;
+                        }
+
+                        p {
+                            font-size: 16px;
+                            line-height: 1.6;
+                            color: var(--light-yellow-1);
+                            margin: 0;
+                            overflow-wrap: break-word;
+                        }
+                    }
+
+                    .icon-wrapper {
+                        width: 48px;
+                        height: 48px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 8px;
+
+                        svg {
+                            width: 32px;
+                            height: 32px;
+                            color: var(--dark-yellow-1);
+                            
+                            // Enhance duotone styling
+                            --phosphor-color: var(--dark-yellow-1);
+                            --phosphor-color-secondary: rgba(var(--dark-yellow-1-rgb), 0.3);
+                            transition: all 0.3s ease;
+                        }
+                    }
+                }
+
+                &:hover {
+                    &::before {
+                        opacity: 0.25;
+                    }
+
+                    .content {
+                        transform: translateY(-4px);
+                    }
+
+                    .icon-wrapper svg {
+                        color: var(--light-yellow-1);
+                        --phosphor-color: var(--light-yellow-1);
+                        --phosphor-color-secondary: rgba(var(--light-yellow-1-rgb), 0.4);
+                        transform: scale(1.05);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .new-benefits {
+        .container .benefits-grid {
+            grid-template-columns: repeat(2, 310px);
+            max-width: 621px;
+        }
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .new-benefits {
+        .container .benefits-grid {
+            grid-template-columns: 310px;
+            max-width: 310px;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .new-benefits {
+        padding: 60px 0 100px;
+        
+        .container {
+            .section-header {
+                .title-container {
+                    padding: 0 20px;
+                    
+                    &::before,
+                    &::after {
+                        width: 20vw;
+                        right: calc(50% + 160px);
+                    }
+                    &::after {
+                        left: calc(50% + 160px);
+                    }
+
+                    .title-content {
+                        min-width: unset;
+                        padding: 0 16px;
+                        
+                        .title-wrapper {
+                            h2 {
+                                font-size: clamp(28px, 4vw, 36px);
+                                white-space: normal;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &::before,
+        &::after {
+            opacity: 0.5;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .new-benefits {
+        .container .benefits-grid {
+            gap: 20px;
+            padding: 0 16px;
+        }
+    }
+}
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+    .new-benefits {
+        .benefit-card {
+            transition: none;
+        }
+    }
+}

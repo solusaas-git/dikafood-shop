@@ -1,0 +1,436 @@
+@use "sass:map";
+
+$color_1: var(--light-yellow-1);
+$background-color_1: #08441ce6;
+$navbar: (
+	'height': 80px,
+	'mobile-height': 70px,
+	'padding': 16px,
+	'mobile-padding': 12px,
+	'border-radius': 40px,
+	'mobile-border-radius': 32px,
+	'background': rgba(8, 68, 28, 0.95),
+	'mobile-background': rgba(8, 68, 28, 0.98)
+);
+
+// Calculations for perfect roundness
+$button-height: calc(#{map.get($navbar, 'height')} - #{map.get($navbar, 'padding')} * 2);
+$button-border-radius: calc(#{$button-height} / 2);
+$inner-padding: 20px;
+
+// 2. Animation variables
+$transitions: (
+	'default': all 0.3s ease,
+	'transform': transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+	'opacity': opacity 0.2s ease,
+	'background': background-color 0.3s ease
+);
+
+// 3. Mixins for common patterns
+@mixin glass-effect {
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	background-color: map.get($navbar, 'background');
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@mixin hover-lift {
+	transition: map.get($transitions, 'transform');
+	&:hover {
+		transform: translateY(-2px);
+	}
+}
+
+// Add new text scaling variables
+$text-scale: (
+	'desktop': 1,
+	'laptop': 0.95,
+	'tablet': 0.9,
+	'mobile': 0.85
+);
+
+// Add mobile menu specific variables
+$mobile-menu: (
+	'padding-v': 32px,
+	'padding-h': 24px,
+	'gap': 24px,
+	'button-height': 56px
+);
+
+// Update breakpoints for better responsiveness
+$breakpoints: (
+	'mobile': 480px,
+	'tablet': 768px,
+	'laptop': 1024px,
+	'desktop': 1440px
+);
+
+@mixin respond-to($breakpoint) {
+	@if map.has-key($breakpoints, $breakpoint) {
+		@media screen and (max-width: map.get($breakpoints, $breakpoint)) {
+			@content;
+		}
+	}
+}
+
+.nav-bar-container {
+	width: 100%;
+	padding: 16px var(--section-padding);
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+	display: flex;
+	justify-content: center;
+	pointer-events: none;
+	box-sizing: border-box;
+	transition: map.get($transitions, 'default');
+
+	.nav-bar {
+		max-width: var(--section-max-width);
+		width: 100%;
+		height: map.get($navbar, 'height');
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: map.get($navbar, 'background');
+		border-radius: map.get($navbar, 'border-radius');
+		padding: 0 24px;
+		pointer-events: auto;
+		@include glass-effect;
+		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+		box-sizing: border-box;
+		position: relative;
+		transition: map.get($transitions, 'default');
+
+		.logo {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			padding: 12px 0;
+			flex-shrink: 0;
+			
+			a {
+				display: flex;
+				align-items: center;
+				height: 100%;
+				
+				img {
+					height: 100%;
+					width: auto;
+					max-width: 160px;
+					object-fit: contain;
+				}
+			}
+		}
+
+		.menu {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 0;
+			margin: 0 24px;
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 32px;
+			padding: 4px;
+
+			@media (max-width: map.get($breakpoints, 'laptop')) {
+				display: none;
+			}
+			
+			button {
+				height: 40px;
+				border-radius: 20px;
+				padding: 0 16px;
+				position: relative;
+				white-space: nowrap;
+				
+				&.active {
+					background: rgba(255, 255, 255, 0.1);
+					
+					&::after {
+						content: '';
+						position: absolute;
+						bottom: -2px;
+						left: 50%;
+						transform: translateX(-50%);
+						width: 3px;
+						height: 3px;
+						border-radius: 50%;
+						background-color: var(--light-yellow-1);
+					}
+				}
+			}
+		}
+
+		.cta {
+			height: 100%;
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			padding: 12px 0;
+			flex-shrink: 0;
+
+			@media (max-width: map.get($breakpoints, 'laptop')) {
+				display: none;
+			}
+
+			.button-comp-primary,
+			.button-comp-secondary-white-bg {
+				height: 36px;
+				border-radius: 18px;
+				padding: 0 16px;
+				white-space: nowrap;
+				font-size: clamp(14px, 1.5vw, 15px);
+
+				svg {
+					width: 20px;
+					height: 20px;
+				}
+			}
+		}
+
+		.menu-phone {
+			display: none;
+
+			@media (max-width: map.get($breakpoints, 'laptop')) {
+				display: flex;
+				position: relative;
+				align-items: center;
+				margin-left: auto;
+
+				span {
+					cursor: pointer;
+					width: 44px;
+					height: 44px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					border-radius: 50%;
+					transition: all 0.2s ease;
+					background-color: rgba(255, 255, 255, 0.1);
+
+					&:hover {
+						background-color: rgba(255, 255, 255, 0.2);
+						transform: scale(1.05);
+					}
+
+					&:active {
+						transform: scale(0.95);
+					}
+
+					svg {
+						width: 28px;
+						height: 28px;
+						color: var(--light-yellow-1);
+						stroke-width: 2px;
+						filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+					}
+				}
+
+				> div {
+					position: fixed;
+					top: calc(#{map.get($navbar, 'mobile-height')} + 16px);
+					right: var(--section-padding);
+					width: min(400px, calc(100vw - 48px));
+					background-color: map.get($navbar, 'mobile-background');
+					padding: map.get($mobile-menu, 'padding-v') map.get($mobile-menu, 'padding-h');
+					display: flex;
+					flex-direction: column;
+					gap: map.get($mobile-menu, 'gap');
+					transform: translateY(-20px);
+					opacity: 0;
+					visibility: hidden;
+					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+					@include glass-effect;
+					border-radius: 24px;
+					box-shadow: 
+						0 4px 6px -1px rgba(0, 0, 0, 0.1),
+						0 2px 4px -1px rgba(0, 0, 0, 0.06),
+						0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+					&.active {
+						transform: translateY(0);
+						opacity: 1;
+						visibility: visible;
+					}
+
+					.menu {
+						display: flex;
+						flex-direction: column;
+						width: 100%;
+						gap: 12px;
+						padding: 0;
+						margin: 0;
+						background: none;
+
+						button {
+							height: map.get($mobile-menu, 'button-height');
+							width: 100%;
+							justify-content: flex-start;
+							padding: 0 20px;
+							border-radius: 16px;
+							font-size: 16px;
+							
+							svg {
+								width: 20px;
+								height: 20px;
+							}
+
+							&:hover {
+								background-color: rgba(255, 255, 255, 0.1);
+							}
+
+							&.active {
+								background-color: rgba(255, 255, 255, 0.15);
+
+								&::after {
+									content: '';
+									position: absolute;
+									left: 8px;
+									top: 50%;
+									transform: translateY(-50%);
+									width: 4px;
+									height: 4px;
+									border-radius: 50%;
+									background-color: var(--light-yellow-1);
+								}
+							}
+						}
+					}
+
+					.cta {
+						display: flex;
+						flex-direction: column;
+						width: 100%;
+						gap: 12px;
+						padding: 0;
+						margin-top: 8px;
+
+						button {
+							height: map.get($mobile-menu, 'button-height');
+							width: 100%;
+							border-radius: 16px;
+							font-size: 15px;
+							padding: 0 20px;
+
+							svg {
+								width: 20px;
+								height: 20px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Responsive adjustments
+	@media (max-width: map.get($breakpoints, 'laptop')) {
+		padding: 0 20px;
+
+		.nav-bar {
+			height: map.get($navbar, 'mobile-height');
+			border-radius: map.get($navbar, 'mobile-border-radius');
+			padding: 0 16px;
+
+			.logo a img {
+				max-width: 140px;
+			}
+		}
+	}
+
+	@media (max-width: map.get($breakpoints, 'tablet')) {
+		padding: 0 16px;
+
+		.nav-bar {
+			height: 60px;
+			border-radius: 24px;
+
+			.logo a img {
+				max-width: 120px;
+			}
+
+			.menu-phone {
+				span {
+					width: 40px;
+					height: 40px;
+
+					svg {
+						width: 24px;
+						height: 24px;
+					}
+				}
+
+				> div {
+					right: 20px;
+					left: 20px;
+					width: auto;
+					border-radius: 20px;
+					padding: 24px 20px;
+				}
+			}
+		}
+	}
+
+	@media (max-width: map.get($breakpoints, 'mobile')) {
+		padding: 0 12px;
+
+		.nav-bar {
+			height: 56px;
+			border-radius: 20px;
+
+			.logo a img {
+				max-width: 110px;
+			}
+
+			.menu-phone {
+				span {
+					width: 36px;
+					height: 36px;
+
+					svg {
+						width: 22px;
+						height: 22px;
+					}
+				}
+
+				> div {
+					right: 16px;
+					left: 16px;
+					padding: 20px 16px;
+
+					.menu button,
+					.cta button {
+						height: 48px;
+						font-size: 14px;
+					}
+				}
+			}
+		}
+	}
+
+	// Scrolled state styles
+	&.scrolled {
+		padding-top: 12px;
+		padding-bottom: 12px;
+
+		@media (max-width: map.get($breakpoints, 'tablet')) {
+			padding-top: 8px;
+			padding-bottom: 8px;
+		}
+
+		.nav-bar {
+			background-color: map.get($navbar, 'background');
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+		}
+	}
+}
+
+// Add utility class for text truncation if needed
+.text-truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
