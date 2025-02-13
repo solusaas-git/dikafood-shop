@@ -1,7 +1,8 @@
-import "./mention.scss"
-import Button from '../buttons/Button'
+import React from 'react';
+import Button from '../../../components/buttons/Button';
+import "./copyright.scss";
 
-export default function Mention() {
+export default function Copyright() {
     const legalLinks = [
         { name: "Politique des cookies", link: "/cookies" },
         { name: "Mentions légales", link: "/legal" },
@@ -9,12 +10,12 @@ export default function Mention() {
     ];
 
     return (
-        <div className="mention-container">
-            <div className="mention">
-                <div className="copyright">
+        <section className="copyright-section">
+            <div className="copyright-container">
+                <div className="copyright-text">
                     DikaFood © {new Date().getFullYear()} - tous droits réservés
                 </div>
-                <nav className="menu">
+                <nav className="legal-menu">
                     {legalLinks.map((item) => (
                         <Button 
                             key={item.link}
@@ -26,6 +27,6 @@ export default function Mention() {
                     ))}
                 </nav>
             </div>
-        </div>
-    )
-}
+        </section>
+    );
+} 

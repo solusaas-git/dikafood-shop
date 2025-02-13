@@ -4,8 +4,10 @@ import "./message-field.scss"
 export default function MessageField({ icon: Icon, inputName, placeholder }) {
     return (
         <div className="message-field">
-            <div>
-                {Icon}
+            <div className="textarea-wrapper">
+                <span className="field-icon">
+                    {Icon}
+                </span>
                 <textarea 
                     name={inputName} 
                     placeholder={placeholder} 
@@ -13,10 +15,6 @@ export default function MessageField({ icon: Icon, inputName, placeholder }) {
                     aria-label={placeholder}
                 />
             </div>
-            <button type="submit">
-                {Icon}
-                Envoyer
-            </button>
         </div>
     )
 }

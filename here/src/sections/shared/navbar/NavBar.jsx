@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect } from "react";
 import "./nav-bar.scss";
-import Button from '../../../components/buttons/Button'
+import Button from '../../../components/buttons/Button';
 import { useLocation, useNavigate } from "react-router-dom";
-import { List, House, ShoppingBag, PaperPlaneTilt, DownloadSimple, EnvelopeSimple, Article } from "@phosphor-icons/react";
-import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg"
+import { List, House, ShoppingBag, PaperPlaneTilt, DownloadSimple, EnvelopeSimple, Article, Info, X } from "@phosphor-icons/react";
+import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg";
 import { scrollToContactForm } from '../footer/Footer';
-import { Link } from 'react-router-dom';
-import Btn from '../../../components/buttons/Btn';
 
 // Navigation config
 const NAV_ITEMS = [
@@ -16,42 +14,40 @@ const NAV_ITEMS = [
         path: "/"
     },
     {
-        icon: <ShoppingBag size={20} weight="duotone" />,
-        name: "Boutique",
-        path: "/boutique"
+        icon: <Info size={20} weight="duotone" />,
+        name: "À propos",
+        path: "/about"
     },
     {
         icon: <Article size={20} weight="duotone" />,
         name: "Blog",
         path: "/blog"
+    },
+    {
+        icon: <ShoppingBag size={20} weight="duotone" />,
+        name: "Boutique",
+        path: "/boutique"
     }
 ];
 
 function NavBar({ onClick, isOpen, onClose }) {
-    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
 
     const handleContactClick = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
         
         if (pathname !== '/') {
-            // Navigate to home with state
-            await navigate('/', { 
-                state: { scrollToContact: true }
-            });
+            await navigate('/', { state: { scrollToContact: true } });
         } else {
-            // Already on home page, just scroll
             scrollToContactForm();
         }
         
-        setIsLoading(false);
-        onClose(); // Close mobile menu if open
+        onClose();
     };
 
-    // Only keep escape key handler
+    // Handle escape key
     useEffect(() => {
         const handleKeyPress = (e) => {
             if (e.key === 'Escape' && isOpen) {
@@ -76,94 +72,90 @@ function NavBar({ onClick, isOpen, onClose }) {
                     {NAV_ITEMS.map((link) => (
                         <Button
                             key={link.path}
-                            buttonIcon={link.icon}
-                            link={link.path}
-                            buttonName={link.name}
-                            theme="button-comp-link"
+                            icon={link.icon}
+                            to={link.path}
+                            name={link.name}
+                            theme="link"
                             size="small"
-                            className={pathname === link.path ? 'active' : ''}
+                            isActive={pathname === link.path}
+                            aria-current={pathname === link.path ? "page" : undefined}
                         />
                     ))}
                 </div>
 
                 <div className="cta">
                     <Button
-                        buttonIcon={<EnvelopeSimple size="24px" weight="duotone" />}
+                        icon={<EnvelopeSimple size={24} weight="duotone" />}
                         onClick={handleContactClick}
-                        buttonName="Contactez nous"
-                        theme="button-comp-secondary-white-bg"
-                        size="button-comp-small"
-                        isLoading={isLoading}
+                        name="Contactez nous"
+                        theme="secondary-white-bg"
+                        size="small"
                     />
                     <Button
-                        buttonIcon={<DownloadSimple size="24px" weight="duotone" />}
-                        onClick={async () => {
-                            setIsLoading(true);
-                            await onClose();
-                            setIsLoading(false);
-                        }}
-                        isLoading={isLoading}
-                        link="#form"
-                        buttonName="Télécharger le catalogue"
-                        theme="button-comp-primary"
-                        size="button-comp-small"
+                        icon={<DownloadSimple size={24} weight="duotone" />}
+                        to="#form"
+                        name="Télécharger le catalogue"
+                        theme="primary"
+                        size="small"
                     />
                 </div>
 
-                <div 
-                    className="menu-phone"
-                    role="navigation"
-                    aria-label="Mobile navigation"
-                >
+                <div className="menu-phone">
                     <span 
                         onClick={onClick}
                         role="button"
                         aria-expanded={isOpen}
                         aria-controls="mobile-menu"
-                        tabIndex={0}
+                        aria-label={isOpen ? "Close menu" : "Open menu"}
                     >
-                        <List aria-hidden="true" />
-                        <span className="visually-hidden">Toggle menu</span>
+                        {isOpen ? (
+                            <X weight="duotone" />
+                        ) : (
+                            <List weight="duotone" />
+                        )}
                     </span>
+
                     <div 
                         id="mobile-menu"
-                        className={isOpen ? "active" : ""}
-                        aria-hidden={!isOpen}
+                        className={isOpen ? 'active' : ''}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Mobile navigation menu"
                     >
-                        <div className='menu'>
+                        <div className="menu">
                             {NAV_ITEMS.map((link) => (
                                 <Button
                                     key={link.path}
-                                    buttonIcon={link.icon}
-                                    link={link.path}
-                                    buttonName={link.name}
-                                    theme="button-comp-link"
+                                    icon={link.icon}
+                                    to={link.path}
+                                    name={link.name}
+                                    theme="link"
                                     size="small"
-                                    className={pathname === link.path ? 'active' : ''}
+                                    isActive={pathname === link.path}
+                                    onClick={onClose}
+                                    aria-current={pathname === link.path ? "page" : undefined}
                                 />
                             ))}
                         </div>
+
                         <div className="cta">
                             <Button
-                                buttonIcon={<EnvelopeSimple size="24px" weight="duotone" />}
-                                onClick={handleContactClick}
-                                buttonName="Contactez nous"
-                                theme="button-comp-secondary-white-bg"
-                                size="button-comp-small"
-                                isLoading={isLoading}
+                                icon={<EnvelopeSimple size={24} weight="duotone" />}
+                                onClick={(e) => {
+                                    handleContactClick(e);
+                                    onClose();
+                                }}
+                                name="Contactez nous"
+                                theme="secondary-white-bg"
+                                size="small"
                             />
                             <Button
-                                buttonIcon={<DownloadSimple size="24px" weight="duotone" />}
-                                onClick={async () => {
-                                    setIsLoading(true);
-                                    await onClose();
-                                    setIsLoading(false);
-                                }}
-                                isLoading={isLoading}
-                                link="#form"
-                                buttonName="Télécharger le catalogue"
-                                theme="button-comp-primary"
-                                size="button-comp-small"
+                                icon={<DownloadSimple size={24} weight="duotone" />}
+                                to="#form"
+                                name="Télécharger le catalogue"
+                                theme="primary"
+                                size="small"
+                                onClick={onClose}
                             />
                         </div>
                     </div>

@@ -30,26 +30,15 @@ $breakpoints: (
   min-height: 100vh;
   overflow-x: hidden;
 
-  // Section common styles
-  &-section {
+  // Base section styles
+  section {
     width: 100%;
-    min-height: 90vh;
-    padding: calc(var(--navbar-height) + 32px) var(--section-padding) 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    @include respond-to('laptop') {
-      padding: calc(var(--navbar-height-mobile) + 24px) var(--section-padding) 24px;
-    }
-
-    @include respond-to('mobile') {
-      padding: calc(var(--navbar-height-mobile) + 16px) var(--section-padding-mobile) 16px;
-    }
+    position: relative;
   }
 
   // Mobile menu overlay
   .overlay {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -57,14 +46,10 @@ $breakpoints: (
     height: 100%;
     background-color: rgba(var(--dark-green-7-rgb), 0.5);
     backdrop-filter: blur(4px);
-    z-index: 90;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+    z-index: 998;
 
     &.active {
-      opacity: 1;
-      visibility: visible;
+      display: block;
     }
   }
 
@@ -100,13 +85,30 @@ $breakpoints: (
   }
 }
 
-// Section-specific styles
+// Common section styles
 .hero-section,
 .products-section,
 .about-section,
 .contact-section,
 .footer-section {
-  @extend .App-section;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &:not(.footer-section) {
+    min-height: 90vh;
+    padding: calc(var(--navbar-height) + 32px) var(--section-padding) 32px;
+
+    @include respond-to('laptop') {
+      padding: calc(var(--navbar-height-mobile) + 24px) var(--section-padding) 24px;
+    }
+
+    @include respond-to('mobile') {
+      padding: calc(var(--navbar-height-mobile) + 16px) var(--section-padding-mobile) 16px;
+    }
+  }
 }
 
 // CSS Custom Properties for dynamic values
@@ -158,6 +160,33 @@ $breakpoints: (
             @include respond-to('mobile') {
                 padding: 12px var(--section-padding-mobile);
             }
+        }
+    }
+}
+
+// Section spacing utility classes
+.section-spacing {
+    &-top {
+        padding-top: calc(var(--navbar-height) + 32px);
+
+        @include respond-to('laptop') {
+            padding-top: calc(var(--navbar-height-mobile) + 24px);
+        }
+
+        @include respond-to('mobile') {
+            padding-top: calc(var(--navbar-height-mobile) + 16px);
+        }
+    }
+
+    &-bottom {
+        padding-bottom: 32px;
+
+        @include respond-to('laptop') {
+            padding-bottom: 24px;
+        }
+
+        @include respond-to('mobile') {
+            padding-bottom: 16px;
         }
     }
 }

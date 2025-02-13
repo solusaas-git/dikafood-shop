@@ -8,7 +8,7 @@ import Catalog from '../../sections/home/catalog/Catalog';
 import FAQ from '../../sections/home/faq/FAQ';
 import Contact from '../../sections/home/contact/Contact';
 import Footer from '../../sections/shared/footer/Footer';
-import Mention from '../../components/ui/Mention';
+import Copyright from '../../sections/shared/copyright/Copyright';
 import { scrollToContactForm } from '../../sections/shared/footer/Footer';
 
 export default function Home() {
@@ -30,7 +30,7 @@ export default function Home() {
             <FAQ />
             <Contact />
             <Footer />
-            <Mention />
+            <Copyright />
         </main>
     )
 }

@@ -1,25 +1,51 @@
 import React from 'react';
-import './button.scss'
+import { Link } from 'react-router-dom';
+import './button.scss';
 
-export default function Button({ buttonName, buttonIcon, theme, size, link, btnRef, onClick }) {
-    const classList = ["button-comp", size, theme]
+const Button = ({ 
+    name, 
+    icon, 
+    theme = 'primary',
+    size = 'medium',
+    to, 
+    onClick,
+    className,
+    isActive,
+    type = 'button',
+    children 
+}) => {
+    const buttonClasses = [
+        'button-comp',
+        `button-comp-${theme}`,
+        `button-comp-${size}`,
+        isActive && 'active',
+        className
+    ].filter(Boolean).join(' ');
+
+    const content = children || (
+        <>
+            {icon && icon}
+            {name}
+        </>
+    );
+
+    if (to) {
+        return (
+            <button className={buttonClasses}>
+                <Link to={to}>{content}</Link>
+            </button>
+        );
+    }
+
     return (
-        <button
-            ref={btnRef}
-            className={classList.join(" ")}
-            onClick={(e) => {
-                if (!(typeof onClick === "function")) {
-                    return;
-                }
-                onClick(e);
-            }}
+        <button 
+            className={buttonClasses} 
+            onClick={onClick}
+            type={type}
         >
-            <a href={link}>
-                <p>
-                    {buttonIcon}{buttonName}
-                </p>
-                <span>{buttonIcon}{buttonName}</span>
-            </a>
+            {content}
         </button>
-    )
-}
+    );
+};
+
+export default Button;

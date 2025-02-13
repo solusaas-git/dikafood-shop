@@ -7,6 +7,11 @@ import NavBar from './sections/shared/navbar/NavBar';
 import Home from './pages/home';
 import { useState, useEffect } from 'react';
 import CatalogPage from './pages/catalog';
+import About from './pages/about/About';
+import History from './pages/history/History';
+import Values from './pages/values/Values';
+import Blog from './pages/blog/Blog';
+import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
 
 // Create a wrapper component to handle scroll restoration
 function ScrollToTop() {
@@ -45,7 +50,13 @@ function App() {
         <Router>
             <ScrollToTop />
             <div className="App">
-                {isOpenNav && <div className="overlay" onClick={handleNavClose} />}
+                {isOpenNav && (
+                    <div 
+                        className="overlay" 
+                        onClick={handleNavClose}
+                        role="presentation"
+                    />
+                )}
                 
                 <div className={`nav-wrapper ${isScrolled ? 'scrolled' : ''}`}>
                     <NavBar 
@@ -58,15 +69,21 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/catalog" element={<CatalogPage />} />
-                    <Route 
-                        path="/blog" 
-                        element={<div className="title-large not-yet">En construction</div>} 
-                    />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/history" element={<History />} />
+                    <Route path="/values" element={<Values />} />
+                    <Route path="/blog" element={<Blog />} />
                     <Route 
                         path="/boutique" 
-                        element={<div className="title-large not-yet">En construction</div>} 
+                        element={
+                            <div className="not-yet section-spacing-top">
+                                En construction
+                            </div>
+                        } 
                     />
                 </Routes>
+
+                <FloatingButtons />
             </div>
         </Router>
     );

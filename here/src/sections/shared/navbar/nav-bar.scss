@@ -15,7 +15,7 @@ $navbar: (
 
 // Calculations for perfect roundness
 $button-height: calc(#{map.get($navbar, 'height')} - #{map.get($navbar, 'padding')} * 2);
-$button-border-radius: calc(#{$button-height} / 2);
+$button-border-radius: 20px;
 $inner-padding: 20px;
 
 // 2. Animation variables
@@ -95,7 +95,7 @@ $breakpoints: (
 		align-items: center;
 		background-color: map.get($navbar, 'background');
 		border-radius: map.get($navbar, 'border-radius');
-		padding: 0 24px;
+		padding: 0 32px;
 		pointer-events: auto;
 		@include glass-effect;
 		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -109,6 +109,8 @@ $breakpoints: (
 			align-items: center;
 			padding: 12px 0;
 			flex-shrink: 0;
+			margin-right: 16px;
+			min-width: 140px;
 			
 			a {
 				display: flex;
@@ -128,12 +130,17 @@ $breakpoints: (
 			height: 100%;
 			display: flex;
 			align-items: center;
-			gap: 8px;
-			padding: 12px 0;
-			margin: 0 24px;
-			background: rgba(255, 255, 255, 0.05);
+			gap: 12px;
+			padding: 12px 24px;
+			margin: 0 auto;
 			border-radius: 32px;
-			padding: 4px;
+			flex: 0 1 auto;
+			justify-content: center;
+			max-width: calc(100% - 480px);
+			overflow: hidden;
+			background: rgba(255, 255, 255, 0.02);
+			backdrop-filter: blur(4px);
+			border: 1px solid rgba(255, 255, 255, 0.05);
 
 			@media (max-width: map.get($breakpoints, 'laptop')) {
 				display: none;
@@ -145,21 +152,35 @@ $breakpoints: (
 				padding: 0 16px;
 				position: relative;
 				white-space: nowrap;
+				color: var(--light-yellow-1);
+				background: rgba(255, 255, 255, 0.05);
+				backdrop-filter: blur(4px);
+				border: 1px solid transparent;
+				transition: all 0.2s ease;
+				flex-shrink: 0;
+				font-size: 14px;
+				
+				&:hover {
+					background: rgba(255, 255, 255, 0.1);
+				}
+				
+				&:focus-visible {
+					outline: none;
+					border-color: var(--dark-yellow-1);
+					color: var(--dark-yellow-1);
+				}
 				
 				&.active {
-					background: rgba(255, 255, 255, 0.1);
-					
-					&::after {
-						content: '';
-						position: absolute;
-						bottom: -2px;
-						left: 50%;
-						transform: translateX(-50%);
-						width: 3px;
-						height: 3px;
-						border-radius: 50%;
-						background-color: var(--light-yellow-1);
-					}
+					background: rgba(255, 255, 255, 0.15);
+					color: var(--dark-yellow-1);
+					border-color: var(--dark-yellow-1);
+				}
+
+				svg {
+					color: currentColor;
+					width: 18px;
+					height: 18px;
+					margin-right: 8px;
 				}
 			}
 		}
@@ -171,18 +192,19 @@ $breakpoints: (
 			align-items: center;
 			padding: 12px 0;
 			flex-shrink: 0;
+			margin-left: auto;
+			min-width: 280px;
 
 			@media (max-width: map.get($breakpoints, 'laptop')) {
 				display: none;
 			}
 
-			.button-comp-primary,
-			.button-comp-secondary-white-bg {
+			button {
 				height: 36px;
 				border-radius: 18px;
 				padding: 0 16px;
 				white-space: nowrap;
-				font-size: clamp(14px, 1.5vw, 15px);
+				font-size: 14px;
 
 				svg {
 					width: 20px;
@@ -225,26 +247,27 @@ $breakpoints: (
 						height: 28px;
 						color: var(--light-yellow-1);
 						stroke-width: 2px;
-						filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 					}
 				}
 
 				> div {
 					position: fixed;
-					top: calc(#{map.get($navbar, 'mobile-height')} + 16px);
-					right: var(--section-padding);
-					width: min(400px, calc(100vw - 48px));
+					top: calc(#{map.get($navbar, 'mobile-height')} + 24px);
+					right: 0;
+					left: 0;
+					padding: 24px;
+					width: 100%;
+					border-radius: 0;
+					margin: 0;
 					background-color: map.get($navbar, 'mobile-background');
-					padding: map.get($mobile-menu, 'padding-v') map.get($mobile-menu, 'padding-h');
 					display: flex;
 					flex-direction: column;
-					gap: map.get($mobile-menu, 'gap');
+					gap: 20px;
 					transform: translateY(-20px);
 					opacity: 0;
 					visibility: hidden;
 					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 					@include glass-effect;
-					border-radius: 24px;
 					box-shadow: 
 						0 4px 6px -1px rgba(0, 0, 0, 0.1),
 						0 2px 4px -1px rgba(0, 0, 0, 0.06),
@@ -260,42 +283,24 @@ $breakpoints: (
 						display: flex;
 						flex-direction: column;
 						width: 100%;
-						gap: 12px;
-						padding: 0;
+						gap: 8px;
+						padding: 12px;
 						margin: 0;
 						background: none;
+						max-width: none;
 
 						button {
-							height: map.get($mobile-menu, 'button-height');
+							height: 48px;
 							width: 100%;
 							justify-content: flex-start;
-							padding: 0 20px;
-							border-radius: 16px;
-							font-size: 16px;
+							padding: 0 24px;
+							border-radius: 14px;
+							font-size: 14px;
 							
 							svg {
-								width: 20px;
-								height: 20px;
-							}
-
-							&:hover {
-								background-color: rgba(255, 255, 255, 0.1);
-							}
-
-							&.active {
-								background-color: rgba(255, 255, 255, 0.15);
-
-								&::after {
-									content: '';
-									position: absolute;
-									left: 8px;
-									top: 50%;
-									transform: translateY(-50%);
-									width: 4px;
-									height: 4px;
-									border-radius: 50%;
-									background-color: var(--light-yellow-1);
-								}
+								width: 18px;
+								height: 18px;
+								margin-right: 10px;
 							}
 						}
 					}
@@ -304,20 +309,21 @@ $breakpoints: (
 						display: flex;
 						flex-direction: column;
 						width: 100%;
-						gap: 12px;
-						padding: 0;
-						margin-top: 8px;
+						gap: 8px;
+						padding: 12px;
+						margin: 0;
 
 						button {
-							height: map.get($mobile-menu, 'button-height');
+							height: 48px;
 							width: 100%;
-							border-radius: 16px;
-							font-size: 15px;
-							padding: 0 20px;
+							border-radius: 14px;
+							font-size: 14px;
+							padding: 0 24px;
 
 							svg {
-								width: 20px;
-								height: 20px;
+								width: 18px;
+								height: 18px;
+								margin-right: 10px;
 							}
 						}
 					}
@@ -328,12 +334,12 @@ $breakpoints: (
 
 	// Responsive adjustments
 	@media (max-width: map.get($breakpoints, 'laptop')) {
-		padding: 0 20px;
+		padding: 16px 20px;
 
 		.nav-bar {
 			height: map.get($navbar, 'mobile-height');
 			border-radius: map.get($navbar, 'mobile-border-radius');
-			padding: 0 16px;
+			padding: 0 24px;
 
 			.logo a img {
 				max-width: 140px;
@@ -342,70 +348,57 @@ $breakpoints: (
 	}
 
 	@media (max-width: map.get($breakpoints, 'tablet')) {
-		padding: 0 16px;
+		padding: 12px 16px;
 
 		.nav-bar {
-			height: 60px;
-			border-radius: 24px;
-
-			.logo a img {
-				max-width: 120px;
-			}
-
-			.menu-phone {
-				span {
-					width: 40px;
-					height: 40px;
-
-					svg {
-						width: 24px;
-						height: 24px;
-					}
-				}
-
-				> div {
-					right: 20px;
-					left: 20px;
-					width: auto;
-					border-radius: 20px;
-					padding: 24px 20px;
-				}
-			}
+			padding: 0 20px;
 		}
 	}
 
 	@media (max-width: map.get($breakpoints, 'mobile')) {
-		padding: 0 12px;
+		padding: 8px 12px;
 
 		.nav-bar {
-			height: 56px;
-			border-radius: 20px;
+			padding: 0 16px;
 
 			.logo a img {
 				max-width: 110px;
 			}
 
-			.menu-phone {
-				span {
-					width: 36px;
-					height: 36px;
+			.menu-phone > div {
+				right: 0;
+				left: 0;
+				padding: 24px;
+				width: 100%;
+				border-radius: 0;
+				margin: 0;
 
-					svg {
-						width: 22px;
-						height: 22px;
+				.menu {
+					padding: 12px;
+					
+					button {
+						height: 48px;
+						font-size: 14px;
+						border-radius: 14px;
+						padding: 0 24px;
 					}
 				}
 
-				> div {
-					right: 16px;
-					left: 16px;
-					padding: 20px 16px;
-
-					.menu button,
-					.cta button {
+				.cta {
+					padding: 12px;
+					margin: 0;
+					
+					button {
 						height: 48px;
 						font-size: 14px;
+						border-radius: 14px;
+						padding: 0 24px;
 					}
+				}
+
+				// Remove the phone breakpoint styles since we're making it full width by default
+				@media screen and (max-width: 380px) {
+					padding: 32px 24px;
 				}
 			}
 		}

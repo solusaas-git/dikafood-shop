@@ -6,7 +6,6 @@ import {
     Phone,
     ClipboardText
 } from "@phosphor-icons/react";
-import Button from "../../../components/buttons/Button";
 import Field from "../../../components/forms/Field";
 import CatalogCover from "../../../components/catalog/CatalogCover";
 import "./catalog.scss";
@@ -65,13 +64,12 @@ const Catalog = memo(() => {
                                 />
                             </div>
 
-                            <Button
-                                name="Télécharger le catalogue"
-                                icon={<ArrowDownRight size={24} weight="bold" />}
-                                theme="primary"
-                                size="medium"
-                                type="submit"
-                            />
+                            <button type="submit" className="submit-button">
+                                <span>
+                                    <ArrowDownRight size={24} weight="duotone" />
+                                </span>
+                                <p>Télécharger le catalogue</p>
+                            </button>
                         </form>
                     </div>
                 </div>

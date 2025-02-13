@@ -1,19 +1,29 @@
 import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import './product-carousel.scss';
-import ProductCard from '../../../components/cards/product/ProductCard';
+import { carouselProducts } from '../../../data/carousel-products';
+import { ArrowLeft, ArrowRight, ShoppingBag } from '@phosphor-icons/react';
 
 export default function ProductCarousel() {
-    const [isPaused, setIsPaused] = useState(false);
+    const [activeVariant, setActiveVariant] = useState({});
+    const containerRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
-    const containerRef = useRef(null);
+
+    // Initialize active variants
+    React.useEffect(() => {
+        const initialVariants = {};
+        carouselProducts.forEach(product => {
+            initialVariants[product.id] = product.variants[0];
+        });
+        setActiveVariant(initialVariants);
+    }, []);
 
     const handleMouseDown = (e) => {
         setIsDragging(true);
         setStartX(e.pageX - containerRef.current.offsetLeft);
         setScrollLeft(containerRef.current.scrollLeft);
-        setIsPaused(true);
         containerRef.current.style.cursor = 'grabbing';
     };
 
@@ -23,9 +33,9 @@ export default function ProductCarousel() {
     };
 
     const handleMouseLeave = () => {
-        setIsDragging(false);
-        setIsPaused(false);
-        containerRef.current.style.cursor = 'grab';
+        if (isDragging) {
+            handleMouseUp();
+        }
     };
 
     const handleMouseMove = (e) => {
@@ -36,93 +46,124 @@ export default function ProductCarousel() {
         containerRef.current.scrollLeft = scrollLeft - walk;
     };
 
-    const products = [
-        {
-            id: 1,
-            name: "Oued Fès Gold",
-            price: "149.99 DH",
-            image: "/images/products/ouedfes-1L.png",
-            volume: "1L",
-            brand: "Oued Fès"
-        },
-        {
-            id: 3,
-            name: "Huile Lousra",
-            price: "199.99 DH",
-            image: "/images/products/chourouk-25L.png",
-            volume: "25L"
+    const handleTouchStart = (e) => {
+        setIsDragging(true);
+        setStartX(e.touches[0].pageX - containerRef.current.offsetLeft);
+        setScrollLeft(containerRef.current.scrollLeft);
+    };
 
-        },
-        {
-            id: 4,
-            name: "Huile Lousra",
-            price: "299.99 DH",
-            image: "/images/products/dika-5L.png",
-            volume: "5L"
-        },
-        {
-            id: 5,
-            name: "Huile Lousra",
-            price: "299.99 DH",
-            image: "/images/products/dika-500ML.png",
-            volume: "500ML"
-        },
-        {
-            id: 6,
-            name: "Huile Lousra",
-            price: "299.99 DH",
-            image: "/images/products/nouarti-1L.png",
-            volume: "1L"
-        },
-        {
-            id: 7,
-            name: "Huile Lousra",
-            price: "299.99 DH",
-            image: "/images/products/nouarti-2L.png",
-            volume: "2L"
-        },  
-        {
-            id: 8,
-            name: "Huile Lousra",
-            price: "299.99 DH",
-            image: "/images/products/nouarti-5L.png",
-            volume: "5L"
+    const handleTouchMove = (e) => {
+        if (!isDragging) return;
+        const x = e.touches[0].pageX - containerRef.current.offsetLeft;
+        const walk = (x - startX) * 2;
+        containerRef.current.scrollLeft = scrollLeft - walk;
+    };
+
+    const handleVariantChange = (e, productId, variant) => {
+        e.stopPropagation();
+        setActiveVariant(prev => ({
+            ...prev,
+            [productId]: variant
+        }));
+    };
+
+    const scrollToNext = () => {
+        if (containerRef.current) {
+            const cardWidth = 300 + 32; // card width + gap
+            containerRef.current.scrollLeft += cardWidth;
         }
-    ];
+    };
 
-    // Triple the products array to ensure seamless looping
-    const duplicatedProducts = [...products, ...products, ...products];
+    const scrollToPrev = () => {
+        if (containerRef.current) {
+            const cardWidth = 300 + 32; // card width + gap
+            containerRef.current.scrollLeft -= cardWidth;
+        }
+    };
+
+    const handleQuickBuy = (e, productId) => {
+        e.stopPropagation();
+        // Add quick buy logic here
+        console.log('Quick buy:', productId, activeVariant[productId]);
+    };
 
     return (
         <div className="product-carousel">
             <div 
                 ref={containerRef}
                 className="product-container"
-                style={{
-                    animationPlayState: isPaused ? 'paused' : 'running',
-                    cursor: isDragging ? 'grabbing' : 'grab'
-                }}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseLeave}
                 onMouseMove={handleMouseMove}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseUp}
             >
-                {duplicatedProducts.map((product, index) => (
-                    <ProductCard
-                        key={`${product.id}-${index}`}
-                        productName={product.name}
-                        productImg={product.image}
-                        productVolume={product.volume}
-                        productPrice={product.price}
-                        theme="carousel"
-                        onclick={(e) => {
-                            if (!isDragging) {
-                                console.log('Card clicked:', product);
-                            }
-                        }}
-                    />
+                {carouselProducts.map((product) => (
+                    <article 
+                        key={product.id}
+                        className="product-card"
+                        role="link"
+                        tabIndex={0}
+                    >
+                        <div className="product-image">
+                            <img 
+                                src={activeVariant[product.id]?.image} 
+                                alt={`${product.brand} - ${activeVariant[product.id]?.size}`}
+                                draggable="false"
+                            />
+                            <div className="quick-buy">
+                                <span className="price">{activeVariant[product.id]?.price}</span>
+                                <button 
+                                    className="buy-button"
+                                    onClick={(e) => handleQuickBuy(e, product.id)}
+                                >
+                                    <ShoppingBag size={16} weight="duotone" />
+                                    Acheter
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="product-content">
+                            <div className="product-header">
+                                <span className="brand">{product.brand}</span>
+                                <h3>{product.name}</h3>
+                            </div>
+
+                            {product.variants.length > 1 && (
+                                <div className="variant-selector" role="group" aria-label="Product variants">
+                                    {product.variants.map((variant) => (
+                                        <button
+                                            key={variant.size}
+                                            className={activeVariant[product.id]?.size === variant.size ? 'active' : ''}
+                                            onClick={(e) => handleVariantChange(e, product.id, variant)}
+                                            aria-pressed={activeVariant[product.id]?.size === variant.size}
+                                        >
+                                            {variant.size}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </article>
                 ))}
             </div>
+
+            <button 
+                className="carousel-control prev" 
+                onClick={scrollToPrev}
+                aria-label="Previous products"
+            >
+                <ArrowLeft weight="bold" />
+            </button>
+            <button 
+                className="carousel-control next" 
+                onClick={scrollToNext}
+                aria-label="Next products"
+            >
+                <ArrowRight weight="bold" />
+            </button>
         </div>
     );
 }
