@@ -1,6 +1,6 @@
 import React from 'react';
 import { memo } from 'react';
-import { Star, CheckCircle, ArrowRight } from "@phosphor-icons/react";
+import { Star, CheckCircle, ArrowRight, Tag } from "@phosphor-icons/react";
 import "./card-review.scss";
 
 const formatRelativeTime = (dateString) => {
@@ -33,7 +33,8 @@ const CardReview = memo(({ review }) => {
         date,
         product,
         verified,
-        comment
+        comment,
+        highlights
     } = review;
 
     return (
@@ -89,6 +90,17 @@ const CardReview = memo(({ review }) => {
                     </div>
                     
                     <p className="review-text">{comment}</p>
+
+                    {highlights && highlights.length > 0 && (
+                        <div className="review-highlights">
+                            {highlights.map((highlight, index) => (
+                                <span key={index} className="highlight-tag">
+                                    <Tag weight="duotone" />
+                                    {highlight}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </article>

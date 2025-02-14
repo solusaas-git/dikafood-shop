@@ -11,7 +11,7 @@ $content-padding: clamp(20px, 5vw, 80px);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
     padding: calc(var(--navbar-height) + 48px) 0 48px;
     
     // Background overlay
@@ -164,7 +164,7 @@ $content-padding: clamp(20px, 5vw, 80px);
     .product-showcase {
         position: relative;
         width: 100%;
-        overflow: hidden;
+        overflow: visible;
         padding: 24px 0;
         display: flex;
         justify-content: center;
@@ -177,8 +177,8 @@ $content-padding: clamp(20px, 5vw, 80px);
         .product-track {
             display: flex;
             gap: clamp(16px, 2vw, 24px);
-            padding: 0;
-            overflow: hidden;
+            padding: 24px 24px;
+            overflow: visible;
             scroll-snap-type: none;
             scroll-behavior: smooth;
             width: $showcase-max-width;
@@ -218,7 +218,7 @@ $content-padding: clamp(20px, 5vw, 80px);
                 overflow-x: auto;
                 scroll-snap-type: x mandatory;
                 justify-content: flex-start;
-                padding: 0;
+                padding: 24px 0;
                 width: 100%;
                 -ms-overflow-style: none;
                 scrollbar-width: none;
@@ -296,7 +296,7 @@ $content-padding: clamp(20px, 5vw, 80px);
             padding: 16px 0;
 
             .product-track {
-                padding: 0 calc(50% - 120px);
+                padding: 24px calc(50% - 120px);
                 gap: 16px;
             }
 

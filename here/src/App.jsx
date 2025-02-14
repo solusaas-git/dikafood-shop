@@ -12,6 +12,11 @@ import History from './pages/history/History';
 import Values from './pages/values/Values';
 import Blog from './pages/blog/Blog';
 import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
+import Shop from './pages/shop/Shop';
+import LanguageSwitcher from './components/ui/language-switcher/LanguageSwitcher';
+
+// Import i18n configuration
+import './i18n/config';
 
 // Create a wrapper component to handle scroll restoration
 function ScrollToTop() {
@@ -49,7 +54,7 @@ function App() {
     return (
         <Router>
             <ScrollToTop />
-            <div className="App">
+            <div className={`App ${isScrolled ? 'scrolled' : ''}`}>
                 {isOpenNav && (
                     <div 
                         className="overlay" 
@@ -58,7 +63,7 @@ function App() {
                     />
                 )}
                 
-                <div className={`nav-wrapper ${isScrolled ? 'scrolled' : ''}`}>
+                <div className="nav-wrapper">
                     <NavBar 
                         isOpen={isOpenNav} 
                         onClick={handleNavToggle} 
@@ -73,17 +78,11 @@ function App() {
                     <Route path="/history" element={<History />} />
                     <Route path="/values" element={<Values />} />
                     <Route path="/blog" element={<Blog />} />
-                    <Route 
-                        path="/boutique" 
-                        element={
-                            <div className="not-yet section-spacing-top">
-                                En construction
-                            </div>
-                        } 
-                    />
+                    <Route path="/boutique" element={<Shop />} />
                 </Routes>
 
                 <FloatingButtons />
+                <LanguageSwitcher />
             </div>
         </Router>
     );

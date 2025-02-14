@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChatCircleText, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import CardReview from '../../../components/cards/review/CardReview';
 import reviewsData from '../../../data/reviews.json';
@@ -7,77 +6,81 @@ import SectionHeader from '../../../components/ui/section/SectionHeader';
 import "./reviews.scss";
 
 export default function Reviews() {
-    const [isPaused, setIsPaused] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
-    const containerRef = useRef(null);
     const trackRef = useRef(null);
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsVisible(entry.isIntersecting);
-                setIsPaused(!entry.isIntersecting);
-            },
-            { threshold: 0.1 }
-        );
-
-        if (containerRef.current) {
-            observer.observe(containerRef.current);
-        }
-
-        return () => observer.disconnect();
-    }, []);
-
-    const checkScrollPosition = () => {
-        if (trackRef.current) {
-            const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
-            setIsAtStart(scrollLeft <= 0);
-            setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10);
-        }
+    // Update navigation state
+    const updateNavigationState = () => {
+        if (!trackRef.current) return;
+        
+        const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
+        setIsAtStart(scrollLeft <= 0);
+        setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 1);
     };
 
+    // Initialize and add scroll listener
     useEffect(() => {
-        checkScrollPosition();
         const track = trackRef.current;
         if (track) {
-            track.addEventListener('scroll', checkScrollPosition);
-            window.addEventListener('resize', checkScrollPosition);
+            track.addEventListener('scroll', updateNavigationState, { passive: true });
+            window.addEventListener('resize', updateNavigationState, { passive: true });
+            updateNavigationState();
         }
+
         return () => {
             if (track) {
-                track.removeEventListener('scroll', checkScrollPosition);
-                window.removeEventListener('resize', checkScrollPosition);
+                track.removeEventListener('scroll', updateNavigationState);
+                window.removeEventListener('resize', updateNavigationState);
             }
         };
     }, []);
 
-    const scrollToPrev = () => {
-        if (trackRef.current) {
-            const cardWidth = trackRef.current.offsetWidth;
-            trackRef.current.scrollBy({
-                left: -cardWidth,
-                behavior: 'smooth'
-            });
-        }
+    // Handle navigation
+    const scrollToSlide = (direction) => {
+        if (!trackRef.current) return;
+
+        const track = trackRef.current;
+        const slides = track.getElementsByClassName('review-slide');
+        if (!slides.length) return;
+
+        const slideWidth = slides[0].offsetWidth;
+        const gap = parseInt(window.getComputedStyle(track).gap);
+        const scrollAmount = slideWidth + gap;
+
+        const newScrollPosition = direction === 'next'
+            ? track.scrollLeft + scrollAmount
+            : track.scrollLeft - scrollAmount;
+
+        track.scrollTo({
+            left: newScrollPosition,
+            behavior: 'smooth'
+        });
+
+        // Update current index
+        const newIndex = direction === 'next'
+            ? Math.min(currentIndex + 1, slides.length - 1)
+            : Math.max(currentIndex - 1, 0);
+        setCurrentIndex(newIndex);
     };
 
-    const scrollToNext = () => {
-        if (trackRef.current) {
-            const cardWidth = trackRef.current.offsetWidth;
-            trackRef.current.scrollBy({
-                left: cardWidth,
-                behavior: 'smooth'
-            });
-        }
-    };
+    // Handle keyboard navigation
+    useEffect(() => {
+        const handleKeyboard = (e) => {
+            if (e.key === 'ArrowLeft') {
+                scrollToSlide('prev');
+            } else if (e.key === 'ArrowRight') {
+                scrollToSlide('next');
+            }
+        };
 
-    // Quadruple the reviews array to ensure smooth infinite scroll
-    const duplicatedReviews = [...reviewsData, ...reviewsData, ...reviewsData, ...reviewsData];
+        window.addEventListener('keydown', handleKeyboard);
+        return () => window.removeEventListener('keydown', handleKeyboard);
+    }, [currentIndex]);
 
     return (
-        <section className="reviews-section" ref={containerRef}>
+        <section className="reviews-section">
             <div className="container">
                 <SectionHeader 
                     icon={ChatCircleText}
@@ -90,12 +93,15 @@ export default function Reviews() {
             <div className="reviews-carousel">
                 <div 
                     ref={trackRef}
-                    className={`reviews-track ${isPaused ? 'paused' : ''}`}
+                    className="reviews-track"
+                    onScroll={updateNavigationState}
                 >
-                    {duplicatedReviews.map((review, index) => (
+                    {reviewsData.map((review, index) => (
                         <div 
-                            key={`${review.id}-${index}`}
+                            key={review.id}
                             className="review-slide"
+                            role="tabpanel"
+                            aria-label={`Review ${index + 1} of ${reviewsData.length}`}
                         >
                             <CardReview review={review} />
                         </div>
@@ -104,15 +110,17 @@ export default function Reviews() {
 
                 <button 
                     className={`carousel-control prev ${isAtStart ? 'hidden' : ''}`}
-                    onClick={scrollToPrev}
+                    onClick={() => scrollToSlide('prev')}
                     aria-label="Previous reviews"
+                    disabled={isAtStart}
                 >
                     <CaretLeft weight="bold" />
                 </button>
                 <button 
                     className={`carousel-control next ${isAtEnd ? 'hidden' : ''}`}
-                    onClick={scrollToNext}
+                    onClick={() => scrollToSlide('next')}
                     aria-label="Next reviews"
+                    disabled={isAtEnd}
                 >
                     <CaretRight weight="bold" />
                 </button>

@@ -73,6 +73,36 @@ $marque-colors: (
 			padding: 0;
 			margin-top: 32px;
 			width: 100%;
+			overflow: hidden;
+
+			&::before,
+			&::after {
+				content: '';
+				position: absolute;
+				top: 0;
+				width: 200px;
+				height: 100%;
+				z-index: 2;
+				pointer-events: none;
+				opacity: 0.8;
+				transition: opacity 0.3s ease;
+			}
+
+			&::before {
+				left: 0;
+				background: linear-gradient(to right, 
+					var(--light-yellow-1) 0%, 
+					rgba(255, 253, 244, 0) 100%
+				);
+			}
+
+			&::after {
+				right: 0;
+				background: linear-gradient(to left, 
+					var(--light-yellow-1) 0%, 
+					rgba(255, 253, 244, 0) 100%
+				);
+			}
 
 			.carousel-control {
 				position: absolute;
@@ -82,37 +112,57 @@ $marque-colors: (
 				height: 48px;
 				border-radius: 50%;
 				background: white;
-				border: 1px solid var(--dark-yellow-1);
+				border: 2px solid var(--dark-yellow-1);
 				color: var(--dark-yellow-1);
-				display: none;
+				display: flex;
 				align-items: center;
 				justify-content: center;
 				cursor: pointer;
-				transition: all 0.2s ease;
-				z-index: 2;
-				box-shadow: 0 2px 4px rgba(var(--dark-green-7-rgb), 0.1);
+				transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+				z-index: 3;
+				box-shadow: 
+					0 4px 12px rgba(0, 0, 0, 0.1),
+					0 2px 4px rgba(0, 0, 0, 0.05);
 
 				&:hover {
 					background: var(--dark-yellow-1);
 					color: var(--dark-green-7);
+					transform: translateY(-50%) scale(1.05);
 				}
 
 				&:active {
 					transform: translateY(-50%) scale(0.95);
 				}
 
-				&.prev { left: 0; }
-				&.next { right: 0; }
+				&.prev {
+					left: max(24px, calc(50% - 640px));
+				}
+
+				&.next {
+					right: max(24px, calc(50% - 640px));
+				}
+
+				svg {
+					width: 24px;
+					height: 24px;
+				}
 			}
 
 			.brands-carousel {
 				display: flex;
 				gap: 24px;
-				padding: 24px;
+				padding: 0 calc(50% - 600px);
 				scroll-snap-type: x mandatory;
 				overflow-x: auto;
 				width: 100%;
 				cursor: grab;
+				scroll-behavior: smooth;
+				-webkit-overflow-scrolling: touch;
+				margin-bottom: 32px;
+
+				&::-webkit-scrollbar {
+					display: none;
+				}
 
 				&.dragging {
 					cursor: grabbing;
@@ -120,16 +170,16 @@ $marque-colors: (
 				}
 
 				.brand-card {
-					flex: 0 0 calc((100% - (24px * 4)) / 5);
-					min-width: 200px;
+					flex: 0 0 280px;
 					height: 200px;
 					padding: 24px;
 					border-radius: 16px;
 					border: 1px solid var(--dark-yellow-1);
 					background: linear-gradient(135deg, var(--light-yellow-1), var(--light-yellow-2));
-					scroll-snap-align: start;
+					scroll-snap-align: center;
+					scroll-snap-stop: always;
 					cursor: pointer;
-					transition: all 0.2s ease;
+					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 					display: flex;
 					flex-direction: column;
 					align-items: center;
@@ -147,16 +197,16 @@ $marque-colors: (
 							width: 100%;
 							height: 100%;
 							object-fit: contain;
-							transition: transform 0.2s ease;
+							transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 						}
 					}
 
 					&:hover {
-						transform: translateY(-4px);
+						transform: translateY(-8px);
 						border-color: var(--dark-yellow-1);
 						box-shadow: 
-							0 4px 12px rgba(var(--dark-yellow-1-rgb), 0.2),
-							0 2px 4px rgba(var(--dark-yellow-1-rgb), 0.1);
+							0 12px 24px rgba(0, 0, 0, 0.1),
+							0 4px 8px rgba(0, 0, 0, 0.05);
 
 						img {
 							transform: scale(1.05);
@@ -168,54 +218,72 @@ $marque-colors: (
 	}
 
 	// Responsive styles
-	@media screen and (max-width: 1400px) {
+	@media screen and (max-width: 1024px) {
 		.container .carousel-container {
-			padding: 0 48px;
-			
-			.carousel-control {
-				display: flex;
+			&::before,
+			&::after {
+				width: 100px;
 			}
 
 			.brands-carousel {
+				padding: 0 48px;
+				
 				.brand-card {
-					flex: 0 0 calc((100% - (24px * 3)) / 4);
+					flex: 0 0 260px;
 				}
 			}
-		}
-	}
 
-	@media screen and (max-width: 1200px) {
-		.container .carousel-container .brands-carousel {
-			.brand-card {
-				flex: 0 0 calc((100% - (24px * 2)) / 3);
+			.carousel-control {
+				width: 44px;
+				height: 44px;
+				opacity: 0.95;
+
+				svg {
+					width: 22px;
+					height: 22px;
+				}
+
+				&.prev { left: 20px; }
+				&.next { right: 20px; }
 			}
 		}
 	}
 
-	@media screen and (max-width: 900px) {
+	@media screen and (max-width: 768px) {
 		.container .carousel-container {
-			padding: 0 40px;
-			
+			&::before,
+			&::after {
+				width: 60px;
+				opacity: 0.6;
+			}
+
 			.brands-carousel {
+				gap: 16px;
+				padding: 0 16px;
+				scroll-padding: 0 16px;
+				
 				.brand-card {
-					flex: 0 0 calc((100% - 24px) / 2);
+					flex: 0 0 85vw;
 				}
 			}
+
+			.carousel-control {
+				display: none;
+			}
 		}
 	}
 
-	@media screen and (max-width: 600px) {
+	@media screen and (max-width: 480px) {
 		.container .carousel-container {
-			padding: 0 32px;
-			
-			.carousel-control {
-				width: 40px;
-				height: 40px;
-			}
-			
+			padding: 16px 0;
+
 			.brands-carousel {
+				gap: 12px;
+				padding: 0 12px;
+				scroll-padding: 0 12px;
+				
 				.brand-card {
-					flex: 0 0 100%;
+					flex: 0 0 90vw;
 				}
 			}
 		}

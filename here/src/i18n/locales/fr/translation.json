@@ -1,0 +1,35 @@
+{
+    "common": {
+        "search": "Rechercher",
+        "filter": "Filtrer",
+        "loading": "Chargement...",
+        "error": "Une erreur est survenue"
+    },
+    "nav": {
+        "home": "Accueil",
+        "shop": "Boutique",
+        "about": "À propos",
+        "contact": "Contact"
+    },
+    "shop": {
+        "title": "Notre boutique",
+        "subtitle": "Découvrez notre sélection de produits marocains authentiques",
+        "searchPlaceholder": "Rechercher un produit...",
+        "filters": {
+            "all": "Tous",
+            "category": "Catégorie",
+            "price": "Prix",
+            "sort": "Trier par"
+        },
+        "product": {
+            "addToCart": "Ajouter au panier",
+            "outOfStock": "Rupture de stock",
+            "variants": "Variantes"
+        }
+    },
+    "footer": {
+        "rights": "Tous droits réservés",
+        "terms": "Conditions générales",
+        "privacy": "Politique de confidentialité"
+    }
+} 

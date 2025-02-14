@@ -13,21 +13,51 @@ $card-gradient: linear-gradient(
 
 .product-carousel {
     position: relative;
-    width: 100%;
-    padding: 32px 0;
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    padding: 24px 0;
     overflow: hidden;
+
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 200px;
+        height: 100%;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+
+    &::before {
+        left: 0;
+        background: linear-gradient(to right, 
+            var(--light-yellow-1) 0%, 
+            rgba(255, 253, 244, 0) 100%
+        );
+    }
+
+    &::after {
+        right: 0;
+        background: linear-gradient(to left, 
+            var(--light-yellow-1) 0%, 
+            rgba(255, 253, 244, 0) 100%
+        );
+    }
 
     .product-container {
         display: flex;
-        gap: 32px;
-        padding: 32px 16px;
+        gap: 24px;
+        padding: 0 calc(50% - 600px);
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         cursor: grab;
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
-        will-change: transform, scroll-position;
-        touch-action: pan-x;
+        margin-bottom: 32px;
         
         &::-webkit-scrollbar {
             display: none;
@@ -44,8 +74,7 @@ $card-gradient: linear-gradient(
         }
 
         .product-card {
-            flex: 0 0 auto;
-            width: 320px;
+            flex: 0 0 320px;
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -79,8 +108,8 @@ $card-gradient: linear-gradient(
                 transform: translateY(-8px);
                 border-color: var(--dark-yellow-1);
                 box-shadow: 
-                    0 20px 32px -8px rgba(var(--dark-green-7-rgb), 0.12),
-                    0 8px 16px -4px rgba(var(--dark-green-7-rgb), 0.08);
+                    0 12px 24px rgba(0, 0, 0, 0.1),
+                    0 4px 8px rgba(0, 0, 0, 0.05);
 
                 &::before {
                     opacity: 1;
@@ -266,11 +295,11 @@ $card-gradient: linear-gradient(
         }
 
         &.prev {
-            left: 24px;
+            left: max(24px, calc(50% - 640px));
         }
 
         &.next {
-            right: 24px;
+            right: max(24px, calc(50% - 640px));
         }
 
         svg {
@@ -279,64 +308,49 @@ $card-gradient: linear-gradient(
         }
     }
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 1024px) {
+        &::before,
+        &::after {
+            width: 100px;
+        }
+
         .product-container {
-            gap: 24px;
-            padding: 24px 12px;
-            scroll-padding: 0 12px;
-
+            padding: 0 48px;
+            
             .product-card {
-                width: 85vw;
-                scroll-snap-align: center;
+                flex: 0 0 300px;
+            }
+        }
 
-                .product-image {
-                    height: 280px;
-                    
-                    img {
-                        padding: 24px;
-                    }
+        .carousel-control {
+            width: 44px;
+            height: 44px;
+            opacity: 0.95;
 
-                    .quick-buy {
-                        padding: 16px;
+            svg {
+                width: 22px;
+                height: 22px;
+            }
 
-                        .price {
-                            font-size: 20px;
-                        }
+            &.prev { left: 20px; }
+            &.next { right: 20px; }
+        }
+    }
 
-                        .buy-button {
-                            padding: 8px 16px;
-                            font-size: 14px;
+    @media screen and (max-width: 768px) {
+        &::before,
+        &::after {
+            width: 60px;
+            opacity: 0.6;
+        }
 
-                            svg {
-                                width: 16px;
-                                height: 16px;
-                            }
-                        }
-                    }
-                }
-
-                .product-content {
-                    padding: 20px;
-
-                    .product-header {
-                        margin-bottom: 12px;
-
-                        .brand {
-                            font-size: 12px;
-                            padding: 4px 10px;
-                            margin-bottom: 8px;
-                        }
-
-                        h3 {
-                            font-size: 16px;
-                        }
-                    }
-
-                    .variant-selector button {
-                        padding: 6px 12px;
-                        font-size: 13px;
-                    }
-                }
+        .product-container {
+            gap: 16px;
+            padding: 0 16px;
+            scroll-padding: 0 16px;
+            
+            .product-card {
+                flex: 0 0 85vw;
             }
         }
 
@@ -349,25 +363,27 @@ $card-gradient: linear-gradient(
         padding: 16px 0;
 
         .product-container {
-            gap: 16px;
-            padding: 16px 8px;
-            scroll-padding: 0 8px;
-
+            gap: 12px;
+            padding: 0 12px;
+            scroll-padding: 0 12px;
+            
             .product-card {
-                width: 90vw;
-
-                .product-image {
-                    height: 240px;
-                    
-                    img {
-                        padding: 20px;
-                    }
-                }
-
-                .product-content {
-                    padding: 16px;
-                }
+                flex: 0 0 90vw;
             }
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-carousel {
+        .product-container {
+            scroll-behavior: auto;
+            animation: none !important;
+        }
+
+        .product-card,
+        .carousel-control {
+            transition: none !important;
         }
     }
 }

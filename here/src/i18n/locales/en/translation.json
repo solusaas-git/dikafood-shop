@@ -1,0 +1,35 @@
+{
+    "common": {
+        "search": "Search",
+        "filter": "Filter",
+        "loading": "Loading...",
+        "error": "An error occurred"
+    },
+    "nav": {
+        "home": "Home",
+        "shop": "Shop",
+        "about": "About",
+        "contact": "Contact"
+    },
+    "shop": {
+        "title": "Our Shop",
+        "subtitle": "Discover our selection of authentic Moroccan products",
+        "searchPlaceholder": "Search for a product...",
+        "filters": {
+            "all": "All",
+            "category": "Category",
+            "price": "Price",
+            "sort": "Sort by"
+        },
+        "product": {
+            "addToCart": "Add to Cart",
+            "outOfStock": "Out of Stock",
+            "variants": "Variants"
+        }
+    },
+    "footer": {
+        "rights": "All rights reserved",
+        "terms": "Terms & Conditions",
+        "privacy": "Privacy Policy"
+    }
+} 

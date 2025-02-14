@@ -1,7 +1,17 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, Tag } from "@phosphor-icons/react";
+import { ArrowUpRight, Tag, Waves, Plant, SunHorizon } from "@phosphor-icons/react";
+import { brandsData } from '../../../data/brands';
 import "./product-card.scss";
+
+const brandIcons = {
+    'Oued Fès': Waves,
+    'Biladi': Plant,
+    'Chourouk': SunHorizon,
+    'Nouarati': SunHorizon,
+    'Dika': SunHorizon,
+    'Dika Extra Vièrge': SunHorizon
+};
 
 const ProductCard = memo(({ product, activeVariant, onVariantChange }) => {
     const navigate = useNavigate();
@@ -14,6 +24,8 @@ const ProductCard = memo(({ product, activeVariant, onVariantChange }) => {
         e.stopPropagation();
         onVariantChange(product.id, variant);
     };
+
+    const BrandIcon = brandIcons[product.brand] || SunHorizon;
 
     return (
         <div className="product-card" onClick={handleCardClick}>
@@ -40,7 +52,10 @@ const ProductCard = memo(({ product, activeVariant, onVariantChange }) => {
             </div>
             <div className="product-card-content">
                 <h3 className="product-name">{product.name}</h3>
-                <span className="brand-tag">{product.brand}</span>
+                <span className="brand-tag">
+                    <BrandIcon size={16} weight="duotone" />
+                    {product.brand}
+                </span>
             </div>
             <div className="product-link">
                 <div className="product-price">

@@ -110,12 +110,18 @@ $background-color_3: var(--dark-yellow-1);
 		.brand-tag {
 			order: -1;
 			display: inline-flex;
+			align-items: center;
+			gap: 6px;
 			padding: 4px 12px;
 			background: var(--dark-yellow-1);
 			color: var(--dark-green-7);
 			border-radius: 100px;
 			font-size: 13px;
 			font-weight: 500;
+
+			svg {
+				color: var(--dark-green-7);
+			}
 		}
 
 		.product-name {
