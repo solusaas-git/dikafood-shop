@@ -112,13 +112,14 @@ $button-sizes: (
 		box-shadow: 
 			0 2px 4px rgba(0, 0, 0, 0.1),
 			0 1px 2px rgba(0, 0, 0, 0.06);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 		&:hover {
 			background: var(--light-yellow-4);
-			transform: translateY(-1px);
+			transform: translateY(-2px);
 			box-shadow: 
-				0 4px 6px rgba(0, 0, 0, 0.1),
-				0 2px 4px rgba(0, 0, 0, 0.06);
+				0 8px 16px rgba(0, 0, 0, 0.1),
+				0 4px 8px rgba(0, 0, 0, 0.06);
 		}
 
 		&:active {
@@ -133,10 +134,16 @@ $button-sizes: (
 		background: transparent;
 		color: var(--dark-green-7);
 		border: 1.5px solid var(--dark-yellow-1);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 		&:hover {
 			background: var(--dark-yellow-1);
 			color: var(--dark-green-7);
+			transform: translateY(-2px);
+		}
+
+		&:active {
+			transform: translateY(1px);
 		}
 	}
 
@@ -144,11 +151,17 @@ $button-sizes: (
 		background: rgba(255, 255, 255, 0.1);
 		color: var(--light-yellow-1);
 		border: 1px solid rgba(255, 255, 255, 0.2);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 		&:hover {
 			background: rgba(255, 255, 255, 0.15);
 			color: var(--dark-yellow-1);
 			border-color: rgba(255, 255, 255, 0.3);
+			transform: translateY(-2px);
+		}
+
+		&:active {
+			transform: translateY(1px);
 		}
 	}
 
@@ -157,10 +170,15 @@ $button-sizes: (
 		padding: 0;
 		height: auto;
 		color: var(--dark-green-7);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 		&:hover {
 			color: var(--dark-yellow-1);
 			transform: translateX(2px);
+		}
+
+		&:active {
+			transform: translateX(0);
 		}
 
 		&.active {

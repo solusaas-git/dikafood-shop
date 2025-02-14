@@ -3,13 +3,85 @@
         "search": "Search",
         "filter": "Filter",
         "loading": "Loading...",
-        "error": "An error occurred"
+        "error": "An error occurred",
+        "logoAlt": "Dikafood Logo",
+        "previous": "Previous products",
+        "next": "Next products"
     },
     "nav": {
         "home": "Home",
         "shop": "Shop",
         "about": "About",
-        "contact": "Contact"
+        "contact": "Contact",
+        "blog": "Blog"
+    },
+    "hero": {
+        "title": {
+            "part1": "Moroccan food excellence ",
+            "highlight": "delivered",
+            "part2": " to your door"
+        },
+        "cta": "Download catalog"
+    },
+    "about": {
+        "history": {
+            "title": "Our History",
+            "content": "Since our inception, DikaFood has been committed to providing superior quality food products while maintaining lasting relationships with our local producers. Our journey began with a simple vision: to make healthy and sustainable food accessible to all."
+        },
+        "mission": {
+            "title": "Our Mission",
+            "content": "Our mission is to create a bridge between local producers and consumers, ensuring the quality and traceability of each product. We strive to promote responsible eating while supporting the local economy."
+        },
+        "commitment": {
+            "title": "Our Commitment",
+            "content": "Sustainability is at the heart of our operations. We are committed to minimizing our environmental impact, supporting sustainable farming practices, and promoting responsible consumption. Every product in our catalog is carefully selected to meet our high standards of quality and ethics."
+        },
+        "team": {
+            "title": "Our Team",
+            "content": "Our passionate team works tirelessly to provide you with the best possible service. From product selection to delivery, each member of our team shares our commitment to excellence and customer satisfaction."
+        }
+    },
+    "product": {
+        "imageAlt": "{brand} - {size}",
+        "variantTitle": "Variant {size}",
+        "buyNow": "Buy Now",
+        "addToCart": "Add to Cart",
+        "outOfStock": "Out of Stock"
+    },
+    "products": {
+        "dika-premium": {
+            "name": "Premium Extra Virgin Olive Oil",
+            "description": "Our premium olive oil, cold-pressed and carefully selected for its exceptional quality."
+        },
+        "ouedfes-classic": {
+            "name": "Classic Extra Virgin Olive Oil",
+            "description": "A traditional olive oil, rich in flavors and nutritional benefits."
+        }
+    },
+    "review": {
+        "verifiedPurchase": "Verified Purchase",
+        "reviewedProduct": "Reviewed:",
+        "showMore": "Show more",
+        "showLess": "Show less",
+        "time": {
+            "justNow": "Just now",
+            "minutes": "{{count}} minute ago",
+            "minutes_plural": "{{count}} minutes ago",
+            "hours": "{{count}} hour ago",
+            "hours_plural": "{{count}} hours ago",
+            "days": "{{count}} day ago",
+            "days_plural": "{{count}} days ago",
+            "months": "{{count}} month ago",
+            "months_plural": "{{count}} months ago"
+        }
+    },
+    "brands": {
+        "dika": "Dika",
+        "oued fès": "Oued Fès",
+        "biladi": "Biladi",
+        "chourouk": "Chourouk",
+        "nouarati": "Nouarati",
+        "dika extra vièrge": "Dika Extra Virgin"
     },
     "shop": {
         "title": "Our Shop",
@@ -28,6 +100,24 @@
         }
     },
     "footer": {
+        "description": "Dikafood is a Moroccan company specialized in the production and distribution of high-quality edible oils, with a strong commitment to excellence and tradition.",
+        "navigation": {
+            "title": "Navigation"
+        },
+        "products": {
+            "title": "Products",
+            "oliveOil": "Olive Oil",
+            "tableOil": "Table Oil",
+            "fryingOil": "Frying Oil",
+            "viewAll": "View All"
+        },
+        "contact": {
+            "title": "Contact",
+            "phone1": "+212 (661) 37 32 04",
+            "phone2": "+212 (535) 94 26 82",
+            "email": "contact@dikafood.com",
+            "address": "18 Zenata Street, Industrial District Dokkarat, Fes"
+        },
         "rights": "All rights reserved",
         "terms": "Terms & Conditions",
         "privacy": "Privacy Policy"

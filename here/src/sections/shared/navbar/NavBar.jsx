@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./nav-bar.scss";
 import Button from '../../../components/buttons/Button';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -34,6 +34,7 @@ function NavBar({ onClick, isOpen, onClose }) {
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
+    const menuRef = useRef(null);
 
     const handleContactClick = async (e) => {
         e.preventDefault();
@@ -44,6 +45,17 @@ function NavBar({ onClick, isOpen, onClose }) {
             scrollToContactForm();
         }
         
+        onClose();
+    };
+
+    const scrollToForm = () => {
+        const formElement = document.querySelector('#form');
+        if (formElement) {
+            formElement.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
         onClose();
     };
 
@@ -59,8 +71,37 @@ function NavBar({ onClick, isOpen, onClose }) {
         return () => document.removeEventListener('keydown', handleKeyPress);
     }, [isOpen, onClose]);
 
+    // Handle click outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target) && isOpen) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            // Prevent body scroll when menu is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            // Restore body scroll when menu is closed
+            document.body.style.overflow = '';
+        };
+    }, [isOpen, onClose]);
+
     return (
         <div className="nav-bar-container">
+            {isOpen && (
+                <div 
+                    className={`nav-overlay ${isOpen ? 'active' : ''}`}
+                    onClick={onClose}
+                    role="presentation"
+                />
+            )}
+            
             <div className="nav-bar">
                 <div className="logo">
                     <a href="/">
@@ -93,14 +134,14 @@ function NavBar({ onClick, isOpen, onClose }) {
                     />
                     <Button
                         icon={<DownloadSimple size={24} weight="duotone" />}
-                        to="#form"
+                        onClick={scrollToForm}
                         name="Télécharger le catalogue"
                         theme="primary"
                         size="small"
                     />
                 </div>
 
-                <div className="menu-phone">
+                <div className="menu-phone" ref={menuRef}>
                     <span 
                         onClick={onClick}
                         role="button"
@@ -151,11 +192,10 @@ function NavBar({ onClick, isOpen, onClose }) {
                             />
                             <Button
                                 icon={<DownloadSimple size={24} weight="duotone" />}
-                                to="#form"
+                                onClick={scrollToForm}
                                 name="Télécharger le catalogue"
                                 theme="primary"
                                 size="small"
-                                onClick={onClose}
                             />
                         </div>
                     </div>

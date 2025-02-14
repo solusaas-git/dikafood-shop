@@ -1,8 +1,9 @@
 import React, { memo, useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Star, CheckCircle, ArrowRight, CaretDown } from "@phosphor-icons/react";
 import "./card-review.scss";
 
-const formatRelativeTime = (dateString) => {
+const formatRelativeTime = (dateString, t) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInMilliseconds = now - date;
@@ -13,19 +14,20 @@ const formatRelativeTime = (dateString) => {
     const diffInMonths = Math.floor(diffInDays / 30);
 
     if (diffInMonths > 0) {
-        return diffInMonths === 1 ? 'il y a 1 mois' : `il y a ${diffInMonths} mois`;
+        return t('review.time.months', { count: diffInMonths });
     } else if (diffInDays > 0) {
-        return diffInDays === 1 ? 'il y a 1 jour' : `il y a ${diffInDays} jours`;
+        return t('review.time.days', { count: diffInDays });
     } else if (diffInHours > 0) {
-        return diffInHours === 1 ? 'il y a 1 heure' : `il y a ${diffInHours} heures`;
+        return t('review.time.hours', { count: diffInHours });
     } else if (diffInMinutes > 0) {
-        return diffInMinutes === 1 ? 'il y a 1 minute' : `il y a ${diffInMinutes} minutes`;
+        return t('review.time.minutes', { count: diffInMinutes });
     } else {
-        return 'à l\'instant';
+        return t('review.time.justNow');
     }
 };
 
 const CardReview = memo(({ review }) => {
+    const { t } = useTranslation();
     const {
         author,
         rating,
@@ -47,48 +49,38 @@ const CardReview = memo(({ review }) => {
     }, [comment]);
 
     return (
-        <article className={`card-review-container ${isExpanded ? 'expanded' : ''}`}>
+        <div className={`card-review-container ${isExpanded ? 'expanded' : ''}`}>
             <div className="card-review">
-                <header className="review-header">
+                <div className="review-header">
                     <div className="author-info">
                         <div className="author-details">
                             <div className="author-name-location">
                                 <h3>{author.name}</h3>
                                 <p>{author.location}</p>
-                                {verified && (
-                                    <span className="verified-badge">
-                                        <CheckCircle weight="duotone" /> Achat vérifié
-                                    </span>
-                                )}
                             </div>
-                            <div className="rating-time">
-                                <div className="rating" aria-label={`Note: ${rating} sur 5`}>
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star 
-                                            key={i}
-                                            weight={i < rating ? "fill" : "regular"}
-                                            className={i < rating ? 'filled' : ''}
-                                        />
-                                    ))}
-                                </div>
-                                <time 
-                                    dateTime={date}
-                                    title={new Date(date).toLocaleDateString('fr-FR', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    })}
-                                >
-                                    {formatRelativeTime(date)}
-                                </time>
+                            <div className="rating">
+                                {[...Array(5)].map((_, index) => (
+                                    <Star
+                                        key={index}
+                                        weight={index < rating ? "fill" : "regular"}
+                                        size={16}
+                                        className={index < rating ? 'filled' : ''}
+                                    />
+                                ))}
                             </div>
                         </div>
+                        {verified && (
+                            <span className="verified-badge" title={t('review.verifiedPurchase')}>
+                                <CheckCircle size={16} weight="fill" />
+                                {t('review.verifiedPurchase')}
+                            </span>
+                        )}
                     </div>
-                </header>
+                </div>
 
                 <div className="review-content">
                     <div className="product-info">
-                        <p className="review-context">A donné son avis sur :</p>
+                        <p className="review-context">{t('review.reviewedProduct')}</p>
                         <a href={`/products/${product.id}`} className="product-link">
                             <div className="product-details">
                                 <p className="product-name">{product.name}</p>
@@ -110,18 +102,18 @@ const CardReview = memo(({ review }) => {
                             className="expand-button"
                             onClick={() => setIsExpanded(!isExpanded)}
                             aria-expanded={isExpanded}
-                            aria-label={isExpanded ? "Show less" : "Show more"}
+                            aria-label={t(isExpanded ? 'review.showLess' : 'review.showMore')}
                         >
                             <CaretDown 
                                 weight="bold"
                                 className={isExpanded ? 'rotated' : ''}
                             />
-                            {isExpanded ? 'Voir moins' : 'Voir plus'}
+                            {t(isExpanded ? 'review.showLess' : 'review.showMore')}
                         </button>
                     )}
                 </div>
             </div>
-        </article>
+        </div>
     );
 });
 

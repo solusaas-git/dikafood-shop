@@ -1,3 +1,22 @@
+@use "sass:map";
+
+// Breakpoints map
+$breakpoints: (
+	'mobile': 480px,
+	'tablet': 768px,
+	'laptop': 1024px,
+	'desktop': 1440px
+);
+
+// Mixin for responsive design
+@mixin respond-to($breakpoint) {
+	@if map.has-key($breakpoints, $breakpoint) {
+		@media screen and (max-width: map.get($breakpoints, $breakpoint)) {
+			@content;
+		}
+	}
+}
+
 $color_1: var(--dark-green-1);
 $color_2: var(--dark-green-7);
 $background-color_1: var(--light-yellow-1);
@@ -7,8 +26,13 @@ $background-color_4: var(--light-yellow-2);
 
 .footer-section {
 	width: 100%;
-	padding: 64px var(--section-padding);
-	background: var(--dark-green-7);
+	padding: 80px var(--section-padding) 40px;
+	background: linear-gradient(
+		135deg,
+		var(--dark-green-7) 0%,
+		var(--dark-green-6) 50%,
+		var(--dark-green-7) 100%
+	);
 	color: white;
 	position: relative;
 	overflow: hidden;
@@ -27,6 +51,20 @@ $background-color_4: var(--light-yellow-2);
 			transparent 70%
 		);
 		pointer-events: none;
+		opacity: 0.8;
+	}
+
+	// Add subtle gradient overlay
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			rgba(0, 0, 0, 0.1) 100%
+		);
+		pointer-events: none;
 	}
 
 	.footer-container {
@@ -43,11 +81,11 @@ $background-color_4: var(--light-yellow-2);
 			display: flex;
 			flex-direction: column;
 			gap: 24px;
-			min-width: 0; // Prevents flex items from overflowing
+			min-width: 0;
 
 			.logo-wrapper {
-				width: 140px;
-				flex-shrink: 0; // Prevents logo from shrinking
+				width: 160px;
+				flex-shrink: 0;
 
 				.footer-logo {
 					width: 100%;
@@ -71,14 +109,14 @@ $background-color_4: var(--light-yellow-2);
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
 			gap: 48px;
-			min-width: 0; // Prevents grid items from overflowing
+			min-width: 0;
 
 			.sitemap-category {
 				h3 {
 					font-size: 18px;
 					font-weight: 600;
 					color: var(--light-yellow-1);
-					margin: 0 0 16px;
+					margin: 0 0 20px;
 				}
 
 				ul {
@@ -87,20 +125,96 @@ $background-color_4: var(--light-yellow-2);
 					margin: 0;
 					display: flex;
 					flex-direction: column;
-					gap: 12px;
+					gap: 16px;
 
 					li {
 						a {
+							display: inline-block;
 							color: var(--light-green-1);
 							text-decoration: none;
 							font-size: 15px;
 							transition: all 0.2s ease;
+							padding: 4px 0;
 
 							&:hover {
 								color: var(--light-yellow-1);
+								transform: translateX(4px);
 							}
 						}
 					}
+				}
+			}
+		}
+	}
+
+	// Copyright section
+	.copyright {
+		width: 100%;
+		padding: 24px var(--section-padding);
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		margin-top: 48px;
+		background: rgba(0, 0, 0, 0.1);
+
+		.copyright-content {
+			max-width: var(--max-width);
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 24px;
+			color: var(--light-yellow-1);
+			font-size: 14px;
+
+			p {
+				margin: 0;
+				opacity: 0.8;
+			}
+
+			.legal-links {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+
+				a {
+					color: var(--light-yellow-1);
+					text-decoration: none;
+					opacity: 0.8;
+					transition: opacity 0.2s ease;
+
+					&:hover {
+						opacity: 1;
+					}
+				}
+
+				.separator {
+					opacity: 0.4;
+					font-size: 12px;
+				}
+			}
+		}
+
+		@include respond-to('tablet') {
+			padding: 20px var(--section-padding);
+			margin-top: 40px;
+
+			.copyright-content {
+				font-size: 13px;
+				gap: 20px;
+			}
+		}
+
+		@include respond-to('mobile') {
+			padding: 16px var(--section-padding-mobile);
+			margin-top: 32px;
+
+			.copyright-content {
+				flex-direction: column;
+				gap: 12px;
+				text-align: center;
+				font-size: 12px;
+
+				.legal-links {
+					justify-content: center;
 				}
 			}
 		}
@@ -110,63 +224,82 @@ $background-color_4: var(--light-yellow-2);
 // Responsive styles
 @media screen and (max-width: 1024px) {
 	.footer-section {
+		padding: 64px var(--section-padding) 32px;
+
 		.footer-container {
 			grid-template-columns: minmax(260px, 1fr) 2fr;
 			gap: 48px;
+		}
+
+		.copyright {
+			margin-top: 48px;
+			padding-top: 24px;
 		}
 	}
 }
 
 @media screen and (max-width: 768px) {
 	.footer-section {
-		padding: 48px var(--section-padding-mobile);
+		padding: 48px var(--section-padding-mobile) 32px;
 
 		.footer-container {
 			grid-template-columns: 1fr;
-			gap: 40px;
+			gap: 48px;
 
 			.brand-section {
 				text-align: center;
 				align-items: center;
 
 				.logo-wrapper {
-					width: 120px;
+					width: 140px;
 				}
 
 				p {
 					max-width: 600px;
+					font-size: 15px;
 				}
 			}
 
 			.sitemap-section {
 				grid-template-columns: repeat(2, 1fr);
-				gap: 32px;
+				gap: 40px;
 
 				.sitemap-category {
 					h3 {
-						font-size: 16px;
-						margin-bottom: 12px;
+						font-size: 17px;
+						margin-bottom: 16px;
 					}
 
-					ul li a {
-						font-size: 14px;
+					ul {
+						gap: 12px;
+
+						li a {
+							font-size: 14px;
+							padding: 6px 0;
+						}
 					}
 				}
 			}
+		}
+
+		.copyright {
+			margin-top: 40px;
+			padding-top: 20px;
+			font-size: 13px;
 		}
 	}
 }
 
 @media screen and (max-width: 480px) {
 	.footer-section {
-		padding: 40px 24px;
+		padding: 40px var(--section-padding-mobile) 24px;
 
 		.footer-container {
-			gap: 32px;
+			gap: 40px;
 
 			.brand-section {
 				.logo-wrapper {
-					width: 100px;
+					width: 120px;
 				}
 
 				p {
@@ -176,16 +309,44 @@ $background-color_4: var(--light-yellow-2);
 
 			.sitemap-section {
 				grid-template-columns: 1fr;
-				gap: 24px;
+				gap: 32px;
 				text-align: center;
+
+				.sitemap-category {
+					h3 {
+						font-size: 16px;
+						margin-bottom: 12px;
+					}
+
+					ul {
+						gap: 8px;
+
+						li a {
+							padding: 8px 0;
+							width: 100%;
+
+							&:hover {
+								transform: none;
+							}
+						}
+					}
+				}
 			}
+		}
+
+		.copyright {
+			margin-top: 32px;
+			padding-top: 16px;
+			font-size: 12px;
 		}
 	}
 }
 
+// Reduced motion preferences
 @media (prefers-reduced-motion: reduce) {
-	* {
-		animation: none !important;
-		transition: none !important;
+	.footer-section {
+		* {
+			transition: none !important;
+		}
 	}
 }

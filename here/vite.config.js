@@ -19,6 +19,10 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    host: true, // Listen on all network interfaces
+    port: 5173, // Default Vite port
+  },
   // css: {
   //   preprocessorOptions: {
   //     scss: {

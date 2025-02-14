@@ -67,128 +67,157 @@ $marque-colors: (
 		margin: 0 auto;
 		padding: 0 var(--section-padding);
 		position: relative;
+	}
 
-		.carousel-container {
-			position: relative;
-			padding: 0;
-			margin-top: 32px;
-			width: 100%;
-			overflow: hidden;
+	.brands-tabs {
+		margin-top: 48px;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		background: white;
+		border-radius: 24px;
+		border: 1px solid var(--dark-yellow-1);
+		overflow: hidden;
 
-			&::before,
-			&::after {
-				content: '';
-				position: absolute;
-				top: 0;
-				width: 200px;
-				height: 100%;
-				z-index: 2;
-				pointer-events: none;
-				opacity: 0.8;
-				transition: opacity 0.3s ease;
+		.tabs-header {
+			display: flex;
+			padding: 16px 16px 0;
+			background: linear-gradient(
+				to bottom,
+				var(--light-yellow-2),
+				var(--light-yellow-1)
+			);
+			border-bottom: 1px solid var(--dark-yellow-1);
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+			margin-bottom: -1px;
+			gap: 8px;
+
+			&::-webkit-scrollbar {
+				display: none;
 			}
 
-			&::before {
-				left: 0;
-				background: linear-gradient(to right, 
-					var(--light-yellow-1) 0%, 
-					rgba(255, 253, 244, 0) 100%
-				);
-			}
-
-			&::after {
-				right: 0;
-				background: linear-gradient(to left, 
-					var(--light-yellow-1) 0%, 
-					rgba(255, 253, 244, 0) 100%
-				);
-			}
-
-			.carousel-control {
-				position: absolute;
-				top: 50%;
-				transform: translateY(-50%);
-				width: 48px;
-				height: 48px;
-				border-radius: 50%;
-				background: white;
-				border: 2px solid var(--dark-yellow-1);
-				color: var(--dark-yellow-1);
+			.tab-button {
 				display: flex;
 				align-items: center;
-				justify-content: center;
+				padding: 12px 24px;
+				background: var(--light-yellow-1);
+				border: 1px solid var(--dark-yellow-1);
+				border-bottom: none;
+				border-radius: 12px 12px 0 0;
 				cursor: pointer;
-				transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-				z-index: 3;
-				box-shadow: 
-					0 4px 12px rgba(0, 0, 0, 0.1),
-					0 2px 4px rgba(0, 0, 0, 0.05);
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				position: relative;
+				min-width: 140px;
+				z-index: 1;
 
-				&:hover {
+				&::after {
+					content: '';
+					position: absolute;
+					right: -1px;
+					top: 8px;
+					bottom: 8px;
+					width: 1px;
 					background: var(--dark-yellow-1);
-					color: var(--dark-green-7);
-					transform: translateY(-50%) scale(1.05);
+					opacity: 0.3;
 				}
 
-				&:active {
-					transform: translateY(-50%) scale(0.95);
-				}
-
-				&.prev {
-					left: max(24px, calc(50% - 640px));
-				}
-
-				&.next {
-					right: max(24px, calc(50% - 640px));
-				}
-
-				svg {
-					width: 24px;
-					height: 24px;
-				}
-			}
-
-			.brands-carousel {
-				display: flex;
-				gap: 24px;
-				padding: 0 calc(50% - 600px);
-				scroll-snap-type: x mandatory;
-				overflow-x: auto;
-				width: 100%;
-				cursor: grab;
-				scroll-behavior: smooth;
-				-webkit-overflow-scrolling: touch;
-				margin-bottom: 32px;
-
-				&::-webkit-scrollbar {
+				&:last-child::after {
 					display: none;
 				}
 
-				&.dragging {
-					cursor: grabbing;
-					scroll-snap-type: none;
+				&:hover {
+					background: white;
+					transform: translateY(-2px);
 				}
 
-				.brand-card {
-					flex: 0 0 280px;
-					height: 200px;
-					padding: 24px;
-					border-radius: 16px;
-					border: 1px solid var(--dark-yellow-1);
-					background: linear-gradient(135deg, var(--light-yellow-1), var(--light-yellow-2));
-					scroll-snap-align: center;
-					scroll-snap-stop: always;
-					cursor: pointer;
-					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				&.active {
+					background: white;
+					border-color: var(--dark-yellow-1);
+					padding-bottom: 13px;
+
+					.brand-info {
+						.brand-icon {
+							background: var(--light-yellow-1);
+							border-color: var(--dark-yellow-1);
+
+							svg {
+								color: var(--dark-green-7);
+							}
+						}
+					}
+				}
+
+				.brand-info {
 					display: flex;
-					flex-direction: column;
 					align-items: center;
-					justify-content: center;
-					gap: 16px;
+					gap: 12px;
+					width: 100%;
+
+					.brand-icon {
+						width: 32px;
+						height: 32px;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						background: white;
+						border-radius: 8px;
+						border: 1px solid var(--dark-yellow-1);
+						flex-shrink: 0;
+						
+						svg {
+							width: 18px;
+							height: 18px;
+							color: var(--dark-yellow-1);
+						}
+					}
+
+					.brand-name {
+						font-size: 15px;
+						font-weight: 600;
+						color: var(--dark-green-7);
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
+				}
+			}
+		}
+
+		.brand-content {
+			flex: 1;
+			min-width: 0;
+
+			.brand-details {
+				background: white;
+
+				.brand-header {
+					padding: 32px;
+					background: white;
+					border-bottom: 1px solid var(--dark-yellow-1);
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					gap: 24px;
+
+					.brand-title {
+						h3 {
+							font-size: 32px;
+							font-weight: 600;
+							color: var(--dark-green-7);
+							margin: 0 0 8px;
+						}
+
+						.brand-type {
+							font-size: 16px;
+							color: var(--dark-green-6);
+						}
+					}
 
 					.brand-image {
-						width: 100%;
-						height: 100%;
+						width: 160px;
+						height: 120px;
 						display: flex;
 						align-items: center;
 						justify-content: center;
@@ -197,19 +226,46 @@ $marque-colors: (
 							width: 100%;
 							height: 100%;
 							object-fit: contain;
-							transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 						}
 					}
+				}
 
-					&:hover {
-						transform: translateY(-8px);
-						border-color: var(--dark-yellow-1);
-						box-shadow: 
-							0 12px 24px rgba(0, 0, 0, 0.1),
-							0 4px 8px rgba(0, 0, 0, 0.05);
+				.brand-description {
+					padding: 32px;
 
-						img {
-							transform: scale(1.05);
+					> p {
+						font-size: 16px;
+						line-height: 1.6;
+						color: var(--dark-green-6);
+						margin: 0 0 24px;
+					}
+
+					.brand-specs {
+						display: grid;
+						grid-template-columns: repeat(2, 1fr);
+						gap: 24px;
+
+						.spec-item {
+							background: var(--light-yellow-1);
+							border: 1px solid var(--dark-yellow-1);
+							border-radius: 16px;
+							padding: 24px;
+
+							h4 {
+								font-size: 14px;
+								font-weight: 600;
+								color: var(--dark-green-7);
+								margin: 0 0 12px;
+								text-transform: uppercase;
+								letter-spacing: 0.5px;
+							}
+
+							p {
+								font-size: 15px;
+								line-height: 1.5;
+								color: var(--dark-green-6);
+								margin: 0;
+							}
 						}
 					}
 				}
@@ -219,71 +275,169 @@ $marque-colors: (
 
 	// Responsive styles
 	@media screen and (max-width: 1024px) {
-		.container .carousel-container {
-			&::before,
-			&::after {
-				width: 100px;
-			}
-
-			.brands-carousel {
-				padding: 0 48px;
-				
-				.brand-card {
-					flex: 0 0 260px;
+		.brands-tabs {
+			.tabs-header {
+				.tab-button {
+					min-width: 180px;
 				}
-			}
-
-			.carousel-control {
-				width: 44px;
-				height: 44px;
-				opacity: 0.95;
-
-				svg {
-					width: 22px;
-					height: 22px;
-				}
-
-				&.prev { left: 20px; }
-				&.next { right: 20px; }
 			}
 		}
 	}
 
 	@media screen and (max-width: 768px) {
-		.container .carousel-container {
-			&::before,
-			&::after {
-				width: 60px;
-				opacity: 0.6;
-			}
+		padding: 60px 0;
 
-			.brands-carousel {
-				gap: 16px;
-				padding: 0 16px;
-				scroll-padding: 0 16px;
-				
-				.brand-card {
-					flex: 0 0 85vw;
+		.brands-tabs {
+			margin: 32px 0;
+			border-radius: 0;
+			border-left: none;
+			border-right: none;
+
+			.tabs-header {
+				padding: 16px 16px 0;
+				margin: 0;
+				background: var(--light-yellow-2);
+				gap: 8px;
+
+				.tab-button {
+					min-width: auto;
+					flex: 1;
+					padding: 12px;
+					justify-content: center;
+					background: white;
+					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+					.brand-info {
+						flex: 0 1 auto;
+						justify-content: center;
+						gap: 8px;
+						
+						.brand-icon {
+							width: 32px;
+							height: 32px;
+							background: var(--light-yellow-1);
+
+							svg {
+								width: 18px;
+								height: 18px;
+							}
+						}
+
+						.brand-name {
+							display: none;
+						}
+
+						@media screen and (min-width: 480px) {
+							.brand-name {
+								display: block;
+								max-width: 100px;
+							}
+						}
+					}
+
+					&:hover {
+						transform: translateY(-2px);
+						box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+					}
+
+					&.active {
+						flex: 1.2;
+						background: white;
+						border-color: var(--dark-yellow-1);
+						box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+						
+						.brand-info {
+							.brand-icon {
+								background: var(--dark-yellow-1);
+								border-color: var(--dark-yellow-1);
+
+								svg {
+									color: var(--dark-green-7);
+								}
+							}
+
+							.brand-name {
+								display: block;
+								color: var(--dark-green-7);
+							}
+						}
+					}
 				}
 			}
 
-			.carousel-control {
-				display: none;
+			.brand-content {
+				.brand-details {
+					.brand-header {
+						padding: 24px;
+						flex-direction: column-reverse;
+						text-align: center;
+
+						.brand-image {
+							margin: 0 auto;
+						}
+
+						.brand-title {
+							h3 {
+								font-size: 28px;
+							}
+						}
+					}
+
+					.brand-description {
+						padding: 24px;
+
+						.brand-specs {
+							grid-template-columns: 1fr;
+							gap: 16px;
+						}
+					}
+				}
 			}
 		}
 	}
 
 	@media screen and (max-width: 480px) {
-		.container .carousel-container {
-			padding: 16px 0;
+		padding: 48px 0;
 
-			.brands-carousel {
-				gap: 12px;
-				padding: 0 12px;
-				scroll-padding: 0 12px;
-				
-				.brand-card {
-					flex: 0 0 90vw;
+		.brands-tabs {
+			margin: 24px 0;
+
+			.tabs-header {
+				padding: 12px 12px 0;
+				gap: 6px;
+
+				.tab-button {
+					padding: 10px;
+
+					.brand-info .brand-icon {
+						width: 36px;
+						height: 36px;
+
+						svg {
+							width: 20px;
+							height: 20px;
+						}
+					}
+
+					&.active {
+						padding: 10px;
+					}
+				}
+			}
+
+			.brand-content {
+				.brand-details {
+					.brand-header {
+						padding: 20px;
+
+						.brand-title h3 {
+							font-size: 24px;
+						}
+					}
+
+					.brand-description {
+						padding: 20px;
+					}
 				}
 			}
 		}
@@ -293,9 +447,8 @@ $marque-colors: (
 // Reduced motion preferences
 @media (prefers-reduced-motion: reduce) {
 	.brands-section {
-		.brand-card,
-		.brand-image img,
-		.carousel-control {
+		.tab-button,
+		.brand-logo img {
 			transition: none !important;
 		}
 	}

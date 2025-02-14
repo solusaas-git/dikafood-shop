@@ -14,6 +14,7 @@ import Blog from './pages/blog/Blog';
 import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
 import Shop from './pages/shop/Shop';
 import LanguageSwitcher from './components/ui/language-switcher/LanguageSwitcher';
+import NotFound from './pages/not-found/NotFound';
 
 // Import i18n configuration
 import './i18n/config';
@@ -79,6 +80,7 @@ function App() {
                     <Route path="/values" element={<Values />} />
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/boutique" element={<Shop />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
 
                 <FloatingButtons />

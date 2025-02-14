@@ -79,7 +79,7 @@ $breakpoints: (
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 1000;
+	z-index: 999;
 	display: flex;
 	justify-content: center;
 	pointer-events: none;
@@ -267,92 +267,107 @@ $breakpoints: (
 
 		.menu-phone {
 			display: none;
+			position: relative;
+			z-index: 1002;
 
 			@media (max-width: map.get($breakpoints, 'laptop')) {
-				display: flex;
-				position: relative;
-				align-items: center;
-				margin-left: auto;
+				display: block;
 
-				span {
-					cursor: pointer;
+				> span {
 					width: 44px;
 					height: 44px;
 					display: flex;
 					align-items: center;
 					justify-content: center;
+					cursor: pointer;
 					border-radius: 50%;
-					transition: all 0.2s ease;
-					background-color: rgba(255, 255, 255, 0.1);
+					background: rgba(255, 255, 255, 0.1);
+					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+					border: 1px solid rgba(255, 255, 255, 0.1);
+
+					svg {
+						width: 24px;
+						height: 24px;
+						color: var(--light-yellow-1);
+					}
 
 					&:hover {
-						background-color: rgba(255, 255, 255, 0.2);
+						background: rgba(255, 255, 255, 0.15);
 						transform: scale(1.05);
 					}
 
 					&:active {
 						transform: scale(0.95);
 					}
-
-					svg {
-						width: 28px;
-						height: 28px;
-						color: var(--light-yellow-1);
-						stroke-width: 2px;
-					}
 				}
 
-				> div {
+				#mobile-menu {
 					position: fixed;
-					top: calc(#{map.get($navbar, 'mobile-height')} + 24px);
-					right: 0;
-					left: 0;
+					z-index: 1002;
+					top: calc(var(--navbar-height) + 16px);
+					right: var(--section-padding);
+					width: calc(100% - var(--section-padding) * 2);
+					max-width: 380px;
+					background: var(--dark-green-7);
+					border-radius: 24px;
 					padding: 24px;
-					width: 100%;
-					border-radius: 0;
-					margin: 0;
-					background-color: map.get($navbar, 'mobile-background');
-					display: flex;
-					flex-direction: column;
-					gap: 20px;
-					transform: translateY(-20px);
 					opacity: 0;
 					visibility: hidden;
+					transform: translateY(-8px);
 					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-					@include glass-effect;
+					border: 1px solid rgba(255, 255, 255, 0.1);
+					backdrop-filter: blur(12px);
+					-webkit-backdrop-filter: blur(12px);
 					box-shadow: 
-						0 4px 6px -1px rgba(0, 0, 0, 0.1),
-						0 2px 4px -1px rgba(0, 0, 0, 0.06),
-						0 20px 25px -5px rgba(0, 0, 0, 0.1);
+						0 20px 40px rgba(0, 0, 0, 0.2),
+						0 8px 16px rgba(0, 0, 0, 0.1);
 
 					&.active {
-						transform: translateY(0);
 						opacity: 1;
 						visibility: visible;
+						transform: translateY(0);
 					}
 
 					.menu {
 						display: flex;
 						flex-direction: column;
-						width: 100%;
-						gap: 8px;
-						padding: 12px;
-						margin: 0;
-						background: none;
+						gap: 12px;
+						padding: 0;
+						margin: 0 0 24px;
 						max-width: none;
+						background: none;
+						border: none;
+						backdrop-filter: none;
 
 						button {
-							height: 48px;
 							width: 100%;
+							height: 48px;
 							justify-content: flex-start;
-							padding: 0 24px;
-							border-radius: 14px;
-							font-size: 14px;
-							
+							padding: 0 16px;
+							font-size: 15px;
+							background: rgba(255, 255, 255, 0.05);
+							border: 1px solid rgba(255, 255, 255, 0.1);
+							border-radius: 12px;
+
 							svg {
-								width: 18px;
-								height: 18px;
-								margin-right: 10px;
+								width: 20px;
+								height: 20px;
+								margin-right: 12px;
+							}
+
+							&:hover {
+								background: rgba(255, 255, 255, 0.1);
+								transform: translateX(4px);
+							}
+
+							&.active {
+								background: var(--dark-yellow-1);
+								color: var(--dark-green-7);
+								border-color: var(--dark-yellow-1);
+
+								svg {
+									color: var(--dark-green-7);
+								}
 							}
 						}
 					}
@@ -360,24 +375,42 @@ $breakpoints: (
 					.cta {
 						display: flex;
 						flex-direction: column;
-						width: 100%;
-						gap: 8px;
-						padding: 12px;
+						gap: 12px;
+						padding: 0;
 						margin: 0;
+						min-width: 0;
 
 						button {
-							height: 48px;
 							width: 100%;
-							border-radius: 14px;
-							font-size: 14px;
-							padding: 0 24px;
-
-							svg {
-								width: 18px;
-								height: 18px;
-								margin-right: 10px;
-							}
+							height: 48px;
 						}
+					}
+				}
+			}
+
+			@media (max-width: map.get($breakpoints, 'tablet')) {
+				#mobile-menu {
+					right: 16px;
+					width: calc(100% - 32px);
+					padding: 20px;
+					border-radius: 20px;
+				}
+			}
+
+			@media (max-width: map.get($breakpoints, 'mobile')) {
+				#mobile-menu {
+					right: 12px;
+					width: calc(100% - 24px);
+					padding: 16px;
+					border-radius: 16px;
+
+					.menu button {
+						height: 44px;
+						font-size: 14px;
+					}
+
+					.cta button {
+						height: 44px;
 					}
 				}
 			}
@@ -469,6 +502,23 @@ $breakpoints: (
 		.nav-bar {
 			background-color: map.get($navbar, 'background');
 			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+		}
+	}
+
+	// Add backdrop for click outside
+	.nav-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.3);
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
+
+		&.active {
+			opacity: 1;
+			visibility: visible;
 		}
 	}
 }

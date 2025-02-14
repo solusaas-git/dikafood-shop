@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowDownRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { useTranslation } from 'react-i18next';
 import "./hero-section.scss";
 import Button from '../../../components/buttons/Button';
 import ProductCard from '../../../components/cards/product/ProductCard';
 import { carouselProducts } from '../../../data/carousel-products';
 
 export default function HeroSection() {
+    const { t } = useTranslation();
     const [activeVariant, setActiveVariant] = useState({});
     const [isAtStart, setIsAtStart] = useState(true);
     const [isAtEnd, setIsAtEnd] = useState(false);
@@ -91,14 +93,14 @@ export default function HeroSection() {
                     {/* Hero text content */}
                     <div className="hero-content">
                         <h1>
-                            L'excellence alimentaire
-                            <span className="highlight"> marocaine </span>
-                            à votre porte
+                            {t('hero.title.part1')}
+                            <span className="highlight">{t('hero.title.highlight')}</span>
+                            {t('hero.title.part2')}
                         </h1>
                         <div className="cta-wrapper">
                             <Button
                                 icon={<ArrowDownRight size={24} weight="duotone" />}
-                                name="Télécharger le catalogue"
+                                name={t('hero.cta')}
                                 theme="primary"
                                 onClick={scrollToForm}
                             />
@@ -128,14 +130,14 @@ export default function HeroSection() {
                         <button 
                             className={`carousel-control prev ${isAtStart ? 'hidden' : ''}`}
                             onClick={scrollToPrev}
-                            aria-label="Previous products"
+                            aria-label={t('common.previous')}
                         >
                             <CaretLeft weight="bold" />
                         </button>
                         <button 
                             className={`carousel-control next ${isAtEnd ? 'hidden' : ''}`}
                             onClick={scrollToNext}
-                            aria-label="Next products"
+                            aria-label={t('common.next')}
                         >
                             <CaretRight weight="bold" />
                         </button>
