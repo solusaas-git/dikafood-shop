@@ -1,37 +1,58 @@
-import React from 'react';
-import { ArrowUpRight, Drop, Tag } from "@phosphor-icons/react"
-import "./product-card.scss"
+import React, { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowUpRight, Tag } from "@phosphor-icons/react";
+import "./product-card.scss";
 
-export default function ProductCard({ 
-    productName, 
-    productImg, 
-    productVolume,
-    productPrice,
-    theme, 
-    style, 
-    onclick 
-}) {
-    const classList = ["product-card", theme];
+const ProductCard = memo(({ product, activeVariant, onVariantChange }) => {
+    const navigate = useNavigate();
+
+    const handleCardClick = () => {
+        navigate(`/boutique/${product.id}`);
+    };
+
+    const handleVariantClick = (e, variant) => {
+        e.stopPropagation();
+        onVariantChange(product.id, variant);
+    };
+
     return (
-        <div className={classList.join(" ")} style={style} onClick={onclick}>
+        <div className="product-card" onClick={handleCardClick}>
             <div className="img-product">
-                <img src={productImg} alt={productName} />
-                <span className="volume-badge">
-                    <Drop size={16} weight="duotone" />
-                    <span className="volume-text">{productVolume}</span>
-                </span>
+                <img 
+                    src={activeVariant?.image} 
+                    alt={`${product.brand} - ${activeVariant?.size}`}
+                    draggable="false"
+                />
+                {product.variants.length > 1 && (
+                    <div className="variant-selector">
+                        {product.variants.map((variant) => (
+                            <button
+                                key={variant.size}
+                                className={`variant-btn ${activeVariant?.size === variant.size ? 'active' : ''}`}
+                                onClick={(e) => handleVariantClick(e, variant)}
+                                title={`Variante ${variant.size}`}
+                            >
+                                {variant.size}
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="product-card-content">
-                <h3 className="product-name">{productName}</h3>
-                <p className="product-type">Huile d'Olive Extra Vièrge</p>
+                <h3 className="product-name">{product.name}</h3>
+                <span className="brand-tag">{product.brand}</span>
             </div>
             <div className="product-link">
                 <div className="product-price">
                     <Tag size={20} weight="duotone" />
-                    <span className="price-text">{productPrice}</span>
+                    <span className="price-text">{activeVariant?.price}</span>
                 </div>
-                <ArrowUpRight size={20} weight="bold" />
+                <ArrowUpRight size={20} weight="duotone" />
             </div>
         </div>
-    )
-}
+    );
+});
+
+ProductCard.displayName = 'ProductCard';
+
+export default ProductCard;

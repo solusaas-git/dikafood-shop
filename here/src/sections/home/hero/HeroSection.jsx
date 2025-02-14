@@ -1,22 +1,67 @@
-import React, { useState, useRef } from 'react';
-import { ArrowDownRight } from "@phosphor-icons/react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowDownRight, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import "./hero-section.scss";
 import Button from '../../../components/buttons/Button';
+import ProductCard from '../../../components/cards/product/ProductCard';
 import { carouselProducts } from '../../../data/carousel-products';
 
 export default function HeroSection() {
     const [activeVariant, setActiveVariant] = useState({});
-    const navigate = useNavigate();
+    const [isAtStart, setIsAtStart] = useState(true);
+    const [isAtEnd, setIsAtEnd] = useState(false);
+    const trackRef = useRef(null);
 
     // Initialize active variants
-    React.useEffect(() => {
+    useEffect(() => {
         const initialVariants = {};
         carouselProducts.forEach(product => {
             initialVariants[product.id] = product.variants[0];
         });
         setActiveVariant(initialVariants);
     }, []);
+
+    const checkScrollPosition = () => {
+        if (trackRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
+            setIsAtStart(scrollLeft <= 0);
+            setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 10);
+        }
+    };
+
+    useEffect(() => {
+        checkScrollPosition();
+        const track = trackRef.current;
+        if (track) {
+            track.addEventListener('scroll', checkScrollPosition);
+            window.addEventListener('resize', checkScrollPosition);
+        }
+        return () => {
+            if (track) {
+                track.removeEventListener('scroll', checkScrollPosition);
+                window.removeEventListener('resize', checkScrollPosition);
+            }
+        };
+    }, []);
+
+    const scrollToPrev = () => {
+        if (trackRef.current) {
+            const cardWidth = trackRef.current.offsetWidth;
+            trackRef.current.scrollBy({
+                left: -cardWidth,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    const scrollToNext = () => {
+        if (trackRef.current) {
+            const cardWidth = trackRef.current.offsetWidth;
+            trackRef.current.scrollBy({
+                left: cardWidth,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     const scrollToForm = () => {
         const formElement = document.querySelector('#form');
@@ -25,16 +70,11 @@ export default function HeroSection() {
         }
     };
 
-    const handleVariantChange = (e, productId, variant) => {
-        e.stopPropagation(); // Prevent card navigation when clicking variant buttons
+    const handleVariantChange = (productId, variant) => {
         setActiveVariant(prev => ({
             ...prev,
             [productId]: variant
         }));
-    };
-
-    const handleCardClick = (productId) => {
-        navigate(`/boutique/${productId}`);
     };
 
     return (
@@ -67,101 +107,38 @@ export default function HeroSection() {
 
                     {/* Product showcase */}
                     <div className="product-showcase">
-                        <div className="product-grid">
-                            {/* Original cards */}
+                        <div 
+                            ref={trackRef}
+                            className="product-track"
+                        >
                             {carouselProducts.map((product) => (
-                                <article 
+                                <div 
                                     key={product.id}
-                                    className="product-card"
-                                    onClick={() => handleCardClick(product.id)}
-                                    role="link"
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            handleCardClick(product.id);
-                                        }
-                                    }}
+                                    className="product-slide"
                                 >
-                                    <div className="product-image">
-                                        <img 
-                                            src={activeVariant[product.id]?.image} 
-                                            alt={`${product.brand} - ${activeVariant[product.id]?.size}`}
-                                            draggable="false"
-                                        />
-                                        {product.variants.length > 1 && (
-                                            <div className="variant-selector" role="group" aria-label="Product variants">
-                                                {product.variants.map((variant) => (
-                                                    <button
-                                                        key={variant.size}
-                                                        className={activeVariant[product.id]?.size === variant.size ? 'active' : ''}
-                                                        onClick={(e) => handleVariantChange(e, product.id, variant)}
-                                                        aria-pressed={activeVariant[product.id]?.size === variant.size}
-                                                    >
-                                                        {variant.size}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                        <div className="quick-buy">
-                                            <span className="price">{activeVariant[product.id]?.price}</span>
-                                            <span className="buy-hint">Cliquez pour voir le produit</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="product-content">
-                                        <div className="product-header">
-                                            <span className="brand">{product.brand}</span>
-                                            <h3>{product.name}</h3>
-                                        </div>
-                                    </div>
-                                </article>
-                            ))}
-                            
-                            {/* Duplicated cards for seamless loop */}
-                            {carouselProducts.map((product) => (
-                                <article 
-                                    key={`${product.id}-duplicate`}
-                                    className="product-card"
-                                    onClick={() => handleCardClick(product.id)}
-                                    role="link"
-                                    tabIndex={-1} // Duplicates shouldn't be focusable
-                                >
-                                    <div className="product-image">
-                                        <img 
-                                            src={activeVariant[product.id]?.image} 
-                                            alt={`${product.brand} - ${activeVariant[product.id]?.size}`}
-                                            draggable="false"
-                                        />
-                                        {product.variants.length > 1 && (
-                                            <div className="variant-selector" role="group" aria-label="Product variants">
-                                                {product.variants.map((variant) => (
-                                                    <button
-                                                        key={variant.size}
-                                                        className={activeVariant[product.id]?.size === variant.size ? 'active' : ''}
-                                                        onClick={(e) => handleVariantChange(e, product.id, variant)}
-                                                        aria-pressed={activeVariant[product.id]?.size === variant.size}
-                                                    >
-                                                        {variant.size}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                        <div className="quick-buy">
-                                            <span className="price">{activeVariant[product.id]?.price}</span>
-                                            <span className="buy-hint">Cliquez pour voir le produit</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="product-content">
-                                        <div className="product-header">
-                                            <span className="brand">{product.brand}</span>
-                                            <h3>{product.name}</h3>
-                                        </div>
-                                    </div>
-                                </article>
+                                    <ProductCard
+                                        product={product}
+                                        activeVariant={activeVariant[product.id]}
+                                        onVariantChange={handleVariantChange}
+                                    />
+                                </div>
                             ))}
                         </div>
+
+                        <button 
+                            className={`carousel-control prev ${isAtStart ? 'hidden' : ''}`}
+                            onClick={scrollToPrev}
+                            aria-label="Previous products"
+                        >
+                            <CaretLeft weight="bold" />
+                        </button>
+                        <button 
+                            className={`carousel-control next ${isAtEnd ? 'hidden' : ''}`}
+                            onClick={scrollToNext}
+                            aria-label="Next products"
+                        >
+                            <CaretRight weight="bold" />
+                        </button>
                     </div>
                 </div>
             </div>
