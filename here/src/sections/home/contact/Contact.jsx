@@ -76,12 +76,14 @@ export default function Contact() {
                                 <Field 
                                     placeholder="Prénom" 
                                     inputName="firstName" 
-                                    Icon={<User weight="duotone" />} 
+                                    Icon={<User weight="duotone" />}
+                                    required
                                 />
                                 <Field 
                                     placeholder="Nom" 
                                     inputName="lastName" 
-                                    Icon={<User weight="duotone" />} 
+                                    Icon={<User weight="duotone" />}
+                                    required
                                 />
                             </div>
                             <div className="fields-row">
@@ -90,22 +92,25 @@ export default function Contact() {
                                     inputName="email" 
                                     Icon={<At weight="duotone" />} 
                                     type="email"
+                                    required
                                 />
                                 <Field 
                                     placeholder="Téléphone" 
                                     inputName="phone" 
                                     Icon={<Phone weight="duotone" />} 
                                     type="tel"
+                                    required
                                 />
                             </div>
                             <MessageField 
                                 placeholder="Votre message" 
                                 inputName="message" 
-                                icon={<EnvelopeSimple weight="duotone" />} 
+                                icon={<EnvelopeSimple weight="duotone" />}
+                                required
                             />
                             <button type="submit" className="submit-button">
-                                <span><PaperPlaneTilt weight="duotone" /></span>
-                                <p>Envoyer le message</p>
+                                <PaperPlaneTilt weight="duotone" />
+                                <span>Envoyer le message</span>
                             </button>
                         </div>
                     </form>

@@ -306,23 +306,8 @@ $card-gradient: linear-gradient(
             width: 24px;
             height: 24px;
         }
-    }
 
-    @media screen and (max-width: 1024px) {
-        &::before,
-        &::after {
-            width: 100px;
-        }
-
-        .product-container {
-            padding: 0 48px;
-            
-            .product-card {
-                flex: 0 0 300px;
-            }
-        }
-
-        .carousel-control {
+        @media (max-width: 1024px) {
             width: 44px;
             height: 44px;
             opacity: 0.95;
@@ -335,6 +320,53 @@ $card-gradient: linear-gradient(
             &.prev { left: 20px; }
             &.next { right: 20px; }
         }
+
+        @media (max-width: 768px) {
+            width: 56px;  // Increased size for better touch target
+            height: 56px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-width: 2px;
+            box-shadow: 
+                0 8px 16px rgba(0, 0, 0, 0.1),
+                0 4px 8px rgba(0, 0, 0, 0.05);
+
+            svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            &.prev { left: 8px; }
+            &.next { right: 8px; }
+
+            // Add touch area
+            &::before {
+                content: '';
+                position: absolute;
+                top: -8px;
+                left: -8px;
+                right: -8px;
+                bottom: -8px;
+            }
+
+            &:active {
+                transform: translateY(-50%) scale(0.95);
+            }
+        }
+
+        @media (max-width: 480px) {
+            width: 52px;
+            height: 52px;
+
+            svg {
+                width: 26px;
+                height: 26px;
+            }
+
+            &.prev { left: 4px; }
+            &.next { right: 4px; }
+        }
     }
 
     @media screen and (max-width: 768px) {
@@ -346,16 +378,13 @@ $card-gradient: linear-gradient(
 
         .product-container {
             gap: 16px;
-            padding: 0 16px;
-            scroll-padding: 0 16px;
+            padding: 0 72px; // Increased padding to prevent overlap
+            scroll-padding: 0 72px; // Match the padding for proper snap points
             
             .product-card {
-                flex: 0 0 85vw;
+                flex: 0 0 calc(100% - 144px); // Adjust card width accounting for padding
+                min-width: 280px; // Ensure minimum width
             }
-        }
-
-        .carousel-control {
-            display: none;
         }
     }
 
@@ -364,11 +393,12 @@ $card-gradient: linear-gradient(
 
         .product-container {
             gap: 12px;
-            padding: 0 12px;
-            scroll-padding: 0 12px;
+            padding: 0 64px; // Slightly reduced padding but still enough for controls
+            scroll-padding: 0 64px;
             
             .product-card {
-                flex: 0 0 90vw;
+                flex: 0 0 calc(100% - 128px);
+                min-width: 260px;
             }
         }
     }

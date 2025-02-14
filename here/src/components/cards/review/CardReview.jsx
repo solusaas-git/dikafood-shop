@@ -1,6 +1,5 @@
-import React from 'react';
-import { memo } from 'react';
-import { Star, CheckCircle, ArrowRight, Tag } from "@phosphor-icons/react";
+import React, { memo, useState, useRef, useEffect } from 'react';
+import { Star, CheckCircle, ArrowRight, CaretDown } from "@phosphor-icons/react";
 import "./card-review.scss";
 
 const formatRelativeTime = (dateString) => {
@@ -33,12 +32,22 @@ const CardReview = memo(({ review }) => {
         date,
         product,
         verified,
-        comment,
-        highlights
+        comment
     } = review;
 
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [needsExpansion, setNeedsExpansion] = useState(false);
+    const reviewTextRef = useRef(null);
+
+    useEffect(() => {
+        if (reviewTextRef.current) {
+            const { scrollHeight, clientHeight } = reviewTextRef.current;
+            setNeedsExpansion(scrollHeight > clientHeight);
+        }
+    }, [comment]);
+
     return (
-        <article className="card-review-container">
+        <article className={`card-review-container ${isExpanded ? 'expanded' : ''}`}>
             <div className="card-review">
                 <header className="review-header">
                     <div className="author-info">
@@ -89,17 +98,26 @@ const CardReview = memo(({ review }) => {
                         </a>
                     </div>
                     
-                    <p className="review-text">{comment}</p>
+                    <div 
+                        ref={reviewTextRef}
+                        className={`review-text ${needsExpansion ? 'truncated' : ''}`}
+                    >
+                        {comment}
+                    </div>
 
-                    {highlights && highlights.length > 0 && (
-                        <div className="review-highlights">
-                            {highlights.map((highlight, index) => (
-                                <span key={index} className="highlight-tag">
-                                    <Tag weight="duotone" />
-                                    {highlight}
-                                </span>
-                            ))}
-                        </div>
+                    {needsExpansion && (
+                        <button 
+                            className="expand-button"
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            aria-expanded={isExpanded}
+                            aria-label={isExpanded ? "Show less" : "Show more"}
+                        >
+                            <CaretDown 
+                                weight="bold"
+                                className={isExpanded ? 'rotated' : ''}
+                            />
+                            {isExpanded ? 'Voir moins' : 'Voir plus'}
+                        </button>
                     )}
                 </div>
             </div>
