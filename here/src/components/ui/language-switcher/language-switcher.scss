@@ -63,9 +63,9 @@
 
 .floating-language-switcher {
     position: fixed;
-    top: 16px; // Start with a fixed position
+    top: 16px;
     right: 0;
-    z-index: 1001; // Higher than navbar to ensure visibility
+    z-index: 1001;
 
     .lang-toggle {
         display: flex;
@@ -185,68 +185,70 @@
     top: 12px;
 }
 
-// Mobile styles
-@media screen and (max-width: 768px) {
+// Mobile styles - match navbar's content-based breakpoint
+@media (max-width: 1200px), (min-width: 1201px) and (max-width: calc(var(--section-max-width) + var(--section-padding) * 2)) {
     .floating-language-switcher {
         position: fixed;
         top: auto;
-        bottom: 100px; // Position above the floating buttons
-        right: 0;
+        bottom: 16px;
+        right: 16px;
         z-index: 999;
 
         .lang-toggle {
-            height: 36px;
+            height: 40px;
             padding: 0 12px;
             background: var(--dark-green-7);
-            border-radius: 18px 0 0 18px;
+            border-radius: 20px;
             box-shadow: 
-                -2px 2px 8px rgba(0, 0, 0, 0.15),
-                -1px 1px 4px rgba(0, 0, 0, 0.1);
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                0 2px 4px rgba(0, 0, 0, 0.1);
             
             svg {
-                width: 18px;
-                height: 18px;
+                width: 20px;
+                height: 20px;
             }
 
             .current-lang {
-                font-size: 13px;
+                font-size: 14px;
             }
 
             &:hover {
-                padding-right: 16px;
+                padding-right: 12px;
+                transform: translateY(-2px);
+            }
+
+            &:active {
+                transform: translateY(0);
             }
         }
 
         .lang-dropdown {
             position: absolute;
-            bottom: 0;
+            bottom: calc(100% + 8px);
             right: 0;
             top: auto;
             transform-origin: bottom right;
 
             .lang-option {
                 padding: 8px 12px;
-                font-size: 13px;
+                font-size: 14px;
 
                 .lang-flag {
-                    font-size: 14px;
+                    font-size: 16px;
                 }
             }
         }
-    }
-
-    .scrolled .floating-language-switcher {
-        bottom: 100px; // Maintain position when scrolled
     }
 }
 
 @media screen and (max-width: 480px) {
     .floating-language-switcher {
-        bottom: 120px; // Adjust for even smaller screens
+        bottom: 16px;
+        right: 16px;
 
         .lang-toggle {
             height: 40px;
-            border-radius: 20px 0 0 20px;
+            border-radius: 20px;
             
             svg {
                 width: 20px;

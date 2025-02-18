@@ -1,0 +1,87 @@
+.hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-image: url('/images/backgrounds/hero-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    
+    // Improve image rendering and performance
+    image-rendering: -webkit-optimize-contrast;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform;
+
+    .overlay-gradient {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.35) 0%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0.4) 100%
+        );
+        mix-blend-mode: multiply;
+    }
+
+    .overlay-vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at center,
+            transparent 0%,
+            rgba(0, 0, 0, 0.08) 100%
+        );
+        mix-blend-mode: multiply;
+    }
+}
+
+// Tablet styles
+@media screen and (max-width: 768px) {
+    .hero-background {
+        background-position: 60% center;
+
+        .overlay-gradient {
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.4) 0%,
+                rgba(0, 0, 0, 0.35) 50%,
+                rgba(0, 0, 0, 0.45) 100%
+            );
+        }
+    }
+}
+
+// Mobile styles
+@media screen and (max-width: 480px) {
+    .hero-background {
+        background-position: 65% center;
+
+        .overlay-gradient {
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.45) 0%,
+                rgba(0, 0, 0, 0.4) 50%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+        }
+    }
+}
+
+// Portrait orientation adjustments
+@media screen and (max-height: 700px) and (orientation: landscape) {
+    .hero-background {
+        position: fixed;
+    }
+}
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+    .hero-background {
+        transition: none;
+        will-change: auto;
+    }
+} 

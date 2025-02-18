@@ -13,6 +13,7 @@ import Values from './pages/values/Values';
 import Blog from './pages/blog/Blog';
 import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
 import Shop from './pages/shop/Shop';
+import TestPage from './pages/test/TestPage';
 import LanguageSwitcher from './components/ui/language-switcher/LanguageSwitcher';
 import NotFound from './pages/not-found/NotFound';
 
@@ -80,6 +81,7 @@ function App() {
                     <Route path="/values" element={<Values />} />
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/boutique" element={<Shop />} />
+                    <Route path="/test" element={<TestPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
 

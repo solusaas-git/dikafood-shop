@@ -1,4 +1,6 @@
 .floating-buttons {
+    // Temporarily hide floating buttons
+    display: none !important;
     position: fixed;
     bottom: 32px;
     right: 32px;

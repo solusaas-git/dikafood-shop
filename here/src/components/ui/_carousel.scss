@@ -1,0 +1,214 @@
+// Main carousel container
+.embla {
+    --slide-spacing: 1rem;
+    --slide-size: 33.33%;
+    --slide-height: 19rem;
+    padding: 1.6rem;
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 1rem;
+    border: 2px solid var(--dark-yellow-1);
+
+    &__viewport {
+        overflow: hidden;
+    }
+
+    &__container {
+        backface-visibility: hidden;
+        display: flex;
+        touch-action: pan-y;
+        margin-left: calc(var(--slide-spacing) * -1);
+    }
+
+    &__slide {
+        flex: 0 0 var(--slide-size);
+        min-width: 0;
+        padding-left: var(--slide-spacing);
+        position: relative;
+    }
+
+    // Vertical variant
+    &--vertical {
+        height: 100%;
+
+        .embla__container {
+            flex-direction: column;
+            margin-left: 0;
+            margin-top: calc(var(--slide-spacing) * -1);
+        }
+
+        .embla__slide {
+            padding-left: 0;
+            padding-top: var(--slide-spacing);
+        }
+
+        .carousel-prev,
+        .carousel-next {
+            left: 50%;
+            transform: translateX(-50%) rotate(90deg);
+        }
+
+        .carousel-prev {
+            top: 0.5rem;
+        }
+
+        .carousel-next {
+            top: auto;
+            bottom: 0.5rem;
+        }
+    }
+}
+
+// Slide content styling
+.slide-content {
+    position: relative;
+    height: 100%;
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    img {
+        width: 100%;
+        height: 12rem;
+        object-fit: cover;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark-green-7);
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+
+    p {
+        font-size: 0.875rem;
+        color: #64748b;
+        line-height: 1.5;
+    }
+}
+
+// Navigation buttons
+.carousel-prev,
+.carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 9999px;
+    border: 2px solid var(--dark-yellow-1);
+    background-color: white;
+    color: var(--dark-green-7);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: var(--dark-yellow-1);
+        color: white;
+    }
+
+    &:focus-visible {
+        outline: none;
+        ring: 2px;
+        ring-offset: 2px;
+        ring-color: var(--dark-yellow-1);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.carousel-prev {
+    left: 1rem;
+}
+
+.carousel-next {
+    right: 1rem;
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+    .embla {
+        --slide-size: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .embla {
+        --slide-size: 100%;
+        --slide-height: 16rem;
+        padding: 1rem;
+    }
+
+    .slide-content {
+        padding: 1rem;
+
+        img {
+            height: 160px;
+        }
+
+        h3 {
+            font-size: 1rem;
+        }
+    }
+
+    .carousel-prev,
+    .carousel-next {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+}
+
+// Dots navigation
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+
+    button {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 9999px;
+        background-color: #e2e8f0;
+        transition: all 0.2s ease;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+
+        &.active {
+            background-color: var(--dark-yellow-1);
+            transform: scale(1.25);
+        }
+
+        &:hover {
+            background-color: var(--dark-yellow-1);
+            opacity: 0.7;
+        }
+
+        &:focus-visible {
+            outline: none;
+            ring: 2px;
+            ring-offset: 2px;
+            ring-color: var(--dark-yellow-1);
+        }
+    }
+} 

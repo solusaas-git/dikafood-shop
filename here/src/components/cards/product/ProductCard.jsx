@@ -1,50 +1,25 @@
-import React, { memo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { ArrowUpRight, Tag, Waves, Plant, SunHorizon } from "@phosphor-icons/react";
-import { brandsData } from '../../../data/brands';
-import "./product-card.scss";
+import React from 'react';
+import { ArrowRight, ShoppingBag } from "@phosphor-icons/react";
+import './product-card.scss';
 
-const brandIcons = {
-    'Oued Fès': Waves,
-    'Biladi': Plant,
-    'Chourouk': SunHorizon,
-    'Nouarati': SunHorizon,
-    'Dika': SunHorizon,
-    'Dika Extra Vièrge': SunHorizon
-};
-
-const ProductCard = memo(({ product, activeVariant, onVariantChange }) => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-
-    const handleCardClick = () => {
-        navigate(`/boutique/${product.id}`);
-    };
-
-    const handleVariantClick = (e, variant) => {
-        e.stopPropagation();
-        onVariantChange(product.id, variant);
-    };
-
-    const BrandIcon = brandIcons[product.brand] || SunHorizon;
-
+export default function ProductCard({ product, activeVariant, onVariantChange }) {
     return (
-        <div className="product-card" onClick={handleCardClick}>
-            <div className="img-product">
+        <div className="product-card">
+            <div className="product-image">
                 <img 
-                    src={activeVariant?.image} 
-                    alt={t('product.imageAlt', { brand: product.brand, size: activeVariant?.size })}
-                    draggable="false"
+                    src={activeVariant?.image || product.image} 
+                    alt={`${product.brand} - ${activeVariant?.size || 'Product'}`}
                 />
-                {product.variants.length > 1 && (
+                {product.variants?.length > 0 && (
                     <div className="variant-selector">
                         {product.variants.map((variant) => (
                             <button
                                 key={variant.size}
                                 className={`variant-btn ${activeVariant?.size === variant.size ? 'active' : ''}`}
-                                onClick={(e) => handleVariantClick(e, variant)}
-                                title={t('product.variantTitle', { size: variant.size })}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onVariantChange(variant);
+                                }}
                             >
                                 {variant.size}
                             </button>
@@ -52,24 +27,21 @@ const ProductCard = memo(({ product, activeVariant, onVariantChange }) => {
                     </div>
                 )}
             </div>
-            <div className="product-card-content">
-                <h3 className="product-name">{product.name}</h3>
-                <span className="brand-tag">
-                    <BrandIcon size={16} weight="duotone" />
-                    {t(`brands.${product.brand.toLowerCase()}`)}
-                </span>
-            </div>
-            <div className="product-link">
-                <div className="product-price">
-                    <Tag size={20} weight="duotone" />
-                    <span className="price-text">{activeVariant?.price}</span>
+
+            <div className="product-content">
+                <div className="brand-tag">
+                    <ShoppingBag weight="duotone" />
+                    {product.brand}
                 </div>
-                <ArrowUpRight size={20} weight="duotone" />
+                <h3 className="product-name">{product.name}</h3>
+            </div>
+
+            <div className="product-footer">
+                <div className="product-price">
+                    <span>{activeVariant?.price || product.price}</span>
+                </div>
+                <ArrowRight className="arrow-icon" weight="bold" />
             </div>
         </div>
     );
-});
-
-ProductCard.displayName = 'ProductCard';
-
-export default ProductCard;
+}

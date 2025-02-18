@@ -135,169 +135,42 @@
     }
 
     .reviews-carousel {
-        position: relative;
-        width: 100%;
-        max-width: var(--section-max-width);
-        margin: 0 auto;
-        padding: 24px var(--section-padding);
+        margin-top: 48px;
 
-        .reviews-track {
+        // Custom styles for review cards in carousel
+        .carousel-item {
             display: flex;
-            gap: 16px;
-            padding: 16px 0;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            overflow-x: auto;
-            scrollbar-width: none;  // Firefox
-            -ms-overflow-style: none;  // IE/Edge
-            
-            &::-webkit-scrollbar {
-                display: none;  // Chrome/Safari/Opera
-            }
-
-            .review-slide {
-                flex: 0 0 360px;
-                scroll-snap-align: center;
-                scroll-snap-stop: always;
-                transition: transform 0.3s ease;
-
-                &:hover {
-                    transform: translateY(-4px);
-                }
-            }
-        }
-
-        .carousel-control {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: white;
-            border: 2px solid var(--dark-yellow-1);
-            color: var(--dark-yellow-1);
-            display: flex;
-            align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            z-index: 3;
-            opacity: 1;
-            visibility: visible;
+        }
+    }
+}
 
-            &:hover:not(:disabled) {
-                background: var(--dark-yellow-1);
-                color: var(--dark-green-7);
-                transform: translateY(-50%) scale(1.05);
-            }
+// Tablet styles
+@media screen and (max-width: 768px) {
+    .reviews-section {
+        padding: 60px 0;
 
-            &:active:not(:disabled) {
-                transform: translateY(-50%) scale(0.95);
-            }
-
-            &:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-                background: var(--light-yellow-2);
-                border-color: var(--light-yellow-3);
-                color: var(--dark-green-4);
-            }
-
-            &.hidden {
-                opacity: 0;
-                visibility: hidden;
-            }
-
-            &.prev { left: 16px; }
-            &.next { right: 16px; }
-
-            svg {
-                width: 20px;
-                height: 20px;
-            }
+        .container {
+            margin-bottom: 32px;
         }
 
-        // Tablet styles
-        @media screen and (max-width: 1024px) {
-            .reviews-track {
-                gap: 12px;
-                
-                .review-slide {
-                    flex: 0 0 340px;
-                }
-            }
+        .reviews-carousel {
+            margin-top: 32px;
+        }
+    }
+}
+
+// Mobile styles
+@media screen and (max-width: 480px) {
+    .reviews-section {
+        padding: 48px 0;
+
+        .container {
+            margin-bottom: 24px;
         }
 
-        // Mobile styles
-        @media screen and (max-width: 768px) {
-            padding: 16px;
-
-            .reviews-track {
-                gap: 8px;
-                padding: 16px 0;
-                
-                .review-slide {
-                    flex: 0 0 calc(100% - 32px);
-                    margin: 0 auto;
-                }
-            }
-
-            .carousel-control {
-                width: 56px;
-                height: 56px;
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                border-width: 2px;
-                box-shadow: 
-                    0 8px 16px rgba(0, 0, 0, 0.15),
-                    0 4px 8px rgba(0, 0, 0, 0.1);
-
-                svg {
-                    width: 28px;
-                    height: 28px;
-                }
-
-                &.prev { left: 8px; }
-                &.next { right: 8px; }
-
-                &::before {
-                    content: '';
-                    position: absolute;
-                    top: -8px;
-                    left: -8px;
-                    right: -8px;
-                    bottom: -8px;
-                }
-
-                &:active {
-                    transform: translateY(-50%) scale(0.95);
-                }
-            }
-        }
-
-        // Small mobile styles
-        @media screen and (max-width: 480px) {
-            padding: 12px;
-
-            .reviews-track {
-                gap: 8px;
-                
-                .review-slide {
-                    flex: 0 0 calc(100% - 24px);
-                }
-            }
-
-            .carousel-control {
-                width: 60px;
-                height: 60px;
-
-                svg {
-                    width: 32px;
-                    height: 32px;
-                }
-            }
+        .reviews-carousel {
+            margin-top: 24px;
         }
     }
 }
@@ -332,5 +205,37 @@
             overflow: hidden;
             height: 350px;
         }
+    }
+}
+
+// Update card-review container styles
+.card-review-container {
+    width: 100%;
+    min-width: 280px;
+    max-width: 360px;
+    height: auto;
+    min-height: 420px;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--dark-yellow-1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0 auto;
+
+    &.expanded {
+        height: auto;
+        max-height: none;
+    }
+
+    @media (max-width: 1024px) {
+        min-height: 400px;
+    }
+
+    @media (max-width: 768px) {
+        min-height: 380px;
+    }
+
+    @media (max-width: 480px) {
+        min-height: 360px;
+        min-width: 260px;
     }
 }

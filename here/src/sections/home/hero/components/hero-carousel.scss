@@ -1,0 +1,233 @@
+.hero-carousel {
+    width: 100%;
+    max-width: var(--section-max-width);
+    margin: 0 auto;
+    padding: 0 clamp(16px, 2vw, 24px);
+    position: relative;
+
+    @media (max-width: 480px) {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: 24px;
+        justify-content: center;
+        padding: 0;
+        position: relative;
+
+        @media (max-width: 1024px) {
+            justify-content: flex-start;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding: 24px 0;
+            margin: -24px 0;
+            gap: 24px;
+            
+            // Hide scrollbar
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            gap: 24px;
+            padding: 20px 0;
+            margin: -20px 0;
+        }
+
+        @media (max-width: 480px) {
+            width: 100%;
+            gap: 0;
+            padding: 16px 0;
+            margin: -16px 0;
+            justify-content: flex-start;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+
+    .carousel-item {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        width: 280px;
+        display: flex;
+        justify-content: center;
+
+        @media (max-width: 768px) {
+            width: 260px;
+        }
+
+        @media (max-width: 480px) {
+            width: 100%;
+            min-width: calc(100vw - 48px); // Full viewport width minus control space
+            padding: 0 24px; // Equal padding on both sides
+            scroll-snap-align: center;
+
+            // Ensure the product card inside takes full width
+            :first-child {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0; // Allow shrinking if needed
+            }
+        }
+    }
+
+    // Carousel controls positioning
+    .carousel-controls {
+        @media (max-width: 480px) {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+
+            .carousel-control {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 36px;
+                height: 36px;
+                background: white;
+                border: 2px solid var(--dark-yellow-1);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                pointer-events: auto;
+                z-index: 2;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &.prev {
+                    left: 6px;
+                }
+
+                &.next {
+                    right: 6px;
+                }
+
+                &:hover {
+                    background: var(--dark-yellow-1);
+                    
+                    svg {
+                        color: var(--dark-green-7);
+                    }
+                }
+
+                svg {
+                    width: 20px;
+                    height: 20px;
+                    color: var(--dark-yellow-1);
+                }
+            }
+        }
+    }
+}
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+    .hero-carousel {
+        .carousel-track {
+            scroll-behavior: auto;
+            scroll-snap-type: none;
+        }
+    }
+}
+
+// Mobile Carousel Variant
+.mobile-carousel {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+
+    .carousel-track {
+        display: flex;
+        width: 100%;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding: 0 40px;
+        -webkit-overflow-scrolling: touch;
+        padding: 16px 0;
+        margin: -16px 0;
+        gap: 0;
+        
+        // Hide scrollbar
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    .carousel-item {
+        flex: 0 0 100%;
+        width: 100%;
+        min-width: 0;
+        padding: 0 40px;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        display: flex;
+        justify-content: center;
+    }
+
+    .carousel-controls {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 1px solid var(--dark-yellow-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            z-index: 2;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+
+            &.prev { left: 8px; }
+            &.next { right: 8px; }
+
+            &:active {
+                transform: translateY(-50%) scale(0.95);
+            }
+
+            svg {
+                width: 16px;
+                height: 16px;
+                color: var(--dark-yellow-1);
+            }
+
+            &:hover {
+                background: var(--dark-yellow-1);
+                
+                svg {
+                    color: var(--dark-green-7);
+                }
+            }
+        }
+    }
+} 

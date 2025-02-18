@@ -1,16 +1,16 @@
-$color_1: var(--dark-green-1);
-$color_2: var(--dark-green-7);
-$background-color_1: var(--light-yellow-1);
-$background-color_2: var(--light-yellow-2);
-$background-color_3: var(--dark-yellow-1);
+$color-1: var(--dark-green-1);
+$color-2: var(--dark-green-7);
+$background-color-1: var(--light-yellow-1);
+$background-color-2: var(--light-yellow-2);
+$background-color-3: var(--dark-yellow-1);
 
+// Base product card styles (mobile-first)
 .product-card {
 	display: flex;
 	flex-direction: column;
-	width: clamp(240px, 25vw, 280px);
-	min-width: clamp(240px, 25vw, 280px);
-	height: clamp(340px, 40vw, 380px);
-	border-radius: clamp(16px, 2vw, 24px);
+	width: 180px;
+	min-height: 300px;
+	border-radius: 16px;
 	background: linear-gradient(
 		135deg,
 		var(--light-yellow-2) 0%,
@@ -19,51 +19,52 @@ $background-color_3: var(--dark-yellow-1);
 	position: relative;
 	overflow: hidden;
 	cursor: pointer;
-	padding: clamp(16px, 2vw, 24px);
+	padding: 16px;
 	border: 2px solid var(--dark-yellow-1);
-	transition: transform 0.4s ease,
-				box-shadow 0.4s ease,
-				background 0.4s ease;
 
+	// Pattern overlay
 	&::before {
 		content: '';
 		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		inset: 0;
 		background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M17 5.5C17 5.5 19.5 0.5 26 0.5C32.5 0.5 35 5.5 35 5.5M26 25.5V5.5M20.5 8.5C20.5 8.5 22 5.5 26 5.5C30 5.5 31.5 8.5 31.5 8.5M23 12.5C23 12.5 24 10.5 26 10.5C28 10.5 29 12.5 29 12.5' stroke='rgba(0,0,0,0.04)' stroke-width='1.2'/%3E%3C/svg%3E");
-		opacity: 1;
+		opacity: 0.15;
 		pointer-events: none;
 		background-size: 52px 26px;
 		transform: rotate(15deg);
 		background-repeat: repeat;
 	}
 
-	.img-product {
+	.product-image {
 		position: relative;
-		height: clamp(200px, 24vw, 240px);
+		width: calc(100% + 32px);
+		height: 160px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition: transform 0.4s ease;
-		margin: calc(-1 * clamp(16px, 2vw, 24px)) calc(-1 * clamp(16px, 2vw, 24px)) 0;
-		padding: clamp(12px, 1.5vw, 20px);
+		margin: -16px -16px 12px;
+		padding: 16px;
+		overflow: hidden;
 
 		img {
-			width: 100%;
+			width: auto;
 			height: 100%;
+			max-width: 100%;
+			max-height: 140px;
 			object-fit: contain;
-			transition: transform 0.4s ease;
+			object-position: center;
+			transition: transform 0.3s ease;
 			filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.1));
+			margin: 0 auto;
+			display: block;
 		}
 
 		.variant-selector {
 			position: absolute;
-			top: clamp(16px, 2vw, 24px);
-			right: clamp(16px, 2vw, 24px);
+			top: 12px;
+			right: 12px;
 			display: flex;
-			gap: 8px;
+			gap: 6px;
 			background: rgba(255, 255, 255, 0.95);
 			padding: 6px;
 			border-radius: 100px;
@@ -71,17 +72,19 @@ $background-color_3: var(--dark-yellow-1);
 				0 2px 4px rgba(0, 0, 0, 0.05),
 				0 1px 2px rgba(0, 0, 0, 0.1);
 			z-index: 2;
+			transform: translateZ(0);
 
 			.variant-btn {
 				background: none;
 				border: 1px solid var(--dark-yellow-1);
 				color: var(--dark-green-7);
-				padding: 4px 12px;
+				padding: 4px 10px;
 				border-radius: 100px;
-				font-size: 14px;
+				font-size: 13px;
 				font-weight: 500;
 				transition: all 0.2s ease;
 				cursor: pointer;
+				white-space: nowrap;
 
 				&:hover {
 					background: rgba(var(--dark-yellow-1-rgb), 0.1);
@@ -95,17 +98,11 @@ $background-color_3: var(--dark-yellow-1);
 		}
 	}
 
-	.product-card-content {
-		position: relative;
-		margin-top: auto;
-		padding: 0 0 clamp(6px, 1vw, 8px);
+	.product-content {
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
-		text-align: left;
-		transition: transform 0.4s ease;
-		z-index: 1;
 		gap: 8px;
+		flex-grow: 1;
 
 		.brand-tag {
 			order: -1;
@@ -118,304 +115,145 @@ $background-color_3: var(--dark-yellow-1);
 			border-radius: 100px;
 			font-size: 13px;
 			font-weight: 500;
+			width: fit-content;
+			max-width: 100%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 
 			svg {
 				color: var(--dark-green-7);
+				width: 14px;
+				height: 14px;
+				flex-shrink: 0;
 			}
 		}
 
 		.product-name {
-			font-size: clamp(16px, 1.8vw, 20px);
+			font-size: 15px;
 			font-weight: 600;
 			color: var(--dark-green-7);
-			line-height: 1.2;
+			line-height: 1.3;
+			margin: 0;
 		}
 	}
 
-	.product-link {
-		position: absolute;
-		width: 100%;
-		bottom: -48px;
-		left: 0;
-		background: var(--dark-yellow-1);
-		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-		padding: clamp(10px, 1.5vw, 12px) clamp(16px, 2vw, 24px);
-		opacity: 0;
-		transform: translateY(0);
+	.product-footer {
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
-		z-index: 1;
+		justify-content: space-between;
+		margin-top: auto;
+		padding: 12px 16px;
+		background: var(--dark-yellow-1);
+		border-radius: 0;
+		margin: 16px -16px -16px;
 
 		.product-price {
 			display: flex;
 			align-items: center;
 			gap: 8px;
-			font-size: clamp(16px, 1.8vw, 20px);
-			font-weight: 600;
-			color: var(--dark-green-7);
 
 			svg {
-				width: 24px;
-				height: 24px;
+				width: 20px;
+				height: 20px;
+				color: var(--dark-green-7);
+			}
+
+			span {
+				font-size: 15px;
+				font-weight: 600;
+				color: var(--dark-green-7);
 			}
 		}
 
-		svg {
-			width: clamp(16px, 1.8vw, 20px);
-			height: clamp(16px, 1.8vw, 20px);
+		.arrow-icon {
+			width: 20px;
+			height: 20px;
 			color: var(--dark-green-7);
-			transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+			transition: transform 0.2s ease;
+		}
+
+		&:hover {
+			.arrow-icon {
+				transform: translateX(2px);
+			}
 		}
 	}
 
 	&:hover {
-		background: linear-gradient(
-			135deg,
-			var(--light-yellow-3) 0%,
-			var(--light-yellow-2) 100%
-		);
-		transform: translateY(-5px);
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-
-		&::before {
-			opacity: 0.8;
+		.product-image img {
+			transform: scale(1.05);
 		}
+	}
+}
 
-		.img-product {
-			transform: translateY(-8px);
-			
+// Desktop styles
+@media (min-width: 768px) {
+	.product-card {
+		width: 280px;
+		min-height: 380px;
+		padding: 24px;
+		border-radius: 24px;
+
+		.product-image {
+			height: 200px;
+			margin: -24px -24px 16px;
+			padding: 24px;
+
 			img {
-				transform: scale(1.05);
-			}
-		}
-
-		.product-card-content {
-			transform: translateY(-48px);
-		}
-
-		.product-link {
-			bottom: 0;
-			opacity: 1;
-
-			svg:last-child {
-				transform: translateY(-2px) translateX(2px);
-			}
-		}
-	}
-}
-
-.product-card.static {
-	min-width: 272px;
-	height: 272px;
-
-	>.img-product {
-		width: 100%;
-		height: 100%;
-	}
-
-	>.product-card-footer {
-		display: none;
-	}
-
-	>.product-link {
-		display: none;
-	}
-
-	&:hover {
-		.img-product {
-			height: 100%;
-		}
-	}
-}
-
-.card-product-container {
-	width: 100%;
-	cursor: pointer;
-	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-	&:hover {
-		transform: translateY(-8px);
-
-		.card-product {
-			border-color: var(--dark-yellow-1);
-			box-shadow: 
-				0 12px 24px rgba(var(--dark-green-7-rgb), 0.12),
-				0 4px 8px rgba(var(--dark-green-7-rgb), 0.08);
-
-			.product-header {
-				.product-image img {
-					transform: scale(1.05);
-				}
-
-				.variant-selector {
-					opacity: 1;
-					transform: translateY(0);
-				}
+				max-height: 180px;
 			}
 
-			.product-content {
-				.product-price {
-					opacity: 1;
-					transform: translateY(0);
-				}
-			}
-		}
-	}
+			.variant-selector {
+				padding: 8px;
+				gap: 8px;
 
-	.card-product {
-		background: rgba(255, 255, 255, 0.95);
-		border-radius: 20px;
-		border: 1px solid rgba(var(--dark-yellow-1-rgb), 0.15);
-		overflow: hidden;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 
-			0 4px 12px rgba(var(--dark-green-7-rgb), 0.06),
-			0 2px 6px rgba(var(--dark-green-7-rgb), 0.04);
-
-		.product-header {
-			position: relative;
-
-			.product-image {
-				width: 100%;
-				height: 220px;
-				overflow: hidden;
-				background: linear-gradient(
-					to bottom,
-					rgba(var(--light-yellow-1-rgb), 0.1),
-					rgba(var(--light-yellow-1-rgb), 0.05)
-				);
-
-				img {
-					width: 100%;
-					height: 100%;
-					object-fit: contain;
-					padding: 20px;
-					transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-				}
-			}
-
-			.product-info {
-				padding: 20px 20px 0;
-
-				.brand-name {
-					display: flex;
-					flex-direction: column;
-					gap: 8px;
-
-					.brand {
-						display: inline-flex;
-						padding: 4px 12px;
-						background: rgba(var(--dark-yellow-1-rgb), 0.1);
-						color: var(--dark-yellow-1);
-						border-radius: 100px;
-						font-size: 14px;
-						font-weight: 500;
-						width: fit-content;
-					}
-
-					h3 {
-						font-size: 18px;
-						font-weight: 600;
-						color: var(--dark-green-7);
-						line-height: 1.4;
-						margin: 0;
-					}
-				}
-
-				.variant-selector {
-					position: absolute;
-					top: 12px;
-					right: 12px;
-					display: flex;
-					gap: 8px;
-					opacity: 0;
-					transform: translateY(-8px);
-					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-					background: rgba(255, 255, 255, 0.9);
-					padding: 6px;
-					border-radius: 100px;
-					box-shadow: 
-						0 2px 4px rgba(0, 0, 0, 0.05),
-						0 1px 2px rgba(0, 0, 0, 0.1);
-
-					.variant-btn {
-						background: none;
-						border: 1px solid var(--dark-yellow-1);
-						color: var(--dark-green-7);
-						padding: 4px 12px;
-						border-radius: 100px;
-						font-size: 14px;
-						font-weight: 500;
-						transition: all 0.2s ease;
-						cursor: pointer;
-
-						&:hover {
-							background: rgba(var(--dark-yellow-1-rgb), 0.1);
-						}
-
-						&.active {
-							background: var(--dark-yellow-1);
-							color: var(--dark-green-7);
-						}
-					}
+				.variant-btn {
+					padding: 6px 14px;
+					font-size: 14px;
 				}
 			}
 		}
 
 		.product-content {
-			padding: 20px;
-			display: flex;
-			flex-direction: column;
-			gap: 16px;
+			gap: 12px;
 
-			.product-features {
-				display: flex;
-				gap: 12px;
-				flex-wrap: wrap;
+			.brand-tag {
+				padding: 6px 16px;
+				font-size: 14px;
+				gap: 8px;
 
-				.feature {
-					display: inline-flex;
-					align-items: center;
-					gap: 6px;
-					font-size: 14px;
-					color: var(--dark-green-5);
-					padding: 4px 12px;
-					background: rgba(var(--dark-green-7-rgb), 0.05);
-					border-radius: 100px;
-
-					svg {
-						color: var(--dark-yellow-1);
-					}
+				svg {
+					width: 16px;
+					height: 16px;
 				}
 			}
 
+			.product-name {
+				font-size: 18px;
+			}
+		}
+
+		.product-footer {
+			padding: 16px 24px;
+			margin: 24px -24px -24px;
+
 			.product-price {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				gap: 4px;
-				padding: 16px;
-				background: linear-gradient(
-					to top,
-					rgba(255, 255, 255, 0.95),
-					rgba(255, 255, 255, 0.8)
-				);
-				border-radius: 12px;
-				opacity: 0;
-				transform: translateY(8px);
-				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				gap: 10px;
 
-				.price {
-					font-size: 20px;
-					font-weight: 600;
-					color: var(--dark-green-7);
+				svg {
+					width: 24px;
+					height: 24px;
 				}
 
-				.buy-hint {
-					font-size: 14px;
-					color: var(--dark-green-5);
+				span {
+					font-size: 18px;
 				}
+			}
+
+			.arrow-icon {
+				width: 24px;
+				height: 24px;
 			}
 		}
 	}
@@ -423,29 +261,48 @@ $background-color_3: var(--dark-yellow-1);
 
 // Reduced motion preferences
 @media (prefers-reduced-motion: reduce) {
-	.card-product-container {
-		transition: none !important;
-
-		&:hover {
-			transform: none !important;
+	.product-card {
+		.product-image img {
+			transition: none;
 		}
 
-		.card-product {
-			transition: none !important;
+		.variant-selector .variant-btn {
+			transition: none;
+		}
 
-			.product-header {
-				.product-image img {
-					transition: none !important;
-				}
+		.product-footer .arrow-icon {
+			transition: none;
+		}
+	}
+}
 
-				.variant-selector {
-					transition: none !important;
-				}
+// Mobile styles - ensure fixed width and consistent positioning
+@media (max-width: 480px) {
+	.product-card {
+		width: 180px !important;
+		min-width: 180px !important;
+		max-width: 180px !important;
+		margin: 0 auto;
+		
+		.product-image {
+			width: calc(100% + 32px);
+			margin: -16px -16px 12px;
+			padding: 16px;
+			
+			img {
+				max-height: 130px;
+				margin: 0 auto;
 			}
 
-			.product-content {
-				.product-price {
-					transition: none !important;
+			.variant-selector {
+				top: 12px;
+				right: 12px;
+				padding: 4px;
+				gap: 4px;
+
+				.variant-btn {
+					padding: 4px 8px;
+					font-size: 12px;
 				}
 			}
 		}

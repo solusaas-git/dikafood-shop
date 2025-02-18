@@ -1,0 +1,102 @@
+.carousel {
+    width: 100%;
+    position: relative;
+    margin: 0 auto;
+    padding: 0 var(--section-padding);
+
+    .carousel-track {
+        // Desktop: show all items in a row
+        display: flex;
+        gap: 24px;
+        padding: 24px 0;
+        margin: -24px 0;
+
+        // Mobile: enable horizontal scrolling
+        @media (max-width: 1024px) {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            
+            // Hide scrollbar
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+    }
+
+    .carousel-item {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+    }
+
+    .carousel-controls {
+        // Hide on desktop
+        display: none;
+
+        // Show on mobile
+        @media (max-width: 1024px) {
+            display: block;
+
+            .carousel-control {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: white;
+                border: 2px solid var(--dark-yellow-1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 10;
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+                    color: var(--dark-yellow-1);
+                }
+
+                &:hover {
+                    background: var(--dark-yellow-1);
+                    
+                    svg {
+                        color: var(--dark-green-7);
+                    }
+                }
+
+                &.prev { left: 0; }
+                &.next { right: 0; }
+            }
+        }
+
+        @media (max-width: 768px) {
+            .carousel-control {
+                width: 40px;
+                height: 40px;
+
+                svg {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+        }
+    }
+}
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+    .carousel {
+        .carousel-track {
+            scroll-behavior: auto;
+        }
+
+        .carousel-control {
+            transition: none !important;
+        }
+    }
+} 
