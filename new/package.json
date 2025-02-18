@@ -24,7 +24,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "@babel/plugin-proposal-private-property-in-object": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -39,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "react-router-dom": "^6.26.1"
   }
 }
