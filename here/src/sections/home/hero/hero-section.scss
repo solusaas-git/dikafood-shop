@@ -11,6 +11,13 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
     flex-direction: column;
     justify-content: center;
 
+    &.mobile {
+        padding: calc(clamp(48px, 6%, 64px) + var(--navbar-height)) var(--section-padding) clamp(48px, 6%, 64px);
+        min-height: calc(100vh - var(--navbar-height));
+        display: flex;
+        align-items: center;
+    }
+
     .hero-container {
         position: relative;
         width: 100%;
@@ -32,9 +39,68 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         display: flex;
         flex-direction: column;
         align-items: center;
-            justify-content: center;
+        justify-content: center;
         gap: clamp(48px, 6%, 64px);
         padding: clamp(24px, 3%, 32px) 0;
+
+        &.mobile {
+            gap: clamp(32px, 4%, 40px);
+            padding: 16px 0;
+        }
+    }
+
+    // Mobile styles
+    &.mobile {
+        .hero-container {
+            gap: 24px;
+            padding: 0 16px;
+        }
+
+        .content-wrapper {
+            gap: 32px;
+            padding: 16px 0;
+        }
+    }
+
+    // Extra small screens
+    @media screen and (max-width: 480px) {
+        &.mobile {
+            padding: calc(clamp(40px, 5%, 48px) + var(--navbar-height)) 12px clamp(40px, 5%, 48px);
+
+            .hero-container {
+                gap: 20px;
+                padding: 0 12px;
+            }
+
+            .content-wrapper {
+                gap: 28px;
+                padding: 12px 0;
+            }
+        }
+    }
+
+    // Portrait orientation adjustments
+    @media screen and (orientation: portrait) and (max-height: 800px) {
+        &.mobile {
+            padding: calc(clamp(32px, 4%, 40px) + var(--navbar-height)) var(--section-padding) clamp(32px, 4%, 40px);
+            min-height: calc(100vh - var(--navbar-height));
+
+            .content-wrapper {
+                gap: 24px;
+            }
+        }
+    }
+
+    // Landscape orientation adjustments
+    @media screen and (max-height: 700px) and (orientation: landscape) {
+        &.mobile {
+            padding: calc(clamp(24px, 3%, 32px) + var(--navbar-height)) var(--section-padding) clamp(24px, 3%, 32px);
+
+            .content-wrapper {
+                gap: 20px;
+                padding: 12px 0;
+            }
+        }
     }
 }
 
@@ -65,41 +131,6 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         .content-wrapper {
             gap: clamp(36px, 4.5%, 48px);
             padding: clamp(20px, 2.5%, 28px) 0;
-        }
-    }
-}
-
-// Mobile styles
-@media screen and (max-width: 480px) {
-    .hero-section {
-        padding: calc(clamp(40px, 5%, 48px) + var(--navbar-height)) var(--section-padding) clamp(40px, 5%, 48px);
-
-        .hero-container {
-            gap: 24px;
-        }
-
-        .content-wrapper {
-            gap: 40px;
-            padding: 16px 0;
-        }
-    }
-}
-
-// Portrait orientation adjustments
-@media screen and (orientation: portrait) and (max-height: 800px) {
-    .hero-section {
-        padding: calc(clamp(32px, 4%, 40px) + var(--navbar-height)) var(--section-padding) clamp(32px, 4%, 40px);
-    }
-}
-
-// Landscape orientation adjustments
-@media screen and (max-height: 700px) and (orientation: landscape) {
-    .hero-section {
-        padding: calc(clamp(24px, 3%, 32px) + var(--navbar-height)) var(--section-padding) clamp(24px, 3%, 32px);
-
-        .hero-container .content-wrapper {
-            gap: 24px;
-            padding: 16px 0;
         }
     }
 }

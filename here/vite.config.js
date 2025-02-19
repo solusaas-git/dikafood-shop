@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from '@svgr/rollup'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -22,6 +23,11 @@ export default defineConfig({
   server: {
     host: true, // Listen on all network interfaces
     port: 5173, // Default Vite port
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
   // css: {
   //   preprocessorOptions: {

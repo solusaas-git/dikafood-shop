@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import Button from '../../../../components/buttons/Button';
 import './hero-content.scss';
 
-export default function HeroContent({ onScrollToForm }) {
+export default function HeroContent({ onScrollToForm, isMobile }) {
     const { t } = useTranslation();
 
     return (
-        <div className="hero-content">
+        <div className={`hero-content ${isMobile ? 'mobile' : ''}`}>
             <h1>
                 {t('hero.title.part1')}
                 <span className="highlight">{t('hero.title.highlight')}</span>
@@ -16,10 +16,11 @@ export default function HeroContent({ onScrollToForm }) {
             </h1>
             <div className="cta-wrapper">
                 <Button
-                    icon={<ArrowDownRight size={24} weight="duotone" />}
+                    icon={<ArrowDownRight size={isMobile ? 20 : 24} weight="duotone" />}
                     name={t('hero.cta')}
                     theme="cta-hero"
                     onClick={onScrollToForm}
+                    className={isMobile ? 'mobile' : ''}
                 />
             </div>
         </div>

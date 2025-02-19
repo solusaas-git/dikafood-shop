@@ -3,7 +3,13 @@ import { ChatCircleText } from "@phosphor-icons/react";
 import CardReview from '../../../components/cards/review/CardReview';
 import reviewsData from '../../../data/reviews.json';
 import SectionHeader from '../../../components/ui/section/SectionHeader';
-import Carousel from '../../../components/ui/carousel/Carousel';
+import {
+    Carousel,
+    // CarouselContent,
+    // CarouselItem,
+    // CarouselPrevious,
+    // CarouselNext,
+} from '../../../components/ui/carousel';
 import "./reviews.scss";
 
 export default function Reviews() {
@@ -18,14 +24,19 @@ export default function Reviews() {
                 />
             </div>
 
-            <Carousel
-                items={reviewsData}
-                renderItem={(review) => <CardReview review={review} />}
-                className="reviews-carousel"
-                itemWidth={360}
-                gap={24}
-                controlPosition="side"
-            />
+            <div className="relative px-8">
+                <Carousel opts={{ loop: true }}>
+                    {/* <CarouselContent>
+                        {reviewsData.map((review) => (
+                            <CarouselItem key={review.id}>
+                                <CardReview review={review} />
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext /> */}
+                </Carousel>
+            </div>
         </section>
     );
 }

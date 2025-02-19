@@ -1,88 +1,179 @@
-.carousel {
-    width: 100%;
+.embla {
     position: relative;
-    margin: 0 auto;
-    padding: 0 var(--section-padding);
+    width: 100%;
+    margin: 0 calc(var(--section-padding, 24px) * -1);
+    width: calc(100% + (var(--section-padding, 24px) * 2));
+    padding: 0 var(--section-padding, 24px);
 
-    .carousel-track {
-        // Desktop: show all items in a row
+    &__viewport {
+        overflow: hidden;
+        width: 100%;
+        cursor: grab;
+
+        &:active {
+            cursor: grabbing;
+        }
+    }
+
+    &__container {
         display: flex;
-        gap: 24px;
-        padding: 24px 0;
-        margin: -24px 0;
-
-        // Mobile: enable horizontal scrolling
-        @media (max-width: 1024px) {
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            
-            // Hide scrollbar
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            &::-webkit-scrollbar {
-                display: none;
-            }
-        }
+        user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        gap: 16px;
+        padding: 8px 4px;
+        padding-left: 16px;
     }
 
-    .carousel-item {
+    &__slide {
+        position: relative;
         flex: 0 0 auto;
-        scroll-snap-align: center;
-        scroll-snap-stop: always;
+        min-width: min-content;
+        width: min-content;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.2s ease;
+
+        &[data-active="true"] {
+            z-index: 1;
+        }
     }
 
-    .carousel-controls {
-        // Hide on desktop
-        display: none;
+    &__button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid var(--dark-green-7);
+        color: var(--dark-green-7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 90;
+        box-shadow: 
+            0 4px 6px rgba(var(--dark-green-7-rgb), 0.1),
+            0 2px 4px rgba(var(--dark-green-7-rgb), 0.06);
 
-        // Show on mobile
-        @media (max-width: 1024px) {
-            display: block;
+        svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-            .carousel-control {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                background: white;
-                border: 2px solid var(--dark-yellow-1);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                z-index: 10;
+        &:hover {
+            background: var(--light-yellow-1);
+            transform: translateY(-50%) translateX(var(--translate-x, 0)) scale(1.05);
+            border-color: var(--dark-yellow-1);
+            box-shadow: 
+                0 8px 12px rgba(var(--dark-green-7-rgb), 0.15),
+                0 3px 6px rgba(var(--dark-green-7-rgb), 0.1);
 
-                svg {
-                    width: 24px;
-                    height: 24px;
-                    color: var(--dark-yellow-1);
-                }
-
-                &:hover {
-                    background: var(--dark-yellow-1);
-                    
-                    svg {
-                        color: var(--dark-green-7);
-                    }
-                }
-
-                &.prev { left: 0; }
-                &.next { right: 0; }
+            svg {
+                transform: scale(1.1);
             }
         }
 
-        @media (max-width: 768px) {
-            .carousel-control {
-                width: 40px;
-                height: 40px;
+        &:active {
+            transform: translateY(-50%) translateX(var(--translate-x, 0)) scale(0.95);
+            box-shadow: 
+                0 2px 4px rgba(var(--dark-green-7-rgb), 0.1),
+                0 1px 2px rgba(var(--dark-green-7-rgb), 0.06);
+        }
 
-                svg {
-                    width: 20px;
-                    height: 20px;
-                }
+        &:disabled {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-50%) translateX(var(--translate-x, 0)) scale(0.9);
+        }
+
+        &--prev {
+            --translate-x: 4px;
+            left: var(--section-padding, 24px);
+
+            &:hover {
+                --translate-x: -4px;
+            }
+        }
+
+        &--next {
+            --translate-x: -4px;
+            right: var(--section-padding, 24px);
+
+            &:hover {
+                --translate-x: 4px;
+            }
+        }
+    }
+}
+
+// Responsive styles
+@media screen and (max-width: 768px) {
+    .embla {
+        --section-padding: 16px;
+
+        &__container {
+            gap: 20px;
+            padding-left: 20px;
+        }
+
+        &__button {
+            width: 56px;
+            height: 56px;
+            border-width: 2px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+            svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            &:hover {
+                transform: translateY(-50%);
+                --translate-x: 0;
+            }
+
+            &:active {
+                transform: translateY(-50%) scale(0.95);
+            }
+
+            // Improve tap target
+            &::before {
+                content: '';
+                position: absolute;
+                top: -8px;
+                left: -8px;
+                right: -8px;
+                bottom: -8px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .embla {
+        --section-padding: 12px;
+
+        &__container {
+            gap: 24px;
+            padding: 8px 4px;
+            padding-left: 24px;
+        }
+
+        &__button {
+            width: 64px;
+            height: 64px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+            svg {
+                width: 32px;
+                height: 32px;
             }
         }
     }
@@ -90,13 +181,10 @@
 
 // Reduced motion preferences
 @media (prefers-reduced-motion: reduce) {
-    .carousel {
-        .carousel-track {
-            scroll-behavior: auto;
-        }
-
-        .carousel-control {
+    .embla {
+        &__slide,
+        &__button {
             transition: none !important;
         }
     }
-} 
+}

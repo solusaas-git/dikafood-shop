@@ -1,11 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Buildings } from "@phosphor-icons/react";
 import { brandsData } from '../../../data/brands';
 import SectionHeader from '../../../components/ui/section/SectionHeader';
+import BrandTooltip from '../../../components/ui/tooltip/BrandTooltip';
+import { Carousel, CarouselSlide } from '../../../components/ui/carousel/Carousel';
 import './brands.scss';
 
+const EMBLA_OPTIONS = {
+    align: "center",
+    loop: true,
+    dragFree: false,
+    containScroll: false,
+    slidesToScroll: 1
+};
+
 export default function Brands() {
-    const [activeBrand, setActiveBrand] = useState(brandsData[0]);
+    const [tooltipData, setTooltipData] = useState({
+        brand: null,
+        position: { x: 0, y: 0 }
+    });
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const handleMouseMove = (e, brand) => {
+        if (!isMobile) {
+            setTooltipData({
+                brand,
+                position: { x: e.clientX, y: e.clientY }
+            });
+        }
+    };
+
+    const handleMouseLeave = () => {
+        if (!isMobile) {
+            setTooltipData({ brand: null, position: { x: 0, y: 0 } });
+        }
+    };
+
+    const handleCardClick = (brand) => {
+        if (isMobile) {
+            setTooltipData(prev => ({
+                ...prev,
+                brand: prev.brand === brand ? null : brand
+            }));
+        }
+    };
+
+    const handleTooltipClose = () => {
+        setTooltipData({ brand: null, position: { x: 0, y: 0 } });
+    };
+
+    const renderBrandCard = (brand) => (
+        <div
+            className="brand-card"
+            onMouseMove={(e) => handleMouseMove(e, brand)}
+            onMouseLeave={handleMouseLeave}
+            onClick={() => handleCardClick(brand)}
+        >
+            <div className="brand-image">
+                <img 
+                    src={brand.image} 
+                    alt={`Logo ${brand.title}`}
+                    draggable="false"
+                />
+            </div>
+        </div>
+    );
 
     return (
         <section className="brands-section">
@@ -15,64 +83,37 @@ export default function Brands() {
                     title="Nos Marques"
                     subtitle="Découvrez notre gamme complète d'huiles de qualité supérieure"
                     variant="light"
+                    isMobile={isMobile}
                 />
 
-                <div className="brands-tabs">
-                    <div className="tabs-header">
-                        {brandsData.map((brand) => {
-                            const BrandIcon = brand.icon;
-                            return (
-                                <button
-                                    key={brand.id}
-                                    className={`tab-button ${activeBrand.id === brand.id ? 'active' : ''}`}
-                                    onClick={() => setActiveBrand(brand)}
-                                    aria-selected={activeBrand.id === brand.id}
-                                    role="tab"
-                                >
-                                    <div className="brand-info">
-                                        <div className="brand-icon">
-                                            <BrandIcon weight="duotone" />
-                                        </div>
-                                        <span className="brand-name">{brand.title}</span>
-                                    </div>
-                                </button>
-                            );
-                        })}
+                {isMobile ? (
+                    <Carousel 
+                        className="brands-carousel"
+                        opts={EMBLA_OPTIONS}
+                        showControls={true}
+                    >
+                        {brandsData.map((brand) => (
+                            <CarouselSlide key={brand.id}>
+                                {renderBrandCard(brand)}
+                            </CarouselSlide>
+                        ))}
+                    </Carousel>
+                ) : (
+                    <div className="brands-grid">
+                        {brandsData.map((brand) => (
+                            <React.Fragment key={brand.id}>
+                                {renderBrandCard(brand)}
+                            </React.Fragment>
+                        ))}
                     </div>
+                )}
 
-                    <div className="brand-content" role="tabpanel">
-                        <div className="brand-details">
-                            <div className="brand-header">
-                                <div className="brand-title">
-                                    <h3>{activeBrand.title}</h3>
-                                    <span className="brand-type">{activeBrand.type}</span>
-                                </div>
-                                <div className="brand-image">
-                                    <img 
-                                        src={activeBrand.image} 
-                                        alt={`Logo ${activeBrand.title}`}
-                                        draggable="false"
-                                    />
-                                </div>
-                            </div>
-                            
-                            <div className="brand-description">
-                                <p>{activeBrand.description}</p>
-                                
-                                <div className="brand-specs">
-                                    <div className="spec-item">
-                                        <h4>Caractéristiques</h4>
-                                        <p>{activeBrand.characteristics}</p>
-                                    </div>
-                                    <div className="spec-item">
-                                        <h4>Utilisation</h4>
-                                        <p>{activeBrand.usage}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <BrandTooltip 
+                    brand={tooltipData.brand}
+                    position={tooltipData.position}
+                    isMobile={isMobile}
+                    onClose={handleTooltipClose}
+                />
             </div>
         </section>
     );

@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import ProductCard from '../../../../components/cards/product/ProductCard';
+import { Carousel, CarouselSlide } from '../../../../components/ui/carousel/Carousel';
 import { carouselProducts } from '../../../../data/carousel-products';
-import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import ProductCard from '../../../../components/cards/product/ProductCard';
 import './hero-carousel.scss';
 
-export default function HeroCarousel() {
-    const [activeVariants, setActiveVariants] = useState({});
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
+const EMBLA_OPTIONS = {
+    align: "center",
+    loop: true,
+    dragFree: false,
+    containScroll: false,
+    slidesToScroll: 1
+};
 
-    // Initialize with first variant of each product
+// Calculate minimum width needed for grid layout
+// Card width (220px) + gap (24px) * number of cards
+const MIN_GRID_WIDTH = (220 + 24) * carouselProducts.length - 24; // Subtract last gap
+
+export default function HeroCarousel({ isMobile }) {
+    const [shouldUseCarousel, setShouldUseCarousel] = useState(false);
+    const [activeVariants, setActiveVariants] = useState({});
+
     useEffect(() => {
+        // Initialize with first variant of each product
         const initialVariants = {};
         carouselProducts.forEach(product => {
             if (product.variants && product.variants.length > 0) {
@@ -18,13 +30,15 @@ export default function HeroCarousel() {
         });
         setActiveVariants(initialVariants);
 
-        // Add window resize listener
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 480);
+        const checkWidth = () => {
+            const viewportWidth = window.innerWidth;
+            const containerWidth = document.querySelector('.hero-container')?.clientWidth || viewportWidth;
+            setShouldUseCarousel(containerWidth < MIN_GRID_WIDTH);
         };
 
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        checkWidth();
+        window.addEventListener('resize', checkWidth);
+        return () => window.removeEventListener('resize', checkWidth);
     }, []);
 
     const handleVariantChange = (productId, variant) => {
@@ -36,31 +50,37 @@ export default function HeroCarousel() {
 
     const renderProduct = (product) => (
         <ProductCard
+            key={product.id}
             product={product}
             activeVariant={activeVariants[product.id]}
             onVariantChange={(variant) => handleVariantChange(product.id, variant)}
-            className={isMobile ? 'product-card-mobile' : ''}
+            className={isMobile ? 'mobile' : ''}
         />
     );
 
-    return (
-        <div className={`hero-carousel ${isMobile ? 'mobile-carousel' : ''}`}>
-            <div className="carousel-track">
-                {carouselProducts.map((product) => (
-                    <div key={product.id} className="carousel-item">
-                        {renderProduct(product)}
-                    </div>
-                ))}
+    if (!shouldUseCarousel) {
+        return (
+            <div className="hero-carousel">
+                <div className="products-grid">
+                    {carouselProducts.map(renderProduct)}
+                </div>
             </div>
+        );
+    }
 
-            <div className="carousel-controls">
-                <button className="carousel-control prev" aria-label="Previous">
-                    <CaretLeft weight="bold" />
-                </button>
-                <button className="carousel-control next" aria-label="Next">
-                    <CaretRight weight="bold" />
-                </button>
-            </div>
+    return (
+        <div className={`hero-carousel ${isMobile ? 'mobile' : ''}`}>
+            <Carousel 
+                className="products-carousel"
+                opts={EMBLA_OPTIONS}
+                showControls={true}
+            >
+                {carouselProducts.map((product) => (
+                    <CarouselSlide key={product.id}>
+                        {renderProduct(product)}
+                    </CarouselSlide>
+                ))}
+            </Carousel>
         </div>
     );
 } 

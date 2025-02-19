@@ -79,7 +79,7 @@ $breakpoints: (
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 999;
+	z-index: 1000;
 	display: flex;
 	justify-content: center;
 	pointer-events: none;
@@ -100,8 +100,8 @@ $breakpoints: (
 		@include glass-effect;
 		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 		box-sizing: border-box;
-		position: relative;
 		transition: map.get($transitions, 'default');
+		position: relative;
 
 		.nav-content {
 			position: relative;
@@ -451,6 +451,8 @@ $breakpoints: (
 			display: flex;
 			align-items: center;
 			margin-left: 16px;
+			pointer-events: auto;
+			z-index: 50;
 
 			// Adjust position when menu switches to mobile
 			@media (max-width: 1200px), (min-width: 1201px) and (max-width: calc(var(--section-max-width) + var(--section-padding) * 2)) {
@@ -588,7 +590,7 @@ $breakpoints: (
 	display: flex;
 	align-items: center;
 	pointer-events: auto;
-	z-index: 998;
+	z-index: 50;
 }
 
 // Add utility class for text truncation if needed
