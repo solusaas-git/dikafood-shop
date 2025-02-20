@@ -83,6 +83,32 @@
         "nouarati": "Nouarati",
         "dika extra vièrge": "Dika Extra Virgin"
     },
+    "benefits": {
+        "title": "Our Quality Commitment",
+        "subtitle": "Discover what makes our olive oil exceptional",
+        "items": {
+            "traditional-harvest": {
+                "title": "Traditional Harvest",
+                "description": "Hand-picked to preserve quality.",
+                "ariaLabel": "Learn more about our traditional harvest"
+            },
+            "cold-press": {
+                "title": "Cold Pressed",
+                "description": "First cold press for nutrient-rich oil.",
+                "ariaLabel": "Learn more about our cold press process"
+            },
+            "premium-quality": {
+                "title": "Premium Quality",
+                "description": "Rigorous control at every step.",
+                "ariaLabel": "Learn more about our quality control"
+            },
+            "natural": {
+                "title": "100% Natural",
+                "description": "No additives or preservatives.",
+                "ariaLabel": "Learn more about our natural commitment"
+            }
+        }
+    },
     "shop": {
         "title": "Our Shop",
         "subtitle": "Discover our selection of authentic Moroccan products",

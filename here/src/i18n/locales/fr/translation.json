@@ -83,6 +83,32 @@
         "nouarati": "Nouarati",
         "dika extra vièrge": "Dika Extra Vierge"
     },
+    "benefits": {
+        "title": "Notre Engagement Qualité",
+        "subtitle": "Découvrez ce qui rend notre huile d'olive exceptionnelle",
+        "items": {
+            "traditional-harvest": {
+                "title": "Récolte Traditionnelle",
+                "description": "Cueillette à la main pour préserver la qualité.",
+                "ariaLabel": "En savoir plus sur notre récolte traditionnelle"
+            },
+            "cold-press": {
+                "title": "Pressage à Froid",
+                "description": "Première pression à froid pour une huile riche en nutriments.",
+                "ariaLabel": "En savoir plus sur notre processus de pressage à froid"
+            },
+            "premium-quality": {
+                "title": "Qualité Premium",
+                "description": "Un contrôle rigoureux à chaque étape.",
+                "ariaLabel": "En savoir plus sur notre contrôle qualité"
+            },
+            "natural": {
+                "title": "100% Naturel",
+                "description": "Sans additifs ni conservateurs.",
+                "ariaLabel": "En savoir plus sur notre engagement naturel"
+            }
+        }
+    },
     "shop": {
         "title": "Notre boutique",
         "subtitle": "Découvrez notre sélection de produits marocains authentiques",

@@ -1,44 +1,51 @@
 import React from 'react';
-import { memo } from 'react';
-import "./field.scss"
+import './field.scss';
 
-const Field = memo(({ Icon, inputName, placeholder }) => {
-    // Enhanced autocomplete mapping
-    const getAutocomplete = (name) => {
-        const mappings = {
-            'prenom': 'given-name',
-            'nom': 'family-name',
-            'email': 'email',
-            'telephone': 'tel'
-        };
-        return mappings[name] || 'off';
-    };
-
-    // Get input type based on name
-    const getInputType = (name) => {
-        const types = {
-            'email': 'email',
-            'telephone': 'tel'
-        };
-        return types[name] || 'text';
-    };
+const Field = ({
+    inputName,
+    Icon,
+    placeholder,
+    type = 'text',
+    value,
+    onChange,
+    onBlur,
+    error,
+    required
+}) => {
+    const fieldId = `field-${inputName}`;
+    const errorId = `${fieldId}-error`;
+    const hasError = Boolean(error);
 
     return (
-        <div className="field">
-            {Icon && <span className="field-icon">{Icon}</span>}
-            <input 
-                type={getInputType(inputName)}
-                id={`field-${inputName}`}
-                name={inputName} 
-                placeholder={placeholder} 
-                autoComplete={getAutocomplete(inputName)}
-                required 
-                aria-label={placeholder}
+        <div className={`field ${hasError ? 'has-error' : ''}`}>
+            <div className="field-icon">
+                {Icon}
+            </div>
+            <input
+                id={fieldId}
+                name={inputName}
+                type={type}
+                placeholder={placeholder}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                required={required}
+                aria-invalid={hasError}
+                aria-describedby={hasError ? errorId : undefined}
+                aria-required={required}
             />
-            <div className="field-line" aria-hidden="true" />
+            {hasError && (
+                <div 
+                    className="error-message" 
+                    id={errorId}
+                    role="alert"
+                >
+                    {error}
+                </div>
+            )}
         </div>
     );
-});
+};
 
 Field.displayName = 'Field';
 

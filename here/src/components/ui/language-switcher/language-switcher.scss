@@ -63,9 +63,9 @@
 
 .floating-language-switcher {
     position: fixed;
-    top: 16px;
-    right: 0;
-    z-index: 99;
+    bottom: 24px;
+    left: 16px;
+    z-index: 999;
     pointer-events: none;
 
     .lang-toggle {
@@ -73,26 +73,26 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        height: 40px;
+        height: 44px;
         background: var(--dark-green-7);
         border: 1px solid rgba(255, 255, 255, 0.1);
         padding: 0 16px;
-        border-radius: 20px 0 0 20px;
+        border-radius: 22px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 500;
         color: var(--light-yellow-1);
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         box-shadow: 
-            -4px 4px 8px rgba(0, 0, 0, 0.1),
-            -2px 2px 4px rgba(0, 0, 0, 0.06);
+            0 4px 12px rgba(0, 0, 0, 0.15),
+            0 2px 4px rgba(0, 0, 0, 0.1);
 
         svg {
             color: var(--dark-yellow-1);
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
         }
 
         .current-lang {
@@ -103,13 +103,12 @@
         }
 
         &:hover {
-            padding-right: 20px;
-            transform: translateX(-4px);
+            transform: translateY(-2px);
             background: var(--dark-green-8);
         }
 
         &:active {
-            transform: translateX(0);
+            transform: translateY(0);
         }
     }
 
@@ -124,19 +123,19 @@
     .lang-dropdown {
         pointer-events: auto;
         position: absolute;
-        top: calc(100% + 4px);
-        right: 0;
+        bottom: calc(100% + 8px);
+        left: 0;
         background: var(--dark-green-7);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 8px;
-        min-width: 160px;
+        min-width: 180px;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         box-shadow: 
             0 10px 15px -3px rgba(0, 0, 0, 0.2),
             0 4px 6px -2px rgba(0, 0, 0, 0.1);
-        transform-origin: top right;
+        transform-origin: bottom left;
         animation: dropdownEnter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
         .lang-option {
@@ -144,17 +143,17 @@
             align-items: center;
             gap: 8px;
             width: 100%;
-            padding: 8px 12px;
+            padding: 10px 16px;
             border: none;
             background: none;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
             color: var(--light-yellow-1);
-            font-size: 14px;
+            font-size: 15px;
 
             .lang-flag {
-                font-size: 16px;
+                font-size: 18px;
             }
 
             .lang-name {
@@ -184,80 +183,54 @@
     }
 }
 
-// Scrolled state adjustments
-.scrolled .floating-language-switcher {
-    top: 12px;
-}
-
-// Mobile styles - match navbar's content-based breakpoint
-@media (max-width: 1200px), (min-width: 1201px) and (max-width: calc(var(--section-max-width) + var(--section-padding) * 2)) {
+@media screen and (max-width: 480px) {
     .floating-language-switcher {
-        position: fixed;
-        top: auto;
-        bottom: 16px;
-        right: 16px;
-        z-index: 999;
+        bottom: 24px;
+        left: 20px;
 
         .lang-toggle {
-            height: 40px;
-            padding: 0 12px;
-            background: var(--dark-green-7);
-            border-radius: 20px;
-            box-shadow: 
-                0 4px 12px rgba(0, 0, 0, 0.15),
-                0 2px 4px rgba(0, 0, 0, 0.1);
+            height: 48px;
+            border-radius: 24px;
+            padding: 0 18px;
             
             svg {
-                width: 20px;
-                height: 20px;
+                width: 24px;
+                height: 24px;
             }
 
             .current-lang {
-                font-size: 14px;
-            }
-
-            &:hover {
-                padding-right: 12px;
-                transform: translateY(-2px);
-            }
-
-            &:active {
-                transform: translateY(0);
+                font-size: 16px;
             }
         }
 
         .lang-dropdown {
-            position: absolute;
-            bottom: calc(100% + 8px);
-            right: 0;
-            top: auto;
-            transform-origin: bottom right;
-
-            .lang-option {
-                padding: 8px 12px;
-                font-size: 14px;
-
-                .lang-flag {
-                    font-size: 16px;
-                }
-            }
+            min-width: 200px;
         }
     }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 375px) {
     .floating-language-switcher {
-        bottom: 16px;
-        right: 16px;
+        bottom: 20px;
+        left: 16px;
 
         .lang-toggle {
-            height: 40px;
-            border-radius: 20px;
+            height: 44px;
+            border-radius: 22px;
+            padding: 0 16px;
             
             svg {
-                width: 20px;
-                height: 20px;
+                width: 22px;
+                height: 22px;
             }
+
+            .current-lang {
+                font-size: 15px;
+            }
+        }
+
+        .lang-dropdown {
+            min-width: 180px;
         }
     }
 }

@@ -32,6 +32,11 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 
         @media (max-width: 480px) {
             padding: 0;
+            gap: 24px;
+        }
+
+        @media (max-width: 375px) {
+            gap: 16px;
         }
     }
 
@@ -46,6 +51,11 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         &.mobile {
             gap: clamp(32px, 4%, 40px);
             padding: 16px 0;
+
+            @media (max-width: 375px) {
+                gap: 24px;
+                padding: 12px 0;
+            }
         }
     }
 
@@ -54,11 +64,21 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         .hero-container {
             gap: 24px;
             padding: 0 16px;
+
+            @media (max-width: 375px) {
+                gap: 16px;
+                padding: 0 12px;
+            }
         }
 
         .content-wrapper {
             gap: 32px;
             padding: 16px 0;
+
+            @media (max-width: 375px) {
+                gap: 24px;
+                padding: 12px 0;
+            }
         }
     }
 
@@ -75,6 +95,42 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
             .content-wrapper {
                 gap: 28px;
                 padding: 12px 0;
+            }
+        }
+    }
+
+    // iPhone SE and similar small devices
+    @media screen and (max-width: 375px) {
+        &.mobile {
+            --section-padding: 8px;
+            --container-padding: 8px;
+            padding: calc(40px + var(--navbar-height)) var(--section-padding) 40px;
+            min-height: calc(100vh - var(--navbar-height));
+
+            .hero-container {
+                gap: 16px;
+                padding: 0 var(--container-padding);
+            }
+
+            .content-wrapper {
+                gap: 20px;
+                padding: 8px 0;
+
+                &.mobile {
+                    gap: 16px;
+                }
+            }
+        }
+    }
+
+    // Portrait orientation for small screens
+    @media screen and (max-height: 667px) and (max-width: 375px) {
+        &.mobile {
+            padding: calc(32px + var(--navbar-height)) var(--section-padding) 32px;
+
+            .content-wrapper {
+                gap: 16px;
+                padding: 4px 0;
             }
         }
     }
@@ -100,6 +156,13 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
                 gap: 20px;
                 padding: 12px 0;
             }
+        }
+    }
+
+    // Reduced motion preferences
+    @media (prefers-reduced-motion: reduce) {
+        .carousel-track {
+            scroll-behavior: auto;
         }
     }
 }
@@ -131,15 +194,6 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         .content-wrapper {
             gap: clamp(36px, 4.5%, 48px);
             padding: clamp(20px, 2.5%, 28px) 0;
-        }
-    }
-}
-
-// Reduced motion preferences
-@media (prefers-reduced-motion: reduce) {
-    .hero-section {
-        .carousel-track {
-            scroll-behavior: auto;
         }
     }
 }

@@ -111,6 +111,114 @@
             }
         }
     }
+
+    // Small screen variant (iPhone SE, etc.)
+    @media screen and (max-width: 375px) {
+        position: relative;
+        --section-padding: 12px;
+        margin: 0 calc(var(--section-padding) * -1);
+        width: calc(100% + (var(--section-padding) * 2));
+        padding: 0 var(--section-padding);
+
+        &__viewport {
+            overflow: hidden;
+            width: 100%;
+            padding: 0;
+        }
+
+        &__container {
+            display: flex;
+            gap: 8px;
+            padding: 4px 0;
+            width: 100%;
+            margin: 0;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        &__slide {
+            min-width: calc(100% - 32px);
+            width: calc(100% - 32px);
+            padding: 0;
+            margin: 0;
+
+            .product-card {
+                width: 100%;
+                max-width: 280px;
+                margin: 0 auto;
+            }
+        }
+
+        &__button {
+            width: 32px;
+            height: 32px;
+            border-width: 1px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0.85;
+            background: white;
+            z-index: 100;
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            &:hover {
+                transform: translateY(-50%);
+                --translate-x: 0;
+                background: var(--light-yellow-1);
+            }
+
+            &:active {
+                transform: translateY(-50%) scale(0.95);
+            }
+
+            &--prev {
+                left: var(--section-padding);
+            }
+
+            &--next {
+                right: var(--section-padding);
+            }
+
+            // Improve tap target
+            &::before {
+                content: '';
+                position: absolute;
+                top: -6px;
+                left: -6px;
+                right: -6px;
+                bottom: -6px;
+            }
+        }
+    }
+
+    // Portrait orientation for small screens
+    @media screen and (max-height: 667px) and (max-width: 375px) {
+        &__button {
+            top: 45%;
+            width: 28px;
+            height: 28px;
+
+            svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            &--prev {
+                left: 0;
+            }
+
+            &--next {
+                right: 0;
+            }
+        }
+
+        &__container {
+            gap: 10px;
+            padding-left: 6px;
+        }
+    }
 }
 
 // Responsive styles

@@ -37,7 +37,7 @@
         gap: 24px;
 
         h1 {
-            font-size: clamp(32px, 8vw, 40px);
+            font-size: clamp(28px, 7vw, 40px);
             line-height: 1.2;
             letter-spacing: -0.01em;
             max-width: 480px;
@@ -63,6 +63,71 @@
                 svg {
                     width: 20px;
                     height: 20px;
+                }
+            }
+        }
+
+        // iPhone SE and similar small screens
+        @media screen and (max-width: 375px) {
+            max-width: 100%;
+            padding: 0 var(--container-padding, 8px);
+            gap: 16px;
+
+            h1 {
+                font-size: 24px;
+                line-height: 1.3;
+                max-width: 280px;
+                letter-spacing: -0.01em;
+                margin: 0 auto;
+                
+                .highlight {
+                    display: inline;
+                }
+            }
+
+            .cta-wrapper {
+                width: 100%;
+                max-width: 260px;
+                margin-top: 0;
+
+                :global(.button) {
+                    width: 100%;
+                    height: 36px;
+                    font-size: 13px;
+                    border-radius: 12px;
+                    padding: 0 16px;
+
+                    svg {
+                        width: 16px;
+                        height: 16px;
+                    }
+                }
+            }
+        }
+    }
+
+    // Portrait orientation for small screens
+    @media screen and (max-height: 667px) and (max-width: 375px) {
+        &.mobile {
+            gap: 12px;
+
+            h1 {
+                font-size: 22px;
+                max-width: 260px;
+            }
+
+            .cta-wrapper {
+                max-width: 240px;
+
+                :global(.button) {
+                    height: 32px;
+                    font-size: 12px;
+                    padding: 0 12px;
+
+                    svg {
+                        width: 14px;
+                        height: 14px;
+                    }
                 }
             }
         }
@@ -98,12 +163,16 @@
         }
     }
 
-    // Portrait orientation adjustments
-    @media screen and (orientation: portrait) and (max-height: 800px) {
-        gap: 20px;
+    // Portrait orientation adjustments for small heights
+    @media screen and (max-height: 667px) {
+        gap: 16px;
 
         h1 {
-            font-size: clamp(32px, 7vw, 40px);
+            font-size: clamp(24px, 6vw, 28px);
+        }
+
+        .cta-wrapper {
+            margin-top: 4px;
         }
     }
 

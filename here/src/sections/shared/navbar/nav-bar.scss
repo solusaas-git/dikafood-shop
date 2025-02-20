@@ -3,18 +3,32 @@
 $color_1: var(--light-yellow-1);
 $background-color_1: #08441ce6;
 $navbar: (
-	'height': 80px,
-	'mobile-height': 70px,
-	'padding': 16px,
-	'mobile-padding': 12px,
-	'border-radius': 40px,
-	'mobile-border-radius': 32px,
-	'background': rgba(8, 68, 28, 0.95),
-	'mobile-background': rgba(8, 68, 28, 0.98)
+	'height': (
+		'desktop': 80px,
+		'laptop': 72px,
+		'tablet': 68px,
+		'mobile': 64px
+	),
+	'padding': (
+		'desktop': 32px,
+		'laptop': 28px,
+		'tablet': 24px,
+		'mobile': 20px
+	),
+	'border-radius': (
+		'desktop': 40px,
+		'laptop': 36px,
+		'tablet': 32px,
+		'mobile': 28px
+	),
+	'background': (
+		'default': rgba(8, 68, 28, 0.95),
+		'scrolled': rgba(8, 68, 28, 0.98)
+	)
 );
 
 // Calculations for perfect roundness
-$button-height: calc(#{map.get($navbar, 'height')} - #{map.get($navbar, 'padding')} * 2);
+$button-height: calc(#{map.get($navbar, 'height', 'desktop')} - #{map.get($navbar, 'padding', 'desktop')} * 2);
 $button-border-radius: 20px;
 $inner-padding: 20px;
 
@@ -30,7 +44,7 @@ $transitions: (
 @mixin glass-effect {
 	backdrop-filter: blur(10px);
 	-webkit-backdrop-filter: blur(10px);
-	background-color: map.get($navbar, 'background');
+	background-color: map.get($navbar, 'background', 'default');
 	border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -54,7 +68,7 @@ $mobile-menu: (
 	'padding-v': 32px,
 	'padding-h': 24px,
 	'gap': 24px,
-	'button-height': 56px
+	'button-height': 64px
 );
 
 // Update breakpoints for better responsiveness
@@ -62,7 +76,8 @@ $breakpoints: (
 	'mobile': 480px,
 	'tablet': 768px,
 	'laptop': 1024px,
-	'desktop': 1200px
+	'desktop': 1200px,
+	'large': 1440px
 );
 
 @mixin respond-to($breakpoint) {
@@ -83,24 +98,21 @@ $breakpoints: (
 	display: flex;
 	justify-content: center;
 	pointer-events: none;
-	box-sizing: border-box;
-	transition: map.get($transitions, 'default');
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 	.nav-bar {
 		max-width: var(--section-max-width);
 		width: 100%;
-		height: map.get($navbar, 'height');
+		height: map.get($navbar, 'height', 'desktop');
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		background-color: map.get($navbar, 'background');
-		border-radius: map.get($navbar, 'border-radius');
-		padding: 0 32px;
+		padding: 0 map.get($navbar, 'padding', 'desktop');
+		border-radius: map.get($navbar, 'border-radius', 'desktop');
 		pointer-events: auto;
 		@include glass-effect;
 		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-		box-sizing: border-box;
-		transition: map.get($transitions, 'default');
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		position: relative;
 
 		.nav-content {
@@ -132,6 +144,7 @@ $breakpoints: (
 					width: auto;
 					max-width: 160px;
 					object-fit: contain;
+					transition: all 0.3s ease;
 				}
 			}
 		}
@@ -141,16 +154,13 @@ $breakpoints: (
 			align-items: center;
 			gap: 8px;
 			padding: 0;
-			border: none;
-			background: none;
 			margin: 0;
 			justify-content: center;
 			flex: 1;
 			min-width: 0;
 			max-width: calc(100% - 480px);
-			
-			// Hide desktop menu and show mobile menu when space is limited
-			@media (max-width: 1200px), (min-width: 1201px) and (max-width: calc(var(--section-max-width) + var(--section-padding) * 2)) {
+
+			@media (max-width: map.get($breakpoints, 'desktop')) {
 				display: none;
 			}
 
@@ -158,24 +168,15 @@ $breakpoints: (
 				height: 40px;
 				border-radius: 20px;
 				padding: 0 16px;
-				position: relative;
-				white-space: nowrap;
 				color: var(--light-yellow-1);
 				background: rgba(255, 255, 255, 0.05);
-				backdrop-filter: blur(4px);
 				border: 1px solid transparent;
 				transition: all 0.2s ease;
-				flex-shrink: 0;
 				font-size: 14px;
+				white-space: nowrap;
 				
 				&:hover {
 					background: rgba(255, 255, 255, 0.1);
-				}
-				
-				&:focus-visible {
-					outline: none;
-					border-color: var(--dark-yellow-1);
-					color: var(--dark-yellow-1);
 				}
 				
 				&.active {
@@ -185,10 +186,10 @@ $breakpoints: (
 				}
 
 				svg {
-					color: currentColor;
 					width: 18px;
 					height: 18px;
 					margin-right: 8px;
+					color: currentColor;
 				}
 			}
 
@@ -245,8 +246,7 @@ $breakpoints: (
 			margin-left: 0;
 			min-width: 280px;
 
-			// Hide desktop CTAs when switching to mobile layout
-			@media (max-width: 1200px), (min-width: 1201px) and (max-width: calc(var(--section-max-width) + var(--section-padding) * 2)) {
+			@media (max-width: map.get($breakpoints, 'desktop')) {
 				display: none;
 			}
 
@@ -254,8 +254,8 @@ $breakpoints: (
 				height: 36px;
 				border-radius: 18px;
 				padding: 0 16px;
-				white-space: nowrap;
 				font-size: 14px;
+				white-space: nowrap;
 
 				svg {
 					width: 20px;
@@ -269,8 +269,7 @@ $breakpoints: (
 			display: none;
 			position: static;
 
-			// Show mobile menu when main menu is hidden
-			@media (max-width: 1200px), (min-width: 1201px) and (max-width: calc(var(--section-max-width) + var(--section-padding) * 2)) {
+			@media (max-width: map.get($breakpoints, 'desktop')) {
 				display: block;
 			}
 
@@ -306,13 +305,13 @@ $breakpoints: (
 
 			// Mobile menu dropdown
 			#mobile-menu {
-				position: absolute;
-				top: calc(100% + 16px);
+				position: fixed;
+				top: calc(var(--navbar-height) + 16px);
 				left: 50%;
-				transform: translateX(-50%);
-				width: calc(100% - 48px);
+				transform: translateX(-50%) translateY(-8px);
+				width: calc(100% - 32px);
 				max-width: 420px;
-				background: map.get($navbar, 'background');
+				background: var(--dark-green-7);
 				border-radius: 24px;
 				padding: 24px;
 				opacity: 0;
@@ -322,7 +321,8 @@ $breakpoints: (
 				@include glass-effect;
 				box-shadow: 
 					0 20px 40px rgba(0, 0, 0, 0.2),
-					0 8px 16px rgba(0, 0, 0, 0.1);
+					0 8px 16px rgba(0, 0, 0, 0.1),
+					0 0 0 1px rgba(255, 255, 255, 0.1);
 				z-index: 1000;
 
 				&.active {
@@ -338,6 +338,7 @@ $breakpoints: (
 					gap: 12px;
 					margin: 0 0 24px;
 					width: 100%;
+					max-width: none;
 
 					button {
 						width: 100%;
@@ -347,45 +348,32 @@ $breakpoints: (
 						justify-content: flex-start;
 						padding: 0 20px;
 						font-size: 15px;
-						color: var(--light-yellow-1);
-						background: rgba(255, 255, 255, 0.05);
-						backdrop-filter: blur(4px);
-						border: 1px solid transparent;
 						border-radius: 24px;
+						background: rgba(255, 255, 255, 0.05);
+						border: 1px solid rgba(255, 255, 255, 0.1);
+						color: var(--light-yellow-1);
 						transition: all 0.2s ease;
-						text-align: left;
 
 						svg {
 							width: 20px;
 							height: 20px;
 							margin-right: 12px;
-							flex-shrink: 0;
 							color: currentColor;
-						}
-
-						span {
-							flex: 1;
-							text-align: left;
 						}
 
 						&:hover {
 							background: rgba(255, 255, 255, 0.1);
+							border-color: rgba(255, 255, 255, 0.2);
 						}
 
-						&:focus-visible {
-							outline: none;
-							border-color: var(--dark-yellow-1);
-							color: var(--dark-yellow-1);
+						&:active {
+							transform: scale(0.98);
 						}
 
 						&.active {
-							background: rgba(255, 255, 255, 0.15);
-							color: var(--dark-yellow-1);
+							background: var(--dark-yellow-1);
 							border-color: var(--dark-yellow-1);
-
-							svg {
-								color: currentColor;
-							}
+							color: var(--dark-green-7);
 						}
 					}
 				}
@@ -397,6 +385,7 @@ $breakpoints: (
 					width: 100%;
 					margin: 0;
 					padding: 0;
+					min-width: 0;
 
 					button {
 						width: 100%;
@@ -405,10 +394,13 @@ $breakpoints: (
 						align-items: center;
 						justify-content: center;
 						text-align: center;
+						border-radius: 24px;
+						font-size: 15px;
 
 						svg {
+							width: 20px;
+							height: 20px;
 							margin-right: 12px;
-							flex-shrink: 0;
 						}
 					}
 				}
@@ -420,6 +412,13 @@ $breakpoints: (
 					width: calc(100% - 32px);
 					padding: 20px;
 					border-radius: 20px;
+
+					.menu button,
+					.cta button {
+						height: 44px;
+						font-size: 14px;
+						border-radius: 22px;
+					}
 				}
 			}
 
@@ -428,17 +427,85 @@ $breakpoints: (
 				#mobile-menu {
 					width: calc(100% - 24px);
 					padding: 16px;
-					border-radius: 16px;
+					border-radius: 20px;
+					top: calc(var(--navbar-height) + 12px);
 
-					.menu button {
-						height: 44px;
-						font-size: 14px;
-						border-radius: 22px;
+					.menu {
+						gap: 8px;
+						margin-bottom: 16px;
+
+						button {
+							height: 44px;
+							font-size: 14px;
+							border-radius: 22px;
+							padding: 0 16px;
+
+							svg {
+								width: 18px;
+								height: 18px;
+								margin-right: 10px;
+							}
+						}
 					}
 
-					.cta button {
-						height: 44px;
-						border-radius: 22px;
+					.cta {
+						gap: 8px;
+
+						button {
+							height: 44px;
+							font-size: 14px;
+							border-radius: 22px;
+
+							svg {
+								width: 18px;
+								height: 18px;
+								margin-right: 10px;
+							}
+						}
+					}
+				}
+			}
+
+			// Extra small screen adjustments
+			@media screen and (max-width: 375px) {
+				#mobile-menu {
+					width: calc(100% - 20px);
+					padding: 14px;
+					border-radius: 16px;
+					top: calc(var(--navbar-height) + 10px);
+
+					.menu {
+						gap: 6px;
+						margin-bottom: 14px;
+
+						button {
+							height: 40px;
+							font-size: 13px;
+							border-radius: 20px;
+							padding: 0 14px;
+
+							svg {
+								width: 16px;
+								height: 16px;
+								margin-right: 8px;
+							}
+						}
+					}
+
+					.cta {
+						gap: 6px;
+
+						button {
+							height: 40px;
+							font-size: 13px;
+							border-radius: 20px;
+
+							svg {
+								width: 16px;
+								height: 16px;
+								margin-right: 8px;
+							}
+						}
 					}
 				}
 			}
@@ -462,24 +529,16 @@ $breakpoints: (
 	}
 
 	// Responsive adjustments
-	@media (max-width: map.get($breakpoints, 'desktop')) {
-		padding: 16px 20px;
+	@include respond-to('laptop') {
+		padding: 12px var(--section-padding);
 
 		.nav-bar {
-			height: map.get($navbar, 'mobile-height');
-			border-radius: map.get($navbar, 'mobile-border-radius');
-			padding: 0 24px;
+			height: map.get($navbar, 'height', 'laptop');
+			padding: 0 map.get($navbar, 'padding', 'laptop');
+			border-radius: map.get($navbar, 'border-radius', 'laptop');
 
 			.logo a img {
 				max-width: 140px;
-			}
-
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-
-			.logo {
-				margin-right: auto;
 			}
 
 			.menu-phone {
@@ -492,58 +551,81 @@ $breakpoints: (
 		}
 	}
 
-	@media (max-width: map.get($breakpoints, 'tablet')) {
-		padding: 12px 16px;
+	@include respond-to('tablet') {
+		padding: 10px var(--section-padding);
 
 		.nav-bar {
-			padding: 0 20px;
+			padding: 0 map.get($navbar, 'padding', 'tablet');
+			border-radius: map.get($navbar, 'border-radius', 'tablet');
+
+			.logo a img {
+				max-width: 120px;
+			}
+
+			.menu-phone {
+				#mobile-menu {
+					width: calc(100% - 32px);
+					padding: 20px;
+					border-radius: 20px;
+
+					.menu button,
+					.cta button {
+						height: 44px;
+						font-size: 14px;
+					}
+				}
+			}
 		}
 	}
 
-	@media (max-width: map.get($breakpoints, 'mobile')) {
-		padding: 8px 12px;
+	@include respond-to('mobile') {
+		padding: 0;
 
 		.nav-bar {
-			padding: 0 16px;
+			height: map.get($navbar, 'height', 'mobile');
+			padding: 0 map.get($navbar, 'padding', 'mobile');
+			border-radius: 0;
+			max-width: 100%;
 
-			.logo a img {
-				max-width: 110px;
+			.logo {
+				padding-left: 4px;
+				
+				a img {
+					max-width: 100px;
+				}
 			}
 
-			.menu-phone > div {
-				right: 0;
-				left: 0;
-				padding: 24px;
-				width: 100%;
-				border-radius: 0;
-				margin: 0;
+			.menu-phone {
+				padding-right: 4px;
+				
+				#mobile-menu {
+					width: 100%;
+					padding: 16px;
+					border-radius: 0 0 16px 16px;
+					left: 0;
+					transform: none;
+					max-width: none;
 
-				.menu {
-					padding: 12px;
-					
-					button {
-						height: 48px;
+					&.active {
+						transform: none;
+					}
+
+					.menu button,
+					.cta button {
+						height: 40px;
 						font-size: 14px;
-						border-radius: 14px;
-						padding: 0 24px;
+						border-radius: 20px;
 					}
 				}
 
-				.cta {
-					padding: 12px;
-					margin: 0;
-					
-					button {
-						height: 48px;
-						font-size: 14px;
-						border-radius: 14px;
-						padding: 0 24px;
-					}
-				}
+				> span {
+					width: 36px;
+					height: 36px;
 
-				// Remove the phone breakpoint styles since we're making it full width by default
-				@media screen and (max-width: 380px) {
-					padding: 32px 24px;
+					svg {
+						width: 20px;
+						height: 20px;
+					}
 				}
 			}
 		}
@@ -551,16 +633,15 @@ $breakpoints: (
 
 	// Scrolled state styles
 	&.scrolled {
-		padding-top: 12px;
-		padding-bottom: 12px;
+		padding-top: 8px;
+		padding-bottom: 8px;
 
-		@media (max-width: map.get($breakpoints, 'tablet')) {
-			padding-top: 8px;
-			padding-bottom: 8px;
+		@include respond-to('mobile') {
+			padding: 0;
 		}
 
 		.nav-bar {
-			background-color: map.get($navbar, 'background');
+			background-color: map.get($navbar, 'background', 'scrolled');
 			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 		}
 	}
@@ -598,4 +679,204 @@ $breakpoints: (
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+	.nav-bar-container,
+	.nav-bar,
+	.menu button,
+	.menu-phone > span,
+	#mobile-menu {
+		transition: none !important;
+	}
+}
+
+// Mobile styles
+@media (max-width: map.get($breakpoints, 'desktop')) {
+	.nav-bar-container {
+		padding: 12px var(--section-padding-mobile);
+
+		.nav-bar {
+			height: map.get($navbar, 'height', 'mobile');
+			padding: 0 map.get($navbar, 'padding', 'mobile');
+			border-radius: map.get($navbar, 'border-radius', 'mobile');
+			margin: 0 12px;
+			width: calc(100% - 24px);
+			box-shadow: 
+				0 8px 24px rgba(0, 0, 0, 0.15),
+				0 2px 8px rgba(0, 0, 0, 0.1);
+
+			.nav-content {
+				gap: 16px;
+			}
+
+			.logo {
+				min-width: 120px;
+				padding: 10px 0;
+
+				img {
+					max-width: 140px;
+				}
+			}
+
+			.menu-button {
+				width: 44px;
+				height: 44px;
+				border-radius: 12px;
+
+				svg {
+					width: 24px;
+					height: 24px;
+				}
+			}
+
+			.mobile-menu {
+				.menu {
+					button {
+						height: 56px;
+						font-size: 16px;
+						border-radius: 14px;
+						padding: 0 24px;
+
+						svg {
+							width: 22px;
+							height: 22px;
+							margin-right: 12px;
+						}
+					}
+				}
+
+				.nav-lang-switcher {
+					.language-switcher {
+						.lang-options {
+							padding: 4px;
+
+							.lang-option {
+								padding: 10px 20px;
+								font-size: 15px;
+
+								.lang-flag {
+									font-size: 18px;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Mobile menu panel
+		.mobile-menu {
+			position: fixed;
+			top: calc(52px + 16px);
+			width: calc(100% - 24px);
+			padding: 20px;
+			border-radius: 20px;
+			margin: 0 auto;
+
+			.menu button {
+				height: 44px;
+				font-size: 14px;
+				padding: 0 16px;
+				border-radius: 20px;
+
+				svg {
+					width: 18px;
+					height: 18px;
+					margin-right: 10px;
+				}
+			}
+
+			.cta button {
+				border-radius: 20px;
+				height: 44px;
+			}
+		}
+	}
+}
+
+// Small screen adjustments
+@media screen and (max-width: map.get($breakpoints, 'mobile')) {
+	.nav-bar-container {
+		padding: 8px var(--section-padding-mobile, 12px);
+
+		.nav-bar {
+			height: 52px;
+			padding: 0 16px;
+			border-radius: 20px;
+			margin: 0 8px;
+			width: calc(100% - 16px);
+
+			.logo {
+				min-width: 100px;
+				padding: 8px 0;
+
+				img {
+					max-width: 120px;
+				}
+			}
+
+			.menu-button {
+				width: 38px;
+				height: 38px;
+
+				svg {
+					width: 20px;
+					height: 20px;
+				}
+			}
+		}
+
+		.mobile-menu {
+			top: calc(52px + 16px);
+			width: calc(100% - 24px);
+			padding: 20px;
+			border-radius: 20px;
+			margin: 0 auto;
+
+			.menu button {
+				height: 48px;
+				font-size: 14px;
+				padding: 0 18px;
+				border-radius: 10px;
+
+				svg {
+					width: 18px;
+					height: 18px;
+					margin-right: 8px;
+				}
+			}
+
+			.cta button {
+				border-radius: 20px;
+				height: 44px;
+			}
+		}
+	}
+}
+
+// Portrait mode adjustments
+@media screen and (max-height: 667px) {
+	.nav-bar-container {
+		.mobile-menu {
+			max-height: calc(100vh - 100px);
+			overflow-y: auto;
+			-webkit-overflow-scrolling: touch;
+
+			.menu {
+				gap: 8px;
+				margin: 0 0 16px;
+
+				button {
+					height: 40px;
+					font-size: 14px;
+				}
+			}
+
+			.cta {
+				gap: 8px;
+			}
+		}
+	}
 }
