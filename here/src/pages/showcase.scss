@@ -1,0 +1,157 @@
+.showcase-page {
+    padding: 120px 40px 40px;
+    max-width: 1440px;
+    margin: 0 auto;
+    background: var(--light-yellow-1);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+
+    header {
+        margin-bottom: 48px;
+        text-align: center;
+        
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--dark-green-7);
+            margin: 0 0 8px;
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--dark-green-6);
+            margin: 0;
+        }
+    }
+
+    .showcase-section {
+        margin-bottom: 64px;
+        background: white;
+        padding: 32px;
+        border-radius: 24px;
+        border: 1px solid var(--dark-yellow-1);
+        box-shadow: 0 4px 12px rgba(var(--dark-yellow-1-rgb), 0.08);
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark-green-7);
+            margin: 0 0 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--light-yellow-2);
+            text-align: center;
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 32px;
+            align-items: start;
+            padding: 32px;
+            background: var(--light-yellow-1);
+            border-radius: 16px;
+            border: 1px solid var(--dark-yellow-1);
+
+            &.buttons-showcase {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 24px;
+                max-width: 800px;
+                margin: 0 auto;
+
+                // Special handling for nav-mobile buttons
+                .button.nav-mobile {
+                    grid-column: 1 / -1;
+                    max-width: 300px;
+                    margin: 0 auto;
+                }
+
+                // Group nav buttons together
+                .button.nav {
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+
+            &.full-width {
+                grid-column: 1 / -1;
+                grid-template-columns: 1fr;
+            }
+
+            // Full width components
+            .message-field,
+            .accordion,
+            .section-header {
+                grid-column: 1 / -1;
+            }
+
+            // Dark background for dark theme components
+            .dark-background {
+                background: var(--dark-green-7);
+                padding: 40px;
+                border-radius: 16px;
+                margin-top: 32px;
+            }
+        }
+
+        // Center all components in grid
+        .field,
+        .message-field,
+        .dropdown,
+        .benefit-card,
+        .accordion {
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+    }
+
+    // Component specific adjustments
+    .benefit-card {
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(var(--dark-yellow-1-rgb), 0.08);
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(var(--dark-yellow-1-rgb), 0.12);
+        }
+    }
+
+    // Responsive adjustments
+    @media (max-width: 768px) {
+        padding: 100px 24px 24px;
+        overflow-x: hidden;
+
+        header {
+            margin-bottom: 32px;
+        }
+
+        .showcase-section {
+            margin-bottom: 40px;
+            padding: 24px;
+            border-radius: 16px;
+
+            .component-grid {
+                padding: 24px;
+                gap: 24px;
+                grid-template-columns: 1fr;
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        padding: 90px 16px 16px;
+
+        .showcase-section {
+            padding: 16px;
+            border-radius: 12px;
+
+            .component-grid {
+                padding: 16px;
+                gap: 16px;
+            }
+        }
+    }
+} 

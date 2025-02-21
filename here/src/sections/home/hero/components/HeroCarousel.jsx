@@ -1,51 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Carousel, CarouselSlide } from '../../../../components/ui/carousel/Carousel';
 import { carouselProducts } from '../../../../data/carousel-products';
 import ProductCard from '../../../../components/cards/product/ProductCard';
 import './hero-carousel.scss';
+import { useBreakpoint } from '../../../../hooks/useBreakpoint';
 
-const EMBLA_OPTIONS = {
-    align: "center",
-    loop: true,
-    dragFree: false,
-    containScroll: false,
-    slidesToScroll: 1
-};
-
-// Calculate minimum width needed for grid layout
-// Card width (220px) + gap (24px) * number of cards
-const MIN_GRID_WIDTH = (220 + 24) * carouselProducts.length - 24; // Subtract last gap
-
-export default function HeroCarousel({ isMobile }) {
-    const [shouldUseCarousel, setShouldUseCarousel] = useState(false);
-    const [activeVariants, setActiveVariants] = useState({});
-
-    useEffect(() => {
+export default function HeroCarousel() {
+    const { isMobile, isTablet, isLaptop } = useBreakpoint();
+    const [activeVariants, setActiveVariants] = useState(() => {
         // Initialize with first variant of each product
-        const initialVariants = {};
+        const variants = {};
         carouselProducts.forEach(product => {
-            if (product.variants && product.variants.length > 0) {
-                initialVariants[product.id] = product.variants[0];
+            if (product.variants?.length > 0) {
+                variants[product.id] = product.variants[0];
             }
         });
-        setActiveVariants(initialVariants);
+        return variants;
+    });
 
-        const checkWidth = () => {
-            const viewportWidth = window.innerWidth;
-            const containerWidth = document.querySelector('.hero-container')?.clientWidth || viewportWidth;
-            setShouldUseCarousel(containerWidth < MIN_GRID_WIDTH);
-        };
+    const shouldUseCarousel = isMobile || isTablet || isLaptop;
 
-        checkWidth();
-        window.addEventListener('resize', checkWidth);
-        return () => window.removeEventListener('resize', checkWidth);
-    }, []);
-
-    const handleVariantChange = (productId, variant) => {
-        setActiveVariants(prev => ({
-            ...prev,
-            [productId]: variant
-        }));
+    const carouselOptions = {
+        loop: true,
+        align: 'center',
+        dragFree: true,
+        containScroll: 'trimSnaps',
+        slidesToScroll: 1,
+        breakpoints: {
+            '(min-width: 1440px)': { slidesToShow: 4 },
+            '(min-width: 1024px)': { slidesToShow: 3 },
+            '(min-width: 768px)': { slidesToShow: 2 },
+            '(max-width: 767px)': { 
+                slidesToShow: 1,
+                containScroll: true
+            }
+        }
     };
 
     const renderProduct = (product) => (
@@ -53,8 +42,11 @@ export default function HeroCarousel({ isMobile }) {
             key={product.id}
             product={product}
             activeVariant={activeVariants[product.id]}
-            onVariantChange={(variant) => handleVariantChange(product.id, variant)}
-            className={isMobile ? 'mobile' : ''}
+            onVariantChange={(variant) => setActiveVariants(prev => ({
+                ...prev,
+                [product.id]: variant
+            }))}
+            className={isMobile ? 'mobile' : isTablet ? 'tablet' : ''}
         />
     );
 
@@ -69,14 +61,14 @@ export default function HeroCarousel({ isMobile }) {
     }
 
     return (
-        <div className={`hero-carousel ${isMobile ? 'mobile' : ''}`}>
-            <Carousel 
-                className="products-carousel"
-                opts={EMBLA_OPTIONS}
-                showControls={true}
-            >
+        <div className={`hero-carousel ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''}`}>
+            <Carousel opts={carouselOptions}>
                 {carouselProducts.map((product) => (
-                    <CarouselSlide key={product.id}>
+                    <CarouselSlide 
+                        key={product.id} 
+                        data-type="product"
+                        className={isMobile ? 'mobile' : isTablet ? 'tablet' : ''}
+                    >
                         {renderProduct(product)}
                     </CarouselSlide>
                 ))}

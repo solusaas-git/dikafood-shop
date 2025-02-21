@@ -23,11 +23,6 @@ const NAV_ITEMS = [
         name: "Blog",
         path: "/blog"
     },
-    {
-        icon: <ShoppingBag size={20} weight="duotone" />,
-        name: "Boutique",
-        path: "/boutique"
-    }
 ];
 
 function NavBar({ onClick, isOpen, onClose }) {

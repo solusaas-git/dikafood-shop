@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { memo } from 'react';
 import { Medal } from "@phosphor-icons/react";
-import { useTranslation } from 'react-i18next';
 import "./benefits.scss";
 import { benefitsData } from '../../../data/benefits';
 import BenefitCard from '../../../components/cards/benefit/BenefitCard';
@@ -9,7 +8,6 @@ import SectionHeader from '../../../components/ui/section/SectionHeader';
 
 const NewBenefits = memo(() => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    const { t } = useTranslation();
 
     useEffect(() => {
         const handleResize = () => {
@@ -28,23 +26,23 @@ const NewBenefits = memo(() => {
             <div className="container">
                 <SectionHeader 
                     icon={Medal}
-                    title={t('benefits.title')}
-                    subtitle={t('benefits.subtitle')}
+                    title="Notre Engagement Qualité"
+                    subtitle="Découvrez ce qui rend notre huile d'olive exceptionnelle"
                     variant="dark"
                     isMobile={isMobile}
                 />
                 <div 
                     className="benefits-grid"
                     role="region"
-                    aria-label={t('benefits.title')}
+                    aria-label="Notre Engagement Qualité"
                 >
                     {benefitsData.map((benefit) => (
                         <BenefitCard
                             key={benefit.id}
                             Icon={benefit.Icon}
-                            title={t(`benefits.items.${benefit.id}.title`)}
-                            descp={t(`benefits.items.${benefit.id}.description`)}
-                            ariaLabel={t(`benefits.items.${benefit.id}.ariaLabel`)}
+                            title={benefit.title}
+                            descp={benefit.description}
+                            ariaLabel={benefit.ariaLabel}
                             isMobile={isMobile}
                         />
                     ))}

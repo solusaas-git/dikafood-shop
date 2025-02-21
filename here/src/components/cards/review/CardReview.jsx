@@ -1,9 +1,8 @@
 import React, { memo, useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Star, CheckCircle, ArrowRight, CaretDown } from "@phosphor-icons/react";
 import "./card-review.scss";
 
-const formatRelativeTime = (dateString, t) => {
+const formatRelativeTime = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInMilliseconds = now - date;
@@ -14,20 +13,19 @@ const formatRelativeTime = (dateString, t) => {
     const diffInMonths = Math.floor(diffInDays / 30);
 
     if (diffInMonths > 0) {
-        return t('review.time.months', { count: diffInMonths });
+        return `il y a ${diffInMonths} mois`;
     } else if (diffInDays > 0) {
-        return t('review.time.days', { count: diffInDays });
+        return `il y a ${diffInDays} jour${diffInDays > 1 ? 's' : ''}`;
     } else if (diffInHours > 0) {
-        return t('review.time.hours', { count: diffInHours });
+        return `il y a ${diffInHours} heure${diffInHours > 1 ? 's' : ''}`;
     } else if (diffInMinutes > 0) {
-        return t('review.time.minutes', { count: diffInMinutes });
+        return `il y a ${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''}`;
     } else {
-        return t('review.time.justNow');
+        return 'à l\'instant';
     }
 };
 
 const CardReview = memo(({ review }) => {
-    const { t } = useTranslation();
     const {
         author,
         rating,
@@ -70,9 +68,9 @@ const CardReview = memo(({ review }) => {
                             </div>
                         </div>
                         {verified && (
-                            <span className="verified-badge" title={t('review.verifiedPurchase')}>
+                            <span className="verified-badge" title="Achat vérifié">
                                 <CheckCircle size={16} weight="fill" />
-                                {t('review.verifiedPurchase')}
+                                Achat vérifié
                             </span>
                         )}
                     </div>
@@ -80,7 +78,7 @@ const CardReview = memo(({ review }) => {
 
                 <div className="review-content">
                     <div className="product-info">
-                        <p className="review-context">{t('review.reviewedProduct')}</p>
+                        <p className="review-context">A donné son avis sur :</p>
                         <a href={`/products/${product.id}`} className="product-link">
                             <div className="product-details">
                                 <p className="product-name">{product.name}</p>
@@ -102,13 +100,13 @@ const CardReview = memo(({ review }) => {
                             className="expand-button"
                             onClick={() => setIsExpanded(!isExpanded)}
                             aria-expanded={isExpanded}
-                            aria-label={t(isExpanded ? 'review.showLess' : 'review.showMore')}
+                            aria-label={isExpanded ? 'Voir moins' : 'Voir plus'}
                         >
                             <CaretDown 
                                 weight="bold"
                                 className={isExpanded ? 'rotated' : ''}
                             />
-                            {t(isExpanded ? 'review.showLess' : 'review.showMore')}
+                            {isExpanded ? 'Voir moins' : 'Voir plus'}
                         </button>
                     )}
                 </div>

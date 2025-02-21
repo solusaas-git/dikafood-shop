@@ -1,0 +1,41 @@
+// Breakpoints
+$breakpoints: (
+  'mobile-sm': 375px,  // iPhone SE, small phones
+  'mobile': 430px,     // Modern mobile phones
+  'tablet': 768px,     // Tablets, large phones
+  'laptop': 1024px,    // Small laptops
+  'desktop': 1440px    // Large screens
+);
+
+// Spacing by device size
+$spacing: (
+  'desktop': (
+    'padding-y': 80px,
+    'gap': 32px,
+    'container-padding': 24px
+  ),
+  'laptop': (
+    'padding-y': 72px,
+    'gap': 28px,
+    'container-padding': 20px
+  ),
+  'tablet': (
+    'padding-y': 64px,
+    'gap': 24px,
+    'container-padding': 16px
+  ),
+  'mobile': (
+    'padding-y': 40px,
+    'gap': 16px,
+    'container-padding': 12px
+  )
+);
+
+// Consistent mixin for breakpoints
+@mixin respond-to($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (max-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+} 

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Translate } from "@phosphor-icons/react";
 import './language-switcher.scss';
 
@@ -9,14 +8,16 @@ const languages = [
 ];
 
 export default function LanguageSwitcher() {
-    const { i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
-    const currentLang = i18n.language;
+    const [currentLang, setCurrentLang] = useState('fr');
 
     const handleLanguageChange = (langCode) => {
-        i18n.changeLanguage(langCode);
-        localStorage.setItem('i18nextLng', langCode);
+        setCurrentLang(langCode);
+        localStorage.setItem('preferredLanguage', langCode);
         setIsOpen(false);
+        
+        // Here you could add logic to handle language change in your app
+        // For now, we'll just keep the UI working
     };
 
     return (

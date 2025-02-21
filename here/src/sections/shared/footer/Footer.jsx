@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import './footer.scss';
 import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg";
 
@@ -12,7 +11,6 @@ export const scrollToContactForm = () => {
 };
 
 export default function Footer() {
-    const { t } = useTranslation();
     const currentYear = new Date().getFullYear();
 
     return (
@@ -23,48 +21,47 @@ export default function Footer() {
                     <div className="logo-wrapper">
                         <img 
                             src={logoUrl} 
-                            alt={t('common.logoAlt')} 
+                            alt="Logo Dikafood" 
                             className="footer-logo"
                         />
                     </div>
-                    <p>{t('footer.description')}</p>
+                    <p>Dikafood est une entreprise marocaine spécialisée dans la production et la distribution d'huiles alimentaires de haute qualité, avec un engagement fort pour l'excellence et la tradition.</p>
                 </div>
 
                 {/* Sitemap Section */}
                 <div className="sitemap-section">
                     <div className="sitemap-category">
-                        <h3>{t('footer.navigation.title')}</h3>
+                        <h3>Navigation</h3>
                         <ul>
-                            <li><Link to="/">{t('nav.home')}</Link></li>
-                            <li><Link to="/about">{t('nav.about')}</Link></li>
-                            <li><Link to="/boutique">{t('nav.shop')}</Link></li>
-                            <li><Link to="/blog">{t('nav.blog')}</Link></li>
+                            <li><Link to="/">Accueil</Link></li>
+                            <li><Link to="/about">À propos</Link></li>
+                            <li><Link to="/blog">Blog</Link></li>
                         </ul>
                     </div>
 
                     <div className="sitemap-category">
-                        <h3>{t('footer.products.title')}</h3>
+                        <h3>Produits</h3>
                         <ul>
-                            <li><Link to="/boutique">{t('footer.products.oliveOil')}</Link></li>
-                            <li><Link to="/boutique">{t('footer.products.tableOil')}</Link></li>
-                            <li><Link to="/boutique">{t('footer.products.fryingOil')}</Link></li>
-                            <li><Link to="/boutique">{t('footer.products.viewAll')}</Link></li>
+                            <li><a href="#products">Huile d'olive</a></li>
+                            <li><a href="#products">Huile de table</a></li>
+                            <li><a href="#products">Huile de friture</a></li>
+                            <li><a href="#products">Voir tout</a></li>
                         </ul>
                     </div>
 
                     <div className="sitemap-category">
-                        <h3>{t('footer.contact.title')}</h3>
+                        <h3>Contact</h3>
                         <ul>
-                            <li><a href="tel:+212661373204">{t('footer.contact.phone1')}</a></li>
-                            <li><a href="tel:+212535942682">{t('footer.contact.phone2')}</a></li>
-                            <li><a href="mailto:contact@dikafood.com">{t('footer.contact.email')}</a></li>
+                            <li><a href="tel:+212661373204">+212 (661) 37 32 04</a></li>
+                            <li><a href="tel:+212535942682">+212 (535) 94 26 82</a></li>
+                            <li><a href="mailto:contact@dikafood.com">contact@dikafood.com</a></li>
                             <li>
                                 <a 
                                     href="https://maps.app.goo.gl/mJRgbWpwp2ZVFtnx8" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
                                 >
-                                    {t('footer.contact.address')}
+                                    18 Rue Zenata Quartier Industriel Dokkarat, Fes
                                 </a>
                             </li>
                         </ul>
@@ -75,11 +72,11 @@ export default function Footer() {
             {/* Copyright Section */}
             <div className="copyright">
                 <div className="copyright-content">
-                    <p>© {currentYear} Dikafood. {t('footer.rights')}</p>
+                    <p>© {currentYear} Dikafood. Tous droits réservés</p>
                     <div className="legal-links">
-                        <Link to="/terms">{t('footer.terms')}</Link>
+                        <Link to="/terms">Conditions générales</Link>
                         <span className="separator">•</span>
-                        <Link to="/privacy">{t('footer.privacy')}</Link>
+                        <Link to="/privacy">Politique de confidentialité</Link>
                     </div>
                 </div>
             </div>

@@ -5,7 +5,11 @@ import './carousel.scss'
 
 export function Carousel({ 
     children, 
-    opts = { loop: true }, 
+    opts = { 
+        loop: true,
+        align: 'start',
+        containScroll: 'trimSnaps'
+    }, 
     className = "",
     showControls = true,
     ...props 

@@ -1,3 +1,5 @@
+@use './styles/variables' as *;
+
 // Variables
 $hero-padding-top: clamp(80px, 10%, 120px);
 $hero-padding-bottom: clamp(80px, 10%, 120px);
@@ -5,39 +7,26 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 .hero-section {
     position: relative;
     width: 100%;
-    padding: calc($hero-padding-top + var(--navbar-height)) var(--section-padding) $hero-padding-bottom;
+    padding: calc(map-get(map-get($spacing, 'desktop'), 'padding-y') + var(--navbar-height)) 
+            var(--section-padding) 
+            map-get(map-get($spacing, 'desktop'), 'padding-y');
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
-
-    &.mobile {
-        padding: calc(clamp(48px, 6%, 64px) + var(--navbar-height)) var(--section-padding) clamp(48px, 6%, 64px);
-        min-height: calc(100vh - var(--navbar-height));
-        display: flex;
-        align-items: center;
-    }
+    min-height: calc(100vh - var(--navbar-height));
 
     .hero-container {
         position: relative;
         width: 100%;
         max-width: var(--max-width);
         margin: 0 auto;
-        padding: 0 var(--container-padding);
+        padding: 0 map-get(map-get($spacing, 'desktop'), 'container-padding');
         z-index: 2;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: clamp(32px, 4%, 48px);
-
-        @media (max-width: 480px) {
-            padding: 0;
-            gap: 24px;
-        }
-
-        @media (max-width: 375px) {
-            gap: 16px;
-        }
+        gap: map-get(map-get($spacing, 'desktop'), 'gap');
     }
 
     .content-wrapper {
@@ -45,124 +34,34 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: clamp(48px, 6%, 64px);
-        padding: clamp(24px, 3%, 32px) 0;
+        gap: map-get(map-get($spacing, 'desktop'), 'gap');
+        padding: calc(map-get(map-get($spacing, 'desktop'), 'padding-y') / 2) 0;
+    }
 
-        &.mobile {
-            gap: clamp(32px, 4%, 40px);
-            padding: 16px 0;
+    @include respond-to('laptop') {
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 
+                var(--section-padding) 
+                map-get(map-get($spacing, 'tablet'), 'padding-y');
 
-            @media (max-width: 375px) {
-                gap: 24px;
-                padding: 12px 0;
-            }
+        .hero-container {
+            padding: 0 map-get(map-get($spacing, 'tablet'), 'container-padding');
+            gap: map-get(map-get($spacing, 'tablet'), 'gap');
         }
     }
 
-    // Mobile styles
-    &.mobile {
-        .hero-container {
-            gap: 24px;
-            padding: 0 16px;
+    @include respond-to('mobile') {
+        padding: calc(map-get(map-get($spacing, 'mobile'), 'padding-y') + var(--navbar-height)) 
+                var(--section-padding) 
+                map-get(map-get($spacing, 'mobile'), 'padding-y');
 
-            @media (max-width: 375px) {
-                gap: 16px;
-                padding: 0 12px;
-            }
+        .hero-container {
+            padding: 0 map-get(map-get($spacing, 'mobile'), 'container-padding');
+            gap: map-get(map-get($spacing, 'mobile'), 'gap');
         }
 
         .content-wrapper {
-            gap: 32px;
-            padding: 16px 0;
-
-            @media (max-width: 375px) {
-                gap: 24px;
-                padding: 12px 0;
-            }
-        }
-    }
-
-    // Extra small screens
-    @media screen and (max-width: 480px) {
-        &.mobile {
-            padding: calc(clamp(40px, 5%, 48px) + var(--navbar-height)) 12px clamp(40px, 5%, 48px);
-
-            .hero-container {
-                gap: 20px;
-                padding: 0 12px;
-            }
-
-            .content-wrapper {
-                gap: 28px;
-                padding: 12px 0;
-            }
-        }
-    }
-
-    // iPhone SE and similar small devices
-    @media screen and (max-width: 375px) {
-        &.mobile {
-            --section-padding: 8px;
-            --container-padding: 8px;
-            padding: calc(40px + var(--navbar-height)) var(--section-padding) 40px;
-            min-height: calc(100vh - var(--navbar-height));
-
-            .hero-container {
-                gap: 16px;
-                padding: 0 var(--container-padding);
-            }
-
-            .content-wrapper {
-                gap: 20px;
-                padding: 8px 0;
-
-                &.mobile {
-                    gap: 16px;
-                }
-            }
-        }
-    }
-
-    // Portrait orientation for small screens
-    @media screen and (max-height: 667px) and (max-width: 375px) {
-        &.mobile {
-            padding: calc(32px + var(--navbar-height)) var(--section-padding) 32px;
-
-            .content-wrapper {
-                gap: 16px;
-                padding: 4px 0;
-            }
-        }
-    }
-
-    // Portrait orientation adjustments
-    @media screen and (orientation: portrait) and (max-height: 800px) {
-        &.mobile {
-            padding: calc(clamp(32px, 4%, 40px) + var(--navbar-height)) var(--section-padding) clamp(32px, 4%, 40px);
-            min-height: calc(100vh - var(--navbar-height));
-
-            .content-wrapper {
-                gap: 24px;
-            }
-        }
-    }
-
-    // Landscape orientation adjustments
-    @media screen and (max-height: 700px) and (orientation: landscape) {
-        &.mobile {
-            padding: calc(clamp(24px, 3%, 32px) + var(--navbar-height)) var(--section-padding) clamp(24px, 3%, 32px);
-
-            .content-wrapper {
-                gap: 20px;
-                padding: 12px 0;
-            }
-        }
-    }
-
-    // Reduced motion preferences
-    @media (prefers-reduced-motion: reduce) {
-        .carousel-track {
-            scroll-behavior: auto;
+            gap: map-get(map-get($spacing, 'mobile'), 'gap');
+            padding: calc(map-get(map-get($spacing, 'mobile'), 'padding-y') / 2) 0;
         }
     }
 }
@@ -170,7 +69,9 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 // Laptop styles
 @media screen and (max-width: 1024px) {
     .hero-section {
-        padding: calc(clamp(64px, 8%, 96px) + var(--navbar-height)) var(--section-padding) clamp(64px, 8%, 96px);
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 
+                var(--section-padding) 
+                map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
             gap: clamp(28px, 3.5%, 40px);
@@ -185,7 +86,9 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 // Tablet styles
 @media screen and (max-width: 768px) {
     .hero-section {
-        padding: calc(clamp(48px, 6%, 64px) + var(--navbar-height)) var(--section-padding) clamp(48px, 6%, 64px);
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 
+                var(--section-padding) 
+                map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
             gap: clamp(24px, 3%, 32px);

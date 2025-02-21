@@ -1,6 +1,6 @@
 import "./drop-down.scss"
 import { useEffect, useRef, useState } from "react";
-import { PiCaretUp } from "react-icons/pi";
+import { CaretUp } from "@phosphor-icons/react";
 
 
 export default function DropDown({ options, defaultValue }) {
@@ -39,7 +39,7 @@ export default function DropDown({ options, defaultValue }) {
             <div className={classList.join(" ")} onClick={toggleDropdown}>
                 {selectedOption || defaultValue}
                 <span className={isOpen ? 'arrow Up' : 'arrow'}>
-                    <PiCaretUp />
+                    <CaretUp weight="bold" />
                 </span>
 
             </div>

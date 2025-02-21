@@ -2,23 +2,11 @@ import './App.scss';
 import './global.scss';
 import './reset.css';
 import './classes.scss';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import NavBar from './sections/shared/navbar/NavBar';
-import Home from './pages/home';
 import { useState, useEffect } from 'react';
-import CatalogPage from './pages/catalog';
-import About from './pages/about/About';
-import History from './pages/history/History';
-import Values from './pages/values/Values';
-import Blog from './pages/blog/Blog';
 import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
-import Shop from './pages/shop/Shop';
-import TestPage from './pages/test/TestPage';
 import LanguageSwitcher from './components/ui/language-switcher/LanguageSwitcher';
-import NotFound from './pages/not-found/NotFound';
-
-// Import i18n configuration
-import './i18n/config';
 
 // Create a wrapper component to handle scroll restoration
 function ScrollToTop() {
@@ -54,7 +42,7 @@ function App() {
     }, []);
 
     return (
-        <Router>
+        <>
             <ScrollToTop />
             <div className={`App ${isScrolled ? 'scrolled' : ''}`}>
                 {isOpenNav && (
@@ -73,22 +61,12 @@ function App() {
                     />
                 </div>
 
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/catalog" element={<CatalogPage />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/history" element={<History />} />
-                    <Route path="/values" element={<Values />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/boutique" element={<Shop />} />
-                    <Route path="/test" element={<TestPage />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
+                <Outlet />
 
                 <FloatingButtons />
                 <LanguageSwitcher />
             </div>
-        </Router>
+        </>
     );
 }
 
