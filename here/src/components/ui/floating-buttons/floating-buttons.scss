@@ -7,6 +7,25 @@
     gap: 16px;
     z-index: 999;
     pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+
+    &.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+        &.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+    }
 
     .floating-button {
         pointer-events: auto;

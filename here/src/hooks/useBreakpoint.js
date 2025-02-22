@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const BREAKPOINTS = {
-    mobileSm: 375,
+    mobileSm: 360,
     mobile: 430,
     tablet: 768,
     laptop: 1024,
@@ -13,6 +13,7 @@ export function useBreakpoint(customBreakpoint) {
         isMobile: false,
         isTablet: false,
         isLaptop: false,
+        isMobileSm: false,
         width: 0
     });
 
@@ -21,12 +22,12 @@ export function useBreakpoint(customBreakpoint) {
             const width = window.innerWidth;
             setState({
                 isMobile: width <= BREAKPOINTS.mobile,
+                isMobileSm: width <= BREAKPOINTS.mobileSm,
                 isTablet: width <= BREAKPOINTS.tablet,
                 isLaptop: width <= BREAKPOINTS.laptop,
                 width: width
             });
         };
-
         handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);

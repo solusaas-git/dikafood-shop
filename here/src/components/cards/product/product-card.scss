@@ -29,20 +29,20 @@ $shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 
 	// Base styles for desktop
 	@include respond-to('desktop') {
-		max-width: 320px;
+		max-width: 280px;
 	}
 
 	@include respond-to('laptop') {
-		max-width: 300px;
+		max-width: 240px;
 	}
 
 	@include respond-to('tablet') {
-		max-width: 280px;
+		max-width: 240px;
 	}
 
 	@include respond-to('mobile') {
 		width: 100%;
-		max-width: none;
+		max-width: 240px;
 		min-height: auto;
 		margin: 0;
 		

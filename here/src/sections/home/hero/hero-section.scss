@@ -7,9 +7,7 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 .hero-section {
     position: relative;
     width: 100%;
-    padding: calc(map-get(map-get($spacing, 'desktop'), 'padding-y') + var(--navbar-height)) 
-            var(--section-padding) 
-            map-get(map-get($spacing, 'desktop'), 'padding-y');
+    padding: calc(map-get(map-get($spacing, 'desktop'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'desktop'), 'padding-y');
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -39,9 +37,7 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
     }
 
     @include respond-to('laptop') {
-        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 
-                var(--section-padding) 
-                map-get(map-get($spacing, 'tablet'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
             padding: 0 map-get(map-get($spacing, 'tablet'), 'container-padding');
@@ -50,9 +46,7 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
     }
 
     @include respond-to('mobile') {
-        padding: calc(map-get(map-get($spacing, 'mobile'), 'padding-y') + var(--navbar-height)) 
-                var(--section-padding) 
-                map-get(map-get($spacing, 'mobile'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'mobile'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'mobile'), 'padding-y');
 
         .hero-container {
             padding: 0 map-get(map-get($spacing, 'mobile'), 'container-padding');
@@ -69,9 +63,7 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 // Laptop styles
 @media screen and (max-width: 1024px) {
     .hero-section {
-        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 
-                var(--section-padding) 
-                map-get(map-get($spacing, 'tablet'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
             gap: clamp(28px, 3.5%, 40px);
@@ -86,17 +78,25 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 // Tablet styles
 @media screen and (max-width: 768px) {
     .hero-section {
-        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 
-                var(--section-padding) 
-                map-get(map-get($spacing, 'tablet'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
+            width: 100%;
             gap: clamp(24px, 3%, 32px);
         }
 
         .content-wrapper {
             gap: clamp(36px, 4.5%, 48px);
             padding: clamp(20px, 2.5%, 28px) 0;
+        }
+
+        .embla {
+            margin-left: 0px;
+            margin-right: 0px;
+            width: 100%;
+        }
+        .embla__viewport {
+            width: 100%;
         }
     }
 }

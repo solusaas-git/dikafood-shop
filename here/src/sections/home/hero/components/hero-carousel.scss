@@ -1,7 +1,7 @@
 @use '../styles/variables' as *;
 
 .hero-carousel {
-    width: 100vw;
+    width: 100%;
     position: relative;
     overflow: visible;
     display: flex;
@@ -15,7 +15,7 @@
     @media (max-width: 768px) {
         padding: 0;
         margin: 0;
-        width: 100vw;
+        width: 100%;
         transform: translateX(-50%);
     }
 
@@ -72,15 +72,15 @@
             }
 
             @media (max-width: 768px) {
-                width: 100vw;
+                width: 100%;
                 padding: 0 16px;
                 min-width: 100vw;
                 
                 .product-card {
                     width: 100%;
-                    max-width: 100%;
+                    // max-width: 100%;
                     min-height: auto;
-                    aspect-ratio: 0.7;
+                    // aspect-ratio: 0.7;
                 }
             }
         }
@@ -88,12 +88,12 @@
 
     // Navigation buttons
     .embla__button {
-        position: absolute;
+        position: fixed;
         top: 50%;
         transform: translateY(-50%);
-        width: 56px;
-        height: 56px;
-        background: rgba(255, 255, 255, 0.9);
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.95);
         border-radius: 50%;
         border: 1.5px solid var(--dark-yellow-1);
         backdrop-filter: blur(8px);
@@ -101,6 +101,14 @@
         transition: all 0.2s ease;
         cursor: pointer;
         z-index: 5;
+        opacity: 1;
+        visibility: visible;
+
+        &.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
         svg {
             width: 28px;

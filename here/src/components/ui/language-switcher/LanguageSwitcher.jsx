@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Translate } from "@phosphor-icons/react";
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import './language-switcher.scss';
 
 const languages = [
@@ -10,6 +11,8 @@ const languages = [
 export default function LanguageSwitcher() {
     const [isOpen, setIsOpen] = useState(false);
     const [currentLang, setCurrentLang] = useState('fr');
+    const [hideAtBottom, setHideAtBottom] = useState(false);
+    const { isMobile, isMobileSm } = useBreakpoint();
 
     const handleLanguageChange = (langCode) => {
         setCurrentLang(langCode);
@@ -20,8 +23,30 @@ export default function LanguageSwitcher() {
         // For now, we'll just keep the UI working
     };
 
+    // Check scroll position for hiding at footer only on mobile
+    useEffect(() => {
+        const checkFooterVisibility = () => {
+            if (!isMobile && !isMobileSm) {
+                setHideAtBottom(false);
+                return;
+            }
+
+            const footerElement = document.querySelector('.footer-section');
+            if (footerElement) {
+                const footerRect = footerElement.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                setHideAtBottom(footerRect.top <= windowHeight - 100);
+            }
+        };
+
+        window.addEventListener('scroll', checkFooterVisibility);
+        checkFooterVisibility();
+
+        return () => window.removeEventListener('scroll', checkFooterVisibility);
+    }, [isMobile]);
+
     return (
-        <div className="floating-language-switcher">
+        <div className={`floating-language-switcher ${hideAtBottom ? 'hidden' : ''}`}>
             <button 
                 className="lang-toggle"
                 onClick={() => setIsOpen(!isOpen)}

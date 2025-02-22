@@ -64,9 +64,18 @@
 .floating-language-switcher {
     position: fixed;
     bottom: 24px;
-    left: 16px;
+    left: 24px;
     z-index: 999;
-    pointer-events: none;
+    transition: all 0.3s ease;
+
+    @media (max-width: 768px) {
+        &.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+    }
 
     .lang-toggle {
         pointer-events: auto;
