@@ -1,7 +1,3 @@
-import axios from 'axios';
-
-const DOWNLOAD_ENDPOINT = '/api/download-catalog';
-
 class DownloadError extends Error {
     constructor(message, code) {
         super(message);
@@ -34,46 +30,38 @@ const rateLimiter = {
     }
 };
 
-export const downloadCatalog = async (userData, language) => {
+/**
+ * Handles the catalog download process
+ * @param {string} url - The secure URL for the catalog
+ * @param {string} language - Language code for filename
+ * @returns {Promise<boolean>}
+ */
+export const handleCatalogDownload = async (url, language = 'fr') => {
     try {
-        // Check rate limit
-        if (!rateLimiter.canDownload(userData.email)) {
+        const response = await fetch(url);
+        
+        if (!response.ok) {
             throw new DownloadError(
-                'Trop de tentatives de téléchargement. Veuillez réessayer plus tard.',
-                'RATE_LIMIT_EXCEEDED'
+                'Erreur lors du téléchargement. Veuillez réessayer.',
+                'DOWNLOAD_FAILED'
             );
         }
 
-        // Get secure download URL from backend
-        const response = await axios.post(DOWNLOAD_ENDPOINT, {
-            userData,
-            language
-        }, {
-            baseURL: window.location.origin
-        });
-
-        if (!response.data?.downloadUrl) {
-            throw new DownloadError(
-                'Erreur lors de la génération du lien de téléchargement.',
-                'INVALID_RESPONSE'
-            );
-        }
-
-        // Create a temporary link and trigger download
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        
         const link = document.createElement('a');
-        link.href = response.data.downloadUrl;
-        link.download = `catalog-${language}.pdf`;
+        link.href = downloadUrl;
+        link.download = `dikafood-catalog-${language}.pdf`;
         document.body.appendChild(link);
         link.click();
+        
+        // Cleanup
         document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
 
         return true;
     } catch (error) {
-        if (error instanceof DownloadError) {
-            throw error;
-        }
-
-        // Log error for monitoring but show generic message to user
         console.error('Download error:', error);
         throw new DownloadError(
             'Une erreur est survenue lors du téléchargement. Veuillez réessayer.',

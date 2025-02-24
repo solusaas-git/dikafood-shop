@@ -13,11 +13,13 @@ import CatalogCover from "../../../components/catalog/CatalogCover";
 import CatalogDownloadModal from "../../../components/modals/CatalogDownloadModal";
 import "./catalog.scss";
 import { validateName, validateEmail, validatePhone, formatPhoneNumber } from '../../../utils/validation';
+import { submitFormData } from '../../../utils/api';
+import { handleCatalogDownload } from '../../../services/downloadService';
 
 const Catalog = () => {
     const [formData, setFormData] = useState({
-        prenom: '',
-        nom: '',
+        name: '',
+        surname: '',
         email: '',
         telephone: ''
     });
@@ -55,8 +57,8 @@ const Catalog = () => {
 
     const validateField = (name, value) => {
         switch (name) {
-            case 'prenom':
-            case 'nom':
+            case 'name':
+            case 'surname':
                 return validateName(value);
             case 'email':
                 return validateEmail(value);
@@ -117,17 +119,27 @@ const Catalog = () => {
         setIsSubmitting(true);
 
         try {
-            // Store the validated form data for the download modal
+            const result = await submitFormData({
+                name: formData.name,
+                surname: formData.surname,
+                email: formData.email,
+                phone: formData.telephone
+            }, 'catalog', 'fr');
+
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to submit form');
+            }
+
+            // Store the validated form data and catalog URLs for the download modal
             setSubmittedData({
                 ...formData,
-                submittedAt: new Date().toISOString()
+                submittedAt: new Date().toISOString(),
+                catalogUrls: result.data.urls,
+                expiresIn: result.data.expiresIn
             });
             
-            // Show success modal
             setIsModalOpen(true);
             
-            // Don't reset form until download is complete
-            // Form reset will happen after successful download in the modal
         } catch (error) {
             console.error('Error submitting form:', error);
             setErrors(prev => ({
@@ -140,13 +152,26 @@ const Catalog = () => {
         }
     };
 
+    const handleDownload = async (language) => {
+        if (submittedData?.catalogUrls?.[language]) {
+            try {
+                await handleCatalogDownload(
+                    submittedData.catalogUrls[language],
+                    language
+                );
+            } catch (error) {
+                console.error('Download error:', error);
+                throw error; // Let modal handle the error display
+            }
+        }
+    };
+
     const handleModalClose = () => {
         setIsModalOpen(false);
-        // Only reset the form if we have submitted data (successful submission)
         if (submittedData) {
             setFormData({
-                prenom: '',
-                nom: '',
+                name: '',
+                surname: '',
                 email: '',
                 telephone: ''
             });
@@ -181,23 +206,23 @@ const Catalog = () => {
                         <form className="download-form" onSubmit={handleSubmit} noValidate>
                             <div className="fields-container">
                                 <Field
-                                    inputName="prenom"
+                                    inputName="name"
                                     Icon={<User size={20} weight="duotone" />}
                                     placeholder="Prénom"
-                                    value={formData.prenom}
+                                    value={formData.name}
                                     onChange={handleInputChange}
                                     onBlur={handleBlur}
-                                    error={touched.prenom ? errors.prenom : ''}
+                                    error={touched.name ? errors.name : ''}
                                     required
                                 />
                                 <Field
-                                    inputName="nom"
+                                    inputName="surname"
                                     Icon={<User size={20} weight="duotone" />}
                                     placeholder="Nom"
-                                    value={formData.nom}
+                                    value={formData.surname}
                                     onChange={handleInputChange}
                                     onBlur={handleBlur}
-                                    error={touched.nom ? errors.nom : ''}
+                                    error={touched.surname ? errors.surname : ''}
                                     required
                                 />
                                 <Field
@@ -248,6 +273,7 @@ const Catalog = () => {
                 isOpen={isModalOpen} 
                 onClose={handleModalClose}
                 userData={submittedData}
+                onDownload={handleDownload}
             />
         </section>
     );

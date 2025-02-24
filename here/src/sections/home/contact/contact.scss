@@ -331,10 +331,26 @@
             flex-direction: column;
             gap: 24px;
 
-            .fields-row {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+            .submit-success {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 16px;
+                background: linear-gradient(135deg,
+                    var(--success-light) 0%,
+                    var(--success-lighter) 100%);
+                border: 1px solid var(--success);
+                color: var(--success-dark);
+                border-radius: 14px;
+                margin-top: -8px;
+                animation: slideIn 0.3s ease-out;
+                font-size: 15px;
+                font-weight: 500;
+
+                svg {
+                    flex-shrink: 0;
+                    color: var(--success);
+                }
             }
 
             .submit-error {
@@ -351,6 +367,12 @@
                 svg {
                     flex-shrink: 0;
                 }
+            }
+
+            .fields-row {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
 
             .submit-button {
@@ -393,6 +415,23 @@
                     background: var(--light-yellow-4);
                     cursor: wait;
                 }
+
+                &.success {
+                    background: linear-gradient(135deg,
+                        var(--success) 0%,
+                        var(--success-dark) 100%);
+                    border-color: var(--success-dark);
+                    color: white;
+                    pointer-events: none;
+
+                    svg {
+                        color: white;
+                    }
+
+                    &:hover {
+                        transform: none;
+                    }
+                }
             }
 
             // Mobile styles
@@ -406,6 +445,18 @@
                     svg {
                         width: 20px;
                         height: 20px;
+                    }
+                }
+
+                .submit-success {
+                    padding: 14px;
+                    border-radius: 12px;
+                    font-size: 14px;
+                    gap: 6px;
+
+                    svg {
+                        width: 16px;
+                        height: 16px;
                     }
                 }
             }
@@ -775,5 +826,16 @@
         .submit-button {
             transition: none !important;
         }
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 } 

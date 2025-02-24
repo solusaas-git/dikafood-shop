@@ -1,165 +1,27 @@
-.modal-backdrop {
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
 }
 
 .catalog-download-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    max-width: 480px;
-    margin: 0;
-    background: linear-gradient(135deg,
-        white 0%,
-        var(--light-yellow-1) 100%
-    );
+    position: relative;
+    background: white;
     border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
-    overflow: hidden;
-
-    &.mobile {
-        width: calc(100% - 32px);
-        max-width: 360px;
-        margin: 0;
-        transform: translate(-50%, -50%);
-        border-radius: 20px;
-
-        .close-button {
-            top: 12px;
-            right: 12px;
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-
-            svg {
-                width: 16px;
-                height: 16px;
-            }
-        }
-
-        .modal-content {
-            padding: 24px;
-
-            .success-message {
-                margin-bottom: 20px;
-
-                .icon-wrapper {
-                    width: 56px;
-                    height: 56px;
-                    margin-bottom: 16px;
-                    border-radius: 14px;
-
-                    svg {
-                        width: 24px;
-                        height: 24px;
-                    }
-                }
-
-                h3 {
-                    font-size: 20px;
-                    margin-bottom: 8px;
-                }
-
-                p {
-                    font-size: 14px;
-                }
-            }
-
-            .download-options {
-                gap: 12px;
-                margin-top: 24px;
-
-                .download-button {
-                    height: 48px;
-                    font-size: 15px;
-                    border-radius: 12px;
-                    gap: 8px;
-
-                    svg {
-                        width: 20px;
-                        height: 20px;
-                    }
-                }
-            }
-        }
-    }
-
-    // Extra small screens
-    @media screen and (max-width: 375px) {
-        &.mobile {
-            width: calc(100% - 24px);
-            max-width: 320px;
-            border-radius: 16px;
-
-            .close-button {
-                top: 10px;
-                right: 10px;
-                width: 24px;
-                height: 24px;
-
-                svg {
-                    width: 14px;
-                    height: 14px;
-                }
-            }
-
-            .modal-content {
-                padding: 20px;
-
-                .success-message {
-                    margin-bottom: 16px;
-
-                    .icon-wrapper {
-                        width: 48px;
-                        height: 48px;
-                        margin-bottom: 12px;
-                        border-radius: 12px;
-
-                        svg {
-                            width: 20px;
-                            height: 20px;
-                        }
-                    }
-
-                    h3 {
-                        font-size: 18px;
-                        margin-bottom: 6px;
-                    }
-
-                    p {
-                        font-size: 13px;
-                    }
-                }
-
-                .download-options {
-                    gap: 8px;
-                    margin-top: 20px;
-
-                    .download-button {
-                        height: 44px;
-                        font-size: 14px;
-                        border-radius: 10px;
-                        gap: 6px;
-
-                        svg {
-                            width: 18px;
-                            height: 18px;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    padding: 32px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
 
     .close-button {
         position: absolute;
@@ -189,97 +51,56 @@
     }
 
     .modal-content {
-        padding: 32px;
+        text-align: center;
+        
+        h3 {
+            margin-bottom: 8px;
+            color: var(--dark-green-7);
+            font-size: 24px;
+        }
 
-        .success-message {
-            text-align: center;
+        p {
+            color: var(--dark-green-6);
             margin-bottom: 24px;
-
-            .icon-wrapper {
-                width: 64px;
-                height: 64px;
-                margin: 0 auto 16px;
-                background: var(--light-yellow-1);
-                border: 2px solid var(--dark-green-7);
-                border-radius: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 
-                    0 2px 4px rgba(var(--dark-green-7-rgb), 0.1),
-                    0 0 0 1px rgba(var(--dark-green-7-rgb), 0.05);
-
-                svg {
-                    width: 32px;
-                    height: 32px;
-                    color: var(--dark-green-7);
-                }
-            }
-
-            h3 {
-                font-size: 24px;
-                color: var(--dark-green-7);
-                margin: 0 0 8px;
-            }
-
-            p {
-                font-size: 15px;
-                color: var(--dark-green-6);
-                margin: 0;
-                line-height: 1.5;
-            }
+            font-size: 16px;
         }
 
         .error-message {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 16px;
+            padding: 12px;
             background: var(--error-light);
-            border: 1px solid var(--error);
-            border-radius: 8px;
             color: var(--error);
-            font-size: 14px;
+            border-radius: 8px;
             margin-bottom: 16px;
-            animation: slideIn 0.3s ease;
-
-            svg {
-                flex-shrink: 0;
-                color: var(--error);
-            }
+            animation: slideIn 0.3s ease-out;
         }
 
         .download-options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 32px;
+            gap: 16px;
+            margin: 24px 0;
 
             .download-button {
-                width: 100%;
-                height: 52px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 gap: 12px;
-                border-radius: 12px;
-                font-size: 16px;
-                font-weight: 600;
+                padding: 16px;
+                border-radius: 16px;
+                border: none;
+                background: var(--light-yellow-2);
+                color: var(--dark-green-7);
                 cursor: pointer;
                 transition: all 0.2s ease;
+                font-size: 16px;
+                font-weight: 500;
 
-                svg {
-                    width: 24px;
-                    height: 24px;
-                    color: var(--dark-green-7);
-                }
-
-                &:hover {
-                    transform: translateY(-2px);
-                }
-
-                &:active {
-                    transform: translateY(0);
+                &:hover:not(:disabled) {
+                    background: var(--light-yellow-3);
+                    transform: translateY(-1px);
                 }
 
                 &:disabled {
@@ -287,39 +108,75 @@
                     cursor: not-allowed;
                 }
 
-                &.french {
-                    background: var(--dark-yellow-1);
-                    border: 1px solid var(--dark-yellow-1);
-                    color: var(--dark-green-7);
+                &.loading {
+                    position: relative;
+                    overflow: hidden;
 
-                    &:hover {
-                        background: var(--light-yellow-4);
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        left: -100%;
+                        top: 0;
+                        height: 100%;
+                        width: 200%;
+                        background: linear-gradient(
+                            90deg,
+                            transparent 0%,
+                            rgba(255, 255, 255, 0.3) 50%,
+                            transparent 100%
+                        );
+                        animation: loading 1.5s infinite;
                     }
                 }
 
-                &.arabic {
-                    background: white;
-                    border: 1px solid var(--dark-yellow-1);
-                    color: var(--dark-green-7);
-
-                    &:hover {
-                        background: var(--light-yellow-1);
-                    }
+                &.success {
+                    background: var(--success);
+                    color: white;
                 }
+            }
+        }
+
+        .info-text {
+            color: var(--dark-green-5);
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 24px;
+        width: 95%;
+        
+        .modal-content {
+            h3 { font-size: 20px; }
+            p { font-size: 14px; }
+            
+            .download-button {
+                padding: 14px;
+                font-size: 14px;
             }
         }
     }
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(-4px);
+        transform: translateY(-10px);
     }
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@keyframes loading {
+    from { transform: translateX(0); }
+    to { transform: translateX(50%); }
 }
 
 // Reduced motion preferences

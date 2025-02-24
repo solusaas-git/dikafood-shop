@@ -1,87 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import { X, Download, Globe, Warning } from "@phosphor-icons/react";
-import { downloadCatalog } from '../../services/downloadService';
+import React, { useState } from 'react';
+import { X, Download, Globe, Warning, CheckCircle } from "@phosphor-icons/react";
 import './catalog-download-modal.scss';
 
-export default function CatalogDownloadModal({ isOpen, onClose, userData }) {
+export default function CatalogDownloadModal({ isOpen, onClose, userData, onDownload }) {
+    const [downloadStates, setDownloadStates] = useState({
+        fr: { isLoading: false, isSuccess: false },
+        ar: { isLoading: false, isSuccess: false }
+    });
     const [error, setError] = useState('');
-    const [isDownloading, setIsDownloading] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     if (!isOpen) return null;
 
     const handleDownload = async (language) => {
         try {
+            setDownloadStates(prev => ({
+                ...prev,
+                [language]: { ...prev[language], isLoading: true }
+            }));
             setError('');
-            setIsDownloading(true);
-            await downloadCatalog(userData, language);
-            // Close modal after successful download
-            setTimeout(onClose, 1000);
+            
+            await onDownload(language);
+            
+            setDownloadStates(prev => ({
+                ...prev,
+                [language]: { isLoading: false, isSuccess: true }
+            }));
+
+            // Reset success state after 3 seconds
+            setTimeout(() => {
+                setDownloadStates(prev => ({
+                    ...prev,
+                    [language]: { ...prev[language], isSuccess: false }
+                }));
+            }, 3000);
+
         } catch (error) {
             setError(error.message);
-        } finally {
-            setIsDownloading(false);
+            setDownloadStates(prev => ({
+                ...prev,
+                [language]: { isLoading: false, isSuccess: false }
+            }));
         }
     };
 
     return (
-        <>
-            <div className="modal-backdrop" onClick={onClose} />
-            <div className={`catalog-download-modal ${isMobile ? 'mobile' : ''}`}>
-                <button 
-                    className="close-button" 
-                    onClick={onClose} 
-                    aria-label="Close modal"
-                    disabled={isDownloading}
-                >
-                    <X weight="bold" />
+        <div className="modal-overlay">
+            <div className="catalog-download-modal">
+                <button className="close-button" onClick={onClose}>
+                    <X size={24} weight="bold" />
                 </button>
 
                 <div className="modal-content">
-                    <div className="success-message">
-                        <div className="icon-wrapper">
-                            <Download size={isMobile ? 24 : 32} weight="duotone" />
-                        </div>
-                        <h3>Merci pour votre intérêt!</h3>
-                        <p>Choisissez la version du catalogue que vous souhaitez télécharger</p>
-                    </div>
+                    <h3>Merci pour votre intérêt !</h3>
+                    <p>Choisissez la version du catalogue que vous souhaitez télécharger</p>
 
                     {error && (
                         <div className="error-message">
-                            <Warning size={isMobile ? 14 : 16} weight="fill" />
+                            <Warning size={16} weight="fill" />
                             <span>{error}</span>
                         </div>
                     )}
 
                     <div className="download-options">
                         <button 
-                            className="download-button french"
+                            className={`download-button ${downloadStates.fr.isLoading ? 'loading' : ''} ${downloadStates.fr.isSuccess ? 'success' : ''}`}
                             onClick={() => handleDownload('fr')}
-                            disabled={isDownloading}
+                            disabled={downloadStates.fr.isLoading}
                         >
-                            <Globe size={isMobile ? 20 : 24} weight="duotone" />
-                            <span>{isDownloading ? 'Téléchargement...' : 'Version Française'}</span>
+                            {downloadStates.fr.isSuccess ? (
+                                <CheckCircle size={24} weight="fill" />
+                            ) : (
+                                <Globe size={24} weight="duotone" />
+                            )}
+                            <span>
+                                {downloadStates.fr.isLoading 
+                                    ? 'Téléchargement...' 
+                                    : downloadStates.fr.isSuccess 
+                                        ? 'Téléchargé !' 
+                                        : 'Version Française'}
+                            </span>
                         </button>
+
                         <button 
-                            className="download-button arabic"
+                            className={`download-button ${downloadStates.ar.isLoading ? 'loading' : ''} ${downloadStates.ar.isSuccess ? 'success' : ''}`}
                             onClick={() => handleDownload('ar')}
-                            disabled={isDownloading}
+                            disabled={downloadStates.ar.isLoading}
                         >
-                            <Globe size={isMobile ? 20 : 24} weight="duotone" />
-                            <span>{isDownloading ? 'Téléchargement...' : 'النسخة العربية'}</span>
+                            {downloadStates.ar.isSuccess ? (
+                                <CheckCircle size={24} weight="fill" />
+                            ) : (
+                                <Globe size={24} weight="duotone" />
+                            )}
+                            <span>
+                                {downloadStates.ar.isLoading 
+                                    ? 'Téléchargement...' 
+                                    : downloadStates.ar.isSuccess 
+                                        ? 'تم التحميل !' 
+                                        : 'النسخة العربية'}
+                            </span>
                         </button>
+                    </div>
+
+                    <div className="info-text">
+                        <p>Un email de confirmation vous a été envoyé à {userData?.email}</p>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 } 

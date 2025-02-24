@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { ChatCircleText, User, At, Phone, Buildings, EnvelopeSimple, PaperPlaneTilt, Warning } from "@phosphor-icons/react";
+import { ChatCircleText, User, At, Phone, Buildings, EnvelopeSimple, PaperPlaneTilt, Warning, CheckCircle } from "@phosphor-icons/react";
 import Field from "../../../components/forms/Field";
 import MessageField from "../../../components/forms/MessageField";
 import SectionHeader from '../../../components/ui/section/SectionHeader';
 import Button from "../../../components/buttons/Button";
 import { validateName, validateEmail, validatePhone, formatPhoneNumber } from '../../../utils/validation';
+import { submitFormData } from '../../../utils/api';
 import './contact.scss';
 
 export default function Contact() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        name: '',
+        surname: '',
         email: '',
         phone: '',
         message: ''
@@ -19,6 +20,7 @@ export default function Contact() {
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -56,8 +58,8 @@ export default function Contact() {
 
     const validateField = (name, value) => {
         switch (name) {
-            case 'firstName':
-            case 'lastName':
+            case 'name':
+            case 'surname':
                 return validateName(value);
             case 'email':
                 return validateEmail(value);
@@ -118,22 +120,38 @@ export default function Contact() {
         }
 
         setIsSubmitting(true);
+        setSubmitSuccess(false);
 
         try {
-            // Add your form submission logic here
-            console.log('Form data:', formData);
+            const result = await submitFormData({
+                name: formData.name,
+                surname: formData.surname,
+                email: formData.email,
+                phone: formData.phone,
+                message: formData.message
+            }, 'contact');
+
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to submit form');
+            }
+
+            // Show success message
+            setSubmitSuccess(true);
             
-            // Reset form after successful submission
-            setFormData({
-                firstName: '',
-                lastName: '',
-                email: '',
-                phone: '',
-                message: ''
-            });
-            setTouched({});
-            setErrors({});
-            
+            // Reset form after 3 seconds
+            setTimeout(() => {
+                setFormData({
+                    name: '',
+                    surname: '',
+                    email: '',
+                    phone: '',
+                    message: ''
+                });
+                setTouched({});
+                setErrors({});
+                setSubmitSuccess(false);
+            }, 3000);
+
         } catch (error) {
             console.error('Error submitting form:', error);
             setErrors(prev => ({
@@ -209,22 +227,22 @@ export default function Contact() {
                             <div className="fields-row">
                                 <Field 
                                     placeholder="Prénom" 
-                                    inputName="firstName" 
+                                    inputName="name"
                                     Icon={<User size={isMobile ? 18 : 20} weight="duotone" />}
-                                    value={formData.firstName}
+                                    value={formData.name}
                                     onChange={handleInputChange}
                                     onBlur={handleBlur}
-                                    error={touched.firstName ? errors.firstName : ''}
+                                    error={touched.name ? errors.name : ''}
                                     required
                                 />
                                 <Field 
                                     placeholder="Nom" 
-                                    inputName="lastName" 
+                                    inputName="surname"
                                     Icon={<User size={isMobile ? 18 : 20} weight="duotone" />}
-                                    value={formData.lastName}
+                                    value={formData.surname}
                                     onChange={handleInputChange}
                                     onBlur={handleBlur}
-                                    error={touched.lastName ? errors.lastName : ''}
+                                    error={touched.surname ? errors.surname : ''}
                                     required
                                 />
                             </div>
@@ -270,13 +288,30 @@ export default function Contact() {
                                 </div>
                             )}
 
+                            {submitSuccess && (
+                                <div className="submit-success">
+                                    <CheckCircle size={16} weight="fill" />
+                                    <span>Message envoyé avec succès !</span>
+                                </div>
+                            )}
+
                             <button 
                                 type="submit" 
-                                className={`submit-button ${isSubmitting ? 'submitting' : ''}`}
+                                className={`submit-button ${isSubmitting ? 'submitting' : ''} ${submitSuccess ? 'success' : ''}`}
                                 disabled={isSubmitting}
                             >
-                                <PaperPlaneTilt size={isMobile ? 18 : 20} weight="duotone" />
-                                <span>{isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}</span>
+                                {submitSuccess ? (
+                                    <CheckCircle size={20} weight="fill" />
+                                ) : (
+                                    <ChatCircleText size={20} weight="duotone" />
+                                )}
+                                <span>
+                                    {isSubmitting 
+                                        ? 'Envoi en cours...' 
+                                        : submitSuccess 
+                                            ? 'Message envoyé !' 
+                                            : 'Envoyer le message'}
+                                </span>
                             </button>
                         </div>
                     </form>

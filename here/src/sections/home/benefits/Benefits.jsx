@@ -41,7 +41,7 @@ const NewBenefits = memo(() => {
                             key={benefit.id}
                             Icon={benefit.Icon}
                             title={benefit.title}
-                            descp={benefit.description}
+                            descp={benefit.descp}
                             ariaLabel={benefit.ariaLabel}
                             isMobile={isMobile}
                         />
