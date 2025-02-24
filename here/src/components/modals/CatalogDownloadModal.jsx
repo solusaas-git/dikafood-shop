@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Download, Globe, Warning, CheckCircle } from "@phosphor-icons/react";
 import './catalog-download-modal.scss';
 
 export default function CatalogDownloadModal({ isOpen, onClose, userData, onDownload }) {
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [downloadStates, setDownloadStates] = useState({
         fr: { isLoading: false, isSuccess: false },
         ar: { isLoading: false, isSuccess: false }
     });
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     if (!isOpen) return null;
 
@@ -26,7 +36,6 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
                 [language]: { isLoading: false, isSuccess: true }
             }));
 
-            // Reset success state after 3 seconds
             setTimeout(() => {
                 setDownloadStates(prev => ({
                     ...prev,
@@ -45,7 +54,7 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
 
     return (
         <div className="modal-overlay">
-            <div className="catalog-download-modal">
+            <div className={`catalog-download-modal ${isMobile ? 'mobile' : ''}`}>
                 <button className="close-button" onClick={onClose}>
                     <X size={24} weight="bold" />
                 </button>
@@ -99,10 +108,6 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
                                         : 'النسخة العربية'}
                             </span>
                         </button>
-                    </div>
-
-                    <div className="info-text">
-                        <p>Un email de confirmation vous a été envoyé à {userData?.email}</p>
                     </div>
                 </div>
             </div>

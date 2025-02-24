@@ -9,7 +9,7 @@ export const brandsData = [
         description: "Représentant l'essence de la culture oléicole marocaine, Oued Fès offre une huile d'olive extra vierge aux notes fruitées et équilibrées.",
         characteristics: "Fruitée • Artisanale • Premium",
         usage: "Assaisonnement • Cuisson",
-        image: "/public/images/brands/ouedfes-logo.svg",
+        image: "/images/brands/ouedfes-logo.svg",
     },
     {
         id: 'biladi',
@@ -19,7 +19,7 @@ export const brandsData = [
         description: "Huile de grignons d'olive Biladi, obtenue par extraction des résidus d'olives. Parfaite pour la cuisson quotidienne.",
         characteristics: "Stable • Économique • Polyvalente",
         usage: "Friture • Cuisson",
-        image: "/public/images/brands/biladi-logo.svg",
+        image: "/images/brands/biladi-logo.svg",
     },
     {
         id: 'chourouk',
@@ -29,7 +29,7 @@ export const brandsData = [
         description: "Huile de grignons d'olive Chourouk, une solution économique et pratique pour la cuisine de tous les jours.",
         characteristics: "Polyvalente • Économique • Stable",
         usage: "Cuisine quotidienne • Friture",
-        image: "/public/images/brands/chourouk-logo.svg",
+        image: "/images/brands/chourouk-logo.svg",
     },
     {
         id: 'nouarati',
@@ -39,7 +39,7 @@ export const brandsData = [
         description: "Huile de tournesol Nouarati, riche en vitamine E et acides gras essentiels. Une option saine pour votre cuisine.",
         characteristics: "100% Naturelle • Riche en vitamine E • Légère",
         usage: "Polyvalente • Friture • Pâtisserie",
-        image: "/public/images/brands/nouarati-logo.svg",
+        image: "/images/brands/nouarati-logo.svg",
     },
     {
         id: 'dika-extra',
@@ -49,6 +49,6 @@ export const brandsData = [
         description: "Huile d'olive extra vierge Dika, première pression à froid. Une qualité supérieure pour vos plats.",
         characteristics: "Pure • Pressée à froid • Premium",
         usage: "Salades • Assaisonnements • Cuisine fine",
-        image: "/public/images/brands/dika-logo.svg",
+        image: "/images/brands/dika-logo.svg",
     }
 ]; 
