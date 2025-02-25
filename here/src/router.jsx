@@ -9,6 +9,7 @@ import Blog from './pages/blog/Blog';
 import TestPage from './pages/test/TestPage';
 import NotFound from './pages/not-found/NotFound';
 import Showcase from './pages/Showcase';
+import Article from './pages/blog/Article';
 
 export const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
             {
                 path: 'blog',
                 element: <Blog />
+            },
+            {
+                path: 'blog/:id',
+                element: <Article />
             },
             {
                 path: 'test',

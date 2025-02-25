@@ -1,11 +1,18 @@
 import React from 'react';
-import { Article, Calendar, Clock, User } from '@phosphor-icons/react';
+import { useNavigate } from 'react-router-dom';
+import { Article, Calendar, Clock, User, ShoppingBag } from '@phosphor-icons/react';
 import SectionHeader from '../../components/ui/section/SectionHeader';
 import Button from '../../components/buttons/Button';
 import { blogPosts } from '../../data/blog-posts';
 import './blog.scss';
 
 const Blog = () => {
+    const navigate = useNavigate();
+
+    const handleCardClick = (postId) => {
+        navigate(`/blog/${postId}`);
+    };
+
     return (
         <div className="blog-page">
             <section className="blog-hero">
@@ -20,18 +27,28 @@ const Blog = () => {
                         
                         <div className="hero-cta">
                             <Button
-                                name="Télécharger notre catalogue"
+                                name="Découvrir nos produits"
                                 theme="primary"
-                                to="#form"
+                                to="/#catalog"
+                                Icon={ShoppingBag}
                             />
                         </div>
                     </div>
                     
                     <div className="blog-grid">
                         {blogPosts.map((post) => (
-                            <article key={post.id} className="blog-card">
+                            <article 
+                                key={post.id} 
+                                className="blog-card"
+                                onClick={() => handleCardClick(post.id)}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 <div className="card-image">
-                                    <div className="image-placeholder" />
+                                    <img 
+                                        src={post.image} 
+                                        alt={post.title}
+                                        loading="lazy"
+                                    />
                                     <span className="category">{post.category}</span>
                                 </div>
                                 <div className="card-content">
@@ -55,7 +72,10 @@ const Blog = () => {
                                         <Button
                                             name="Lire la suite"
                                             theme="secondary"
-                                            to={`/blog/${post.id}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCardClick(post.id);
+                                            }}
                                         />
                                     </div>
                                 </div>
