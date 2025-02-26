@@ -263,4 +263,158 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+.article {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--section-padding);
+    padding-top: calc(var(--navbar-height) + 2rem);
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--dark-green-6);
+        margin-bottom: 2rem;
+        text-decoration: none;
+        padding: 8px 16px;
+        background: var(--light-yellow-1);
+        border: 1px solid var(--light-yellow-2);
+        border-radius: 20px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: var(--light-yellow-2);
+            color: var(--dark-green-7);
+        }
+    }
+
+    .article-content {
+        .article-image {
+            width: 100%;
+            height: auto;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+            box-shadow: 
+                0 4px 24px rgba(0, 0, 0, 0.06),
+                0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .article-header {
+            margin-bottom: 3rem;
+
+            .category {
+                display: inline-block;
+                padding: 8px 16px;
+                background: var(--light-yellow-1);
+                color: var(--dark-green-7);
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: 500;
+                margin-bottom: 1rem;
+            }
+
+            h1 {
+                font-size: clamp(32px, 5vw, 48px);
+                color: var(--dark-green-7);
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
+            }
+
+            .article-meta {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+
+                span {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 8px 16px;
+                    background: var(--light-yellow-1);
+                    border: 1px solid var(--light-yellow-2);
+                    border-radius: 20px;
+                    color: var(--dark-green-7);
+                    font-weight: 500;
+                    font-size: 14px;
+
+                    svg {
+                        color: var(--dark-green-7);
+                    }
+                }
+            }
+        }
+
+        .article-text {
+            line-height: 1.8;
+            color: var(--dark-green-7);
+
+            h2 {
+                font-size: 1.75rem;
+                margin: 2.5rem 0 1rem;
+                color: var(--dark-green-7);
+            }
+
+            h3 {
+                font-size: 1.5rem;
+                margin: 2rem 0 1rem;
+                color: var(--dark-green-7);
+            }
+
+            p {
+                margin-bottom: 1.5rem;
+                color: var(--dark-green-6);
+            }
+
+            ul, ol {
+                margin: 1.5rem 0;
+                padding-left: 2rem;
+                color: var(--dark-green-6);
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 24px;
+                margin: 2.5rem 0;
+                box-shadow: 
+                    0 4px 24px rgba(0, 0, 0, 0.06),
+                    0 2px 8px rgba(0, 0, 0, 0.04);
+            }
+
+            a {
+                color: var(--dark-green-3);
+                text-decoration: none;
+                border-bottom: 2px solid var(--light-green-3);
+                transition: all 0.2s ease;
+
+                &:hover {
+                    color: var(--dark-green-4);
+                    border-color: var(--dark-green-4);
+                }
+            }
+
+            blockquote {
+                margin: 2rem 0;
+                padding: 1.5rem;
+                background: var(--light-yellow-1);
+                border-left: 4px solid var(--dark-yellow-1);
+                border-radius: 12px;
+                font-style: italic;
+                color: var(--dark-green-7);
+            }
+        }
+    }
+}
+
+.article-loading,
+.article-error {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark-green-6);
+    font-size: 1.125rem;
 } 

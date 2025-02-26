@@ -1,8 +1,6 @@
 import { validateForm } from './validation';
 
-export const API_URL = import.meta.env.PROD 
-    ? 'https://api.dikafood.com'
-    : import.meta.env.VITE_API_URL || 'http://localhost:1025';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:1025';
 
 /**
  * Submits form data to the appropriate endpoint based on useCase

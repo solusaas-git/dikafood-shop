@@ -52,7 +52,7 @@ export default function Footer() {
                     <div className="sitemap-category">
                         <h3>Contact</h3>
                         <ul>
-                            <li><a href="tel:+212661373204">+212 (661) 37 32 04</a></li>
+                            <li><a href="tel:+212661323704">+212 (661) 32 37 04</a></li>
                             <li><a href="tel:+212535942682">+212 (535) 94 26 82</a></li>
                             <li><a href="mailto:contact@dikafood.com">contact@dikafood.com</a></li>
                             <li>

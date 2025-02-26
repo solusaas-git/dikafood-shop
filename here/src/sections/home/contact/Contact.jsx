@@ -190,7 +190,7 @@ export default function Contact() {
                                 <Phone size={isMobile ? 20 : 24} weight="duotone" />
                                 <div className="item-content">
                                     <span className="label">Téléphone</span>
-                                    <a href="tel:+212661373204">+212 (661) 37 32 04</a>
+                                    <a href="tel:+212661323704">+212 (661) 32 37 04</a>
                                     <a href="tel:+212535942682">+212 (535) 94 26 82</a>
                                 </div>
                             </div>

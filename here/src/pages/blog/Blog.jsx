@@ -1,197 +1,177 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, User } from "@phosphor-icons/react";
+import { Calendar, Clock, Plus, Article } from "@phosphor-icons/react";
+import axios from 'axios';
+import { Helmet } from 'react-helmet-async';
+import BlogSkeleton from '../../components/skeletons/BlogSkeleton';
+import SectionHeader from '../../components/ui/section/SectionHeader';
+import BackToHome from '../../components/ui/navigation/BackToHome';
 import Button from '../../components/buttons/Button';
 import './blog.scss';
-import { Helmet } from 'react-helmet-async';
-import { API_URL } from '../../utils/api';
+
+// Add base URL for API
+axios.defaults.baseURL = 'http://localhost:1025';
+
+const POSTS_PER_PAGE = 6; // Number of posts to load each time
+
+// Helper to get a placeholder image
+const getPlaceholderImage = (index) => {
+    // Using placehold.co with custom colors and text
+    const colors = [
+        ['F9E4C8/435334', 'Cuisine'], // Light yellow/Green
+        ['CEDEBD/435334', 'Recette'], // Light green/Dark green
+        ['9EB384/FFF', 'Tradition'],   // Sage/White
+        ['435334/FFF', 'DikaFood']     // Dark green/White
+    ];
+    
+    // Cycle through colors based on index
+    const [colorPair, text] = colors[index % colors.length];
+    
+    return `https://placehold.co/600x400/${colorPair}?text=${text}&font=montserrat`;
+};
 
 const Blog = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState(null);
-    const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+    const fetchPosts = async (pageNum = 1) => {
+        try {
+            const response = await axios.get(`/public/blog/posts?page=${pageNum}&limit=${POSTS_PER_PAGE}`);
+            
+            // Handle array response directly
+            if (Array.isArray(response.data)) {
+                const postsWithImages = response.data.map((post, index) => ({
+                    ...post,
+                    data: {
+                        ...post.data,
+                        image: post.data.image || getPlaceholderImage(index)
+                    }
+                }));
+
+                if (pageNum === 1) {
+                    setPosts(postsWithImages);
+                } else {
+                    setPosts(prev => [...prev, ...postsWithImages]);
+                }
+
+                // Check if we have more posts to load
+                setHasMore(postsWithImages.length === POSTS_PER_PAGE);
+            } else {
+                console.error('Expected array but got:', typeof response.data);
+                setError('Invalid data format received');
+            }
+        } catch (err) {
+            console.error('Error fetching blog posts:', err);
+            setError('Failed to load blog posts');
+        } finally {
+            setLoading(false);
+            setLoadingMore(false);
+        }
+    };
 
     useEffect(() => {
         fetchPosts();
-        fetchCategories();
     }, []);
 
-    const fetchPosts = async () => {
-        try {
-            const response = await fetch(`${API_URL}/public/posts`);
-            if (!response.ok) throw new Error('Failed to fetch posts');
-            const data = await response.json();
-            setPosts(data);
-        } catch (err) {
-            setError('Failed to load blog posts');
-            console.error('Error fetching posts:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchCategories = async () => {
-        try {
-            const response = await fetch(`${API_URL}/public/categories`);
-            if (!response.ok) throw new Error('Failed to fetch categories');
-            const data = await response.json();
-            setCategories(data);
-        } catch (err) {
-            console.error('Error fetching categories:', err);
-        }
-    };
-
-    const filteredPosts = selectedCategory === 'all' 
-        ? posts 
-        : posts.filter(post => post?.data?.category === selectedCategory);
-
-    // Helper function to safely get nested properties
-    const getAuthorName = (post) => {
-        const firstName = post?.data?.author?.data?.firstName || '';
-        const lastName = post?.data?.author?.data?.lastName || '';
-        return firstName || lastName ? `${firstName} ${lastName}`.trim() : 'Anonymous';
+    const handleLoadMore = async () => {
+        setLoadingMore(true);
+        const nextPage = page + 1;
+        setPage(nextPage);
+        await fetchPosts(nextPage);
     };
 
     const formatDate = (dateString) => {
-        try {
-            return new Date(dateString).toLocaleDateString('fr-FR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        } catch (err) {
-            return '';
-        }
+        return new Date(dateString).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     };
 
-    if (loading) return (
-        <div className="blog-page">
-            <div className="blog-hero">
-                <div className="container">
-                    <h1>Notre Blog</h1>
-                    <p>Découvrez nos articles sur la gastronomie, la cuisine et les produits alimentaires.</p>
-                </div>
-            </div>
-            <div className="blog-content">
-                <div className="container">
-                    <div className="loading-state">
-                        <div className="loading-spinner"></div>
-                        <p>Chargement des articles...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-
-    if (error) return (
-        <div className="blog-page">
-            <div className="blog-hero">
-                <div className="container">
-                    <h1>Notre Blog</h1>
-                    <p>Découvrez nos articles sur la gastronomie, la cuisine et les produits alimentaires.</p>
-                </div>
-            </div>
-            <div className="blog-content">
-                <div className="container">
-                    <div className="error-state">
-                        <h2>Oops! Une erreur s'est produite</h2>
-                        <p>{error}</p>
-                        <Button 
-                            name="Réessayer"
-                            theme="primary"
-                            onClick={() => {
-                                setLoading(true);
-                                setError(null);
-                                fetchPosts();
-                                fetchCategories();
-                            }}
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+    if (loading) return <BlogSkeleton />;
+    if (error) return <div className="blog-error">{error}</div>;
+    if (!posts.length) {
+        return <div className="blog-empty">Aucun article disponible</div>;
+    }
 
     return (
         <>
             <Helmet>
-                <title>Blog | Dikafood</title>
-                <meta name="description" content="Découvrez nos articles sur la gastronomie, la cuisine et les produits alimentaires." />
+                <title>Blog - DikaFood</title>
+                <meta name="description" content="Découvrez nos articles sur la gastronomie marocaine" />
             </Helmet>
 
-            <div className="blog-page">
-                <div className="blog-hero">
-                    <div className="container">
-                        <h1>Notre Blog</h1>
-                        <p>Découvrez nos articles sur la gastronomie, la cuisine et les produits alimentaires.</p>
-                    </div>
-                </div>
+            <BackToHome />
 
-                <div className="blog-content">
-                    <div className="container">
-                        {categories.length > 0 && (
-                            <div className="categories-filter">
-                                <Button 
-                                    name="Tous"
-                                    theme={selectedCategory === 'all' ? 'primary' : 'secondary'}
-                                    onClick={() => setSelectedCategory('all')}
-                                />
-                                {categories.map(category => (
-                                    <Button
-                                        key={category}
-                                        name={category}
-                                        theme={selectedCategory === category ? 'primary' : 'secondary'}
-                                        onClick={() => setSelectedCategory(category)}
+            <div className="blog">
+                <SectionHeader
+                    icon={Article}
+                    title="Notre Blog"
+                    subtitle="Découvrez nos articles sur la gastronomie marocaine"
+                    variant="light"
+                />
+
+                <div className="posts">
+                    {posts.map((post, index) => (
+                        <article key={post._id} className="post-card">
+                            <Link to={`/blog/${post._id}`}>
+                                <div className="post-image">
+                                    <img 
+                                        src={post.data.image}
+                                        alt={post.data.title}
+                                        loading="lazy"
+                                        onError={(e) => {
+                                            // Use a branded fallback image on error
+                                            e.target.src = `https://placehold.co/600x400/F9E4C8/435334?text=DikaFood&font=montserrat`;
+                                        }}
                                     />
-                                ))}
-                            </div>
-                        )}
-
-                        <div className="posts-grid">
-                            {filteredPosts.map(post => post && (
-                                <article key={post._id} className="post-card">
-                                    <Link to={`/blog/${post._id}`}>
-                                        <div className="post-image">
-                                            <img 
-                                                src={post?.data?.image?.data?.url} 
-                                                alt={post?.data?.title || 'Article image'} 
-                                            />
-                                            <span className="category">{post?.data?.category}</span>
-                                        </div>
-                                        <div className="post-content">
-                                            <h2>{post?.data?.title}</h2>
-                                            <p>{post?.data?.excerpt}</p>
-                                            
-                                            <div className="post-meta">
-                                                <div className="meta-item">
-                                                    <Calendar size={20} weight="duotone" />
-                                                    {formatDate(post?.metadata?.publishedAt)}
-                                                </div>
-                                                <div className="meta-item">
-                                                    <Clock size={20} weight="duotone" />
-                                                    {post?.data?.readTime || '5 min'}
-                                                </div>
-                                                <div className="meta-item">
-                                                    <User size={20} weight="duotone" />
-                                                    {getAuthorName(post)}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                </article>
-                            ))}
-                        </div>
-
-                        {filteredPosts.length === 0 && (
-                            <div className="empty-state">
-                                <h2>Aucun article disponible</h2>
-                                <p>Revenez bientôt pour découvrir nos nouveaux articles!</p>
-                            </div>
-                        )}
-                    </div>
+                                </div>
+                                <div className="post-content">
+                                    <span 
+                                        className="category"
+                                        data-category={post.data.category}
+                                    >
+                                        {post.data.category}
+                                    </span>
+                                    <h2>{post.data.title}</h2>
+                                    <p>{post.data.excerpt}</p>
+                                    
+                                    <div className="post-meta">
+                                        <span aria-label="Date de publication">
+                                            <Calendar weight="duotone" size={18} />
+                                            {formatDate(post.metadata.publishedAt)}
+                                        </span>
+                                        <span aria-label="Temps de lecture">
+                                            <Clock weight="duotone" size={18} />
+                                            {post.data.readTime} min
+                                        </span>
+                                    </div>
+                                </div>
+                            </Link>
+                        </article>
+                    ))}
                 </div>
+
+                {hasMore && (
+                    <div className="load-more">
+                        <Button
+                            onClick={handleLoadMore}
+                            disabled={loadingMore}
+                            icon={<Plus weight="bold" size={20} />}
+                            name={loadingMore ? 
+                                <span className="loading-dots">Chargement...</span> : 
+                                "Charger plus d'articles"
+                            }
+                            theme="light"
+                            size="medium"
+                            className="load-more-button"
+                        />
+                    </div>
+                )}
             </div>
         </>
     );

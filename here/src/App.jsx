@@ -23,6 +23,12 @@ function ScrollToTop() {
 function App() {
     const [isOpenNav, setIsOpenNav] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const location = useLocation();
+
+    // Check if current route is blog or legal pages
+    const hideNavigation = location.pathname.startsWith('/blog') || 
+                          location.pathname === '/terms' || 
+                          location.pathname === '/privacy';
 
     const handleNavToggle = () => {
         setIsOpenNav(prev => !prev);
@@ -46,26 +52,30 @@ function App() {
         <HelmetProvider>
             <ScrollToTop />
             <div className={`App ${isScrolled ? 'scrolled' : ''}`}>
-                {isOpenNav && (
-                    <div 
-                        className="overlay" 
-                        onClick={handleNavClose}
-                        role="presentation"
-                    />
+                {!hideNavigation && (
+                    <>
+                        {isOpenNav && (
+                            <div 
+                                className="overlay" 
+                                onClick={handleNavClose}
+                                role="presentation"
+                            />
+                        )}
+                        
+                        <div className="nav-wrapper">
+                            <NavBar 
+                                isOpen={isOpenNav} 
+                                onClick={handleNavToggle} 
+                                onClose={handleNavClose} 
+                            />
+                        </div>
+
+                        <FloatingButtons />
+                        <LanguageSwitcher />
+                    </>
                 )}
-                
-                <div className="nav-wrapper">
-                    <NavBar 
-                        isOpen={isOpenNav} 
-                        onClick={handleNavToggle} 
-                        onClose={handleNavClose} 
-                    />
-                </div>
 
                 <Outlet />
-
-                <FloatingButtons />
-                <LanguageSwitcher />
             </div>
         </HelmetProvider>
     );

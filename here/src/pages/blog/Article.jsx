@@ -1,65 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, User, ArrowLeft } from "@phosphor-icons/react";
-import Button from '../../components/buttons/Button';
+import { Link, useParams } from 'react-router-dom';
+import { Calendar, Clock, ArrowLeft } from "@phosphor-icons/react";
+import { API_URL } from '../../utils/api';
 import './article.scss';
 import { Helmet } from 'react-helmet-async';
-import { API_URL } from '../../utils/api';
+import ArticleSkeleton from '../../components/skeletons/ArticleSkeleton';
+import { getImagePlaceholder } from '../../utils/images';
 
 const Article = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [article, setArticle] = useState(null);
-    const [relatedArticles, setRelatedArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [readingProgress, setReadingProgress] = useState(0);
 
     useEffect(() => {
         fetchArticle();
     }, [id]);
 
-    useEffect(() => {
-        if (article) {
-            fetchRelatedArticles();
-        }
-    }, [article]);
-
-    useEffect(() => {
-        const updateReadingProgress = () => {
-            const element = document.documentElement;
-            const scrollTop = element.scrollTop - element.clientTop;
-            const scrollHeight = element.scrollHeight - element.clientHeight;
-            const progress = (scrollTop / scrollHeight) * 100;
-            setReadingProgress(progress);
-        };
-
-        window.addEventListener('scroll', updateReadingProgress);
-        return () => window.removeEventListener('scroll', updateReadingProgress);
-    }, []);
-
-    useEffect(() => {
-        const incrementViews = async () => {
-            if (!article) return;
-            
-            try {
-                await fetch(`${API_URL}/public/posts/${id}/views`, {
-                    method: 'POST'
-                });
-            } catch (err) {
-                console.error('Error incrementing views:', err);
-            }
-        };
-
-        incrementViews();
-    }, [article, id]);
-
     const fetchArticle = async () => {
         try {
             const response = await fetch(`${API_URL}/public/posts/${id}`);
-            if (!response.ok) {
-                throw new Error('Article not found');
-            }
+            if (!response.ok) throw new Error('Article not found');
             const data = await response.json();
             setArticle(data);
         } catch (err) {
@@ -69,152 +30,89 @@ const Article = () => {
         }
     };
 
-    const fetchRelatedArticles = async () => {
-        try {
-            const response = await fetch(
-                `${API_URL}/public/posts/related?category=${article.data.category}&exclude=${id}&limit=3`
-            );
-            if (!response.ok) throw new Error('Failed to fetch related articles');
-            const data = await response.json();
-            setRelatedArticles(data);
-        } catch (err) {
-            console.error('Error fetching related articles:', err);
-        }
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     };
 
-    if (loading) return (
-        <div className="article-page">
-            <div className="container">
-                <div className="loading-state">
-                    <div className="loading-spinner"></div>
-                    <p>Chargement de l'article...</p>
-                </div>
-            </div>
-        </div>
-    );
+    const getImageUrls = (article) => {
+        if (!article?.data?.image?.urls) {
+            return {
+                medium: getImagePlaceholder('medium'),
+                large: getImagePlaceholder('large')
+            };
+        }
 
-    if (error) return (
-        <div className="article-page">
-            <div className="container">
-                <div className="error-state">
-                    <h2>Article non trouvé</h2>
-                    <p>{error}</p>
-                    <div className="error-actions">
-                        <Button 
-                            name="Retour au blog"
-                            theme="secondary"
-                            to="/blog"
-                            Icon={ArrowLeft}
-                        />
-                        <Button 
-                            name="Réessayer"
-                            theme="primary"
-                            onClick={() => {
-                                setLoading(true);
-                                setError(null);
-                                fetchArticle();
-                            }}
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+        return {
+            medium: `${API_URL}${article.data.image.urls.medium}`,
+            large: `${API_URL}${article.data.image.urls.large}`
+        };
+    };
 
+    if (loading) return <ArticleSkeleton />;
+    if (error) return <div className="article-error">{error}</div>;
     if (!article) return null;
-
-    const { title, content, author, image, category, readTime } = article.data;
-    const publishDate = new Date(article.metadata.publishedAt).toLocaleDateString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
 
     return (
         <>
             <Helmet>
-                <title>{title} | Dikafood Blog</title>
+                <title>{article.data.title} | Dikafood Blog</title>
                 <meta name="description" content={article.data.excerpt} />
-                <meta property="og:title" content={title} />
+                <meta property="og:title" content={article.data.title} />
                 <meta property="og:description" content={article.data.excerpt} />
-                <meta property="og:image" content={image.data.url} />
+                {article.data.image && (
+                    <meta property="og:image" content={getImageUrls(article).large} />
+                )}
             </Helmet>
 
-            <div className="article-page">
-                <div className="progress-bar" style={{ width: `${readingProgress}%` }} />
+            <div className="article">
+                <Link to="/blog" className="back-link">
+                    <ArrowLeft size={20} />
+                    Retour au blog
+                </Link>
 
-                <article className="article">
-                    <div className="container">
-                        <header className="article-header">
-                            <h1>{title}</h1>
-                            <div className="article-meta">
-                                <div className="meta-item">
-                                    <Calendar size={20} weight="duotone" />
-                                    {publishDate}
-                                </div>
-                                <div className="meta-item">
-                                    <Clock size={20} weight="duotone" />
-                                    {readTime}
-                                </div>
-                                <div className="meta-item">
-                                    <User size={20} weight="duotone" />
-                                    {`${author.data.firstName} ${author.data.lastName}`}
-                                </div>
-                            </div>
-                        </header>
-
-                        <div className="featured-image">
-                            <img src={image.data.url} alt={title} />
-                        </div>
-
-                        <div className="content-wrapper">
-                            <div 
-                                className="article-text"
-                                dangerouslySetInnerHTML={{ __html: content }}
+                <article className="article-content">
+                    {article.data.image && (
+                        <picture>
+                            <source
+                                media="(min-width: 1024px)"
+                                srcSet={getImageUrls(article).large}
                             />
-                            
-                            <div className="article-footer">
-                                <Button 
-                                    name="Retour au blog"
-                                    theme="secondary"
-                                    to="/blog"
-                                    Icon={ArrowLeft}
-                                />
-                                
-                                <div className="share-buttons">
-                                    <button onClick={() => window.open(`https://twitter.com/intent/tweet?text=${title}&url=${window.location.href}`)}>
-                                        Twitter
-                                    </button>
-                                    <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`)}>
-                                        Facebook
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                            <img 
+                                src={getImageUrls(article).medium}
+                                alt={article.data.title}
+                                className="article-image"
+                                onError={(e) => {
+                                    e.target.src = getImagePlaceholder('medium');
+                                }}
+                            />
+                        </picture>
+                    )}
 
-                {relatedArticles.length > 0 && (
-                    <div className="related-articles">
-                        <h3>Articles similaires</h3>
-                        <div className="related-grid">
-                            {relatedArticles.map(post => (
-                                <article key={post._id} className="post-card">
-                                    <Link to={`/blog/${post._id}`}>
-                                        <div className="post-image">
-                                            <img src={post.data.image.data.url} alt={post.data.title} />
-                                            <span className="category">{post.data.category}</span>
-                                        </div>
-                                        <div className="post-content">
-                                            <h2>{post.data.title}</h2>
-                                            <p>{post.data.excerpt}</p>
-                                        </div>
-                                    </Link>
-                                </article>
-                            ))}
+                    <div className="article-header">
+                        <span className="category">{article.data.category}</span>
+                        <h1>{article.data.title}</h1>
+                        
+                        <div className="article-meta">
+                            <span>
+                                <Calendar size={16} />
+                                {formatDate(article.metadata.publishedAt)}
+                            </span>
+                            <span>
+                                <Clock size={16} />
+                                {article.data.readTime}
+                            </span>
                         </div>
                     </div>
-                )}
+
+                    <div 
+                        className="article-text"
+                        dangerouslySetInnerHTML={{ __html: article.data.content }}
+                    />
+                </article>
             </div>
         </>
     );
