@@ -1,5 +1,9 @@
 import { validateForm } from './validation';
 
+export const API_URL = import.meta.env.PROD 
+    ? 'https://api.dikafood.com'
+    : import.meta.env.VITE_API_URL || 'http://localhost:1025';
+
 /**
  * Submits form data to the appropriate endpoint based on useCase
  * @param {Object} formData - Form data (name, email, phone, message)
@@ -24,7 +28,7 @@ export const submitFormData = async (formData, useCase, lang = 'fr') => {
                 lang
             });
             
-            const response = await fetch(`https://api.dikafood.com/catalog?${params}`);
+            const response = await fetch(`${API_URL}/catalog?${params}`);
             
             if (!response.ok) {
                 throw new Error('Failed to submit form');
@@ -46,7 +50,7 @@ export const submitFormData = async (formData, useCase, lang = 'fr') => {
             };
         } else {
             // For contact (POST request), use body
-            const response = await fetch('https://api.dikafood.com/contact', {
+            const response = await fetch(`${API_URL}/contact`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ import NavBar from './sections/shared/navbar/NavBar';
 import { useState, useEffect } from 'react';
 import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
 import LanguageSwitcher from './components/ui/language-switcher/LanguageSwitcher';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Create a wrapper component to handle scroll restoration
 function ScrollToTop() {
@@ -42,7 +43,7 @@ function App() {
     }, []);
 
     return (
-        <>
+        <HelmetProvider>
             <ScrollToTop />
             <div className={`App ${isScrolled ? 'scrolled' : ''}`}>
                 {isOpenNav && (
@@ -66,7 +67,7 @@ function App() {
                 <FloatingButtons />
                 <LanguageSwitcher />
             </div>
-        </>
+        </HelmetProvider>
     );
 }
 
