@@ -334,22 +334,58 @@
             .submit-success {
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                gap: 12px;
                 padding: 16px;
                 background: linear-gradient(135deg,
-                    var(--success-light) 0%,
-                    var(--success-lighter) 100%);
-                border: 1px solid var(--success);
-                color: var(--success-dark);
+                    var(--light-green-2) 0%,
+                    var(--light-green-1) 100%);
+                border: 1px solid var(--dark-green-3);
                 border-radius: 14px;
-                margin-top: -8px;
-                animation: slideIn 0.3s ease-out;
-                font-size: 15px;
-                font-weight: 500;
+                animation: slideIn 0.3s ease;
 
                 svg {
+                    width: 24px;
+                    height: 24px;
+                    color: var(--dark-green-7);
                     flex-shrink: 0;
-                    color: var(--success);
+                }
+
+                p {
+                    color: var(--dark-green-7);
+                    font-size: 15px;
+                    line-height: 1.4;
+                    margin: 0;
+                    font-weight: 500;
+                }
+
+                @media screen and (max-width: 480px) {
+                    padding: 14px;
+                    gap: 10px;
+                    border-radius: 12px;
+
+                    svg {
+                        width: 20px;
+                        height: 20px;
+                    }
+
+                    p {
+                        font-size: 14px;
+                    }
+                }
+
+                @media screen and (max-width: 375px) {
+                    padding: 12px;
+                    gap: 8px;
+                    border-radius: 10px;
+
+                    svg {
+                        width: 18px;
+                        height: 18px;
+                    }
+
+                    p {
+                        font-size: 13px;
+                    }
                 }
             }
 
@@ -450,13 +486,16 @@
 
                 .submit-success {
                     padding: 14px;
+                    gap: 10px;
                     border-radius: 12px;
-                    font-size: 14px;
-                    gap: 6px;
 
                     svg {
-                        width: 16px;
-                        height: 16px;
+                        width: 20px;
+                        height: 20px;
+                    }
+
+                    p {
+                        font-size: 14px;
                     }
                 }
             }

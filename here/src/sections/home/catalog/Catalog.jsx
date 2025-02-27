@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     ArrowDownRight,
     At,
@@ -6,31 +6,81 @@ import {
     Phone,
     ClipboardText,
     Warning,
-    Download
+    Download,
+    CircleNotch
 } from "@phosphor-icons/react";
 import Field from "../../../components/forms/Field";
 import CatalogCover from "../../../components/catalog/CatalogCover";
 import CatalogDownloadModal from "../../../components/modals/CatalogDownloadModal";
+import { useApi } from '../../../hooks/useApi';
+import { catalogService } from '../../../services/catalogService';
 import "./catalog.scss";
 import { validateName, validateEmail, validatePhone, formatPhoneNumber } from '../../../utils/validation';
-import { submitFormData } from '../../../utils/api';
-import { handleCatalogDownload } from '../../../services/downloadService';
+
+const INITIAL_FORM_STATE = {
+    name: '',
+    surname: '',
+    email: '',
+    telephone: ''
+};
 
 const Catalog = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        surname: '',
-        email: '',
-        telephone: ''
-    });
-
+    // Form state
+    const [formData, setFormData] = useState(INITIAL_FORM_STATE);
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
+    
+    // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
 
-    const handleInputChange = (e) => {
+    // API hook
+    const { 
+        loading: isSubmitting, 
+        error: submitError, 
+        execute: submitCatalogRequest 
+    } = useApi(catalogService.requestCatalog);
+
+    // Form validation functions
+    const validateField = useCallback((name, value) => {
+        switch (name) {
+            case 'name':
+            case 'surname':
+                return validateName(value) || '';
+            case 'email':
+                return validateEmail(value) || '';
+            case 'telephone':
+                return validatePhone(value) || '';
+            default:
+                return '';
+        }
+    }, []);
+
+    const validateForm = useCallback(() => {
+        const newErrors = {};
+        let isValid = true;
+
+        // Validate all fields
+        Object.entries(formData).forEach(([field, value]) => {
+            const error = validateField(field, value);
+            if (error) {
+                newErrors[field] = error;
+                isValid = false;
+            }
+        });
+
+        // Mark all fields as touched when submitting
+        setTouched(Object.keys(formData).reduce((acc, field) => ({
+            ...acc,
+            [field]: true
+        }), {}));
+
+        setErrors(newErrors);
+        return isValid;
+    }, [formData, validateField]);
+
+    // Event handlers
+    const handleInputChange = useCallback((e) => {
         const { name, value } = e.target;
         
         // Format phone number as user types
@@ -53,138 +103,84 @@ const Catalog = () => {
                 [name]: ''
             }));
         }
-    };
+    }, [errors]);
 
-    const validateField = (name, value) => {
-        switch (name) {
-            case 'name':
-            case 'surname':
-                return validateName(value);
-            case 'email':
-                return validateEmail(value);
-            case 'telephone':
-                return validatePhone(value);
-            default:
-                return '';
-        }
-    };
-
-    const handleBlur = (e) => {
+    const handleBlur = useCallback((e) => {
         const { name, value } = e.target;
         
-        // Mark field as touched
-        setTouched(prev => ({
-            ...prev,
-            [name]: true
+        setTouched(prev => ({ 
+            ...prev, 
+            [name]: true 
         }));
-
-        // Only validate if field has been touched
+        
         if (touched[name]) {
             const error = validateField(name, value);
-            setErrors(prev => ({
-                ...prev,
-                [name]: error
+            setErrors(prev => ({ 
+                ...prev, 
+                [name]: error 
             }));
         }
-    };
-
-    const validateForm = () => {
-        const newErrors = {};
-        let isValid = true;
-
-        // Validate all fields and mark them as touched
-        Object.keys(formData).forEach(field => {
-            const error = validateField(field, formData[field]);
-            if (error) {
-                newErrors[field] = error;
-                isValid = false;
-            }
-            setTouched(prev => ({
-                ...prev,
-                [field]: true
-            }));
-        });
-
-        setErrors(newErrors);
-        return isValid;
-    };
+    }, [touched, validateField]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        if (!validateForm()) {
-            return;
-        }
-
-        setIsSubmitting(true);
+        if (!validateForm()) return;
 
         try {
-            // Map form fields to match backend expectations
-            const mappedFormData = {
+            // Call API through catalogService
+            const response = await submitCatalogRequest({
                 name: formData.name,
                 surname: formData.surname,
                 email: formData.email,
                 phone: formData.telephone,
                 useCase: 'catalog'
-            };
-
-            // Submit form data to get secure download URLs
-            const result = await submitFormData(mappedFormData, 'catalog');
-            console.log(result);
-
-            if (!result.success) {
-                throw new Error(result.error || 'Une erreur est survenue');
-            }
-
-            // Store the complete URLs from backend
+            });
+            
+            // Store URLs for later use
             setSubmittedData({
                 ...formData,
                 submittedAt: new Date().toISOString(),
-                catalogUrls: result.data.urls // These URLs include the security tokens
+                catalogUrls: response.data.urls // Contains {fr: url, ar: url}
             });
             
             setIsModalOpen(true);
-            
         } catch (error) {
-            console.error('Error submitting form:', error);
             setErrors(prev => ({
                 ...prev,
-                submit: error.message || 'Une erreur est survenue. Veuillez réessayer.'
+                submit: error.message
             }));
-            setSubmittedData(null);
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
     const handleDownload = async (language) => {
-        if (submittedData?.catalogUrls?.[language]) {
-            try {
-                await handleCatalogDownload(
-                    submittedData.catalogUrls[language],
-                    language
-                );
-            } catch (error) {
-                console.error('Download error:', error);
-                throw error; // Let modal handle the error display
+        try {
+            if (!submittedData?.catalogUrls?.[language]) {
+                throw new Error('URL de téléchargement non disponible');
             }
+
+            // Pass URL to catalogService
+            return await catalogService.downloadCatalog(
+                language,
+                submittedData.catalogUrls[language]
+            );
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message
+            };
         }
     };
 
-    const handleModalClose = () => {
+    const handleModalClose = useCallback(() => {
         setIsModalOpen(false);
         if (submittedData) {
-            setFormData({
-                name: '',
-                surname: '',
-                email: '',
-                telephone: ''
-            });
+            // Reset form state
+            setFormData(INITIAL_FORM_STATE);
             setTouched({});
             setErrors({});
             setSubmittedData(null);
         }
-    };
+    }, [submittedData]);
 
     return (
         <section className="form-section" id="form">
@@ -213,7 +209,7 @@ const Catalog = () => {
                                 <Field
                                     inputName="name"
                                     Icon={<User size={20} weight="duotone" />}
-                                    placeholder="Prénom"
+                                    placeholder="Nom"
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     onBlur={handleBlur}
@@ -223,7 +219,7 @@ const Catalog = () => {
                                 <Field
                                     inputName="surname"
                                     Icon={<User size={20} weight="duotone" />}
-                                    placeholder="Nom"
+                                    placeholder="Prénom"
                                     value={formData.surname}
                                     onChange={handleInputChange}
                                     onBlur={handleBlur}
@@ -266,8 +262,14 @@ const Catalog = () => {
                                 className={`submit-button ${isSubmitting ? 'submitting' : ''}`}
                                 disabled={isSubmitting}
                             >
-                                <Download size={20} weight="duotone" />
-                                <span>{isSubmitting ? 'Envoi en cours...' : 'Télécharger le catalogue'}</span>
+                                {isSubmitting ? (
+                                    <CircleNotch size={20} weight="bold" className="spinning" />
+                                ) : (
+                                    <Download size={20} weight="duotone" />
+                                )}
+                                <span>
+                                    {isSubmitting ? 'Envoi en cours...' : 'Télécharger le catalogue'}
+                                </span>
                             </button>
                         </form>
                     </div>
@@ -278,20 +280,7 @@ const Catalog = () => {
                 isOpen={isModalOpen} 
                 onClose={handleModalClose}
                 userData={submittedData}
-                onDownload={async (language) => {
-                    if (!submittedData?.catalogUrls?.[language]) {
-                        return {
-                            success: false,
-                            error: 'URL de téléchargement non disponible'
-                        };
-                    }
-                    return {
-                        success: true,
-                        data: {
-                            urls: submittedData.catalogUrls // Pass complete URLs with tokens
-                        }
-                    };
-                }}
+                onDownload={handleDownload}
             />
         </section>
     );

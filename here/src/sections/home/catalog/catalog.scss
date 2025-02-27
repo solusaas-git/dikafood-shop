@@ -378,6 +378,10 @@ $background-color_3: var(--dark-green-7);
 						span {
 							line-height: 1;
 						}
+
+						.spinning {
+							animation: spin 1s linear infinite;
+						}
 					}
 				}
 			}

@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { X, Globe, Warning, CheckCircle } from "@phosphor-icons/react";
-import { API_URL } from '../../utils/api';
 import './catalog-download-modal.scss';
+
+const INITIAL_DOWNLOAD_STATES = {
+    fr: { isLoading: false, isSuccess: false },
+    ar: { isLoading: false, isSuccess: false }
+};
 
 export default function CatalogDownloadModal({ isOpen, onClose, userData, onDownload }) {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    const [downloadStates, setDownloadStates] = useState({
-        fr: { isLoading: false, isSuccess: false },
-        ar: { isLoading: false, isSuccess: false }
-    });
+    const [downloadStates, setDownloadStates] = useState(INITIAL_DOWNLOAD_STATES);
     const [error, setError] = useState('');
+
+    // Reset states when modal opens/closes
+    useEffect(() => {
+        if (isOpen) {
+            setDownloadStates(INITIAL_DOWNLOAD_STATES);
+            setError('');
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -22,56 +31,33 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
 
     const handleDownload = async (language) => {
         try {
+            setError('');
             setDownloadStates(prev => ({
                 ...prev,
                 [language]: { ...prev[language], isLoading: true }
             }));
-            setError('');
             
-            // Call onDownload and handle potential undefined return
             const result = await onDownload?.(language);
             
             if (!result || !result.success) {
-                throw new Error(result?.error || 'Erreur lors de la récupération du catalogue');
+                throw new Error(result?.error || 'Erreur lors du téléchargement');
             }
 
-            const urls = result.data?.urls;
-            
-            if (!urls || !urls[language]) {
-                throw new Error('URL de téléchargement non disponible');
-            }
-
-            // Handle both absolute and relative URLs
-            const downloadUrl = urls[language].startsWith('http') 
-                ? urls[language]
-                : `${API_URL}${urls[language]}`;
-
-            console.log('Attempting download with URL:', downloadUrl);
-
-            // Create a temporary link and trigger download
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = `dikafood-catalog-${language}.pdf`;
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
             setDownloadStates(prev => ({
                 ...prev,
                 [language]: { isLoading: false, isSuccess: true }
             }));
 
+            // Reset success state after 3 seconds
             setTimeout(() => {
                 setDownloadStates(prev => ({
                     ...prev,
-                    [language]: { ...prev[language], isSuccess: false }
+                    [language]: { isLoading: false, isSuccess: false }
                 }));
             }, 3000);
 
         } catch (error) {
-            console.error('Download error:', error);
-            setError(error.message || 'Erreur lors du téléchargement');
+            setError(error.message);
             setDownloadStates(prev => ({
                 ...prev,
                 [language]: { isLoading: false, isSuccess: false }
@@ -79,12 +65,19 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
         }
     };
 
+    const handleModalClose = () => {
+        // Reset states before closing
+        setDownloadStates(INITIAL_DOWNLOAD_STATES);
+        setError('');
+        onClose();
+    };
+
     if (!isOpen) return null;
 
     return (
         <div className="modal-overlay">
             <div className={`catalog-download-modal ${isMobile ? 'mobile' : ''}`}>
-                <button className="close-button" onClick={onClose}>
+                <button className="close-button" onClick={handleModalClose}>
                     <X size={24} weight="bold" />
                 </button>
 
@@ -104,6 +97,7 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
                             className={`download-button ${downloadStates.fr.isLoading ? 'loading' : ''} ${downloadStates.fr.isSuccess ? 'success' : ''}`}
                             onClick={() => handleDownload('fr')}
                             disabled={downloadStates.fr.isLoading}
+                            lang="fr"
                         >
                             {downloadStates.fr.isSuccess ? (
                                 <CheckCircle size={24} weight="fill" />
@@ -123,6 +117,7 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
                             className={`download-button ${downloadStates.ar.isLoading ? 'loading' : ''} ${downloadStates.ar.isSuccess ? 'success' : ''}`}
                             onClick={() => handleDownload('ar')}
                             disabled={downloadStates.ar.isLoading}
+                            lang="ar"
                         >
                             {downloadStates.ar.isSuccess ? (
                                 <CheckCircle size={24} weight="fill" />
@@ -131,7 +126,7 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
                             )}
                             <span>
                                 {downloadStates.ar.isLoading 
-                                    ? 'Téléchargement...' 
+                                    ? 'جاري التحميل...' 
                                     : downloadStates.ar.isSuccess 
                                         ? 'تم التحميل !' 
                                         : 'النسخة العربية'}

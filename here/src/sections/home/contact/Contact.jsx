@@ -5,7 +5,8 @@ import MessageField from "../../../components/forms/MessageField";
 import SectionHeader from '../../../components/ui/section/SectionHeader';
 import Button from "../../../components/buttons/Button";
 import { validateName, validateEmail, validatePhone, formatPhoneNumber } from '../../../utils/validation';
-import { submitFormData } from '../../../utils/api';
+import { contactService } from '../../../services/contactService';
+import { useApi } from '../../../hooks/useApi';
 import './contact.scss';
 
 export default function Contact() {
@@ -19,8 +20,14 @@ export default function Contact() {
     });
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
+
+    // Use the API hook
+    const { 
+        loading: isSubmitting, 
+        error: submitError, 
+        execute: submitContact 
+    } = useApi(contactService.submitContact);
 
     useEffect(() => {
         const handleResize = () => {
@@ -119,26 +126,23 @@ export default function Contact() {
             return;
         }
 
-        setIsSubmitting(true);
-        setSubmitSuccess(false);
-
         try {
-            const result = await submitFormData({
+            const response = await submitContact({
                 name: formData.name,
                 surname: formData.surname,
                 email: formData.email,
                 phone: formData.phone,
                 message: formData.message
-            }, 'contact');
+            });
 
-            if (!result.success) {
-                throw new Error(result.error || 'Failed to submit form');
+            if (!response?.success) {
+                throw new Error(response?.error || 'Failed to submit form');
             }
 
             // Show success message
             setSubmitSuccess(true);
             
-            // Reset form after 3 seconds
+            // Reset form after success
             setTimeout(() => {
                 setFormData({
                     name: '',
@@ -153,13 +157,11 @@ export default function Contact() {
             }, 3000);
 
         } catch (error) {
-            console.error('Error submitting form:', error);
+            console.error('Contact form error:', error);
             setErrors(prev => ({
                 ...prev,
-                submit: 'Une erreur est survenue. Veuillez réessayer.'
+                submit: error.message || 'Une erreur est survenue. Veuillez réessayer.'
             }));
-        } finally {
-            setIsSubmitting(false);
         }
     };
 

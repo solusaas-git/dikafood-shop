@@ -37,7 +37,7 @@ const CatalogCover = memo(() => {
                         <span className="year">2024</span>
                         <h2 className="catalog-title">
                             Collection<br />
-                            <span className="highlight">Premium</span>
+                            <span className="catalog-highlight">Premium</span>
                         </h2>
                         <p className="subtitle">Huiles d'Olive d'Exception</p>
                     </div>
