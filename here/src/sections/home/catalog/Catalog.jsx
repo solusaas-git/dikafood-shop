@@ -119,23 +119,28 @@ const Catalog = () => {
         setIsSubmitting(true);
 
         try {
-            const result = await submitFormData({
+            // Map form fields to match backend expectations
+            const mappedFormData = {
                 name: formData.name,
                 surname: formData.surname,
                 email: formData.email,
-                phone: formData.telephone
-            }, 'catalog', 'fr');
+                phone: formData.telephone,
+                useCase: 'catalog'
+            };
+
+            // Submit form data to get secure download URLs
+            const result = await submitFormData(mappedFormData, 'catalog');
+            console.log(result);
 
             if (!result.success) {
-                throw new Error(result.error || 'Failed to submit form');
+                throw new Error(result.error || 'Une erreur est survenue');
             }
 
-            // Store the validated form data and catalog URLs for the download modal
+            // Store the complete URLs from backend
             setSubmittedData({
                 ...formData,
                 submittedAt: new Date().toISOString(),
-                catalogUrls: result.data.urls,
-                expiresIn: result.data.expiresIn
+                catalogUrls: result.data.urls // These URLs include the security tokens
             });
             
             setIsModalOpen(true);
@@ -144,7 +149,7 @@ const Catalog = () => {
             console.error('Error submitting form:', error);
             setErrors(prev => ({
                 ...prev,
-                submit: 'Une erreur est survenue. Veuillez réessayer.'
+                submit: error.message || 'Une erreur est survenue. Veuillez réessayer.'
             }));
             setSubmittedData(null);
         } finally {
@@ -273,7 +278,20 @@ const Catalog = () => {
                 isOpen={isModalOpen} 
                 onClose={handleModalClose}
                 userData={submittedData}
-                onDownload={handleDownload}
+                onDownload={async (language) => {
+                    if (!submittedData?.catalogUrls?.[language]) {
+                        return {
+                            success: false,
+                            error: 'URL de téléchargement non disponible'
+                        };
+                    }
+                    return {
+                        success: true,
+                        data: {
+                            urls: submittedData.catalogUrls // Pass complete URLs with tokens
+                        }
+                    };
+                }}
             />
         </section>
     );

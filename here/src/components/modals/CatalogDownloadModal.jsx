@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Download, Globe, Warning, CheckCircle } from "@phosphor-icons/react";
+import { X, Globe, Warning, CheckCircle } from "@phosphor-icons/react";
+import { API_URL } from '../../utils/api';
 import './catalog-download-modal.scss';
 
 export default function CatalogDownloadModal({ isOpen, onClose, userData, onDownload }) {
@@ -19,8 +20,6 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    if (!isOpen) return null;
-
     const handleDownload = async (language) => {
         try {
             setDownloadStates(prev => ({
@@ -29,7 +28,34 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
             }));
             setError('');
             
-            await onDownload(language);
+            // Call onDownload and handle potential undefined return
+            const result = await onDownload?.(language);
+            
+            if (!result || !result.success) {
+                throw new Error(result?.error || 'Erreur lors de la récupération du catalogue');
+            }
+
+            const urls = result.data?.urls;
+            
+            if (!urls || !urls[language]) {
+                throw new Error('URL de téléchargement non disponible');
+            }
+
+            // Handle both absolute and relative URLs
+            const downloadUrl = urls[language].startsWith('http') 
+                ? urls[language]
+                : `${API_URL}${urls[language]}`;
+
+            console.log('Attempting download with URL:', downloadUrl);
+
+            // Create a temporary link and trigger download
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `dikafood-catalog-${language}.pdf`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
             
             setDownloadStates(prev => ({
                 ...prev,
@@ -44,13 +70,16 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
             }, 3000);
 
         } catch (error) {
-            setError(error.message);
+            console.error('Download error:', error);
+            setError(error.message || 'Erreur lors du téléchargement');
             setDownloadStates(prev => ({
                 ...prev,
                 [language]: { isLoading: false, isSuccess: false }
             }));
         }
     };
+
+    if (!isOpen) return null;
 
     return (
         <div className="modal-overlay">
