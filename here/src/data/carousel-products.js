@@ -10,12 +10,12 @@ export const carouselProducts = [
             {
                 size: '500ml',
                 image: '/images/products/dika-500ML.png',
-                price: '89'
+                price: '74.99'
             },
             {
                 size: '5L',
                 image: '/images/products/dika-5L.png',
-                price: '799'
+                price: '499.99'
             }
         ],
         features: [
@@ -41,7 +41,7 @@ export const carouselProducts = [
             {
                 size: '1L',
                 image: '/images/products/ouedfes-1L.png',
-                price: '129'
+                price: '69.99'
             }
         ],
         features: [
@@ -67,17 +67,17 @@ export const carouselProducts = [
             {
                 size: '1L',
                 image: '/images/products/nouarti-1L.png',
-                price: '29'
+                price: '16.99'
             },
             {
                 size: '2L',
                 image: '/images/products/nouarti-2L.png',
-                price: '55'
+                price: '33.99'
             },
             {
                 size: '5L',
                 image: '/images/products/nouarti-5L.png',
-                price: '129'
+                price: '84.99'
             }
         ],
         features: [
@@ -102,17 +102,17 @@ export const carouselProducts = [
             {
                 size: '1L',
                 image: '/images/products/chourouk-1L.png',
-                price: '35'
+                price: '--'
             },
             {
                 size: '10L',
                 image: '/images/products/chourouk-10L.png',
-                price: '329'
+                price: '147.99'
             },
             {
                 size: '25L',
                 image: '/images/products/chourouk-25L.png',
-                price: '799'
+                price: '399.99'
             }
         ],
         features: [

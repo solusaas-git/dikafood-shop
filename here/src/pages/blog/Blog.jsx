@@ -178,7 +178,8 @@ const Blog = () => {
                                 </span>
                                 <div className="title-container">
                                     <h1>
-                                        L'Art de<br />
+                                        L'Art de
+                                        <br />
                                         <span className="highlight">l'Huile d'Olive</span>
                                     </h1>
                                 </div>
@@ -188,7 +189,7 @@ const Blog = () => {
                                 <div className="newsletter-header">
                                     <Envelope weight="duotone" />
                                     <h3>Restez Informé</h3>
-                                    <p>Recevez nos derniers articles et actualités directement dans votre boîte mail</p>
+                                    {/* <p>Recevez nos derniers articles et actualités directement dans votre boîte mail</p> */}
                                 </div>
                                 <div className="input-group">
                                     <input 
