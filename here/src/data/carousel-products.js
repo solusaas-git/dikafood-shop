@@ -100,11 +100,6 @@ export const carouselProducts = [
         description: 'Huile de grignons d\'olive, économique et polyvalente pour tous types de cuisson.',
         variants: [
             {
-                size: '1L',
-                image: '/images/products/chourouk-1L.png',
-                price: '--'
-            },
-            {
                 size: '10L',
                 image: '/images/products/chourouk-10L.png',
                 price: '147.99'
@@ -114,6 +109,31 @@ export const carouselProducts = [
                 image: '/images/products/chourouk-25L.png',
                 price: '399.99'
             }
+        ],
+        features: [
+            {
+                icon: Fire,
+                text: 'Idéale pour la cuisson'
+            },
+            {
+                icon: ShieldCheck,
+                text: 'Qualité garantie'
+            }
+        ],
+        origin: 'Maroc',
+        category: 'cooking'
+    },
+    {
+        id: 'biladi-huile-de-table',
+        brand: 'Biladi',
+        name: 'Huile de Table',
+        description: 'Huile de table, idéale pour la cuisson et la salade.',
+        variants: [
+            {
+                size: '1L',
+                image: '/images/products/chourouk-1L.png',
+                price: '44.99'
+            },
         ],
         features: [
             {

@@ -18,7 +18,8 @@ export default function HeroCarousel() {
         return variants;
     });
 
-    const shouldUseCarousel = isMobile || isTablet || isLaptop;
+    // Always use carousel regardless of viewport size
+    const shouldUseCarousel = true;
 
     const carouselOptions = {
         loop: true,
@@ -27,7 +28,6 @@ export default function HeroCarousel() {
         containScroll: 'trimSnaps',
         slidesToScroll: 1,
         breakpoints: {
-            '(min-width: 1440px)': { slidesToShow: 4 },
             '(min-width: 1024px)': { slidesToShow: 3 },
             '(min-width: 768px)': { slidesToShow: 2 },
             '(max-width: 767px)': { 
@@ -50,6 +50,7 @@ export default function HeroCarousel() {
         />
     );
 
+    // This block will never execute now, but keeping it for future reference
     if (!shouldUseCarousel) {
         return (
             <div className="hero-carousel">

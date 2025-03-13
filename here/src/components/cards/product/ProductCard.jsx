@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, ShoppingBag, Tag, MapPin } from "@phosphor-icons/react";
+import { ArrowRight, ShoppingBag, Waves, Tag, MapPin, Drop, Sun, Leaf, SunHorizon } from "@phosphor-icons/react";
 import './product-card.scss';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
@@ -10,6 +10,25 @@ export default function ProductCard({
     className = "" 
 }) {
     const { isMobile, isTablet } = useBreakpoint();
+    
+    // Function to get the appropriate icon based on brand
+    const getBrandIcon = (brand) => {
+        switch(brand.toLowerCase()) {
+            case 'dika':
+                return <Drop weight="duotone" />;
+            case 'oued fès':
+            case 'oued fes':
+                return <Waves weight="duotone" />; // Using MapPin for river (no River icon in Phosphor)
+            case 'nouarati':
+                return <Sun weight="duotone" />;
+            case 'chourouk':
+                return <SunHorizon weight="duotone" />; // Using Sun for sunset (no Sunset icon in Phosphor)
+            case 'biladi':
+                return <Leaf weight="duotone" />;
+            default:
+                return <MapPin weight="duotone" />;
+        }
+    };
     
     return (
         <div className={`product-card ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''} ${className}`}>
@@ -42,7 +61,7 @@ export default function ProductCard({
 
                 <div className="product-content">
                     <div className="brand-tag">
-                        <MapPin weight="duotone" />
+                        {getBrandIcon(product.brand)}
                         {product.brand}
                     </div>
                     <h3 className="product-name">{product.name}</h3>
