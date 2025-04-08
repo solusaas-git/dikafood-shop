@@ -153,7 +153,7 @@ const Blog = () => {
     }, []);
 
     const displayedArticles = ARTICLES.slice(
-        (currentPage - 1) * ITEMS_PER_PAGE, 
+        (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
 
@@ -166,7 +166,7 @@ const Blog = () => {
 
             <div className="blog">
                 <NavBar />
-                
+
                 <section className="blog-hero">
                     <div className="hero-image" />
                     <div className="container">
@@ -192,9 +192,9 @@ const Blog = () => {
                                     {/* <p>Recevez nos derniers articles et actualités directement dans votre boîte mail</p> */}
                                 </div>
                                 <div className="input-group">
-                                    <input 
-                                        type="email" 
-                                        placeholder="Votre adresse email" 
+                                    <input
+                                        type="email"
+                                        placeholder="Votre adresse email"
                                         aria-label="Email subscription"
                                     />
                                     <Button
@@ -232,14 +232,14 @@ const Blog = () => {
                                     <Button
                                         theme="secondary"
                                         icon={<CaretLeft weight="duotone" />}
-                                        onClick={() => setActiveSlide(prev => 
+                                        onClick={() => setActiveSlide(prev =>
                                             prev === 0 ? FEATURED_ARTICLES.length - 1 : prev - 1
                                         )}
                                     />
                                     <Button
                                         theme="secondary"
                                         icon={<CaretRight weight="duotone" />}
-                                        onClick={() => setActiveSlide(prev => 
+                                        onClick={() => setActiveSlide(prev =>
                                             prev === FEATURED_ARTICLES.length - 1 ? 0 : prev + 1
                                         )}
                                     />
@@ -247,7 +247,7 @@ const Blog = () => {
                             </div>
                         </div>
 
-                        <div 
+                        <div
                             className="carousel-container"
                             onMouseDown={(e) => {
                                 setIsDragging(true);
@@ -265,9 +265,9 @@ const Blog = () => {
                                 setActiveSlide(Math.max(0, Math.min(newSlide, FEATURED_ARTICLES.length - 1)));
                             }}
                         >
-                            <div 
+                            <div
                                 className="carousel-track"
-                                style={{ 
+                                style={{
                                     transform: `translateX(-${activeSlide * 100}%)`,
                                     transition: isDragging ? 'none' : 'transform 0.3s ease'
                                 }}
@@ -297,7 +297,7 @@ const Blog = () => {
                                                     {article.readTime} min de lecture
                                                 </span>
                                             </div>
-                                            <Button 
+                                            <Button
                                                 theme="secondary"
                                                 name="Lire l'article"
                                                 icon={<CaretRight weight="duotone" />}
@@ -322,14 +322,14 @@ const Blog = () => {
                                     <h2>Articles Récents</h2>
                                 </div>
                                 <div className="filters">
-                                    <Button 
+                                    <Button
                                         theme="secondary"
                                         name="Trier par"
                                         icon={<SortAscending weight="duotone" />}
                                         iconPosition="left"
                                         onClick={() => {/* Add sort logic */}}
                                     />
-                                    <Button 
+                                    <Button
                                         theme="secondary"
                                         name="Filtrer"
                                         icon={<FunnelSimple weight="duotone" />}
@@ -343,8 +343,8 @@ const Blog = () => {
                                 {displayedArticles.map(article => (
                                     <article key={article.id} className="article-card">
                                         <div className="article-image">
-                                            <img 
-                                                src={article.image} 
+                                            <img
+                                                src={article.image}
                                                 alt={article.title}
                                                 loading="lazy"
                                             />
@@ -369,7 +369,7 @@ const Blog = () => {
                                                     {article.readTime} min de lecture
                                                 </span>
                                             </div>
-                                            <Button 
+                                            <Button
                                                 theme="secondary"
                                                 name="Lire plus"
                                                 icon={<CaretRight weight="duotone" />}
@@ -381,7 +381,7 @@ const Blog = () => {
                             </div>
 
                             <div className="pagination">
-                                <Button 
+                                <Button
                                     theme="secondary"
                                     name="Précédent"
                                     icon={<CaretLeft weight="duotone" />}
@@ -400,7 +400,7 @@ const Blog = () => {
                                         </button>
                                     ))}
                                 </div>
-                                <Button 
+                                <Button
                                     theme="secondary"
                                     name="Suivant"
                                     icon={<CaretRight weight="duotone" />}
@@ -425,9 +425,9 @@ const Blog = () => {
                                     <div className="search-icon">
                                         <MagnifyingGlass weight="duotone" />
                                     </div>
-                                    <input 
-                                        type="search" 
-                                        placeholder="Rechercher un article..." 
+                                    <input
+                                        type="search"
+                                        placeholder="Rechercher un article..."
                                         aria-label="Rechercher un article"
                                     />
                                 </div>
@@ -468,8 +468,8 @@ const Blog = () => {
                                     {RECENT_POSTS.map((post) => (
                                         <li key={post.id}>
                                             <div className="post-image">
-                                                <img 
-                                                    src={post.imageUrl} 
+                                                <img
+                                                    src={post.imageUrl}
                                                     alt={post.title}
                                                     loading="lazy"
                                                 />
@@ -529,22 +529,22 @@ const Blog = () => {
                                     </div>
                                 </div>
                                 <div className="social-links">
-                                    <a 
-                                        href="#" 
+                                    <a
+                                        href="#"
                                         className="instagram"
                                         style={{ background: '#E4405F' }}
                                     >
                                         <Instagram />
                                     </a>
-                                    <a 
-                                        href="#" 
+                                    <a
+                                        href="#"
                                         className="facebook"
                                         style={{ background: '#1877F2' }}
                                     >
                                         <Facebook />
                                     </a>
-                                    <a 
-                                        href="#" 
+                                    <a
+                                        href="#"
                                         className="linkedin"
                                         style={{ background: '#0A66C2' }}
                                     >
@@ -560,4 +560,4 @@ const Blog = () => {
     );
 };
 
-export default Blog; 
+export default Blog;
