@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 // Components
-import TranslatedText from '../../components/ui/text/TranslatedText';
 import Button from '../../components/buttons/Button';
 import NavBar from '../../sections/shared/navbar/NavBar';
 import Footer from '../../sections/shared/footer/Footer';
@@ -182,21 +181,21 @@ const Shop = () => {
           <div className="breadcrumb">
             <Link to="/" className="breadcrumb-item">
               <House size={16} />
-              <TranslatedText translationKey="nav.home" />
+              Home
             </Link>
             <CaretRight size={12} className="breadcrumb-separator" />
             <span className="breadcrumb-item active">
-              <TranslatedText translationKey="nav.shop" />
+              Shop
             </span>
           </div>
 
-          <h1><TranslatedText translationKey="shop.title" /></h1>
-          <p><TranslatedText translationKey="shop.subtitle" /></p>
+          <h1>Our Products</h1>
+          <p>Discover our premium selection of organic products</p>
 
           {/* Mobile Filter Toggle */}
           <button className="filter-toggle mobile-only">
             <Funnel size={20} />
-            <TranslatedText translationKey="shop.filters" />
+            Filters
           </button>
         </div>
       </div>
@@ -209,7 +208,7 @@ const Shop = () => {
               {/* Categories */}
               <div className="filter-section">
                 <h3 className="filter-title">
-                  <TranslatedText translationKey="shop.filters.categories" />
+                  Categories
                 </h3>
                 <div className="filter-options">
                   {categories.map(category => (
@@ -233,7 +232,7 @@ const Shop = () => {
               {/* Price Range */}
               <div className="filter-section">
                 <h3 className="filter-title">
-                  <TranslatedText translationKey="shop.filters.price" />
+                  Price Range
                 </h3>
                 <div className="price-slider">
                   <div className="price-range">
@@ -286,7 +285,7 @@ const Shop = () => {
               {/* Additional Filters */}
               <div className="filter-section">
                 <h3 className="filter-title">
-                  <TranslatedText translationKey="shop.filters.additional" />
+                  Additional Filters
                 </h3>
                 <div className="filter-options">
                   <label className="filter-option">
@@ -295,7 +294,7 @@ const Shop = () => {
                       checked={inStockOnly}
                       onChange={() => setInStockOnly(!inStockOnly)}
                     />
-                    <TranslatedText translationKey="shop.filters.inStock" />
+                    In Stock Only
                   </label>
                   <label className="filter-option">
                     <input
@@ -303,7 +302,7 @@ const Shop = () => {
                       checked={onSaleOnly}
                       onChange={() => setOnSaleOnly(!onSaleOnly)}
                     />
-                    <TranslatedText translationKey="shop.filters.onSale" />
+                    On Sale Only
                   </label>
                 </div>
               </div>
@@ -313,7 +312,7 @@ const Shop = () => {
                 className="clear-filters-button"
                 onClick={resetFilters}
               >
-                <TranslatedText translationKey="shop.filters.reset" />
+                Reset Filters
               </button>
             </div>
           </aside>
@@ -342,25 +341,25 @@ const Shop = () => {
 
               <div className="shop-sort">
                 <label>
-                  <TranslatedText translationKey="shop.sort.label" />:
+                  Sort by:
                   <select
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value)}
                   >
                     <option value="featured">
-                      <TranslatedText translationKey="shop.sort.featured" />
+                      Featured
                     </option>
                     <option value="price-low">
-                      <TranslatedText translationKey="shop.sort.priceLow" />
+                      Price: Low to High
                     </option>
                     <option value="price-high">
-                      <TranslatedText translationKey="shop.sort.priceHigh" />
+                      Price: High to Low
                     </option>
                     <option value="rating">
-                      <TranslatedText translationKey="shop.sort.rating" />
+                      Best Rating
                     </option>
                     <option value="newest">
-                      <TranslatedText translationKey="shop.sort.newest" />
+                      Newest
                     </option>
                   </select>
                   <CaretDown size={14} />
@@ -368,10 +367,7 @@ const Shop = () => {
               </div>
 
               <div className="shop-results-count">
-                <TranslatedText
-                  translationKey="shop.results"
-                  replacements={{ count: sortedProducts.length }}
-                />
+                {sortedProducts.length} Products Found
               </div>
             </div>
 
@@ -382,7 +378,7 @@ const Shop = () => {
                 sortedProducts
                   .slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
                   .map(product => (
-                    <div key={product.id} className="product-card-shop">
+                    <Link to={`/product/${product.id}`} key={product.id} className="product-card-shop">
                       <div className="product-image-container">
                         <img src={product.image} alt={product.name} />
 
@@ -396,19 +392,23 @@ const Shop = () => {
                         {/* Status Tag */}
                         {product.isNew && (
                           <div className="product-badge new">
-                            <TranslatedText translationKey="shop.product.new" />
+                            New
                           </div>
                         )}
                         {!product.isNew && product.isBestseller && (
                           <div className="product-badge bestseller">
-                            <TranslatedText translationKey="shop.product.bestseller" />
+                            Bestseller
                           </div>
                         )}
 
                         {/* Favorite Button */}
                         <button
                           className={`favorite-button ${favorites.includes(product.id) ? 'active' : ''}`}
-                          onClick={() => toggleFavorite(product.id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleFavorite(product.id);
+                          }}
                           aria-label="Add to favorites"
                         >
                           <Heart weight={favorites.includes(product.id) ? 'fill' : 'regular'} size={20} />
@@ -433,29 +433,33 @@ const Shop = () => {
 
                         <button
                           className="product-button"
-                          onClick={() => addToCart(product)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            addToCart(product);
+                          }}
                           disabled={!product.isInStock}
                         >
                           {product.isInStock ? (
                             <>
                               <ShoppingCart size={18} />
-                              <TranslatedText translationKey="shop.product.addToCart" />
+                              Add to Cart
                             </>
                           ) : (
-                            <TranslatedText translationKey="shop.product.outOfStock" />
+                            "Out of Stock"
                           )}
                         </button>
                       </div>
-                    </div>
+                    </Link>
                   ))
               ) : (
                 <div className="no-products">
-                  <p><TranslatedText translationKey="shop.noResults" /></p>
+                  <p>No products match your current filters.</p>
                   <Button
                     variant="primary"
                     onClick={resetFilters}
                   >
-                    <TranslatedText translationKey="shop.filters.reset" />
+                    Reset Filters
                   </Button>
                 </div>
               )}
@@ -469,7 +473,7 @@ const Shop = () => {
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 >
-                  <TranslatedText translationKey="shop.pagination.previous" />
+                  Previous
                 </button>
 
                 <div className="pagination-numbers">
@@ -489,7 +493,7 @@ const Shop = () => {
                   disabled={currentPage === Math.ceil(sortedProducts.length / productsPerPage)}
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(sortedProducts.length / productsPerPage)))}
                 >
-                  <TranslatedText translationKey="shop.pagination.next" />
+                  Next
                 </button>
               </div>
             )}
@@ -502,7 +506,7 @@ const Shop = () => {
         <div className="cart-header">
           <h2>
             <ShoppingBag size={22} />
-            <TranslatedText translationKey="shop.cart.title" />
+            Shopping Cart
             <span className="cart-count">{cart.length}</span>
           </h2>
           <button
@@ -558,12 +562,12 @@ const Shop = () => {
           ) : (
             <div className="empty-cart">
               <ShoppingBag size={48} />
-              <p><TranslatedText translationKey="shop.cart.empty" /></p>
+              <p>Your cart is empty</p>
               <Button
                 variant="primary"
                 onClick={() => setIsCartOpen(false)}
               >
-                <TranslatedText translationKey="shop.cart.continueShopping" />
+                Continue Shopping
               </Button>
             </div>
           )}
@@ -572,35 +576,35 @@ const Shop = () => {
         {cart.length > 0 && (
           <div className="cart-summary">
             <h3 className="summary-title">
-              <TranslatedText translationKey="shop.cart.summary" />
+              Cart Summary
             </h3>
 
             <div className="summary-row">
-              <span><TranslatedText translationKey="shop.cart.subtotal" /></span>
+              <span>Subtotal</span>
               <span>${cartSubtotal.toFixed(2)}</span>
             </div>
 
             {cartSavings > 0 && (
               <div className="summary-row savings">
-                <span><TranslatedText translationKey="shop.cart.savings" /></span>
+                <span>Savings</span>
                 <span>-${cartSavings.toFixed(2)}</span>
               </div>
             )}
 
             <div className="summary-row">
-              <span><TranslatedText translationKey="shop.cart.shipping" /></span>
-              <span><TranslatedText translationKey="shop.cart.freeShipping" /></span>
+              <span>Shipping</span>
+              <span>Free</span>
             </div>
 
             <div className="summary-total">
-              <span><TranslatedText translationKey="shop.cart.total" /></span>
+              <span>Total</span>
               <span>${cartSubtotal.toFixed(2)}</span>
             </div>
 
-            <button className="checkout-button">
-              <TranslatedText translationKey="shop.cart.checkout" />
+            <Link to="/checkout" className="checkout-button">
+              Checkout
               <CreditCard size={18} />
-            </button>
+            </Link>
           </div>
         )}
       </div>

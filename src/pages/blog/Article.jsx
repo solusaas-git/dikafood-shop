@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Calendar, Clock, ArrowLeft } from "@phosphor-icons/react";
-import { API_URL } from '../../utils/api';
 import './article.scss';
 import { Helmet } from 'react-helmet-async';
-import ArticleSkeleton from '../../components/skeletons/ArticleSkeleton';
-import { getImagePlaceholder } from '../../utils/images';
+import NavBar from '../../sections/shared/navbar/NavBar';
+import Footer from '../../sections/shared/footer/Footer';
+import { blogPosts } from '../../data/blog-posts';
 
 const Article = () => {
     const { id } = useParams();
@@ -14,106 +14,107 @@ const Article = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchArticle();
-    }, [id]);
+        // Find the article in our mock data by ID
+        const foundArticle = blogPosts.find(post => post.id === id);
 
-    const fetchArticle = async () => {
-        try {
-            const response = await fetch(`${API_URL}/public/posts/${id}`);
-            if (!response.ok) throw new Error('Article not found');
-            const data = await response.json();
-            setArticle(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
+        if (foundArticle) {
+            setArticle(foundArticle);
+            setLoading(false);
+        } else {
+            setError('Article not found');
             setLoading(false);
         }
-    };
+    }, [id]);
 
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('fr-FR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
+    if (loading) return (
+        <>
+            <NavBar />
+            <div className="article loading">
+                <div className="container">
+                    <div className="loading-spinner">Loading...</div>
+                </div>
+            </div>
+            <Footer />
+        </>
+    );
 
-    const getImageUrls = (article) => {
-        if (!article?.data?.image?.urls) {
-            return {
-                medium: getImagePlaceholder('medium'),
-                large: getImagePlaceholder('large')
-            };
-        }
+    if (error) return (
+        <>
+            <NavBar />
+            <div className="article error">
+                <div className="container">
+                    <div className="article-error">
+                        <h2>Error</h2>
+                        <p>{error}</p>
+                        <Link to="/blog" className="back-link">
+                            <ArrowLeft size={20} />
+                            Return to Blog
+                        </Link>
+                    </div>
+                </div>
+            </div>
+            <Footer />
+        </>
+    );
 
-        return {
-            medium: `${API_URL}${article.data.image.urls.medium}`,
-            large: `${API_URL}${article.data.image.urls.large}`
-        };
-    };
-
-    if (loading) return <ArticleSkeleton />;
-    if (error) return <div className="article-error">{error}</div>;
     if (!article) return null;
 
     return (
         <>
             <Helmet>
-                <title>{article.data.title} | Dikafood Blog</title>
-                <meta name="description" content={article.data.excerpt} />
-                <meta property="og:title" content={article.data.title} />
-                <meta property="og:description" content={article.data.excerpt} />
-                {article.data.image && (
-                    <meta property="og:image" content={getImageUrls(article).large} />
-                )}
+                <title>{article.title} | Dikafood Blog</title>
+                <meta name="description" content={article.excerpt} />
+                <meta property="og:title" content={article.title} />
+                <meta property="og:description" content={article.excerpt} />
+                <meta property="og:image" content={article.image} />
             </Helmet>
 
+            <NavBar />
+
             <div className="article">
-                <Link to="/blog" className="back-link">
-                    <ArrowLeft size={20} />
-                    Retour au blog
-                </Link>
+                <div className="container">
+                    <Link to="/blog" className="back-link">
+                        <ArrowLeft size={20} />
+                        Retour au blog
+                    </Link>
 
-                <article className="article-content">
-                    {article.data.image && (
-                        <picture>
-                            <source
-                                media="(min-width: 1024px)"
-                                srcSet={getImageUrls(article).large}
-                            />
+                    <article className="article-content">
+                        <div className="article-image-container">
                             <img
-                                src={getImageUrls(article).medium}
-                                alt={article.data.title}
+                                src={article.image}
+                                alt={article.title}
                                 className="article-image"
-                                onError={(e) => {
-                                    e.target.src = getImagePlaceholder('medium');
-                                }}
                             />
-                        </picture>
-                    )}
-
-                    <div className="article-header">
-                        <span className="category">{article.data.category}</span>
-                        <h1>{article.data.title}</h1>
-
-                        <div className="article-meta">
-                            <span>
-                                <Calendar size={16} />
-                                {formatDate(article.metadata.publishedAt)}
-                            </span>
-                            <span>
-                                <Clock size={16} />
-                                {article.data.readTime}
-                            </span>
                         </div>
-                    </div>
 
-                    <div
-                        className="article-text"
-                        dangerouslySetInnerHTML={{ __html: article.data.content }}
-                    />
-                </article>
+                        <div className="article-header">
+                            <span className="category">{article.category}</span>
+                            <h1>{article.title}</h1>
+
+                            <div className="article-meta">
+                                <span className="date">
+                                    <Calendar size={16} />
+                                    {article.date}
+                                </span>
+                                <span className="read-time">
+                                    <Clock size={16} />
+                                    {article.readTime} min de lecture
+                                </span>
+                                <span className="author">
+                                    Par {article.author}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div
+                            className="article-text"
+                            dangerouslySetInnerHTML={{ __html: article.content }}
+                        />
+                    </article>
+                </div>
             </div>
+
+            <Footer />
         </>
     );
 };

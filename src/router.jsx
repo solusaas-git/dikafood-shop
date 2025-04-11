@@ -11,6 +11,11 @@ import Terms from './pages/legal/Terms';
 import Privacy from './pages/legal/Privacy';
 import NotFound from './pages/not-found/NotFound';
 import ComponentShowcase from './pages/showcase/ComponentShowcase';
+import ProductDetail from './pages/product/ProductDetail';
+import Checkout from './pages/checkout/Checkout';
+import FAQ from './pages/faq/FAQ';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 
 export const router = createBrowserRouter([
     {
@@ -56,6 +61,26 @@ export const router = createBrowserRouter([
             {
                 path: 'shop',
                 element: <Shop />
+            },
+            {
+                path: 'product/:productId',
+                element: <ProductDetail />
+            },
+            {
+                path: 'checkout',
+                element: <Checkout />
+            },
+            {
+                path: 'faq',
+                element: <FAQ />
+            },
+            {
+                path: 'login',
+                element: <Login />
+            },
+            {
+                path: 'register',
+                element: <Register />
             },
             {
                 path: '*',

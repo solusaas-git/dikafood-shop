@@ -2,7 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import "./nav-bar.scss";
 import Button from '../../../components/buttons/Button';
 import { useLocation, useNavigate } from "react-router-dom";
-import { List, House, ShoppingBag, PaperPlaneTilt, DownloadSimple, EnvelopeSimple, Article, Info, X } from "@phosphor-icons/react";
+import {
+    List,
+    House,
+    ShoppingBag,
+    PaperPlaneTilt,
+    DownloadSimple,
+    EnvelopeSimple,
+    Article,
+    Info,
+    X,
+    ShoppingCart,
+    Question
+} from "@phosphor-icons/react";
 import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg";
 import { scrollToContactForm } from '../footer/Footer';
 import { useLanguage } from '../../../context/LanguageContext';
@@ -25,6 +37,11 @@ const NAV_ITEMS = [
         translationPath: "nav.blog",
         path: "/blog"
     },
+    {
+        icon: <Question size={20} weight="duotone" />,
+        translationPath: "nav.faq",
+        path: "/faq"
+    },
 ];
 
 function NavBar({ onClick, isOpen, onClose }) {
@@ -34,11 +51,21 @@ function NavBar({ onClick, isOpen, onClose }) {
     const menuRef = useRef(null);
     const { language } = useLanguage();
     const [localIsOpen, setLocalIsOpen] = useState(isOpen);
+    const [cartItemCount, setCartItemCount] = useState(0);
 
     // Keep local and parent state in sync
     useEffect(() => {
         setLocalIsOpen(isOpen);
     }, [isOpen]);
+
+    // Mock cart data - in a real app this would come from a cart context or redux store
+    useEffect(() => {
+        // This would be replaced with actual cart state
+        const mockCart = localStorage.getItem('cart') ?
+            JSON.parse(localStorage.getItem('cart')) :
+            [];
+        setCartItemCount(mockCart.length);
+    }, [pathname]);
 
     const handleContactClick = async (e) => {
         e.preventDefault();
@@ -130,7 +157,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                             key={link.path}
                             icon={link.icon}
                             to={link.path}
-                            name={getTranslation(link.translationPath, language)}
+                            name={getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
                             theme="link"
                             size="small"
                             isActive={pathname === link.path}
@@ -154,6 +181,18 @@ function NavBar({ onClick, isOpen, onClose }) {
                         theme="primary"
                         size="small"
                     />
+                    <div className="cart-button">
+                        <Button
+                            icon={<ShoppingCart size={24} weight="duotone" />}
+                            to="/checkout"
+                            theme="cart"
+                            size="small"
+                            aria-label="Cart"
+                        />
+                        {cartItemCount > 0 && (
+                            <span className="cart-count">{cartItemCount}</span>
+                        )}
+                    </div>
                 </div>
 
                 <div className="menu-phone" ref={menuRef}>
@@ -184,7 +223,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                                     key={link.path}
                                     icon={link.icon}
                                     to={link.path}
-                                    name={getTranslation(link.translationPath, language)}
+                                    name={getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
                                     theme="link"
                                     size="small"
                                     isActive={pathname === link.path}
@@ -208,6 +247,14 @@ function NavBar({ onClick, isOpen, onClose }) {
                                 name={getTranslation("common.buttons.download", language) + " " + getTranslation("home.catalog.title", language).toLowerCase()}
                                 theme="primary"
                                 size="small"
+                            />
+                            <Button
+                                icon={<ShoppingCart size={24} weight="duotone" />}
+                                to="/checkout"
+                                name="Panier"
+                                theme="secondary"
+                                size="small"
+                                onClick={handleClose}
                             />
                         </div>
                     </div>

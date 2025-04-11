@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { NewspaperClipping, Envelope, PaperPlaneTilt, MagnifyingGlass, Hash, Clock, CaretRight, InstagramLogo, FacebookLogo, LinkedinLogo, ListBullets, Newspaper, TagSimple, UsersThree, Plant, Drop, Cookie, Heart, CookingPot, Factory, CaretLeft, Calendar, Star, SortAscending, FunnelSimple, CheckCircle, Warning, CircleNotch } from "@phosphor-icons/react";
 import NavBar from '../../sections/shared/navbar/NavBar';
 import Button from '../../components/buttons/Button';
+import { Link } from 'react-router-dom';
 import './blog.scss';
 import { Instagram } from '../../components/icons/social/Instagram';
 import { Facebook } from '../../components/icons/social/Facebook';
@@ -320,12 +321,13 @@ const Blog = () => {
                                                         {article.readTime} min de lecture
                                                     </span>
                                                 </div>
-                                                <Button
-                                                    theme="secondary"
-                                                    name="Lire l'article"
-                                                    icon={<CaretRight weight="bold" />}
-                                                    iconPosition="right"
-                                                />
+                                                <Link
+                                                    to={`/blog/${article.id}`}
+                                                    className="btn btn-secondary"
+                                                >
+                                                    Lire l'article
+                                                    <CaretRight weight="bold" />
+                                                </Link>
                                             </div>
                                         </article>
                                     </CarouselSlide>
@@ -365,42 +367,45 @@ const Blog = () => {
 
                             <div className="articles-grid">
                                 {displayedArticles.map(article => (
-                                    <article key={article.id} className="article-card">
-                                        <div className="article-image">
-                                            <img
-                                                src={article.image}
-                                                alt={article.title}
-                                                loading="lazy"
-                                            />
-                                            <div className="category-tag">
-                                                {article.category}
+                                    <Link to={`/blog/${article.id}`} key={article.id} className="article-card-link">
+                                        <article className="article-card">
+                                            <div className="article-image">
+                                                <img
+                                                    src={article.image}
+                                                    alt={article.title}
+                                                    loading="lazy"
+                                                />
+                                                <div className="category-tag">
+                                                    {article.category}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="article-content">
-                                            <h3>{article.title}</h3>
-                                            <p>{article.excerpt}</p>
-                                            <div className="article-meta">
-                                                <span className="date">
-                                                    <Calendar weight="duotone" />
-                                                    {new Date(article.date).toLocaleDateString('fr-FR', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}
-                                                </span>
-                                                <span className="read-time">
-                                                    <Clock weight="duotone" />
-                                                    {article.readTime} min de lecture
-                                                </span>
+                                            <div className="article-content">
+                                                <h3>{article.title}</h3>
+                                                <p>{article.excerpt}</p>
+                                                <div className="article-meta">
+                                                    <span className="date">
+                                                        <Calendar weight="duotone" />
+                                                        {new Date(article.date).toLocaleDateString('fr-FR', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </span>
+                                                    <span className="read-time">
+                                                        <Clock weight="duotone" />
+                                                        {article.readTime} min de lecture
+                                                    </span>
+                                                </div>
+                                                <Link
+                                                    to={`/blog/${article.id}`}
+                                                    className="btn btn-secondary"
+                                                >
+                                                    Lire plus
+                                                    <CaretRight weight="duotone" />
+                                                </Link>
                                             </div>
-                                            <Button
-                                                theme="secondary"
-                                                name="Lire plus"
-                                                icon={<CaretRight weight="duotone" />}
-                                                iconPosition="right"
-                                            />
-                                        </div>
-                                    </article>
+                                        </article>
+                                    </Link>
                                 ))}
                             </div>
 

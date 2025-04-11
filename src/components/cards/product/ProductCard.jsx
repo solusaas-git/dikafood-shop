@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingBag, Waves, Tag, MapPin, Drop, Sun, Leaf, SunHorizon } from "@phosphor-icons/react";
 import './product-card.scss';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
@@ -31,7 +32,7 @@ export default function ProductCard({
     };
 
     return (
-        <div className={`product-card ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''} ${className}`}>
+        <Link to={`/product/${product.id}`} className={`product-card ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''} ${className}`}>
             {product.variants?.length > 0 && (
                 <div className="variant-selector">
                     {product.variants.map((variant) => (
@@ -40,6 +41,7 @@ export default function ProductCard({
                             className={`variant-btn ${activeVariant?.size === variant.size ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.stopPropagation();
+                                e.preventDefault();
                                 onVariantChange(variant);
                             }}
                         >
@@ -76,6 +78,6 @@ export default function ProductCard({
                 </div>
                 <ArrowRight className="arrow-icon" weight="bold" />
             </div>
-        </div>
+        </Link>
     );
 }
