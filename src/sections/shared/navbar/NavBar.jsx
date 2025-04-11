@@ -1,26 +1,28 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./nav-bar.scss";
 import Button from '../../../components/buttons/Button';
 import { useLocation, useNavigate } from "react-router-dom";
 import { List, House, ShoppingBag, PaperPlaneTilt, DownloadSimple, EnvelopeSimple, Article, Info, X } from "@phosphor-icons/react";
 import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg";
 import { scrollToContactForm } from '../footer/Footer';
+import { useLanguage } from '../../../context/LanguageContext';
+import { getTranslation } from '../../../utils/translation';
 
-// Navigation config
+// Navigation config (updated to use translation paths)
 const NAV_ITEMS = [
     {
         icon: <House size={20} weight="duotone" />,
-        name: "Accueil",
+        translationPath: "nav.home",
         path: "/"
     },
     {
-        icon: <Info size={20} weight="duotone" />,
-        name: "À propos",
-        path: "/about"
+        icon: <ShoppingBag size={20} weight="duotone" />,
+        translationPath: "nav.shop",
+        path: "/shop"
     },
     {
         icon: <Article size={20} weight="duotone" />,
-        name: "Blog",
+        translationPath: "nav.blog",
         path: "/blog"
     },
 ];
@@ -30,51 +32,69 @@ function NavBar({ onClick, isOpen, onClose }) {
     const location = useLocation();
     const pathname = location.pathname;
     const menuRef = useRef(null);
+    const { language } = useLanguage();
+    const [localIsOpen, setLocalIsOpen] = useState(isOpen);
+
+    // Keep local and parent state in sync
+    useEffect(() => {
+        setLocalIsOpen(isOpen);
+    }, [isOpen]);
 
     const handleContactClick = async (e) => {
         e.preventDefault();
-        
+
         if (pathname !== '/') {
             await navigate('/', { state: { scrollToContact: true } });
         } else {
             scrollToContactForm();
         }
-        
-        onClose();
+
+        handleClose();
     };
 
     const scrollToForm = () => {
         const formElement = document.querySelector('#form');
         if (formElement) {
-            formElement.scrollIntoView({ 
+            formElement.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
             });
         }
-        onClose();
+        handleClose();
+    };
+
+    const handleToggle = () => {
+        const newState = !localIsOpen;
+        setLocalIsOpen(newState);
+        if (onClick) onClick();
+    };
+
+    const handleClose = () => {
+        setLocalIsOpen(false);
+        if (onClose) onClose();
     };
 
     // Handle escape key
     useEffect(() => {
         const handleKeyPress = (e) => {
-            if (e.key === 'Escape' && isOpen) {
-                onClose();
+            if (e.key === 'Escape' && localIsOpen) {
+                handleClose();
             }
         };
 
         document.addEventListener('keydown', handleKeyPress);
         return () => document.removeEventListener('keydown', handleKeyPress);
-    }, [isOpen, onClose]);
+    }, [localIsOpen]);
 
     // Handle click outside
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target) && isOpen) {
-                onClose();
+            if (menuRef.current && !menuRef.current.contains(event.target) && localIsOpen) {
+                handleClose();
             }
         };
 
-        if (isOpen) {
+        if (localIsOpen) {
             document.addEventListener('mousedown', handleClickOutside);
             // Prevent body scroll when menu is open
             document.body.style.overflow = 'hidden';
@@ -85,18 +105,18 @@ function NavBar({ onClick, isOpen, onClose }) {
             // Restore body scroll when menu is closed
             document.body.style.overflow = '';
         };
-    }, [isOpen, onClose]);
+    }, [localIsOpen]);
 
     return (
         <div className="nav-bar-container">
-            {isOpen && (
-                <div 
-                    className={`nav-overlay ${isOpen ? 'active' : ''}`}
-                    onClick={onClose}
+            {localIsOpen && (
+                <div
+                    className={`nav-overlay ${localIsOpen ? 'active' : ''}`}
+                    onClick={handleClose}
                     role="presentation"
                 />
             )}
-            
+
             <div className="nav-bar">
                 <div className="logo">
                     <a href="/">
@@ -110,7 +130,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                             key={link.path}
                             icon={link.icon}
                             to={link.path}
-                            name={link.name}
+                            name={getTranslation(link.translationPath, language)}
                             theme="link"
                             size="small"
                             isActive={pathname === link.path}
@@ -123,37 +143,37 @@ function NavBar({ onClick, isOpen, onClose }) {
                     <Button
                         icon={<EnvelopeSimple size={24} weight="duotone" />}
                         onClick={handleContactClick}
-                        name="Contactez nous"
+                        name={getTranslation("common.buttons.contactUs", language)}
                         theme="secondary-white-bg"
                         size="small"
                     />
                     <Button
                         icon={<DownloadSimple size={24} weight="duotone" />}
                         onClick={scrollToForm}
-                        name="Télécharger le catalogue"
+                        name={getTranslation("common.buttons.download", language) + " " + getTranslation("home.catalog.title", language).toLowerCase()}
                         theme="primary"
                         size="small"
                     />
                 </div>
 
                 <div className="menu-phone" ref={menuRef}>
-                    <span 
-                        onClick={onClick}
+                    <span
+                        onClick={handleToggle}
                         role="button"
-                        aria-expanded={isOpen}
+                        aria-expanded={localIsOpen}
                         aria-controls="mobile-menu"
-                        aria-label={isOpen ? "Close menu" : "Open menu"}
+                        aria-label={localIsOpen ? "Close menu" : "Open menu"}
                     >
-                        {isOpen ? (
+                        {localIsOpen ? (
                             <X weight="duotone" />
                         ) : (
                             <List weight="duotone" />
                         )}
                     </span>
 
-                    <div 
+                    <div
                         id="mobile-menu"
-                        className={isOpen ? 'active' : ''}
+                        className={localIsOpen ? 'active' : ''}
                         role="dialog"
                         aria-modal="true"
                         aria-label="Mobile navigation menu"
@@ -164,11 +184,11 @@ function NavBar({ onClick, isOpen, onClose }) {
                                     key={link.path}
                                     icon={link.icon}
                                     to={link.path}
-                                    name={link.name}
+                                    name={getTranslation(link.translationPath, language)}
                                     theme="link"
                                     size="small"
                                     isActive={pathname === link.path}
-                                    onClick={onClose}
+                                    onClick={handleClose}
                                     aria-current={pathname === link.path ? "page" : undefined}
                                 />
                             ))}
@@ -177,18 +197,15 @@ function NavBar({ onClick, isOpen, onClose }) {
                         <div className="cta">
                             <Button
                                 icon={<EnvelopeSimple size={24} weight="duotone" />}
-                                onClick={(e) => {
-                                    handleContactClick(e);
-                                    onClose();
-                                }}
-                                name="Contactez nous"
+                                onClick={handleContactClick}
+                                name={getTranslation("common.buttons.contactUs", language)}
                                 theme="secondary-white-bg"
                                 size="small"
                             />
                             <Button
                                 icon={<DownloadSimple size={24} weight="duotone" />}
                                 onClick={scrollToForm}
-                                name="Télécharger le catalogue"
+                                name={getTranslation("common.buttons.download", language) + " " + getTranslation("home.catalog.title", language).toLowerCase()}
                                 theme="primary"
                                 size="small"
                             />

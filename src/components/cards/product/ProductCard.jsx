@@ -3,14 +3,14 @@ import { ArrowRight, ShoppingBag, Waves, Tag, MapPin, Drop, Sun, Leaf, SunHorizo
 import './product-card.scss';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
-export default function ProductCard({ 
-    product, 
+export default function ProductCard({
+    product,
     activeVariant,
     onVariantChange,
-    className = "" 
+    className = ""
 }) {
     const { isMobile, isTablet } = useBreakpoint();
-    
+
     // Function to get the appropriate icon based on brand
     const getBrandIcon = (brand) => {
         switch(brand.toLowerCase()) {
@@ -29,7 +29,7 @@ export default function ProductCard({
                 return <MapPin weight="duotone" />;
         }
     };
-    
+
     return (
         <div className={`product-card ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''} ${className}`}>
             {product.variants?.length > 0 && (
@@ -48,11 +48,11 @@ export default function ProductCard({
                     ))}
                 </div>
             )}
-            
+
             <div className="card-body">
                 <div className="product-image">
-                    <img 
-                        src={activeVariant?.image || product.image} 
+                    <img
+                        src={activeVariant?.image || product.image}
                         alt={`${product.brand} - ${activeVariant?.size || 'Product'}`}
                         width={isMobile ? 160 : isTablet ? 180 : 200}
                         height={isMobile ? 160 : isTablet ? 180 : 200}

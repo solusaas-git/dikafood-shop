@@ -1,0 +1,108 @@
+@import '../variables';
+@import '../mixins';
+
+// Breadcrumb Navigation
+.breadcrumb {
+  @include flex-row(0.25rem);
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.8);
+
+  .breadcrumb-item {
+    @include flex-row(0.25rem);
+    font-size: map-get($font-sizes, 'sm');
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+
+    &:hover {
+      color: white;
+      text-decoration: underline;
+    }
+
+    &.active {
+      color: white;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  .breadcrumb-separator {
+    margin: 0 0.5rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+// Pagination
+.pagination {
+  @include flex-row(1rem, center, center);
+  margin-top: 3rem;
+
+  .pagination-button {
+    background-color: transparent;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: map-get($font-sizes, 'sm');
+    transition: all $transition-fast;
+
+    &:hover:not(:disabled) {
+      background-color: $primary-color;
+      color: white;
+      border-color: $primary-color;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-numbers {
+    @include flex-row(0.5rem);
+
+    .pagination-number {
+      width: 2rem;
+      height: 2rem;
+      @include flex-row(0, center, center);
+      border-radius: 50%;
+      border: 1px solid $border-color;
+      background-color: transparent;
+      cursor: pointer;
+      transition: all $transition-fast;
+
+      &:hover:not(.active) {
+        background-color: $border-color;
+      }
+
+      &.active {
+        background-color: $primary-color;
+        color: white;
+        border-color: $primary-color;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+
+  @include mobile {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .pagination-numbers {
+      order: 3;
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+// No Results State
+.no-products {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 0;
+
+  p {
+    margin-bottom: 1.5rem;
+    color: $text-muted;
+  }
+}

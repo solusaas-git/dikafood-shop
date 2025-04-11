@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Translate } from "@phosphor-icons/react";
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
+import { useLanguage, LANGUAGES } from '../../../context/LanguageContext';
+import getTranslation from '../../../utils/translation';
 import './language-switcher.scss';
 
 const languages = [
-    { code: 'fr', name: 'FR', fullName: 'Français', flag: '🇫🇷' },
-    { code: 'en', name: 'EN', fullName: 'English', flag: '🇬🇧' }
+    { code: LANGUAGES.FR, name: 'FR', fullName: 'Français', flag: '🇫🇷' },
+    { code: LANGUAGES.EN, name: 'EN', fullName: 'English', flag: '🇬🇧' }
 ];
 
 export default function LanguageSwitcher() {
     const [isOpen, setIsOpen] = useState(false);
-    const [currentLang, setCurrentLang] = useState('fr');
     const [hideAtBottom, setHideAtBottom] = useState(false);
     const { isMobile, isMobileSm } = useBreakpoint();
 
+    // Use the language context instead of local state
+    const { language, changeLanguage } = useLanguage();
+
     const handleLanguageChange = (langCode) => {
-        setCurrentLang(langCode);
-        localStorage.setItem('preferredLanguage', langCode);
+        changeLanguage(langCode);
         setIsOpen(false);
-        
-        // Here you could add logic to handle language change in your app
-        // For now, we'll just keep the UI working
     };
 
     // Check scroll position for hiding at footer only on mobile
@@ -43,11 +43,11 @@ export default function LanguageSwitcher() {
         checkFooterVisibility();
 
         return () => window.removeEventListener('scroll', checkFooterVisibility);
-    }, [isMobile]);
+    }, [isMobile, isMobileSm]);
 
     return (
         <div className={`floating-language-switcher ${hideAtBottom ? 'hidden' : ''}`}>
-            <button 
+            <button
                 className="lang-toggle"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
@@ -55,21 +55,21 @@ export default function LanguageSwitcher() {
             >
                 <Translate size={20} weight="duotone" />
                 <span className="current-lang">
-                    {languages.find(lang => lang.code === currentLang)?.name || 'FR'}
+                    {languages.find(lang => lang.code === language)?.name || 'FR'}
                 </span>
             </button>
-            
+
             {isOpen && (
                 <>
-                    <div 
-                        className="lang-backdrop" 
+                    <div
+                        className="lang-backdrop"
                         onClick={() => setIsOpen(false)}
                     />
                     <div className="lang-dropdown">
                         {languages.map((lang) => (
                             <button
                                 key={lang.code}
-                                className={`lang-option ${currentLang === lang.code ? 'active' : ''}`}
+                                className={`lang-option ${language === lang.code ? 'active' : ''}`}
                                 onClick={() => handleLanguageChange(lang.code)}
                                 aria-label={`Switch to ${lang.fullName}`}
                             >
@@ -82,4 +82,4 @@ export default function LanguageSwitcher() {
             )}
         </div>
     );
-} 
+}

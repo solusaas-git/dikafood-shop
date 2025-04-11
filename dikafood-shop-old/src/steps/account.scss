@@ -1,0 +1,96 @@
+.account {
+    height: fit-content;
+
+    .pop-up {
+        >.body {
+            padding: 32px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+
+            >.info {
+                display: flex;
+                flex-direction: column;
+                gap: 0px;
+                width: 100%;
+                >p{
+                    background-color: #FAFAFA;
+                    color: #666;
+                }
+                >div{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 24px;
+                    padding: calc(32px - 16px) 32px 32px 32px;
+                    >div{
+                        display: flex;
+                        justify-content: space-between;
+                        >p:first-child{
+                            font-size: 14px;
+                            font-weight: 500;
+                            letter-spacing: 0.2px;
+                            line-height: 120%;
+                            color: #333;
+                            text-transform: capitalize;
+                        }
+                        >p:last-child{
+                            font-size: 16px;
+                            font-weight: 600;
+                            letter-spacing: 0.2px;
+                            line-height: 150%;
+                            color: var(--dark-green-8);
+                            text-transform: capitalize;
+                        }
+                    }
+                }
+            }
+
+            >.parag {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+
+                >p {
+                    width: fit-content;
+                    font-size: 16px;
+                    letter-spacing: 0.2px;
+                    line-height: 120%;
+                    color: #333;
+                    font-weight: 500;
+                    border-bottom: 1px solid #333;
+                    cursor: pointer;
+                }
+            }
+
+            >.buttons-container {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+
+                >button {
+                    height: 48px;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    letter-spacing: 0.2px;
+                    line-height: 120%;
+
+                    &.chnage-info {
+                        color: white;
+                        background-color: var(--dark-green-8);
+                        border: none;
+                    }
+
+                    &.logout {
+                        background-color: transparent;
+                        border: 1px solid var(--dark-green-8);
+                        color: var(--dark-green-8);
+                    }
+                }
+
+            }
+        }
+    }
+}

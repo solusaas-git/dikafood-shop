@@ -1,0 +1,68 @@
+@import '../variables';
+@import '../mixins';
+
+// Shop Page Layout
+.shop-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Shop Header
+.shop-header {
+  background-color: $primary-color;
+  color: white;
+  padding: 5rem 0 3rem;
+  margin-bottom: 3rem;
+
+  h1 {
+    font-size: map-get($font-sizes, '4xl');
+    margin-bottom: 1rem;
+
+    @include mobile {
+      font-size: map-get($font-sizes, '3xl');
+    }
+  }
+
+  p {
+    font-size: map-get($font-sizes, 'lg');
+    max-width: 600px;
+    margin-bottom: 1.5rem;
+
+    @include mobile {
+      font-size: map-get($font-sizes, 'base');
+    }
+  }
+}
+
+// Container
+.container {
+  @include container;
+}
+
+// Shop Content Layout
+.shop-content {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 2rem;
+
+  @include tablet {
+    grid-template-columns: 220px 1fr;
+    gap: 1.5rem;
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Main Content Styles
+.shop-main {
+  flex: 1;
+}
+
+// Products Grid
+.products-grid {
+  @include grid-columns(3, 1.5rem);
+}

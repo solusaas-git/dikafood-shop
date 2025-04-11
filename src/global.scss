@@ -31,7 +31,7 @@
     --light-purple-6: #FBF5FF;
 
     --orange : #E5801A;
-    
+
     /* yellow degrees */
     --dark-yellow-1: #EBEB47;
     --dark-yellow-1-rgb: 235, 235, 71;
@@ -54,14 +54,17 @@
 
     /* sizes */
     --section-max-width: 1440px;
-    --section-padding: 80px;
-    --section-padding-mobile: 20px;
+    --section-padding: 24px;
+    --section-padding-mobile: 16px;
 
     --color-text-primary : #1C1C1C;
 
     /* Navbar specific variables */
-    --navbar-height: 96px;
-    --navbar-height-mobile: 80px;
+    --navbar-height: 80px;
+    --navbar-height-laptop: 72px;
+    --navbar-height-tablet: 68px;
+    --navbar-height-mobile: 64px;
+    --navbar-height-small: 60px;
     --navbar-padding: 24px;
     --navbar-padding-mobile: 16px;
 }

@@ -81,7 +81,7 @@ const Article = () => {
                                 media="(min-width: 1024px)"
                                 srcSet={getImageUrls(article).large}
                             />
-                            <img 
+                            <img
                                 src={getImageUrls(article).medium}
                                 alt={article.data.title}
                                 className="article-image"
@@ -95,7 +95,7 @@ const Article = () => {
                     <div className="article-header">
                         <span className="category">{article.data.category}</span>
                         <h1>{article.data.title}</h1>
-                        
+
                         <div className="article-meta">
                             <span>
                                 <Calendar size={16} />
@@ -108,7 +108,7 @@ const Article = () => {
                         </div>
                     </div>
 
-                    <div 
+                    <div
                         className="article-text"
                         dangerouslySetInnerHTML={{ __html: article.data.content }}
                     />
@@ -118,4 +118,4 @@ const Article = () => {
     );
 };
 
-export default Article; 
+export default Article;

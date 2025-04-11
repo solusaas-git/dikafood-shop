@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from './App';
 import Home from './pages/home';
+import Shop from './pages/shop/Shop';
 import About from './pages/about/About';
 import History from './pages/history/History';
 import Values from './pages/values/Values';
@@ -9,6 +10,7 @@ import Article from './pages/blog/Article';
 import Terms from './pages/legal/Terms';
 import Privacy from './pages/legal/Privacy';
 import NotFound from './pages/not-found/NotFound';
+import ComponentShowcase from './pages/showcase/ComponentShowcase';
 
 export const router = createBrowserRouter([
     {
@@ -48,9 +50,17 @@ export const router = createBrowserRouter([
                 element: <Privacy />
             },
             {
+                path: 'showcase',
+                element: <ComponentShowcase />
+            },
+            {
+                path: 'shop',
+                element: <Shop />
+            },
+            {
                 path: '*',
                 element: <NotFound />
             }
         ]
     }
-]); 
+]);

@@ -45,11 +45,11 @@ $shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 		max-width: 240px;
 		min-height: auto;
 		margin: 0;
-		
+
 		.product-image {
 			padding: 20px;
 			aspect-ratio: 1;
-			
+
 			img {
 				width: 160px;
 				height: 160px;
@@ -71,7 +71,7 @@ $shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 		border-radius: 16px;
 		border: 1px solid var(--dark-yellow-1);
 		backdrop-filter: blur(8px);
-		box-shadow: 
+		box-shadow:
 			0 4px 12px rgba(var(--dark-yellow-1-rgb), 0.12),
 			0 2px 4px rgba(var(--dark-yellow-1-rgb), 0.08),
 			inset 0 0 0 1px rgba(255, 255, 255, 0.5);
@@ -130,7 +130,7 @@ $shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 		align-items: center;
 		justify-content: center;
 		aspect-ratio: 1;
-		
+
 		img {
 			width: 200px;
 			height: 200px;

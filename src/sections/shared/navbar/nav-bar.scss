@@ -133,12 +133,12 @@ $breakpoints: (
 			flex-shrink: 0;
 			margin-right: 0;
 			min-width: 140px;
-			
+
 			a {
 				display: flex;
 				align-items: center;
 				height: 100%;
-				
+
 				img {
 					height: 100%;
 					width: auto;
@@ -174,11 +174,11 @@ $breakpoints: (
 				transition: all 0.2s ease;
 				font-size: 14px;
 				white-space: nowrap;
-				
+
 				&:hover {
 					background: rgba(255, 255, 255, 0.1);
 				}
-				
+
 				&.active {
 					background: rgba(255, 255, 255, 0.15);
 					color: var(--dark-yellow-1);
@@ -306,7 +306,7 @@ $breakpoints: (
 			// Mobile menu dropdown
 			#mobile-menu {
 				position: fixed;
-				top: calc(var(--navbar-height) + 16px);
+				top: var(--navbar-height);
 				left: 50%;
 				transform: translateX(-50%) translateY(-8px);
 				width: calc(100% - 32px);
@@ -319,7 +319,7 @@ $breakpoints: (
 				pointer-events: none;
 				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 				@include glass-effect;
-				box-shadow: 
+				box-shadow:
 					0 20px 40px rgba(0, 0, 0, 0.2),
 					0 8px 16px rgba(0, 0, 0, 0.1),
 					0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -404,11 +404,14 @@ $breakpoints: (
 						}
 					}
 				}
-			}
 
-			// Tablet adjustments
-			@media (max-width: map.get($breakpoints, 'tablet')) {
-				#mobile-menu {
+				// Tablet adjustments
+				@include respond-to('laptop') {
+					top: var(--navbar-height-laptop);
+				}
+
+				@include respond-to('tablet') {
+					top: var(--navbar-height-tablet);
 					width: calc(100% - 32px);
 					padding: 20px;
 					border-radius: 20px;
@@ -420,15 +423,13 @@ $breakpoints: (
 						border-radius: 22px;
 					}
 				}
-			}
 
-			// Mobile adjustments
-			@media (max-width: map.get($breakpoints, 'mobile')) {
-				#mobile-menu {
+				// Mobile adjustments
+				@include respond-to('mobile') {
+					top: var(--navbar-height-mobile);
 					width: calc(100% - 24px);
 					padding: 16px;
 					border-radius: 20px;
-					top: calc(var(--navbar-height) + 12px);
 
 					.menu {
 						gap: 8px;
@@ -464,15 +465,13 @@ $breakpoints: (
 						}
 					}
 				}
-			}
 
-			// Extra small screen adjustments
-			@media screen and (max-width: 375px) {
-				#mobile-menu {
+				// Extra small screen adjustments
+				@media screen and (max-width: 375px) {
+					top: var(--navbar-height-small);
 					width: calc(100% - 20px);
 					padding: 14px;
 					border-radius: 16px;
-					top: calc(var(--navbar-height) + 10px);
 
 					.menu {
 						gap: 6px;
@@ -589,7 +588,7 @@ $breakpoints: (
 
 			.logo {
 				padding-left: 4px;
-				
+
 				a img {
 					max-width: 100px;
 				}
@@ -597,7 +596,7 @@ $breakpoints: (
 
 			.menu-phone {
 				padding-right: 4px;
-				
+
 				#mobile-menu {
 					width: 100%;
 					padding: 16px;
@@ -703,7 +702,7 @@ $breakpoints: (
 			border-radius: map.get($navbar, 'border-radius', 'mobile');
 			margin: 0 12px;
 			width: calc(100% - 24px);
-			box-shadow: 
+			box-shadow:
 				0 8px 24px rgba(0, 0, 0, 0.15),
 				0 2px 8px rgba(0, 0, 0, 0.1);
 

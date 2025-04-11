@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { NewspaperClipping, Envelope, PaperPlaneTilt, MagnifyingGlass, Hash, Clock, CaretRight, InstagramLogo, FacebookLogo, LinkedinLogo, ListBullets, Newspaper, TagSimple, UsersThree, Plant, Drop, Cookie, Heart, CookingPot, Factory, CaretLeft, Calendar, Star, SortAscending, FunnelSimple } from "@phosphor-icons/react";
+import { NewspaperClipping, Envelope, PaperPlaneTilt, MagnifyingGlass, Hash, Clock, CaretRight, InstagramLogo, FacebookLogo, LinkedinLogo, ListBullets, Newspaper, TagSimple, UsersThree, Plant, Drop, Cookie, Heart, CookingPot, Factory, CaretLeft, Calendar, Star, SortAscending, FunnelSimple, CheckCircle, Warning, CircleNotch } from "@phosphor-icons/react";
 import NavBar from '../../sections/shared/navbar/NavBar';
 import Button from '../../components/buttons/Button';
 import './blog.scss';
 import { Instagram } from '../../components/icons/social/Instagram';
 import { Facebook } from '../../components/icons/social/Facebook';
 import { LinkedIn } from '../../components/icons/social/LinkedIn';
+import { Carousel, CarouselSlide } from '../../components/ui/carousel/Carousel';
+import { assetsService } from '../../services/assetsService';
+import { apiRequest } from '../../services/api';
+
+// Image paths
+const BLOG_IMG_PATH = '/assets/images/blog';
 
 const RECENT_POSTS = [
     {
         id: 1,
         title: "La récolte des olives en 2024",
-        imageUrl: "https://picsum.photos/seed/olives1/160/160",
+        imageUrl: `${BLOG_IMG_PATH}/recent-post-olives-1.jpg`,
         timeAgo: "Il y a 2 jours"
     },
     {
         id: 2,
         title: "Les bienfaits de l'huile d'olive",
-        imageUrl: "https://picsum.photos/seed/olives2/160/160",
+        imageUrl: `${BLOG_IMG_PATH}/recent-post-oil-benefits.jpg`,
         timeAgo: "Il y a 5 jours"
     },
     {
         id: 3,
         title: "Notre processus de production",
-        imageUrl: "https://picsum.photos/seed/olives3/160/160",
+        imageUrl: `${BLOG_IMG_PATH}/recent-post-production.jpg`,
         timeAgo: "Il y a 1 semaine"
     }
 ];
@@ -44,7 +50,7 @@ const FEATURED_ARTICLES = [
         title: "L'art millénaire de l'huile d'olive marocaine",
         excerpt: "Une tradition ancestrale qui perdure à travers les générations...",
         category: "Tradition",
-        image: "https://picsum.photos/seed/featured1/1200/600",
+        image: `${BLOG_IMG_PATH}/featured-tradition.jpg`,
         date: "2024-03-20",
         readTime: 8,
         featured: true
@@ -54,7 +60,7 @@ const FEATURED_ARTICLES = [
         title: "5 bienfaits méconnus de l'huile d'argan",
         excerpt: "Découvrez les secrets de cet or liquide...",
         category: "Santé",
-        image: "https://picsum.photos/seed/featured2/600/400",
+        image: `${BLOG_IMG_PATH}/featured-argan-benefits.jpg`,
         date: "2024-03-18",
         readTime: 6
     },
@@ -63,7 +69,7 @@ const FEATURED_ARTICLES = [
         title: "Production durable: Notre engagement",
         excerpt: "Comment nous préservons l'environnement...",
         category: "Production",
-        image: "https://picsum.photos/seed/featured3/600/400",
+        image: `${BLOG_IMG_PATH}/featured-sustainable.jpg`,
         date: "2024-03-15",
         readTime: 5
     }
@@ -75,7 +81,7 @@ const ARTICLES = [
         title: "L'art ancestral de la récolte des olives",
         excerpt: "Découvrez les techniques traditionnelles de récolte des olives au Maroc, transmises de génération en génération...",
         category: "Tradition",
-        image: "https://picsum.photos/seed/olives1/400/250",
+        image: `${BLOG_IMG_PATH}/article-harvest.jpg`,
         date: "2024-03-15",
         readTime: 5,
         author: "Sarah Amrani"
@@ -85,7 +91,7 @@ const ARTICLES = [
         title: "Les bienfaits de l'huile d'olive pour la santé",
         excerpt: "Une exploration des propriétés nutritionnelles et des avantages santé de l'huile d'olive extra vierge...",
         category: "Santé",
-        image: "https://picsum.photos/seed/olives2/400/250",
+        image: `${BLOG_IMG_PATH}/article-health-benefits.jpg`,
         date: "2024-03-10",
         readTime: 8,
         author: "Dr. Mohammed Benali"
@@ -95,7 +101,7 @@ const ARTICLES = [
         title: "Production durable: Notre engagement",
         excerpt: "Comment nous préservons l'environnement tout en maintenant une qualité exceptionnelle...",
         category: "Production",
-        image: "https://picsum.photos/seed/olives3/400/250",
+        image: `${BLOG_IMG_PATH}/article-sustainability.jpg`,
         date: "2024-03-08",
         readTime: 6,
         author: "Karim Tazi"
@@ -105,7 +111,7 @@ const ARTICLES = [
         title: "Recette: Tajine aux olives",
         excerpt: "Une recette traditionnelle marocaine revisitée avec nos olives sélectionnées...",
         category: "Recettes",
-        image: "https://picsum.photos/seed/olives4/400/250",
+        image: `${BLOG_IMG_PATH}/article-tajine-recipe.jpg`,
         date: "2024-03-05",
         readTime: 4,
         author: "Fatima Zahra"
@@ -115,7 +121,7 @@ const ARTICLES = [
         title: "Le processus de pressage à froid",
         excerpt: "Tout savoir sur notre méthode d'extraction qui préserve toutes les qualités de l'huile...",
         category: "Production",
-        image: "https://picsum.photos/seed/olives5/400/250",
+        image: `${BLOG_IMG_PATH}/article-cold-press.jpg`,
         date: "2024-03-03",
         readTime: 7,
         author: "Hassan El Amrani"
@@ -125,7 +131,7 @@ const ARTICLES = [
         title: "Guide: Choisir son huile d'olive",
         excerpt: "Les critères essentiels pour sélectionner une huile d'olive de qualité...",
         category: "Conseils",
-        image: "https://picsum.photos/seed/olives6/400/250",
+        image: `${BLOG_IMG_PATH}/article-olive-oil-guide.jpg`,
         date: "2024-03-01",
         readTime: 5,
         author: "Yasmine Alami"
@@ -137,10 +143,9 @@ const Blog = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 6;
     const TOTAL_PAGES = 5; // This would come from your API
-    const [activeSlide, setActiveSlide] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
+    const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false);
+    const [newsletterSuccess, setNewsletterSuccess] = useState(false);
+    const [newsletterError, setNewsletterError] = useState('');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -156,6 +161,22 @@ const Blog = () => {
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
+
+    const carouselOptions = {
+        loop: true,
+        align: 'center',
+        dragFree: true,
+        containScroll: 'trimSnaps',
+        slidesToScroll: 1,
+        breakpoints: {
+            '(min-width: 1024px)': { slidesToShow: 1 },
+            '(min-width: 768px)': { slidesToShow: 1 },
+            '(max-width: 767px)': {
+                slidesToShow: 1,
+                containScroll: true
+            }
+        }
+    };
 
     return (
         <>
@@ -189,21 +210,69 @@ const Blog = () => {
                                 <div className="newsletter-header">
                                     <Envelope weight="duotone" />
                                     <h3>Restez Informé</h3>
-                                    {/* <p>Recevez nos derniers articles et actualités directement dans votre boîte mail</p> */}
+                                    <p>Recevez nos derniers articles et actualités directement dans votre boîte mail</p>
                                 </div>
-                                <div className="input-group">
+                                <form
+                                    className="input-group"
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        const email = e.target.email.value;
+                                        if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                                            // Call newsletter subscription API
+                                            apiRequest('/newsletter/subscribe', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({ email })
+                                            })
+                                            .then(() => {
+                                                // Show success message
+                                                setNewsletterSuccess(true);
+                                                e.target.reset();
+                                                // Reset success message after 3 seconds
+                                                setTimeout(() => setNewsletterSuccess(false), 3000);
+                                            })
+                                            .catch(error => {
+                                                setNewsletterError(error.message || 'Échec de l\'inscription. Veuillez réessayer.');
+                                                // Reset error message after 3 seconds
+                                                setTimeout(() => setNewsletterError(''), 3000);
+                                            });
+                                        } else {
+                                            setNewsletterError('Veuillez entrer une adresse email valide');
+                                            // Reset error message after 3 seconds
+                                            setTimeout(() => setNewsletterError(''), 3000);
+                                        }
+                                    }}
+                                >
                                     <input
                                         type="email"
+                                        name="email"
                                         placeholder="Votre adresse email"
                                         aria-label="Email subscription"
                                     />
                                     <Button
+                                        type="submit"
                                         theme="primary"
                                         name="S'abonner"
                                         icon={<PaperPlaneTilt weight="duotone" />}
                                         iconPosition="right"
+                                        disabled={isNewsletterSubmitting}
                                     />
-                                </div>
+                                    {isNewsletterSubmitting && <CircleNotch className="loading-icon" weight="bold" />}
+                                </form>
+                                {newsletterSuccess && (
+                                    <div className="success-message">
+                                        <CheckCircle weight="duotone" />
+                                        <span>Merci pour votre inscription!</span>
+                                    </div>
+                                )}
+                                {newsletterError && (
+                                    <div className="error-message">
+                                        <Warning weight="duotone" />
+                                        <span>{newsletterError}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -218,95 +287,50 @@ const Blog = () => {
                                 </div>
                                 <h2>Articles à la Une</h2>
                             </div>
-                            <div className="carousel-controls">
-                                <div className="indicators">
-                                    {FEATURED_ARTICLES.map((_, index) => (
-                                        <button
-                                            key={index}
-                                            className={`indicator ${index === activeSlide ? 'active' : ''}`}
-                                            onClick={() => setActiveSlide(index)}
-                                        />
-                                    ))}
-                                </div>
-                                <div className="navigation">
-                                    <Button
-                                        theme="secondary"
-                                        icon={<CaretLeft weight="duotone" />}
-                                        onClick={() => setActiveSlide(prev =>
-                                            prev === 0 ? FEATURED_ARTICLES.length - 1 : prev - 1
-                                        )}
-                                    />
-                                    <Button
-                                        theme="secondary"
-                                        icon={<CaretRight weight="duotone" />}
-                                        onClick={() => setActiveSlide(prev =>
-                                            prev === FEATURED_ARTICLES.length - 1 ? 0 : prev + 1
-                                        )}
-                                    />
-                                </div>
-                            </div>
                         </div>
 
-                        <div
-                            className="carousel-container"
-                            onMouseDown={(e) => {
-                                setIsDragging(true);
-                                setStartX(e.pageX - e.currentTarget.offsetLeft);
-                                setScrollLeft(e.currentTarget.scrollLeft);
-                            }}
-                            onMouseLeave={() => setIsDragging(false)}
-                            onMouseUp={() => setIsDragging(false)}
-                            onMouseMove={(e) => {
-                                if (!isDragging) return;
-                                e.preventDefault();
-                                const x = e.pageX - e.currentTarget.offsetLeft;
-                                const walk = (x - startX) * 2;
-                                const newSlide = Math.round((-scrollLeft - walk) / e.currentTarget.offsetWidth);
-                                setActiveSlide(Math.max(0, Math.min(newSlide, FEATURED_ARTICLES.length - 1)));
-                            }}
-                        >
-                            <div
-                                className="carousel-track"
-                                style={{
-                                    transform: `translateX(-${activeSlide * 100}%)`,
-                                    transition: isDragging ? 'none' : 'transform 0.3s ease'
-                                }}
-                            >
-                                {FEATURED_ARTICLES.map((article, index) => (
-                                    <article key={article.id} className="carousel-card">
-                                        <div className="article-image">
-                                            <img src={article.image} alt={article.title} />
-                                        </div>
-                                        <div className="article-content">
-                                            <span className="category-tag">
-                                                {article.category}
-                                            </span>
-                                            <h3>{article.title}</h3>
-                                            <p>{article.excerpt}</p>
-                                            <div className="article-meta">
-                                                <span className="date">
-                                                    <Calendar weight="duotone" />
-                                                    {new Date(article.date).toLocaleDateString('fr-FR', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}
-                                                </span>
-                                                <span className="read-time">
-                                                    <Clock weight="duotone" />
-                                                    {article.readTime} min de lecture
-                                                </span>
+                        <div className="carousel-wrapper">
+                            <Carousel opts={carouselOptions} showControls={true}>
+                                {FEATURED_ARTICLES.map((article) => (
+                                    <CarouselSlide
+                                        key={article.id}
+                                        data-type="featured-article"
+                                    >
+                                        <article className="carousel-card">
+                                            <div className="article-image">
+                                                <img src={article.image} alt={article.title} />
                                             </div>
-                                            <Button
-                                                theme="secondary"
-                                                name="Lire l'article"
-                                                icon={<CaretRight weight="duotone" />}
-                                                iconPosition="right"
-                                            />
-                                        </div>
-                                    </article>
+                                            <div className="article-content">
+                                                <span className="category-tag">
+                                                    {article.category}
+                                                </span>
+                                                <h3>{article.title}</h3>
+                                                <p>{article.excerpt}</p>
+                                                <div className="article-meta">
+                                                    <span className="date">
+                                                        <Calendar weight="duotone" />
+                                                        {new Date(article.date).toLocaleDateString('fr-FR', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </span>
+                                                    <span className="read-time">
+                                                        <Clock weight="duotone" />
+                                                        {article.readTime} min de lecture
+                                                    </span>
+                                                </div>
+                                                <Button
+                                                    theme="secondary"
+                                                    name="Lire l'article"
+                                                    icon={<CaretRight weight="bold" />}
+                                                    iconPosition="right"
+                                                />
+                                            </div>
+                                        </article>
+                                    </CarouselSlide>
                                 ))}
-                            </div>
+                            </Carousel>
                         </div>
                     </div>
                 </section>

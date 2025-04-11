@@ -1,0 +1,170 @@
+$color_1: var(--dark-green-1);
+
+
+.dropdown-prop {
+    position: relative;
+    width: 100%;
+
+    >.dropdown-toggle {
+        height: 48px;
+        border: 1px solid #E6E6E6;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        justify-content: space-between;
+        color: #333;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        line-height: 150%;
+        transition: 0.3s ease-in-out;
+        padding: 0px 0px 0px 16px;
+        border-radius: 8px;
+        position: relative;
+
+        >.parag {
+            position: absolute;
+            top: -25%;
+            padding: 0px 6px;
+            background-color: #FAFAFA;
+            left: 7px;
+
+            >p {
+                font-size: 14px;
+                font-weight: 500;
+                letter-spacing: 0.2px;
+                line-height: 150%;
+                color: #999;
+            }
+        }
+
+        >.arrow {
+            width: 48px;
+            height: 100%;
+            background-color: white;
+            border-left: 1px solid #E6E6E6;
+            border-radius: 0px 8px 8px 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            >.arrow-up {
+                transition: 0.3s ease-in-out;
+                transform: rotate(0deg);
+            }
+
+            &.Up {
+                >.arrow-up {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+
+        &.open {
+            border-radius: 6px 6px 0px 0px;
+            border: 1px solid var(--dark-green-6);
+        }
+    }
+
+    >.dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: white;
+        border: 1px solid var(--dark-green-6);
+        border-top: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        list-style-type: none;
+        padding: 0;
+        border-radius: 0px 0px 8px 8px;
+
+        >li {
+            cursor: pointer;
+            border-bottom: 1px solid #E6E6E6;
+            font-size: 16px;
+            transition: 0.3s ease-in-out;
+            color: #333;
+            padding: 8px;
+            font-weight: 600;
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+@media screen and (min-width : 0px) and (max-width : 430px) {
+    .dropdown {
+        position: relative;
+        width: 100%;
+
+        >.dropdown-toggle {
+            height: 42px;
+            border: 1px solid #E6E6E6;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            justify-content: space-between;
+            color: var(--dark-green-6);
+            font-size: 12px;
+            font-weight: 500;
+            font-family: "Raleway";
+            transition: 0.3s ease-in-out;
+            padding: 0px 6px 0px 12px;
+            border-radius: 6px;
+
+            >.arrow.Up {
+                transform: rotate(0deg);
+            }
+
+            >.arrow {
+                transform: rotate(180deg);
+                transition: 0.3s ease-in-out;
+            }
+
+            &.open {
+                border-radius: 6px 6px 0px 0px;
+                border: 1px solid var(--dark-green-6);
+            }
+        }
+
+
+
+        >.dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: white;
+            border: 1px solid var(--dark-green-6);
+            border-top: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            list-style-type: none;
+            padding: 0;
+            border-radius: 0px 0px 8px 8px;
+
+            >li {
+                cursor: pointer;
+                border-bottom: 1px solid #E6E6E6;
+                font-size: 12px;
+                transition: 0.3s ease-in-out;
+                color: var(--dark-green-6);
+                padding: 8px;
+                // text-align: left;
+                font-family: "Raleway";
+                font-weight: 600;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { House, ArrowLeft, Warning } from "@phosphor-icons/react";
 import Button from '../../components/buttons/Button';
 import './not-found.scss';
@@ -17,6 +18,11 @@ export default function NotFound() {
 
     return (
         <main className="not-found-page">
+            <Helmet>
+                <title>Page non trouvée - DikaFood</title>
+                <meta name="description" content="Désolé, la page que vous recherchez n'existe pas ou a été déplacée." />
+            </Helmet>
+
             <div className="content">
                 <div className="icon-wrapper">
                     <Warning weight="duotone" />
@@ -24,7 +30,7 @@ export default function NotFound() {
                 <h1>404</h1>
                 <h2>Page non trouvée</h2>
                 <p>Désolé, la page que vous recherchez n'existe pas ou a été déplacée. Vous pouvez retourner à la page précédente ou visiter notre page d'accueil.</p>
-                
+
                 <div className="actions">
                     <Button
                         icon={<ArrowLeft size={24} weight="duotone" />}
@@ -42,4 +48,4 @@ export default function NotFound() {
             </div>
         </main>
     );
-} 
+}

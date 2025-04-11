@@ -1,0 +1,120 @@
+.connection {
+    height: fit-content;
+    .pop-up {
+        >.body {
+            padding: 32px;
+            width: 100%;
+
+            >form {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+                width: 100%;
+
+                >.inputs-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                    width: 100%;
+
+                    >input {
+                        width: 100%;
+                        height: 48px;
+                        border-radius: 8px;
+                        background-color: white;
+                        padding: 0px 8px 0px 16px;
+                        border: 1px solid #E6E6E6;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        font-size: 14px;
+                        color: #333;
+                        letter-spacing: 0.2px;
+                        font-weight: 600;
+                        line-height: 150%;
+                        outline: none;
+                        transition: 0.3s ease-in-out;
+
+                        &::placeholder {
+                            font-size: 14px;
+                            letter-spacing: 0.2px;
+                            font-weight: 500;
+                            color: #666;
+                            line-height: 150%;
+                            text-transform: capitalize;
+                            opacity: 1;
+                        }
+
+                        &:focus {
+                            border: 1px solid var(--dark-green-8);
+                        }
+                    }
+                }
+
+                >.parag {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+
+                    >p {
+                        width: fit-content;
+                        font-size: 16px;
+                        letter-spacing: 0.2px;
+                        line-height: 120%;
+                        color: #333;
+                        font-weight: 500;
+                        border-bottom: 1px solid #333;
+                        cursor: pointer;
+                    }
+                }
+
+                >.buttons-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+
+                    >button {
+                        height: 48px;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        font-weight: 600;
+                        letter-spacing: 0.2px;
+                        line-height: 120%;
+
+                        &.login {
+                            color: white;
+                            background-color: var(--dark-green-8);
+                            border: none;
+                        }
+
+                    }
+
+                    >.signup {
+                        height: 48px;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        font-weight: 600;
+                        letter-spacing: 0.2px;
+                        line-height: 120%;
+                        background-color: transparent;
+                        border: 1px solid var(--dark-green-8);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+
+                        >a {
+                            display: flex;
+                            width: 100%;
+                            height: 100%;
+                            justify-content: center;
+                            align-items: center;
+                            color: var(--dark-green-6);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
