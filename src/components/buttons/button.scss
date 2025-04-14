@@ -109,7 +109,7 @@ $button-sizes: (
 	&.button-comp-primary {
 		background: var(--dark-yellow-1);
 		color: var(--dark-green-7);
-		box-shadow: 
+		box-shadow:
 			0 2px 4px rgba(0, 0, 0, 0.1),
 			0 1px 2px rgba(0, 0, 0, 0.06);
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -117,14 +117,14 @@ $button-sizes: (
 		&:hover {
 			background: var(--light-yellow-4);
 			transform: translateY(-2px);
-			box-shadow: 
+			box-shadow:
 				0 8px 16px rgba(0, 0, 0, 0.1),
 				0 4px 8px rgba(0, 0, 0, 0.06);
 		}
 
 		&:active {
 			transform: translateY(1px);
-			box-shadow: 
+			box-shadow:
 				0 1px 2px rgba(0, 0, 0, 0.1),
 				0 1px 1px rgba(0, 0, 0, 0.06);
 		}
@@ -210,7 +210,7 @@ $button-sizes: (
 		justify-content: center;
 		gap: 20px;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 
+		box-shadow:
 			0 4px 6px rgba(0, 0, 0, 0.1),
 			0 1px 3px rgba(0, 0, 0, 0.08),
 			0 0 0 4px rgba(235, 235, 71, 0.1);
@@ -224,7 +224,7 @@ $button-sizes: (
 		&:hover {
 			transform: translateY(-2px);
 			background: var(--light-yellow-4);
-			box-shadow: 
+			box-shadow:
 				0 8px 12px rgba(0, 0, 0, 0.15),
 				0 3px 6px rgba(0, 0, 0, 0.1),
 				0 0 0 4px rgba(235, 235, 71, 0.2);
@@ -236,7 +236,7 @@ $button-sizes: (
 
 		&:active {
 			transform: translateY(1px);
-			box-shadow: 
+			box-shadow:
 				0 2px 4px rgba(0, 0, 0, 0.1),
 				0 1px 2px rgba(0, 0, 0, 0.06),
 				0 0 0 4px rgba(235, 235, 71, 0.15);
@@ -424,7 +424,7 @@ $button-sizes: (
 			padding: 0 32px;
 			font-size: 16px;
 			border-width: 1.5px;
-			box-shadow: 
+			box-shadow:
 				0 4px 8px rgba(var(--dark-green-7-rgb), 0.08),
 				0 2px 4px rgba(var(--dark-green-7-rgb), 0.04);
 		}
@@ -436,7 +436,7 @@ $button-sizes: (
 			background: white;
 			color: var(--dark-green-7);
 			border: 1.5px solid var(--dark-yellow-1);
-			box-shadow: 
+			box-shadow:
 				0 4px 8px rgba(var(--dark-green-7-rgb), 0.08),
 				0 2px 4px rgba(var(--dark-green-7-rgb), 0.04);
 
@@ -449,7 +449,7 @@ $button-sizes: (
 				background: var(--light-yellow-1);
 				color: var(--dark-green-7);
 				transform: translateY(-2px);
-				box-shadow: 
+				box-shadow:
 					0 6px 12px rgba(var(--dark-green-7-rgb), 0.1),
 					0 3px 6px rgba(var(--dark-green-7-rgb), 0.06);
 
@@ -461,7 +461,7 @@ $button-sizes: (
 
 			&:active {
 				transform: translateY(1px);
-				box-shadow: 
+				box-shadow:
 					0 2px 4px rgba(var(--dark-green-7-rgb), 0.06),
 					0 1px 2px rgba(var(--dark-green-7-rgb), 0.04);
 			}
@@ -524,7 +524,7 @@ $button-sizes: (
 			padding: 12px 24px !important;
 			gap: 10px !important;
 			height: 40px !important;
-			box-shadow: 
+			box-shadow:
 				0 2px 4px rgba(0, 0, 0, 0.1),
 				0 1px 2px rgba(0, 0, 0, 0.06),
 				0 0 0 2px rgba(235, 235, 71, 0.1);

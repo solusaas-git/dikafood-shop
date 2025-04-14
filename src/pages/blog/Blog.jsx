@@ -1,41 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { NewspaperClipping, Envelope, PaperPlaneTilt, MagnifyingGlass, Hash, Clock, CaretRight, InstagramLogo, FacebookLogo, LinkedinLogo, ListBullets, Newspaper, TagSimple, UsersThree, Plant, Drop, Cookie, Heart, CookingPot, Factory, CaretLeft, Calendar, Star, SortAscending, FunnelSimple, CheckCircle, Warning, CircleNotch } from "@phosphor-icons/react";
-import NavBar from '../../sections/shared/navbar/NavBar';
-import Button from '../../components/buttons/Button';
+import {
+  NewspaperClipping,
+  MagnifyingGlass,
+  ListBullets,
+  Sliders,
+  CheckSquare,
+  ArrowCounterClockwise,
+  Calendar,
+  CaretDown,
+  Hash,
+  Clock,
+  CaretRight,
+  X,
+  Envelope,
+  PaperPlaneTilt,
+  InstagramLogo,
+  FacebookLogo,
+  LinkedinLogo,
+  CheckCircle,
+  Warning,
+  CircleNotch
+} from "@phosphor-icons/react";
 import { Link } from 'react-router-dom';
 import './blog.scss';
-import { Instagram } from '../../components/icons/social/Instagram';
-import { Facebook } from '../../components/icons/social/Facebook';
-import { LinkedIn } from '../../components/icons/social/LinkedIn';
-import { Carousel, CarouselSlide } from '../../components/ui/carousel/Carousel';
-import { assetsService } from '../../services/assetsService';
-import { apiRequest } from '../../services/api';
+import NavBar from '../../sections/shared/navbar/NavBar';
 
-// Image paths
-const BLOG_IMG_PATH = '/assets/images/blog';
-
-const RECENT_POSTS = [
-    {
-        id: 1,
-        title: "La récolte des olives en 2024",
-        imageUrl: `${BLOG_IMG_PATH}/recent-post-olives-1.jpg`,
-        timeAgo: "Il y a 2 jours"
-    },
-    {
-        id: 2,
-        title: "Les bienfaits de l'huile d'olive",
-        imageUrl: `${BLOG_IMG_PATH}/recent-post-oil-benefits.jpg`,
-        timeAgo: "Il y a 5 jours"
-    },
-    {
-        id: 3,
-        title: "Notre processus de production",
-        imageUrl: `${BLOG_IMG_PATH}/recent-post-production.jpg`,
-        timeAgo: "Il y a 1 semaine"
-    }
-];
-
+// Image paths using placeholder services that are guaranteed to work
 const CATEGORIES = [
     { name: 'Tous les articles', count: 24 },
     { name: 'Production', count: 8 },
@@ -51,7 +42,7 @@ const FEATURED_ARTICLES = [
         title: "L'art millénaire de l'huile d'olive marocaine",
         excerpt: "Une tradition ancestrale qui perdure à travers les générations...",
         category: "Tradition",
-        image: `${BLOG_IMG_PATH}/featured-tradition.jpg`,
+        image: "https://picsum.photos/id/292/1920/1080",
         date: "2024-03-20",
         readTime: 8,
         featured: true
@@ -61,7 +52,7 @@ const FEATURED_ARTICLES = [
         title: "5 bienfaits méconnus de l'huile d'argan",
         excerpt: "Découvrez les secrets de cet or liquide...",
         category: "Santé",
-        image: `${BLOG_IMG_PATH}/featured-argan-benefits.jpg`,
+        image: "https://picsum.photos/id/175/1920/1080",
         date: "2024-03-18",
         readTime: 6
     },
@@ -70,7 +61,7 @@ const FEATURED_ARTICLES = [
         title: "Production durable: Notre engagement",
         excerpt: "Comment nous préservons l'environnement...",
         category: "Production",
-        image: `${BLOG_IMG_PATH}/featured-sustainable.jpg`,
+        image: "https://picsum.photos/id/284/1920/1080",
         date: "2024-03-15",
         readTime: 5
     }
@@ -82,7 +73,7 @@ const ARTICLES = [
         title: "L'art ancestral de la récolte des olives",
         excerpt: "Découvrez les techniques traditionnelles de récolte des olives au Maroc, transmises de génération en génération...",
         category: "Tradition",
-        image: `${BLOG_IMG_PATH}/article-harvest.jpg`,
+        image: "https://picsum.photos/id/306/800/600",
         date: "2024-03-15",
         readTime: 5,
         author: "Sarah Amrani"
@@ -92,7 +83,7 @@ const ARTICLES = [
         title: "Les bienfaits de l'huile d'olive pour la santé",
         excerpt: "Une exploration des propriétés nutritionnelles et des avantages santé de l'huile d'olive extra vierge...",
         category: "Santé",
-        image: `${BLOG_IMG_PATH}/article-health-benefits.jpg`,
+        image: "https://picsum.photos/id/1080/800/600",
         date: "2024-03-10",
         readTime: 8,
         author: "Dr. Mohammed Benali"
@@ -102,7 +93,7 @@ const ARTICLES = [
         title: "Production durable: Notre engagement",
         excerpt: "Comment nous préservons l'environnement tout en maintenant une qualité exceptionnelle...",
         category: "Production",
-        image: `${BLOG_IMG_PATH}/article-sustainability.jpg`,
+        image: "https://picsum.photos/id/859/800/600",
         date: "2024-03-08",
         readTime: 6,
         author: "Karim Tazi"
@@ -112,7 +103,7 @@ const ARTICLES = [
         title: "Recette: Tajine aux olives",
         excerpt: "Une recette traditionnelle marocaine revisitée avec nos olives sélectionnées...",
         category: "Recettes",
-        image: `${BLOG_IMG_PATH}/article-tajine-recipe.jpg`,
+        image: "https://picsum.photos/id/429/800/600",
         date: "2024-03-05",
         readTime: 4,
         author: "Fatima Zahra"
@@ -122,7 +113,7 @@ const ARTICLES = [
         title: "Le processus de pressage à froid",
         excerpt: "Tout savoir sur notre méthode d'extraction qui préserve toutes les qualités de l'huile...",
         category: "Production",
-        image: `${BLOG_IMG_PATH}/article-cold-press.jpg`,
+        image: "https://picsum.photos/id/493/800/600",
         date: "2024-03-03",
         readTime: 7,
         author: "Hassan El Amrani"
@@ -132,460 +123,433 @@ const ARTICLES = [
         title: "Guide: Choisir son huile d'olive",
         excerpt: "Les critères essentiels pour sélectionner une huile d'olive de qualité...",
         category: "Conseils",
-        image: `${BLOG_IMG_PATH}/article-olive-oil-guide.jpg`,
+        image: "https://picsum.photos/id/614/800/600",
         date: "2024-03-01",
         readTime: 5,
         author: "Yasmine Alami"
     }
 ];
 
+const RECENT_POSTS = [
+    {
+        id: 1,
+        title: "La récolte des olives en 2024",
+        imageUrl: "https://picsum.photos/id/824/300/200",
+        timeAgo: "Il y a 2 jours"
+    },
+    {
+        id: 2,
+        title: "Les bienfaits de l'huile d'olive",
+        imageUrl: "https://picsum.photos/id/1024/300/200",
+        timeAgo: "Il y a 5 jours"
+    },
+    {
+        id: 3,
+        title: "Notre processus de production",
+        imageUrl: "https://picsum.photos/id/513/300/200",
+        timeAgo: "Il y a 1 semaine"
+    }
+];
+
+// Newsletter Popup Component
+const NewsletterPopup = ({ isOpen, onClose, onSubmit, isSubmitting, success, error }) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="newsletter-popup-overlay">
+            <div className="newsletter-popup">
+                <button className="close-popup" onClick={onClose}>
+                    <X size={24} />
+                </button>
+                <div className="newsletter-popup-content">
+                    <h3>Restez informé</h3>
+                    <p>Inscrivez-vous à notre newsletter pour recevoir nos derniers articles et actualités.</p>
+
+                    <form onSubmit={onSubmit}>
+                        <div className="newsletter-input">
+                            <Envelope size={20} />
+                            <input
+                                type="email"
+                                placeholder="Votre adresse email"
+                                required
+                                disabled={isSubmitting || success}
+                            />
+                            <button
+                                type="submit"
+                                className={`submit-btn ${isSubmitting ? 'submitting' : ''} ${success ? 'success' : ''}`}
+                                disabled={isSubmitting || success}
+                            >
+                                {isSubmitting ? (
+                                    <CircleNotch className="loading-icon" size={20} />
+                                ) : success ? (
+                                    <CheckCircle size={20} />
+                                ) : (
+                                    <PaperPlaneTilt size={20} />
+                                )}
+                            </button>
+                        </div>
+
+                        {success && (
+                            <div className="success-message">
+                                <CheckCircle size={20} />
+                                Merci pour votre inscription!
+                            </div>
+                        )}
+
+                        {error && (
+                            <div className="error-message">
+                                <Warning size={20} />
+                                {error}
+                            </div>
+                        )}
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const Blog = () => {
-    const [scrolled, setScrolled] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const ITEMS_PER_PAGE = 6;
-    const TOTAL_PAGES = 5; // This would come from your API
+    const [selectedCategory, setSelectedCategory] = useState('Tous les articles');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
     const [isNewsletterSubmitting, setIsNewsletterSubmitting] = useState(false);
     const [newsletterSuccess, setNewsletterSuccess] = useState(false);
     const [newsletterError, setNewsletterError] = useState('');
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const position = window.scrollY;
-            setScrolled(Math.min(position / 1000, 1));
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const [isNewsletterPopupOpen, setIsNewsletterPopupOpen] = useState(false);
+    const ITEMS_PER_PAGE = 6;
+    const TOTAL_PAGES = Math.ceil(ARTICLES.length / ITEMS_PER_PAGE);
 
     const displayedArticles = ARTICLES.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
 
-    const carouselOptions = {
-        loop: true,
-        align: 'center',
-        dragFree: true,
-        containScroll: 'trimSnaps',
-        slidesToScroll: 1,
-        breakpoints: {
-            '(min-width: 1024px)': { slidesToShow: 1 },
-            '(min-width: 768px)': { slidesToShow: 1 },
-            '(max-width: 767px)': {
-                slidesToShow: 1,
-                containScroll: true
-            }
-        }
+    const handleSubmitNewsletter = (e) => {
+        e.preventDefault();
+        setIsNewsletterSubmitting(true);
+
+        // Simulate API call
+        setTimeout(() => {
+            setIsNewsletterSubmitting(false);
+            setNewsletterSuccess(true);
+            // Reset form
+            e.target.reset();
+
+            // Close popup after success (optional, can be removed if you want to keep it open)
+            setTimeout(() => {
+                setIsNewsletterPopupOpen(false);
+                setNewsletterSuccess(false);
+            }, 3000);
+        }, 1500);
+    };
+
+    const openNewsletterPopup = () => {
+        setIsNewsletterPopupOpen(true);
+        setNewsletterSuccess(false);
+        setNewsletterError('');
     };
 
     return (
-        <>
+        <div className="blog-page full-width">
             <Helmet>
                 <title>Journal - DikaFood</title>
                 <meta name="description" content="Découvrez l'art de l'huile d'olive et la gastronomie marocaine" />
             </Helmet>
 
-            <div className="blog">
-                <NavBar />
+            {/* Add NavBar */}
+            <NavBar />
 
-                <section className="blog-hero">
-                    <div className="hero-image" />
-                    <div className="container">
-                        <div className="hero-content">
-                            <div className="hero-text">
-                                <span className="overline">
-                                    <NewspaperClipping weight="duotone" />
-                                    Notre Journal
-                                </span>
-                                <div className="title-container">
-                                    <h1>
-                                        L'Art de
-                                        <br />
-                                        <span className="highlight">l'Huile d'Olive</span>
-                                    </h1>
-                                </div>
-                            </div>
-
-                            <div className="newsletter-cta">
-                                <div className="newsletter-header">
-                                    <Envelope weight="duotone" />
-                                    <h3>Restez Informé</h3>
-                                    <p>Recevez nos derniers articles et actualités directement dans votre boîte mail</p>
-                                </div>
-                                <form
-                                    className="input-group"
-                                    onSubmit={(e) => {
-                                        e.preventDefault();
-                                        const email = e.target.email.value;
-                                        if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                                            // Call newsletter subscription API
-                                            apiRequest('/newsletter/subscribe', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({ email })
-                                            })
-                                            .then(() => {
-                                                // Show success message
-                                                setNewsletterSuccess(true);
-                                                e.target.reset();
-                                                // Reset success message after 3 seconds
-                                                setTimeout(() => setNewsletterSuccess(false), 3000);
-                                            })
-                                            .catch(error => {
-                                                setNewsletterError(error.message || 'Échec de l\'inscription. Veuillez réessayer.');
-                                                // Reset error message after 3 seconds
-                                                setTimeout(() => setNewsletterError(''), 3000);
-                                            });
-                                        } else {
-                                            setNewsletterError('Veuillez entrer une adresse email valide');
-                                            // Reset error message after 3 seconds
-                                            setTimeout(() => setNewsletterError(''), 3000);
-                                        }
-                                    }}
-                                >
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        placeholder="Votre adresse email"
-                                        aria-label="Email subscription"
-                                    />
-                                    <Button
-                                        type="submit"
-                                        theme="primary"
-                                        name="S'abonner"
-                                        icon={<PaperPlaneTilt weight="duotone" />}
-                                        iconPosition="right"
-                                        disabled={isNewsletterSubmitting}
-                                    />
-                                    {isNewsletterSubmitting && <CircleNotch className="loading-icon" weight="bold" />}
-                                </form>
-                                {newsletterSuccess && (
-                                    <div className="success-message">
-                                        <CheckCircle weight="duotone" />
-                                        <span>Merci pour votre inscription!</span>
-                                    </div>
-                                )}
-                                {newsletterError && (
-                                    <div className="error-message">
-                                        <Warning weight="duotone" />
-                                        <span>{newsletterError}</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="featured-carousel">
-                    <div className="container">
-                        <div className="section-header">
-                            <div className="header-left">
-                                <div className="icon-wrapper">
-                                    <Star weight="duotone" />
-                                </div>
-                                <h2>Articles à la Une</h2>
-                            </div>
-                        </div>
-
-                        <div className="carousel-wrapper">
-                            <Carousel opts={carouselOptions} showControls={true}>
-                                {FEATURED_ARTICLES.map((article) => (
-                                    <CarouselSlide
-                                        key={article.id}
-                                        data-type="featured-article"
-                                    >
-                                        <article className="carousel-card">
-                                            <div className="article-image">
-                                                <img src={article.image} alt={article.title} />
-                                            </div>
-                                            <div className="article-content">
-                                                <span className="category-tag">
-                                                    {article.category}
-                                                </span>
-                                                <h3>{article.title}</h3>
-                                                <p>{article.excerpt}</p>
-                                                <div className="article-meta">
-                                                    <span className="date">
-                                                        <Calendar weight="duotone" />
-                                                        {new Date(article.date).toLocaleDateString('fr-FR', {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric'
-                                                        })}
-                                                    </span>
-                                                    <span className="read-time">
-                                                        <Clock weight="duotone" />
-                                                        {article.readTime} min de lecture
-                                                    </span>
-                                                </div>
-                                                <Link
-                                                    to={`/blog/${article.id}`}
-                                                    className="btn btn-secondary"
-                                                >
-                                                    Lire l'article
-                                                    <CaretRight weight="bold" />
-                                                </Link>
-                                            </div>
-                                        </article>
-                                    </CarouselSlide>
-                                ))}
-                            </Carousel>
-                        </div>
-                    </div>
-                </section>
-
-                <main className="blog-content">
-                    <div className="container">
-                        <div className="articles-section">
-                            <div className="articles-header">
-                                <div className="section-header">
-                                    <div className="icon-wrapper">
-                                        <Newspaper weight="duotone" />
-                                    </div>
-                                    <h2>Articles Récents</h2>
-                                </div>
-                                <div className="filters">
-                                    <Button
-                                        theme="secondary"
-                                        name="Trier par"
-                                        icon={<SortAscending weight="duotone" />}
-                                        iconPosition="left"
-                                        onClick={() => {/* Add sort logic */}}
-                                    />
-                                    <Button
-                                        theme="secondary"
-                                        name="Filtrer"
-                                        icon={<FunnelSimple weight="duotone" />}
-                                        iconPosition="left"
-                                        onClick={() => {/* Add filter logic */}}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="articles-grid">
-                                {displayedArticles.map(article => (
-                                    <Link to={`/blog/${article.id}`} key={article.id} className="article-card-link">
-                                        <article className="article-card">
-                                            <div className="article-image">
-                                                <img
-                                                    src={article.image}
-                                                    alt={article.title}
-                                                    loading="lazy"
-                                                />
-                                                <div className="category-tag">
-                                                    {article.category}
-                                                </div>
-                                            </div>
-                                            <div className="article-content">
-                                                <h3>{article.title}</h3>
-                                                <p>{article.excerpt}</p>
-                                                <div className="article-meta">
-                                                    <span className="date">
-                                                        <Calendar weight="duotone" />
-                                                        {new Date(article.date).toLocaleDateString('fr-FR', {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric'
-                                                        })}
-                                                    </span>
-                                                    <span className="read-time">
-                                                        <Clock weight="duotone" />
-                                                        {article.readTime} min de lecture
-                                                    </span>
-                                                </div>
-                                                <Link
-                                                    to={`/blog/${article.id}`}
-                                                    className="btn btn-secondary"
-                                                >
-                                                    Lire plus
-                                                    <CaretRight weight="duotone" />
-                                                </Link>
-                                            </div>
-                                        </article>
+            <div className="blog-container">
+                {/* Hero Image Section */}
+                <div className="blog-hero">
+                    <img
+                        src="https://picsum.photos/id/326/1920/1080"
+                        alt="Blog DikaFood"
+                        className="hero-image"
+                    />
+                    <div className="hero-overlay">
+                        <div className="container">
+                            <div className="hero-content">
+                                <h2>Journal DikaFood: Découvrez l'art de l'huile d'olive marocaine</h2>
+                                <div className="cta-buttons">
+                                    <Link to="/blog" className="hero-cta">
+                                        <NewspaperClipping weight="duotone" />
+                                        Tous les articles
                                     </Link>
-                                ))}
-                            </div>
-
-                            <div className="pagination">
-                                <Button
-                                    theme="secondary"
-                                    name="Précédent"
-                                    icon={<CaretLeft weight="duotone" />}
-                                    iconPosition="left"
-                                    disabled={currentPage === 1}
-                                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                />
-                                <div className="page-numbers">
-                                    {Array.from({ length: TOTAL_PAGES }, (_, i) => i + 1).map(page => (
-                                        <button
-                                            key={page}
-                                            className={`page-number ${page === currentPage ? 'active' : ''}`}
-                                            onClick={() => setCurrentPage(page)}
-                                        >
-                                            {page}
-                                        </button>
-                                    ))}
+                                    <button
+                                        className="hero-cta-secondary"
+                                        onClick={openNewsletterPopup}
+                                    >
+                                        <Envelope weight="duotone" />
+                                        S'abonner à la newsletter
+                                    </button>
                                 </div>
-                                <Button
-                                    theme="secondary"
-                                    name="Suivant"
-                                    icon={<CaretRight weight="duotone" />}
-                                    iconPosition="right"
-                                    disabled={currentPage === TOTAL_PAGES}
-                                    onClick={() => setCurrentPage(prev => Math.min(TOTAL_PAGES, prev + 1))}
-                                />
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <aside className="blog-sidebar">
-                            <div className="sidebar-section search">
-                                <div className="section-header">
-                                    <div className="icon-wrapper">
-                                        <MagnifyingGlass weight="duotone" />
-                                    </div>
-                                    <div className="header-text">
-                                        <h3>Rechercher</h3>
-                                    </div>
-                                </div>
-                                <div className="search-input">
-                                    <div className="search-icon">
-                                        <MagnifyingGlass weight="duotone" />
-                                    </div>
-                                    <input
-                                        type="search"
-                                        placeholder="Rechercher un article..."
-                                        aria-label="Rechercher un article"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="sidebar-section categories">
-                                <div className="section-header">
-                                    <div className="icon-wrapper">
+                {/* Blog Content Layout */}
+                <div className="blog-content">
+                    {/* Sidebar */}
+                    <div className={`blog-sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}`}>
+                        <div className="mobile-sidebar-header">
+                            <h3>Options de filtrage</h3>
+                            <button className="close-sidebar" onClick={() => setMobileFiltersOpen(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className="blog-filters">
+                            <div className="filter-section">
+                                <div className="filter-title">
+                                    <div className="icon-container">
                                         <ListBullets weight="duotone" />
                                     </div>
-                                    <div className="header-text">
-                                        <h3>Catégories</h3>
-                                    </div>
+                                    Catégories
                                 </div>
-                                <ul className="categories-list">
-                                    {CATEGORIES.map((category, index) => (
-                                        <li key={index}>
-                                            <button className="category-item">
-                                                <CaretRight weight="bold" />
-                                                <span className="name">{category.name}</span>
-                                                <span className="count">{category.count}</span>
-                                            </button>
-                                        </li>
+                                <div className="filter-options">
+                                    {CATEGORIES.map((category) => (
+                                        <label
+                                            key={category.name}
+                                            className={`filter-option ${selectedCategory === category.name ? 'active' : ''}`}
+                                        >
+                                            <span className="chevron">&gt;</span>
+                                            <input
+                                                type="radio"
+                                                name="category"
+                                                checked={selectedCategory === category.name}
+                                                onChange={() => setSelectedCategory(category.name)}
+                                            />
+                                            {category.name}
+                                            <span className="count">{category.count}</span>
+                                        </label>
                                     ))}
-                                </ul>
-                            </div>
-
-                            <div className="sidebar-section recent-posts">
-                                <div className="section-header">
-                                    <div className="icon-wrapper">
-                                        <Newspaper weight="duotone" />
-                                    </div>
-                                    <div className="header-text">
-                                        <h3>Articles Récents</h3>
-                                    </div>
-                                </div>
-                                <ul>
-                                    {RECENT_POSTS.map((post) => (
-                                        <li key={post.id}>
-                                            <div className="post-image">
-                                                <img
-                                                    src={post.imageUrl}
-                                                    alt={post.title}
-                                                    loading="lazy"
-                                                />
-                                            </div>
-                                            <div className="post-info">
-                                                <h4>{post.title}</h4>
-                                                <span>
-                                                    <Clock weight="bold" />
-                                                    {post.timeAgo}
-                                                </span>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <div className="sidebar-section tags">
-                                <div className="section-header">
-                                    <div className="icon-wrapper">
-                                        <TagSimple weight="duotone" />
-                                    </div>
-                                    <div className="header-text">
-                                        <h3>Tags Populaires</h3>
-                                    </div>
-                                </div>
-                                <div className="tags-cloud">
-                                    <span className="tag">
-                                        <Plant weight="duotone" />
-                                        Bio
-                                    </span>
-                                    <span className="tag">
-                                        <Drop weight="duotone" />
-                                        Huile
-                                    </span>
-                                    <span className="tag">
-                                        <Factory weight="duotone" />
-                                        Production
-                                    </span>
-                                    <span className="tag">
-                                        <Heart weight="duotone" />
-                                        Santé
-                                    </span>
-                                    <span className="tag">
-                                        <CookingPot weight="duotone" />
-                                        Tradition
-                                    </span>
                                 </div>
                             </div>
-
-                            <div className="sidebar-section social">
-                                <div className="section-header">
-                                    <div className="icon-wrapper">
-                                        <UsersThree weight="duotone" />
+                            <div className="filter-section">
+                                <div className="filter-title">
+                                    <div className="icon-container">
+                                        <Calendar weight="duotone" />
                                     </div>
-                                    <div className="header-text">
-                                        <h3>Suivez-nous</h3>
-                                    </div>
+                                    Date
                                 </div>
-                                <div className="social-links">
-                                    <a
-                                        href="#"
-                                        className="instagram"
-                                        style={{ background: '#E4405F' }}
-                                    >
-                                        <Instagram />
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="facebook"
-                                        style={{ background: '#1877F2' }}
-                                    >
-                                        <Facebook />
-                                    </a>
-                                    <a
-                                        href="#"
-                                        className="linkedin"
-                                        style={{ background: '#0A66C2' }}
-                                    >
-                                        <LinkedIn />
-                                    </a>
+                                <div className="filter-options">
+                                    <label className="filter-option">
+                                        <span className="chevron">&gt;</span>
+                                        <input type="checkbox" name="date" />
+                                        Ce mois-ci
+                                    </label>
+                                    <label className="filter-option">
+                                        <span className="chevron">&gt;</span>
+                                        <input type="checkbox" name="date" />
+                                        Les 3 derniers mois
+                                    </label>
+                                    <label className="filter-option">
+                                        <span className="chevron">&gt;</span>
+                                        <input type="checkbox" name="date" />
+                                        Cette année
+                                    </label>
                                 </div>
                             </div>
-                        </aside>
+                            <div className="filter-section">
+                                <div className="filter-title">
+                                    <div className="icon-container">
+                                        <Clock weight="duotone" />
+                                    </div>
+                                    Temps de lecture
+                                </div>
+                                <div className="filter-options">
+                                    <label className="filter-option">
+                                        <span className="chevron">&gt;</span>
+                                        <input type="checkbox" name="readTime" />
+                                        Moins de 5 minutes
+                                    </label>
+                                    <label className="filter-option">
+                                        <span className="chevron">&gt;</span>
+                                        <input type="checkbox" name="readTime" />
+                                        5-10 minutes
+                                    </label>
+                                    <label className="filter-option">
+                                        <span className="chevron">&gt;</span>
+                                        <input type="checkbox" name="readTime" />
+                                        Plus de 10 minutes
+                                    </label>
+                                </div>
+                            </div>
+                            <button
+                                className="clear-filters-button"
+                                onClick={() => {
+                                    setSelectedCategory('Tous les articles');
+                                    setSearchQuery('');
+                                }}
+                            >
+                                <ArrowCounterClockwise size={16} weight="duotone" />
+                                Réinitialiser les filtres
+                            </button>
+                        </div>
                     </div>
-                </main>
+
+                    {/* Main Content */}
+                    <div className="blog-main">
+                        <button
+                            className="filter-toggle"
+                            onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+                        >
+                            <Sliders size={20} weight="duotone" />
+                            Filtres
+                        </button>
+
+                        {/* Blog Controls (Search, Sort, etc.) */}
+                        <div className="blog-controls">
+                            <div className="blog-search">
+                                <div className="search-icon-container">
+                                    <MagnifyingGlass size={20} weight="duotone" />
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Rechercher des articles..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                {searchQuery && (
+                                    <button
+                                        className="clear-search"
+                                        onClick={() => setSearchQuery('')}
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Featured Article */}
+                        <div className="featured-article">
+                            <div className="featured-image">
+                                <img
+                                    src={FEATURED_ARTICLES[0].image}
+                                    alt={FEATURED_ARTICLES[0].title}
+                                />
+                                <div className="category-badge">{FEATURED_ARTICLES[0].category}</div>
+                            </div>
+                            <div className="featured-content">
+                                <h2>{FEATURED_ARTICLES[0].title}</h2>
+                                <p>{FEATURED_ARTICLES[0].excerpt}</p>
+                                <div className="article-meta">
+                                    <span>
+                                        <Calendar size={18} weight="duotone" />
+                                        {new Date(FEATURED_ARTICLES[0].date).toLocaleDateString('fr-FR', {
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric'
+                                        })}
+                                    </span>
+                                    <span>
+                                        <Clock size={18} weight="duotone" />
+                                        {FEATURED_ARTICLES[0].readTime} min de lecture
+                                    </span>
+                                </div>
+                                <Link to="/blog/article/1" className="read-more-btn">
+                                    Lire l'article
+                                    <CaretRight size={16} weight="duotone" />
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Results Count */}
+                        <div className="blog-results">
+                            <div className="results-count">
+                                <Hash size={18} weight="duotone" />
+                                Affichage de <span>{displayedArticles.length}</span> articles sur <span>{ARTICLES.length}</span>
+                            </div>
+
+                            <div className="pagination-info">
+                                <span className="page-indicator">
+                                    Page <span className="current-page">{currentPage}</span> sur <span>{TOTAL_PAGES}</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Articles Grid */}
+                        <div className="articles-grid">
+                            {displayedArticles.map((article) => (
+                                <div className="article-card" key={article.id}>
+                                    <div className="article-image">
+                                        <img src={article.image} alt={article.title} />
+                                        <div className="category-badge">{article.category}</div>
+                                    </div>
+                                    <div className="article-info">
+                                        <h3 className="article-title">
+                                            <Link to={`/blog/article/${article.id}`}>{article.title}</Link>
+                                        </h3>
+                                        <div className="article-meta">
+                                            <span>
+                                                <Calendar size={16} weight="duotone" />
+                                                {new Date(article.date).toLocaleDateString('fr-FR', {
+                                                    day: 'numeric',
+                                                    month: 'long',
+                                                    year: 'numeric'
+                                                })}
+                                            </span>
+                                            <span>
+                                                <Clock size={16} weight="duotone" />
+                                                {article.readTime} min de lecture
+                                            </span>
+                                        </div>
+                                        <p className="article-excerpt">{article.excerpt}</p>
+                                        <div className="article-actions">
+                                            <Link to={`/blog/article/${article.id}`} className="read-article-btn">
+                                                Lire l'article
+                                                <CaretRight size={14} weight="duotone" />
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Load More Button */}
+                        <div className="pagination-controls">
+                            <button
+                                className="load-more-btn"
+                                onClick={() => {
+                                    if (currentPage < TOTAL_PAGES) {
+                                        setCurrentPage(prevPage => prevPage + 1);
+                                    }
+                                }}
+                                disabled={currentPage >= TOTAL_PAGES}
+                            >
+                                <span>Voir plus d'articles</span>
+                                <CaretDown size={16} weight="duotone" className="load-more-icon" />
+                            </button>
+
+                            <div className="page-numbers">
+                                {Array.from({ length: TOTAL_PAGES }, (_, i) => (
+                                    <button
+                                        key={i + 1}
+                                        className={`page-number ${currentPage === i + 1 ? 'active' : ''}`}
+                                        onClick={() => setCurrentPage(i + 1)}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </>
+
+            {/* Newsletter Popup */}
+            <NewsletterPopup
+                isOpen={isNewsletterPopupOpen}
+                onClose={() => setIsNewsletterPopupOpen(false)}
+                onSubmit={handleSubmitNewsletter}
+                isSubmitting={isNewsletterSubmitting}
+                success={newsletterSuccess}
+                error={newsletterError}
+            />
+        </div>
     );
 };
 

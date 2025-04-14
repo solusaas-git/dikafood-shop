@@ -10,12 +10,13 @@ import Article from './pages/blog/Article';
 import Terms from './pages/legal/Terms';
 import Privacy from './pages/legal/Privacy';
 import NotFound from './pages/not-found/NotFound';
-import ComponentShowcase from './pages/showcase/ComponentShowcase';
 import ProductDetail from './pages/product/ProductDetail';
 import Checkout from './pages/checkout/Checkout';
-import FAQ from './pages/faq/FAQ';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import ColorsShowcase from './pages/showcase/ColorsShowcase';
+import LimeColorTest from './pages/showcase/LimeColorTest';
+import ColorSystemDemo from './pages/showcase/ColorSystemDemo';
 
 export const router = createBrowserRouter([
     {
@@ -55,10 +56,6 @@ export const router = createBrowserRouter([
                 element: <Privacy />
             },
             {
-                path: 'showcase',
-                element: <ComponentShowcase />
-            },
-            {
                 path: 'shop',
                 element: <Shop />
             },
@@ -71,16 +68,24 @@ export const router = createBrowserRouter([
                 element: <Checkout />
             },
             {
-                path: 'faq',
-                element: <FAQ />
-            },
-            {
                 path: 'login',
                 element: <Login />
             },
             {
                 path: 'register',
                 element: <Register />
+            },
+            {
+                path: 'colors',
+                element: <ColorsShowcase />
+            },
+            {
+                path: 'lime-test',
+                element: <LimeColorTest />
+            },
+            {
+                path: 'color-system',
+                element: <ColorSystemDemo />
             },
             {
                 path: '*',

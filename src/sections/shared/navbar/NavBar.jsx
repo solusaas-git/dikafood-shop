@@ -13,7 +13,8 @@ import {
     Info,
     X,
     ShoppingCart,
-    Question
+    Question,
+    Palette
 } from "@phosphor-icons/react";
 import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg";
 import { scrollToContactForm } from '../footer/Footer';
@@ -36,11 +37,6 @@ const NAV_ITEMS = [
         icon: <Article size={20} weight="duotone" />,
         translationPath: "nav.blog",
         path: "/blog"
-    },
-    {
-        icon: <Question size={20} weight="duotone" />,
-        translationPath: "nav.faq",
-        path: "/faq"
     },
 ];
 
@@ -157,7 +153,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                             key={link.path}
                             icon={link.icon}
                             to={link.path}
-                            name={getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
+                            name={link.label || getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
                             theme="link"
                             size="small"
                             isActive={pathname === link.path}
@@ -177,7 +173,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                     <Button
                         icon={<DownloadSimple size={24} weight="duotone" />}
                         onClick={scrollToForm}
-                        name={getTranslation("common.buttons.download", language) + " " + getTranslation("home.catalog.title", language).toLowerCase()}
+                        name="Télécharger le catalogue"
                         theme="primary"
                         size="small"
                     />
@@ -223,7 +219,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                                     key={link.path}
                                     icon={link.icon}
                                     to={link.path}
-                                    name={getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
+                                    name={link.label || getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
                                     theme="link"
                                     size="small"
                                     isActive={pathname === link.path}
@@ -244,7 +240,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                             <Button
                                 icon={<DownloadSimple size={24} weight="duotone" />}
                                 onClick={scrollToForm}
-                                name={getTranslation("common.buttons.download", language) + " " + getTranslation("home.catalog.title", language).toLowerCase()}
+                                name="Télécharger le catalogue"
                                 theme="primary"
                                 size="small"
                             />

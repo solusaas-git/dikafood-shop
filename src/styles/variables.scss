@@ -9,6 +9,7 @@ $colors: (
   'dark-green-6': #226600,
   'dark-green-7': #08451C,
   'dark-green-8': #339900,
+  'logo-green': #0A5C26,  // From logo SVG
 
   'light-green-1': #E8FCEF,
   'light-green-2': #D1FADF,
@@ -33,6 +34,7 @@ $colors: (
 
   // Yellow shades
   'dark-yellow-1': #EBEB47,
+  'logo-lime': #AACC00,  // From logo SVG - lime green
 
   'light-yellow-1': #FCFCE8,
   'light-yellow-2': #FAFAD1,
@@ -52,6 +54,7 @@ $colors: (
 
   // Other colors
   'orange': #E5801A,
+  'accent-lime': #AACC00,  // Adding the lime green as an accent color
   'text-primary': #1C1C1C,
   'text-muted': #6e6e6e,
   'border-color': #e0e0e0
@@ -66,6 +69,8 @@ $colors: (
 $primary-color: color('dark-green-3');
 $secondary-color: color('dark-purple-1');
 $accent-color: color('orange');
+$accent-lime: color('logo-lime');  // Adding the lime accent color
+$logo-green: color('logo-green');  // Adding the logo green
 $text-color: color('text-primary');
 $text-muted: color('text-muted');
 $border-color: color('border-color');
