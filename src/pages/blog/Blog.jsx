@@ -25,6 +25,7 @@ import {
 import { Link } from 'react-router-dom';
 import './blog.scss';
 import NavBar from '../../sections/shared/navbar/NavBar';
+import BlogSkeleton from '../../components/skeletons/BlogSkeleton';
 
 // Image paths using placeholder services that are guaranteed to work
 const CATEGORIES = [
@@ -218,8 +219,18 @@ const Blog = () => {
     const [newsletterSuccess, setNewsletterSuccess] = useState(false);
     const [newsletterError, setNewsletterError] = useState('');
     const [isNewsletterPopupOpen, setIsNewsletterPopupOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
     const ITEMS_PER_PAGE = 6;
     const TOTAL_PAGES = Math.ceil(ARTICLES.length / ITEMS_PER_PAGE);
+
+    // Simulate loading data
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     const displayedArticles = ARTICLES.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
@@ -251,6 +262,16 @@ const Blog = () => {
         setNewsletterError('');
     };
 
+    // Show skeleton loader while loading
+    if (loading) {
+        return (
+            <>
+                <NavBar />
+                <BlogSkeleton postCount={ITEMS_PER_PAGE} />
+            </>
+        );
+    }
+
     return (
         <div className="blog-page full-width">
             <Helmet>
@@ -259,7 +280,7 @@ const Blog = () => {
             </Helmet>
 
             {/* Add NavBar */}
-            <NavBar />
+                <NavBar />
 
             <div className="blog-container">
                 {/* Hero Image Section */}
@@ -270,12 +291,12 @@ const Blog = () => {
                         className="hero-image"
                     />
                     <div className="hero-overlay">
-                        <div className="container">
-                            <div className="hero-content">
+                    <div className="container">
+                        <div className="hero-content">
                                 <h2>Journal DikaFood: Découvrez l'art de l'huile d'olive marocaine</h2>
                                 <div className="cta-buttons">
                                     <Link to="/blog" className="hero-cta">
-                                        <NewspaperClipping weight="duotone" />
+                                    <NewspaperClipping weight="duotone" />
                                         Tous les articles
                                     </Link>
                                     <button
@@ -288,8 +309,8 @@ const Blog = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                            </div>
+                        </div>
 
                 {/* Blog Content Layout */}
                 <div className="blog-content">
@@ -359,7 +380,7 @@ const Blog = () => {
                                         <Clock weight="duotone" />
                                     </div>
                                     Temps de lecture
-                                </div>
+                                    </div>
                                 <div className="filter-options">
                                     <label className="filter-option">
                                         <span className="chevron">&gt;</span>
@@ -388,8 +409,8 @@ const Blog = () => {
                                 <ArrowCounterClockwise size={16} weight="duotone" />
                                 Réinitialiser les filtres
                             </button>
-                        </div>
-                    </div>
+                                    </div>
+                                    </div>
 
                     {/* Main Content */}
                     <div className="blog-main">
@@ -421,8 +442,8 @@ const Blog = () => {
                                         <X size={16} />
                                     </button>
                                 )}
-                            </div>
-                        </div>
+                                            </div>
+                                            </div>
 
                         {/* Featured Article */}
                         <div className="featured-article">

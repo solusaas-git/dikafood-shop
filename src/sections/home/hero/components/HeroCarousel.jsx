@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
 import { Carousel, CarouselSlide } from '../../../../components/ui/carousel/Carousel';
-import { carouselProducts } from '../../../../data/carousel-products';
+import { products } from '../../../../data/products';
 import ProductCard from '../../../../components/cards/product/ProductCard';
 import './hero-carousel.scss';
 import { useBreakpoint } from '../../../../hooks/useBreakpoint';
+import { ArrowRight } from '@phosphor-icons/react';
+import { Link } from 'react-router-dom';
 
 export default function HeroCarousel() {
     const { isMobile, isTablet, isLaptop } = useBreakpoint();
     const [activeVariants, setActiveVariants] = useState(() => {
         // Initialize with first variant of each product
         const variants = {};
-        carouselProducts.forEach(product => {
+        products.forEach(product => {
             if (product.variants?.length > 0) {
                 variants[product.id] = product.variants[0];
             }
         });
         return variants;
     });
-
-    // Always use carousel regardless of viewport size
-    const shouldUseCarousel = true;
 
     const carouselOptions = {
         loop: true,
@@ -28,10 +27,12 @@ export default function HeroCarousel() {
         containScroll: 'trimSnaps',
         slidesToScroll: 1,
         breakpoints: {
-            '(min-width: 1024px)': { slidesToShow: 3 },
-            '(min-width: 768px)': { slidesToShow: 2 },
-            '(max-width: 767px)': { 
-                slidesToShow: 1,
+            '(min-width: 1200px)': { slidesToShow: 4 },
+            '(min-width: 992px)': { slidesToShow: 3 },
+            '(min-width: 768px)': { slidesToShow: 2.5 },
+            '(min-width: 576px)': { slidesToShow: 2 },
+            '(max-width: 575px)': {
+                slidesToShow: 1.2,
                 containScroll: true
             }
         }
@@ -50,23 +51,12 @@ export default function HeroCarousel() {
         />
     );
 
-    // This block will never execute now, but keeping it for future reference
-    if (!shouldUseCarousel) {
-        return (
-            <div className="hero-carousel">
-                <div className="products-grid">
-                    {carouselProducts.map(renderProduct)}
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className={`hero-carousel ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''}`}>
             <Carousel opts={carouselOptions}>
-                {carouselProducts.map((product) => (
-                    <CarouselSlide 
-                        key={product.id} 
+                {products.map((product) => (
+                    <CarouselSlide
+                        key={product.id}
                         data-type="product"
                         className={isMobile ? 'mobile' : isTablet ? 'tablet' : ''}
                     >
@@ -76,4 +66,4 @@ export default function HeroCarousel() {
             </Carousel>
         </div>
     );
-} 
+}

@@ -6,9 +6,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import NavBar from './sections/shared/navbar/NavBar';
 import { useState, useEffect } from 'react';
 import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
-import LanguageSwitcher from './components/ui/language-switcher/LanguageSwitcher';
-import { HelmetProvider } from 'react-helmet-async';
-import { LanguageProvider } from './context/LanguageContext';
 
 // Create a wrapper component to handle scroll restoration
 function ScrollToTop() {
@@ -32,8 +29,9 @@ function App() {
                           location.pathname === '/terms' ||
                           location.pathname === '/privacy';
 
-    // Check if current route is shop page
-    const isShopPage = location.pathname === '/shop';
+    // Check if current route is shop or product detail page
+    const isShopOrProductPage = location.pathname === '/shop' ||
+                                location.pathname.includes('/product/');
 
     const handleNavToggle = () => {
         setIsOpenNav(prev => !prev);
@@ -75,38 +73,35 @@ function App() {
     }, [location.state]);
 
     return (
-        <HelmetProvider>
-            <LanguageProvider>
-                <ScrollToTop />
-                <div className={`App ${isScrolled ? 'scrolled' : ''}`}>
-                    {!hideNavigation && (
-                        <>
-                            {isOpenNav && (
-                                <div
-                                    className="overlay"
-                                    onClick={handleNavClose}
-                                    role="presentation"
-                                />
-                            )}
+        <>
+            <ScrollToTop />
+            <div className={`App ${isScrolled ? 'scrolled' : ''}`}>
+                {!hideNavigation && (
+                    <>
+                        {isOpenNav && (
+                            <div
+                                className="overlay"
+                                onClick={handleNavClose}
+                                role="presentation"
+                            />
+                        )}
 
-                            <div className="nav-wrapper">
-                                <NavBar
-                                    isOpen={isOpenNav}
-                                    onClick={handleNavToggle}
-                                    onClose={handleNavClose}
-                                />
-                            </div>
+                        <div className="nav-wrapper">
+                            <NavBar
+                                isOpen={isOpenNav}
+                                onClick={handleNavToggle}
+                                onClose={handleNavClose}
+                            />
+                        </div>
 
-                            {/* Only show floating buttons if not on shop page */}
-                            {!isShopPage && <FloatingButtons />}
-                            <LanguageSwitcher />
-                        </>
-                    )}
+                        {/* Only show floating buttons if not on shop or product detail page */}
+                        {!isShopOrProductPage && <FloatingButtons />}
+                    </>
+                )}
 
-                    <Outlet />
-                </div>
-            </LanguageProvider>
-        </HelmetProvider>
+                <Outlet />
+            </div>
+        </>
     );
 }
 

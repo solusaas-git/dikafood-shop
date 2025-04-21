@@ -1,0 +1,73 @@
+@import '../../styles/variables';
+
+.country-flag {
+  display: inline-block;
+  background-image: url('data:image/png;base64,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');
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  text-indent: -9999px;
+  vertical-align: middle;
+
+  &.flag-small {
+    width: 16px;
+    height: 12px;
+    margin-right: 4px;
+  }
+
+  &.flag-medium {
+    width: 20px;
+    height: 15px;
+    margin-right: 6px;
+  }
+
+  &.flag-large {
+    width: 24px;
+    height: 18px;
+    margin-right: 8px;
+  }
+
+  &.flag-unknown {
+    background-image: none;
+    box-shadow: none;
+    text-indent: 0;
+  }
+
+  // ISO country code flag positions (relative positioning)
+  &.flag-fr { background-position: 0 0; }     /* France */
+  &.flag-be { background-position: -20px 0; } /* Belgium */
+  &.flag-ch { background-position: -40px 0; } /* Switzerland */
+  &.flag-ca { background-position: -60px 0; } /* Canada */
+  &.flag-ma { background-position: -80px 0; } /* Morocco */
+  &.flag-dz { background-position: -100px 0; } /* Algeria */
+  &.flag-tn { background-position: -120px 0; } /* Tunisia */
+  &.flag-sn { background-position: -140px 0; } /* Senegal */
+  &.flag-ci { background-position: -160px 0; } /* Ivory Coast */
+  &.flag-cm { background-position: -180px 0; } /* Cameroon */
+  &.flag-ml { background-position: 0 -15px; }  /* Mali */
+  &.flag-cg { background-position: -20px -15px; } /* Congo */
+  &.flag-cd { background-position: -40px -15px; } /* DR Congo */
+  &.flag-mg { background-position: -60px -15px; } /* Madagascar */
+  &.flag-ht { background-position: -80px -15px; } /* Haiti */
+  &.flag-ne { background-position: -100px -15px; } /* Niger */
+  &.flag-gn { background-position: -120px -15px; } /* Guinea */
+  &.flag-ga { background-position: -140px -15px; } /* Gabon */
+  &.flag-it { background-position: -160px -15px; } /* Italy */
+  &.flag-es { background-position: -180px -15px; } /* Spain */
+  &.flag-de { background-position: 0 -30px; }     /* Germany */
+  &.flag-gb { background-position: -20px -30px; } /* United Kingdom */
+  &.flag-nl { background-position: -40px -30px; } /* Netherlands */
+  &.flag-us { background-position: -60px -30px; } /* United States */
+  &.flag-br { background-position: -80px -30px; } /* Brazil */
+  &.flag-ar { background-position: -100px -30px; } /* Argentina */
+  &.flag-mx { background-position: -120px -30px; } /* Mexico */
+  &.flag-cn { background-position: -140px -30px; } /* China */
+  &.flag-jp { background-position: -160px -30px; } /* Japan */
+  &.flag-kr { background-position: -180px -30px; } /* South Korea */
+  &.flag-in { background-position: 0 -45px; }     /* India */
+  &.flag-au { background-position: -20px -45px; } /* Australia */
+  &.flag-nz { background-position: -40px -45px; } /* New Zealand */
+}

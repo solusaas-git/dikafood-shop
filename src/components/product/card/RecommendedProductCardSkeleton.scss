@@ -1,0 +1,167 @@
+@import '../../../styles/variables';
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recommended-product-card-skeleton {
+  height: 300px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 0.3px solid var(--logo-lime);
+  box-shadow: none;
+  animation: fadeIn 0.5s ease-in-out;
+  animation-delay: var(--animation-delay, 0s);
+
+  .image-skeleton {
+    padding-bottom: 100%; /* Square aspect ratio */
+    width: 100%;
+    background-color: rgba(170, 204, 0, 0.08);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0)
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      animation-delay: var(--animation-delay, 0s);
+    }
+  }
+
+  .content-skeleton {
+    padding: 16px;
+    flex-grow: 1;
+    background: linear-gradient(to bottom, rgba(170, 204, 0, 0.25), rgba(170, 204, 0, 0.1));
+    border-top: 1px solid rgba(170, 204, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+
+    .title-skeleton {
+      height: 16px;
+      width: 70%;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 4px;
+      margin-bottom: 12px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        animation-delay: var(--animation-delay, 0s);
+      }
+    }
+
+    .meta-skeleton {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    .price-skeleton {
+      height: 26px;
+      width: 40%;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 25px;
+      position: relative;
+      border: 1px solid rgba(170, 204, 0, 0.4);
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        animation-delay: var(--animation-delay, 0s);
+      }
+    }
+
+    .rating-skeleton {
+      height: 26px;
+      width: 30%;
+      background-color: rgba(255, 248, 220, 0.9);
+      border-radius: 25px;
+      position: relative;
+      border: 1px solid var(--dark-yellow-1);
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        animation-delay: var(--animation-delay, 0s);
+      }
+    }
+  }
+}
+
+.recommended-product-card-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./nav-bar.scss";
 import Button from '../../../components/buttons/Button';
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from '../../../context/AuthContext';
 import {
     List,
     House,
@@ -14,28 +15,35 @@ import {
     X,
     ShoppingCart,
     Question,
-    Palette
+    Palette,
+    User,
+    SignIn,
+    CaretDown,
+    SignOut,
+    Gear,
+    CreditCard,
+    Package
 } from "@phosphor-icons/react";
 import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg";
 import { scrollToContactForm } from '../footer/Footer';
-import { useLanguage } from '../../../context/LanguageContext';
-import { getTranslation } from '../../../utils/translation';
+import AuthDropdown from './AuthDropdown';
+import CartDropdown from './CartDropdown';
 
-// Navigation config (updated to use translation paths)
+// Navigation config (with direct text labels)
 const NAV_ITEMS = [
     {
         icon: <House size={20} weight="duotone" />,
-        translationPath: "nav.home",
+        label: "Accueil",
         path: "/"
     },
     {
         icon: <ShoppingBag size={20} weight="duotone" />,
-        translationPath: "nav.shop",
+        label: "Boutique",
         path: "/shop"
     },
     {
         icon: <Article size={20} weight="duotone" />,
-        translationPath: "nav.blog",
+        label: "Blog",
         path: "/blog"
     },
 ];
@@ -45,9 +53,11 @@ function NavBar({ onClick, isOpen, onClose }) {
     const location = useLocation();
     const pathname = location.pathname;
     const menuRef = useRef(null);
-    const { language } = useLanguage();
     const [localIsOpen, setLocalIsOpen] = useState(isOpen);
     const [cartItemCount, setCartItemCount] = useState(0);
+
+    // Use auth context
+    const { isLoggedIn, logout } = useAuth();
 
     // Keep local and parent state in sync
     useEffect(() => {
@@ -95,13 +105,17 @@ function NavBar({ onClick, isOpen, onClose }) {
     const handleClose = () => {
         setLocalIsOpen(false);
         if (onClose) onClose();
+        // Force close any open dropdowns by adding a click event
+        document.body.click();
     };
 
     // Handle escape key
     useEffect(() => {
         const handleKeyPress = (e) => {
-            if (e.key === 'Escape' && localIsOpen) {
-                handleClose();
+            if (e.key === 'Escape') {
+                if (localIsOpen) {
+                    handleClose();
+                }
             }
         };
 
@@ -153,7 +167,7 @@ function NavBar({ onClick, isOpen, onClose }) {
                             key={link.path}
                             icon={link.icon}
                             to={link.path}
-                            name={link.label || getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
+                            name={link.label}
                             theme="link"
                             size="small"
                             isActive={pathname === link.path}
@@ -164,30 +178,20 @@ function NavBar({ onClick, isOpen, onClose }) {
 
                 <div className="cta">
                     <Button
-                        icon={<EnvelopeSimple size={24} weight="duotone" />}
-                        onClick={handleContactClick}
-                        name={getTranslation("common.buttons.contactUs", language)}
-                        theme="secondary-white-bg"
-                        size="small"
-                    />
-                    <Button
-                        icon={<DownloadSimple size={24} weight="duotone" />}
-                        onClick={scrollToForm}
-                        name="Télécharger le catalogue"
+                        icon={<ShoppingBag size={24} weight="duotone" />}
+                        to="/shop"
+                        name="Nos produits"
                         theme="primary"
                         size="small"
                     />
-                    <div className="cart-button">
-                        <Button
-                            icon={<ShoppingCart size={24} weight="duotone" />}
-                            to="/checkout"
-                            theme="cart"
-                            size="small"
-                            aria-label="Cart"
-                        />
-                        {cartItemCount > 0 && (
-                            <span className="cart-count">{cartItemCount}</span>
-                        )}
+                    <div className="action-buttons">
+                        <div className="user-button">
+                            <AuthDropdown onClose={handleClose} />
+                        </div>
+
+                        <div className="cart-button">
+                            <CartDropdown onClose={handleClose} />
+                        </div>
                     </div>
                 </div>
 
@@ -198,61 +202,56 @@ function NavBar({ onClick, isOpen, onClose }) {
                         aria-expanded={localIsOpen}
                         aria-controls="mobile-menu"
                         aria-label={localIsOpen ? "Close menu" : "Open menu"}
+                        tabIndex="0"
                     >
                         {localIsOpen ? (
-                            <X weight="duotone" />
+                            <X size={24} weight="bold" />
                         ) : (
-                            <List weight="duotone" />
+                            <List size={24} weight="bold" />
                         )}
                     </span>
+                </div>
+            </div>
 
-                    <div
-                        id="mobile-menu"
-                        className={localIsOpen ? 'active' : ''}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="Mobile navigation menu"
-                    >
-                        <div className="menu">
-                            {NAV_ITEMS.map((link) => (
-                                <Button
-                                    key={link.path}
-                                    icon={link.icon}
-                                    to={link.path}
-                                    name={link.label || getTranslation(link.translationPath, language) || (link.translationPath === "nav.faq" ? "FAQ" : "")}
-                                    theme="link"
-                                    size="small"
-                                    isActive={pathname === link.path}
-                                    onClick={handleClose}
-                                    aria-current={pathname === link.path ? "page" : undefined}
-                                />
-                            ))}
-                        </div>
-
-                        <div className="cta">
+            <div
+                id="mobile-menu"
+                className={`mobile-menu ${localIsOpen ? 'active' : ''} d-mobile-only`}
+            >
+                <div className="mobile-menu-content">
+                    <div className="mobile-links">
+                        {NAV_ITEMS.map((link) => (
                             <Button
-                                icon={<EnvelopeSimple size={24} weight="duotone" />}
-                                onClick={handleContactClick}
-                                name={getTranslation("common.buttons.contactUs", language)}
-                                theme="secondary-white-bg"
-                                size="small"
-                            />
-                            <Button
-                                icon={<DownloadSimple size={24} weight="duotone" />}
-                                onClick={scrollToForm}
-                                name="Télécharger le catalogue"
-                                theme="primary"
-                                size="small"
-                            />
-                            <Button
-                                icon={<ShoppingCart size={24} weight="duotone" />}
-                                to="/checkout"
-                                name="Panier"
-                                theme="secondary"
-                                size="small"
+                                key={link.path}
+                                icon={link.icon}
+                                to={link.path}
+                                name={link.label}
+                                theme="link-mobile"
+                                size="large"
+                                isActive={pathname === link.path}
                                 onClick={handleClose}
+                                aria-current={pathname === link.path ? "page" : undefined}
                             />
+                        ))}
+                    </div>
+
+                    <div className="mobile-user-actions">
+                        <div className="user-button">
+                            <AuthDropdown onClose={handleClose} />
                         </div>
+                        <div className="cart-button">
+                            <CartDropdown onClose={handleClose} />
+                        </div>
+                    </div>
+
+                    <div className="mobile-cta">
+                        <Button
+                            icon={<ShoppingBag size={24} weight="duotone" />}
+                            to="/shop"
+                            onClick={handleClose}
+                            name="Nos produits"
+                            theme="primary"
+                            size="medium"
+                        />
                     </div>
                 </div>
             </div>

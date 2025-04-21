@@ -121,8 +121,7 @@ $breakpoints: (
   align-items: center;
 
   &:not(.footer-section) {
-    min-height: 90vh;
-    padding: calc(var(--navbar-height) + 32px) var(--section-padding) 32px;
+    min-height: 80vh;
 
     @include respond-to('laptop') {
       padding: calc(var(--navbar-height-mobile) + 24px) var(--section-padding) 24px;

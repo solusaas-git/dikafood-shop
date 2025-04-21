@@ -1,39 +1,56 @@
 @use '../styles/variables' as *;
 
 .hero-carousel {
-    width: 100%;
-    position: relative;
-    overflow: visible;
-    display: flex;
-    justify-content: center;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    left: 50%;
-    right: 50%;
-    transform: translateX(-50%);
+    width: auto;
+    max-width: 1200px;
+    background-color: var(--light-yellow-1);
+    border-radius: 20px;
+    padding: 1rem;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 1px solid var(--logo-lime);
 
-    @media (max-width: 768px) {
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        transform: translateX(-50%);
+    .carousel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+
+        h3 {
+            font-family: 'Chillax', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--logo-green);
+            margin: 0;
+        }
+
+        .view-all-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--logo-green);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+
+            svg {
+                transition: transform 0.2s ease;
+            }
+
+            &:hover {
+                color: var(--dark-green-2);
+
+                svg {
+                    transform: translateX(3px);
+                }
+            }
+        }
     }
 
-    // Grid layout for desktop
-    .products-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 24px;
-        max-width: 1440px;
-        margin: 0 auto;
-        padding: 0 32px;
-    }
-
-    // Carousel layout
     .embla {
         overflow: hidden;
-        width: 100%;
-        
+
         @media (max-width: 768px) {
             padding: 0;
             width: 100%;
@@ -41,54 +58,60 @@
 
         &__container {
             display: flex;
-            align-items: center;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-            @media (max-width: 768px) {
-                margin: 0;
+        &__slide {
+            min-width: 0;
+            flex: 0 0 auto;
+            position: relative;
+            padding: 0 0.5rem;
+
+            &.mobile {
+                padding: 0 0.25rem;
             }
         }
     }
 
-    .embla__slide {
-        flex: 0 0 auto;
-        display: flex;
-        align-items: center;
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
 
-        &[data-type="product"] {
-            display: flex;
-            justify-content: center;
-            padding: 0 12px;
+    &.mobile {
+        width: 95%;
+        padding: 1.5rem 1rem;
+        border-radius: 15px;
 
-            @media (min-width: 1440px) {
-                width: 25%;
+        .carousel-header {
+            margin-bottom: 1rem;
+
+            h3 {
+                font-size: 1.25rem;
             }
 
-            @media (min-width: 1024px) and (max-width: 1439px) {
-                width: 33.333%;
+            .view-all-link {
+                font-size: 0.85rem;
             }
+        }
+    }
 
-            @media (min-width: 768px) and (max-width: 1023px) {
-                width: 50%;
-            }
+    &.tablet {
+        padding: 1.75rem;
 
-            @media (max-width: 768px) {
-                width: 100%;
-                padding: 0 16px;
-                min-width: 100vw;
-                
-                .product-card {
-                    width: 100%;
-                    // max-width: 100%;
-                    // min-height: auto;
-                    // aspect-ratio: 0.7;
-                }
+        .carousel-header {
+            h3 {
+                font-size: 1.35rem;
             }
         }
     }
 
     // Navigation buttons
     .embla__button {
-        position: fixed;
         top: 50%;
         transform: translateY(-50%);
         width: 48px;
@@ -124,7 +147,7 @@
         &:active {
             transform: translateY(-50%) scale(0.95);
         }
-        
+
         @media (max-width: 768px) {
             width: 48px;
             height: 48px;
@@ -136,18 +159,18 @@
             }
         }
 
-        &--prev { 
+        &--prev {
             left: 12px;
             @media (max-width: 768px) {
                 left: 8px;
             }
         }
-        
-        &--next { 
+
+        &--next {
             right: 12px;
             @media (max-width: 768px) {
                 right: 8px;
             }
         }
     }
-} 
+}

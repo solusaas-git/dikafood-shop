@@ -5,6 +5,7 @@ import './article.scss';
 import { Helmet } from 'react-helmet-async';
 import NavBar from '../../sections/shared/navbar/NavBar';
 import Footer from '../../sections/shared/footer/Footer';
+import { BlogPostSkeleton } from '../../components/skeletons/BlogSkeleton';
 import { blogPosts } from '../../data/blog-posts';
 
 const Article = () => {
@@ -29,11 +30,7 @@ const Article = () => {
     if (loading) return (
         <>
             <NavBar />
-            <div className="article loading">
-                <div className="container">
-                    <div className="loading-spinner">Loading...</div>
-                </div>
-            </div>
+            <BlogPostSkeleton />
             <Footer />
         </>
     );

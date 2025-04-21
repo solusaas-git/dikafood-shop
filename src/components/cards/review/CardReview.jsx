@@ -25,6 +25,25 @@ const formatRelativeTime = (dateString) => {
     }
 };
 
+const renderStars = (rating) => {
+    return (
+        <div className="stars">
+            {[...Array(5)].map((_, index) => {
+                if (index < Math.floor(rating)) {
+                    // Full star
+                    return <Star key={index} weight="duotone" className="star-filled duotone" />;
+                } else if (index < Math.ceil(rating) && !Number.isInteger(rating)) {
+                    // Half star
+                    return <Star key={index} weight="duotone" className="star-half duotone" />;
+                } else {
+                    // Empty star
+                    return <Star key={index} weight="duotone" className="star-empty duotone" />;
+                }
+            })}
+        </div>
+    );
+};
+
 const CardReview = memo(({ review }) => {
     const {
         author,
@@ -57,14 +76,7 @@ const CardReview = memo(({ review }) => {
                                 <p>{author.location}</p>
                             </div>
                             <div className="rating">
-                                {[...Array(5)].map((_, index) => (
-                                    <Star
-                                        key={index}
-                                        weight={index < rating ? "fill" : "regular"}
-                                        size={16}
-                                        className={index < rating ? 'filled' : ''}
-                                    />
-                                ))}
+                                {renderStars(rating)}
                             </div>
                         </div>
                         {verified && (
@@ -87,8 +99,8 @@ const CardReview = memo(({ review }) => {
                             <ArrowRight className="forward-icon" weight="bold" />
                         </a>
                     </div>
-                    
-                    <div 
+
+                    <div
                         ref={reviewTextRef}
                         className={`review-text ${needsExpansion ? 'truncated' : ''}`}
                     >
@@ -96,13 +108,13 @@ const CardReview = memo(({ review }) => {
                     </div>
 
                     {needsExpansion && (
-                        <button 
+                        <button
                             className="expand-button"
                             onClick={() => setIsExpanded(!isExpanded)}
                             aria-expanded={isExpanded}
                             aria-label={isExpanded ? 'Voir moins' : 'Voir plus'}
                         >
-                            <CaretDown 
+                            <CaretDown
                                 weight="bold"
                                 className={isExpanded ? 'rotated' : ''}
                             />

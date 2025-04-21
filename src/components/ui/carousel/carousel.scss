@@ -3,7 +3,6 @@
     width: 100%;
     margin: 0 calc(var(--section-padding, 24px) * -1);
     width: calc(100% + (var(--section-padding, 24px) * 2));
-    padding: 0 var(--section-padding, 24px);
 
     &__viewport {
         overflow: hidden;
@@ -42,15 +41,15 @@
 
         &[data-type="product"] {
             width: calc(100% - 32px);
-            
+
             @media (min-width: 430px) {
                 width: calc(50% - 24px);
             }
-            
+
             @media (min-width: 768px) {
                 width: calc(33.333% - 24px);
             }
-            
+
             @media (min-width: 1024px) {
                 width: calc(25% - 24px);
             }
@@ -73,7 +72,7 @@
         cursor: pointer;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 90;
-        box-shadow: 
+        box-shadow:
             0 4px 6px rgba(var(--dark-green-7-rgb), 0.1),
             0 2px 4px rgba(var(--dark-green-7-rgb), 0.06);
 
@@ -87,7 +86,7 @@
             background: var(--light-yellow-1);
             transform: translateY(-50%) translateX(var(--translate-x, 0)) scale(1.05);
             border-color: var(--dark-yellow-1);
-            box-shadow: 
+            box-shadow:
                 0 8px 12px rgba(var(--dark-green-7-rgb), 0.15),
                 0 3px 6px rgba(var(--dark-green-7-rgb), 0.1);
 
@@ -98,7 +97,7 @@
 
         &:active {
             transform: translateY(-50%) translateX(var(--translate-x, 0)) scale(0.95);
-            box-shadow: 
+            box-shadow:
                 0 2px 4px rgba(var(--dark-green-7-rgb), 0.1),
                 0 1px 2px rgba(var(--dark-green-7-rgb), 0.06);
         }
@@ -241,7 +240,7 @@
         &__button {
             width: 44px;
             height: 44px;
-            
+
             svg {
                 width: 22px;
                 height: 22px;
@@ -255,7 +254,7 @@
         &__button {
             width: 40px;
             height: 40px;
-            
+
             svg {
                 width: 20px;
                 height: 20px;
@@ -272,16 +271,16 @@
             gap: 12px;
             padding-left: 12px;
         }
-        
+
         &__button {
             width: 32px;
             height: 32px;
-            
+
             svg {
                 width: 16px;
                 height: 16px;
             }
-            
+
             &--prev { left: 4px; }
             &--next { right: 4px; }
         }

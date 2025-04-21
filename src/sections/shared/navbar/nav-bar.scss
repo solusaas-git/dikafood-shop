@@ -89,12 +89,13 @@ $breakpoints: (
 }
 
 .nav-bar-container {
+	position: relative;
+	z-index: 50;
 	width: 100%;
 	padding: 16px var(--section-padding);
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 1000;
 	display: flex;
 	justify-content: center;
 	pointer-events: none;
@@ -152,37 +153,43 @@ $breakpoints: (
 		.menu {
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: 0;
 			padding: 0;
 			margin: 0;
 			justify-content: center;
 			flex: 1;
 			min-width: 0;
-			max-width: calc(100% - 480px);
+			max-width: 480px;
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(255, 255, 255, 0.05);
+			border-radius: 50px;
+			overflow: hidden;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
 			@media (max-width: map.get($breakpoints, 'desktop')) {
 				display: none;
 			}
 
 			button {
+				flex: 1;
 				height: 40px;
-				border-radius: 20px;
+				border-radius: 0;
 				padding: 0 16px;
 				color: var(--light-yellow-1);
-				background: rgba(255, 255, 255, 0.05);
-				border: 1px solid transparent;
+				background: transparent;
+				border: none;
 				transition: all 0.2s ease;
 				font-size: 14px;
 				white-space: nowrap;
+				position: relative;
 
 				&:hover {
-					background: rgba(255, 255, 255, 0.1);
+					background: rgba(255, 255, 255, 0.15);
 				}
 
 				&.active {
 					background: rgba(255, 255, 255, 0.15);
 					color: var(--dark-yellow-1);
-					border-color: var(--dark-yellow-1);
 				}
 
 				svg {
@@ -190,6 +197,26 @@ $breakpoints: (
 					height: 18px;
 					margin-right: 8px;
 					color: currentColor;
+				}
+
+				// Add separator after all buttons except the last one
+				&:not(:last-child)::after {
+					content: '';
+					position: absolute;
+					right: 0;
+					top: 25%;
+					bottom: 25%;
+					width: 1px;
+					background-color: rgba(255, 255, 255, 0.15);
+				}
+
+				// Apply special border radius to first and last buttons
+				&:first-child {
+					border-radius: 50px 8px 8px 50px;
+				}
+
+				&:last-child {
+					border-radius: 8px 50px 50px 8px;
 				}
 			}
 
@@ -250,50 +277,75 @@ $breakpoints: (
 				display: none;
 			}
 
-			// Cart button styling
-			.cart-button {
-				position: relative;
+			// Action buttons container
+			.action-buttons {
+				display: flex;
+				align-items: center;
+				gap: 0;
 				margin-left: 8px;
+				border-radius: 50px;
+				background: rgba(255, 255, 255, 0.1);
+				border: 1px solid rgba(255, 255, 255, 0.05);
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				overflow: visible;
+				position: relative;
+				z-index: 100;
 
-				button {
-					width: 40px;
+				.user-button, .cart-button {
+					position: relative;
 					height: 40px;
-					padding: 0;
+					display: flex;
+				}
+
+				.user-button .dropdown-trigger {
+					background: transparent !important;
+					color: var(--light-yellow-1) !important;
+					padding: 8px 12px 8px 16px;
+					border: none;
+					box-shadow: none;
+					border-radius: 50px 8px 8px 50px;
+					height: 100%;
 					display: flex;
 					align-items: center;
-					justify-content: center;
-					border-radius: 50%;
-					background: rgba(255, 255, 255, 0.1);
-					color: var(--light-yellow-1);
-					border: 1px solid rgba(255, 255, 255, 0.2);
-					transition: all 0.2s ease;
 
 					&:hover {
-						background: rgba(255, 255, 255, 0.15);
-						transform: translateY(-2px);
+						background: rgba(255, 255, 255, 0.15) !important;
+						transform: translateY(0);
 					}
 
 					svg {
-						width: 20px;
-						height: 20px;
+						color: var(--light-yellow-1) !important;
 					}
 				}
 
-				.cart-count {
-					position: absolute;
-					top: -5px;
-					right: -5px;
-					width: 18px;
-					height: 18px;
+				.cart-button .dropdown-trigger {
+					background: transparent !important;
+					border: none;
+					box-shadow: none;
+					padding: 8px 16px 8px 12px;
+					border-radius: 8px 50px 50px 8px;
+					height: 100%;
 					display: flex;
 					align-items: center;
-					justify-content: center;
-					background-color: var(--dark-yellow-1);
-					color: var(--dark-green-7);
-					font-size: 11px;
-					font-weight: bold;
-					border-radius: 50%;
-					border: 1px solid var(--dark-green-7);
+
+					&:hover {
+						background: rgba(255, 255, 255, 0.15) !important;
+						transform: translateY(0);
+					}
+
+					.cart-icon, .dropdown-arrow {
+						color: var(--light-yellow-1) !important;
+					}
+				}
+
+				.user-button::after {
+					content: '';
+					position: absolute;
+					right: 0;
+					top: 25%;
+					bottom: 25%;
+					width: 1px;
+					background-color: rgba(255, 255, 255, 0.15);
 				}
 			}
 		}
@@ -912,4 +964,195 @@ $breakpoints: (
 			}
 		}
 	}
+}
+
+.mobile-menu {
+	position: fixed;
+	top: calc(var(--navbar-height, 80px) + 16px);
+	left: 50%;
+	transform: translateX(-50%) translateY(-8px);
+	width: calc(100% - 32px);
+	max-width: 420px;
+	background-color: var(--dark-green-7);
+	border-radius: 24px;
+	padding: 24px;
+	@include glass-effect;
+	box-shadow:
+		0 20px 40px rgba(0, 0, 0, 0.2),
+		0 8px 16px rgba(0, 0, 0, 0.1),
+		0 0 0 1px rgba(255, 255, 255, 0.1);
+	z-index: 500;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	overflow-y: auto;
+	max-height: 80vh;
+
+	&.active {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transform: translateX(-50%) translateY(0);
+	}
+
+	.mobile-menu-content {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.mobile-links {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin-bottom: 8px;
+	}
+
+	.mobile-user-actions {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0;
+		margin: 16px 0;
+		border-radius: 50px;
+		background: rgba(255, 255, 255, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		overflow: visible;
+		position: relative;
+		z-index: 100;
+
+		.user-button, .cart-button {
+			position: relative;
+			height: 40px;
+			display: flex;
+		}
+
+		.user-button .dropdown-trigger {
+			background: transparent !important;
+			border: none;
+			box-shadow: none;
+			padding: 8px 12px 8px 16px;
+			border-radius: 50px 8px 8px 50px;
+			height: 100%;
+			display: flex;
+			align-items: center;
+
+			&:hover {
+				background: rgba(255, 255, 255, 0.15) !important;
+				transform: translateY(0);
+			}
+
+			svg {
+				color: var(--light-yellow-1) !important;
+			}
+		}
+
+		.cart-button .dropdown-trigger {
+			background: transparent !important;
+			border: none;
+			box-shadow: none;
+			padding: 8px 16px 8px 12px;
+			border-radius: 8px 50px 50px 8px;
+			height: 100%;
+			display: flex;
+			align-items: center;
+
+			&:hover {
+				background: rgba(255, 255, 255, 0.15) !important;
+				transform: translateY(0);
+			}
+
+			.cart-icon, .dropdown-arrow {
+				color: var(--light-yellow-1) !important;
+			}
+		}
+
+		.user-button::after {
+			content: '';
+			position: absolute;
+			right: 0;
+			top: 25%;
+			bottom: 25%;
+			width: 1px;
+			background-color: rgba(255, 255, 255, 0.15);
+		}
+	}
+
+	.mobile-cta {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin-top: 8px;
+
+		button {
+			width: 100%;
+		}
+	}
+}
+
+// Add this new utility class near the top of the file, around line 70
+.d-mobile-only {
+	display: none !important;
+
+	@media (max-width: map.get($breakpoints, 'desktop')) {
+		display: block !important;
+	}
+}
+
+// Animation for dropdown
+@keyframes dropdownFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+// For buttons that appear in multiple places
+.cart-button {
+	button {
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.1);
+		color: var(--light-yellow-1);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.15);
+			transform: translateY(-2px);
+		}
+
+		svg {
+			width: 20px;
+			height: 20px;
+		}
+	}
+}
+
+/* Cart count badge styling */
+.cart-button .cart-count {
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	background-color: var(--logo-lime);
+	color: var(--dark-green-7);
+	font-size: 11px;
+	font-weight: 600;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--dark-green-3);
 }

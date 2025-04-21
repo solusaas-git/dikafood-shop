@@ -524,7 +524,7 @@ const Shop = () => {
                   </>
                 )}
               </div>
-            </div>
+              </div>
 
             {/* Shop Results - Now separated component */}
             <div className="shop-results" ref={productGridRef}>
@@ -540,8 +540,8 @@ const Shop = () => {
                   <button className="view-option" title="Vue liste">
                     <Rows size={20} weight="duotone" />
                   </button>
-                </div>
               </div>
+            </div>
 
               {/* Product Grid - Now nested within shop-results */}
               <div className="product-grid">

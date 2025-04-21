@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useAuth } from '../../context/AuthContext';
 import {
   EnvelopeSimple,
   Lock,
@@ -9,7 +10,9 @@ import {
   User,
   GoogleLogo,
   FacebookLogo,
-  Phone
+  Phone,
+  WarningCircle,
+  UserPlus
 } from '@phosphor-icons/react';
 import NavBar from '../../sections/shared/navbar/NavBar';
 import Footer from '../../sections/shared/footer/Footer';
@@ -17,6 +20,7 @@ import './auth.scss';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register, isLoggedIn } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -30,6 +34,13 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/');
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -66,6 +77,8 @@ const Register = () => {
 
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
+    } else if (!/^\+?[0-9]{10,15}$/.test(formData.phone)) {
+      newErrors.phone = 'Phone number is invalid';
     }
 
     if (!formData.password) {
@@ -96,19 +109,24 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Mock successful registration
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('user', JSON.stringify({
+      // Prepare user data, excluding confirmPassword and agreeTerms
+      const userData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
-        email: formData.email
-      }));
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password
+      };
 
-      // Redirect to account or home
-      navigate('/');
+      const result = await register(userData);
+
+      if (result.success) {
+        navigate('/');
+      } else {
+        setErrors({
+          general: result.error || 'Registration failed. Please try again later.'
+        });
+      }
     } catch (error) {
       setErrors({
         general: 'Registration failed. Please try again later.'
@@ -118,21 +136,33 @@ const Register = () => {
     }
   };
 
-  const handleSocialRegister = (provider) => {
+  const handleSocialRegister = async (provider) => {
     setLoading(true);
 
-    // Simulate social registration
-    setTimeout(() => {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('user', JSON.stringify({
+    try {
+      const userData = {
         firstName: 'User',
         lastName: provider.charAt(0).toUpperCase() + provider.slice(1),
         email: `user@${provider}.com`,
         provider
-      }));
-      navigate('/');
+      };
+
+      const result = await register(userData);
+
+      if (result.success) {
+        navigate('/');
+      } else {
+        setErrors({
+          general: result.error || `${provider} registration failed. Please try again.`
+        });
+      }
+    } catch (error) {
+      setErrors({
+        general: `${provider} registration failed. Please try again.`
+      });
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -154,6 +184,7 @@ const Register = () => {
 
             {errors.general && (
               <div className="error-message">
+                <WarningCircle size={20} weight="duotone" />
                 {errors.general}
               </div>
             )}
@@ -163,7 +194,7 @@ const Register = () => {
                 <div className="form-group">
                   <label htmlFor="firstName">First Name</label>
                   <div className="input-with-icon">
-                    <User size={20} />
+                    <User size={20} weight="duotone" />
                     <input
                       type="text"
                       id="firstName"
@@ -174,13 +205,18 @@ const Register = () => {
                       className={errors.firstName ? 'error' : ''}
                     />
                   </div>
-                  {errors.firstName && <div className="error-text">{errors.firstName}</div>}
+                  {errors.firstName && (
+                    <div className="error-text">
+                      <WarningCircle size={14} weight="fill" />
+                      {errors.firstName}
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="lastName">Last Name</label>
                   <div className="input-with-icon">
-                    <User size={20} />
+                    <User size={20} weight="duotone" />
                     <input
                       type="text"
                       id="lastName"
@@ -191,14 +227,19 @@ const Register = () => {
                       className={errors.lastName ? 'error' : ''}
                     />
                   </div>
-                  {errors.lastName && <div className="error-text">{errors.lastName}</div>}
+                  {errors.lastName && (
+                    <div className="error-text">
+                      <WarningCircle size={14} weight="fill" />
+                      {errors.lastName}
+                    </div>
+                  )}
                 </div>
               </div>
 
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <div className="input-with-icon">
-                  <EnvelopeSimple size={20} />
+                  <EnvelopeSimple size={20} weight="duotone" />
                   <input
                     type="email"
                     id="email"
@@ -209,13 +250,18 @@ const Register = () => {
                     className={errors.email ? 'error' : ''}
                   />
                 </div>
-                {errors.email && <div className="error-text">{errors.email}</div>}
+                {errors.email && (
+                  <div className="error-text">
+                    <WarningCircle size={14} weight="fill" />
+                    {errors.email}
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
                 <label htmlFor="phone">Phone Number</label>
                 <div className="input-with-icon">
-                  <Phone size={20} />
+                  <Phone size={20} weight="duotone" />
                   <input
                     type="tel"
                     id="phone"
@@ -226,18 +272,23 @@ const Register = () => {
                     className={errors.phone ? 'error' : ''}
                   />
                 </div>
-                {errors.phone && <div className="error-text">{errors.phone}</div>}
+                {errors.phone && (
+                  <div className="error-text">
+                    <WarningCircle size={14} weight="fill" />
+                    {errors.phone}
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <div className="input-with-icon">
-                  <Lock size={20} />
+                  <Lock size={20} weight="duotone" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     id="password"
                     name="password"
-                    placeholder="Choose a password"
+                    placeholder="Create a password"
                     value={formData.password}
                     onChange={handleChange}
                     className={errors.password ? 'error' : ''}
@@ -246,17 +297,27 @@ const Register = () => {
                     type="button"
                     className="toggle-password"
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+                    {showPassword ? (
+                      <EyeSlash size={20} weight="duotone" />
+                    ) : (
+                      <Eye size={20} weight="duotone" />
+                    )}
                   </button>
                 </div>
-                {errors.password && <div className="error-text">{errors.password}</div>}
+                {errors.password && (
+                  <div className="error-text">
+                    <WarningCircle size={14} weight="fill" />
+                    {errors.password}
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password</label>
                 <div className="input-with-icon">
-                  <Lock size={20} />
+                  <Lock size={20} weight="duotone" />
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     id="confirmPassword"
@@ -270,64 +331,92 @@ const Register = () => {
                     type="button"
                     className="toggle-password"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showConfirmPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+                    {showConfirmPassword ? (
+                      <EyeSlash size={20} weight="duotone" />
+                    ) : (
+                      <Eye size={20} weight="duotone" />
+                    )}
                   </button>
                 </div>
-                {errors.confirmPassword && <div className="error-text">{errors.confirmPassword}</div>}
+                {errors.confirmPassword && (
+                  <div className="error-text">
+                    <WarningCircle size={14} weight="fill" />
+                    {errors.confirmPassword}
+                  </div>
+                )}
               </div>
 
               <div className="form-group checkbox-group">
-                <input
-                  type="checkbox"
-                  id="agreeTerms"
-                  name="agreeTerms"
-                  checked={formData.agreeTerms}
-                  onChange={handleChange}
-                  className={errors.agreeTerms ? 'error' : ''}
-                />
-                <label htmlFor="agreeTerms">
-                  I agree to the <Link to="/terms">Terms and Conditions</Link> and <Link to="/privacy">Privacy Policy</Link>
-                </label>
-                {errors.agreeTerms && <div className="error-text">{errors.agreeTerms}</div>}
+                <div className="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="agreeTerms"
+                    name="agreeTerms"
+                    checked={formData.agreeTerms}
+                    onChange={handleChange}
+                    className={errors.agreeTerms ? 'error' : ''}
+                  />
+                  <label htmlFor="agreeTerms">
+                    I agree to the <Link to="/terms">Terms of Service</Link> and{' '}
+                    <Link to="/privacy">Privacy Policy</Link>
+                  </label>
+                </div>
+                {errors.agreeTerms && (
+                  <div className="error-text">
+                    <WarningCircle size={14} weight="fill" />
+                    {errors.agreeTerms}
+                  </div>
+                )}
               </div>
 
               <button
                 type="submit"
-                className={`auth-button ${loading ? 'loading' : ''}`}
+                className="btn btn-primary btn-full"
                 disabled={loading}
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
+                {loading ? (
+                  'Creating Account...'
+                ) : (
+                  <>
+                    <UserPlus size={20} weight="duotone" />
+                    Create Account
+                  </>
+                )}
               </button>
             </form>
 
-            <div className="social-login">
-              <p>Or register with</p>
-              <div className="social-buttons">
-                <button
-                  className="social-button google"
-                  onClick={() => handleSocialRegister('google')}
-                  disabled={loading}
-                >
-                  <GoogleLogo size={20} />
-                  Google
-                </button>
-                <button
-                  className="social-button facebook"
-                  onClick={() => handleSocialRegister('facebook')}
-                  disabled={loading}
-                >
-                  <FacebookLogo size={20} />
-                  Facebook
-                </button>
-              </div>
+            <div className="auth-divider">
+              <span>or continue with</span>
+            </div>
+
+            <div className="social-buttons">
+              <button
+                type="button"
+                className="btn btn-social btn-google"
+                onClick={() => handleSocialRegister('google')}
+                disabled={loading}
+              >
+                <GoogleLogo size={20} weight="duotone" />
+                Google
+              </button>
+              <button
+                type="button"
+                className="btn btn-social btn-facebook"
+                onClick={() => handleSocialRegister('facebook')}
+                disabled={loading}
+              >
+                <FacebookLogo size={20} weight="duotone" />
+                Facebook
+              </button>
             </div>
 
             <div className="auth-footer">
               <p>
                 Already have an account?{' '}
-                <Link to="/login" className="auth-link">
-                  Login
+                <Link to="/login" className="link">
+                  Log In
                 </Link>
               </p>
             </div>

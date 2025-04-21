@@ -3,16 +3,16 @@ import { CaretLeft, CaretRight } from "@phosphor-icons/react"
 import useEmblaCarousel from 'embla-carousel-react'
 import './carousel.scss'
 
-export function Carousel({ 
-    children, 
-    opts = { 
+export function Carousel({
+    children,
+    opts = {
         loop: true,
         align: 'start',
         containScroll: 'trimSnaps'
-    }, 
+    },
     className = "",
     showControls = true,
-    ...props 
+    ...props
 }) {
     const [emblaRef, emblaApi] = useEmblaCarousel(opts)
     const [prevBtnDisabled, setPrevBtnDisabled] = useState(true)
@@ -46,7 +46,7 @@ export function Carousel({
                     {children}
                 </div>
             </div>
-            
+
             {showControls && (
                 <>
                     <button

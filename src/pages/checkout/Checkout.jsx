@@ -11,11 +11,12 @@ import {
   Money,
   Truck,
   ClockClockwise,
-  Shield
+  Shield,
+  CheckCircle,
+  Tag
 } from "@phosphor-icons/react";
 import './checkout.scss';
 import NavBar from '../../sections/shared/navbar/NavBar';
-import Footer from '../../sections/shared/footer/Footer';
 
 const Checkout = () => {
   // Mock cart data - in a real app this would come from a cart context or redux store
@@ -43,6 +44,7 @@ const Checkout = () => {
   const [shippingCost, setShippingCost] = useState(30);
   const [discount, setDiscount] = useState(0);
   const [promoCode, setPromoCode] = useState('');
+  const [showPromoCode, setShowPromoCode] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card');
 
   // Form state for shipping details
@@ -80,6 +82,16 @@ const Checkout = () => {
   // Remove item from cart
   const removeItem = (id) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== id));
+  };
+
+  // Toggle promo code visibility
+  const togglePromoCode = () => {
+    setShowPromoCode(!showPromoCode);
+    if (!showPromoCode) {
+      // Reset promo code and discount when hiding the field
+      setPromoCode('');
+      setDiscount(0);
+    }
   };
 
   // Apply promo code
@@ -134,7 +146,7 @@ const Checkout = () => {
     <div className="cart-items">
       {cartItems.length === 0 ? (
         <div className="empty-cart">
-          <ShoppingCart size={64} weight="thin" />
+          <ShoppingCart size={64} weight="duotone" />
           <h2>Your cart is empty</h2>
           <p>Looks like you haven't added any products to your cart yet.</p>
           <Link to="/shop" className="shop-now-btn">
@@ -168,7 +180,7 @@ const Checkout = () => {
               {item.price * item.quantity} Dh
             </div>
             <button className="remove-btn" onClick={() => removeItem(item.id)}>
-              <Trash weight="bold" />
+              <Trash weight="duotone" />
             </button>
           </div>
         ))
@@ -200,22 +212,41 @@ const Checkout = () => {
       </div>
 
       {step === 'cart' && (
-        <div className="promo-code">
-          <div className="promo-input">
-            <input
-              type="text"
-              placeholder="Promo code"
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
-            />
-            <button
-              className="apply-btn"
-              onClick={applyPromoCode}
-              disabled={!promoCode}
-            >
-              Apply
-            </button>
+        <div className="promo-section">
+          <div className="promo-toggle">
+            <label className="promo-checkbox">
+              <input
+                type="checkbox"
+                checked={showPromoCode}
+                onChange={togglePromoCode}
+              />
+              <span className="checkmark"></span>
+              <span className="toggle-label">
+                <Tag weight="duotone" />
+                I have a promo code
+              </span>
+            </label>
           </div>
+
+          {showPromoCode && (
+            <div className="promo-code">
+              <div className="promo-input">
+                <input
+                  type="text"
+                  placeholder="Enter promo code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                />
+                <button
+                  className="apply-btn"
+                  onClick={applyPromoCode}
+                  disabled={!promoCode}
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -228,7 +259,7 @@ const Checkout = () => {
           {step === 'cart' && 'Proceed to Checkout'}
           {step === 'shipping' && 'Continue to Payment'}
           {step === 'payment' && 'Place Order'}
-          <CaretRight weight="bold" />
+          <CaretRight weight="duotone" />
         </button>
       )}
 
@@ -237,7 +268,7 @@ const Checkout = () => {
           className="back-btn"
           onClick={() => step === 'shipping' ? setStep('cart') : step === 'payment' ? setStep('shipping') : null}
         >
-          <ArrowLeft weight="bold" />
+          <ArrowLeft weight="duotone" />
           Back to {step === 'shipping' ? 'Cart' : step === 'payment' ? 'Shipping' : ''}
         </button>
       )}
@@ -503,7 +534,9 @@ const Checkout = () => {
   const renderOrderConfirmation = () => (
     <div className="order-confirmation">
       <div className="confirmation-icon">
-        <div className="check-icon">✓</div>
+        <div className="check-icon">
+          <CheckCircle size={48} weight="duotone" />
+        </div>
       </div>
       <h2>Thank You For Your Order!</h2>
       <p className="order-id">Order #ORD-{Date.now().toString().slice(-8)}</p>
@@ -565,13 +598,22 @@ const Checkout = () => {
 
       <NavBar />
 
+      <div className="checkout-hero">
+        <div className="hero-overlay">
+          <div className="hero-content">
+            <h1>Checkout</h1>
+            <p>Complete your purchase with our secure checkout process</p>
+          </div>
+        </div>
+      </div>
+
       <div className="container">
         {step !== 'confirmation' && (
           <div className="checkout-header">
             <h1>
               {step === 'cart' && 'Shopping Cart'}
-              {step === 'shipping' && 'Checkout'}
-              {step === 'payment' && 'Payment'}
+              {step === 'shipping' && 'Shipping Information'}
+              {step === 'payment' && 'Payment Method'}
             </h1>
 
             <div className="checkout-steps">
@@ -625,8 +667,6 @@ const Checkout = () => {
           )}
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

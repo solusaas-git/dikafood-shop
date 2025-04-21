@@ -1,26 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { EnvelopeSimple, Lock, Eye, EyeSlash, GoogleLogo, FacebookLogo } from '@phosphor-icons/react';
+import { useAuth } from '../../context/AuthContext';
+import {
+  EnvelopeSimple,
+  Lock,
+  Eye,
+  EyeSlash,
+  GoogleLogo,
+  FacebookLogo,
+  WarningCircle,
+  SignIn
+} from '@phosphor-icons/react';
 import NavBar from '../../sections/shared/navbar/NavBar';
 import Footer from '../../sections/shared/footer/Footer';
 import './auth.scss';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login, isLoggedIn } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    remember: false
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/');
+    }
+  }, [isLoggedIn, navigate]);
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     });
 
     // Clear error when user starts typing
@@ -57,15 +76,15 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const result = await login(formData.email, formData.password, formData.remember);
 
-      // Mock successful login
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('user', JSON.stringify({ email: formData.email }));
-
-      // Redirect to dashboard or home
-      navigate('/');
+      if (result.success) {
+        navigate('/');
+      } else {
+        setErrors({
+          general: result.error || 'Login failed. Please check your credentials and try again.'
+        });
+      }
     } catch (error) {
       setErrors({
         general: 'Login failed. Please check your credentials and try again.'
@@ -75,19 +94,27 @@ const Login = () => {
     }
   };
 
-  const handleSocialLogin = (provider) => {
+  const handleSocialLogin = async (provider) => {
     setLoading(true);
 
-    // Simulate social login
-    setTimeout(() => {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('user', JSON.stringify({
-        email: `user@${provider}.com`,
-        provider
-      }));
-      navigate('/');
+    try {
+      // This would be integrated with actual social login APIs
+      const result = await login(`user@${provider}.com`, 'socialAuth', provider);
+
+      if (result.success) {
+        navigate('/');
+      } else {
+        setErrors({
+          general: result.error || `${provider} login failed. Please try again.`
+        });
+      }
+    } catch (error) {
+      setErrors({
+        general: `${provider} login failed. Please try again.`
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -109,6 +136,7 @@ const Login = () => {
 
             {errors.general && (
               <div className="error-message">
+                <WarningCircle size={20} weight="duotone" />
                 {errors.general}
               </div>
             )}
@@ -117,7 +145,7 @@ const Login = () => {
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <div className="input-with-icon">
-                  <EnvelopeSimple size={20} />
+                  <EnvelopeSimple size={20} weight="duotone" />
                   <input
                     type="email"
                     id="email"
@@ -128,13 +156,18 @@ const Login = () => {
                     className={errors.email ? 'error' : ''}
                   />
                 </div>
-                {errors.email && <div className="error-text">{errors.email}</div>}
+                {errors.email && (
+                  <div className="error-text">
+                    <WarningCircle size={14} weight="fill" />
+                    {errors.email}
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <div className="input-with-icon">
-                  <Lock size={20} />
+                  <Lock size={20} weight="duotone" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     id="password"
@@ -148,16 +181,28 @@ const Login = () => {
                     type="button"
                     className="toggle-password"
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeSlash size={20} weight="duotone" /> : <Eye size={20} weight="duotone" />}
                   </button>
                 </div>
-                {errors.password && <div className="error-text">{errors.password}</div>}
+                {errors.password && (
+                  <div className="error-text">
+                    <WarningCircle size={14} weight="fill" />
+                    {errors.password}
+                  </div>
+                )}
               </div>
 
               <div className="form-actions">
                 <div className="remember-me">
-                  <input type="checkbox" id="remember" name="remember" />
+                  <input
+                    type="checkbox"
+                    id="remember"
+                    name="remember"
+                    checked={formData.remember}
+                    onChange={handleChange}
+                  />
                   <label htmlFor="remember">Remember me</label>
                 </div>
                 <Link to="/forgot-password" className="forgot-password">
@@ -170,6 +215,7 @@ const Login = () => {
                 className={`auth-button ${loading ? 'loading' : ''}`}
                 disabled={loading}
               >
+                {!loading && <SignIn size={20} weight="duotone" />}
                 {loading ? 'Logging in...' : 'Login'}
               </button>
             </form>
@@ -178,19 +224,21 @@ const Login = () => {
               <p>Or login with</p>
               <div className="social-buttons">
                 <button
+                  type="button"
                   className="social-button google"
                   onClick={() => handleSocialLogin('google')}
                   disabled={loading}
                 >
-                  <GoogleLogo size={20} />
+                  <GoogleLogo size={20} weight="duotone" />
                   Google
                 </button>
                 <button
+                  type="button"
                   className="social-button facebook"
                   onClick={() => handleSocialLogin('facebook')}
                   disabled={loading}
                 >
-                  <FacebookLogo size={20} />
+                  <FacebookLogo size={20} weight="duotone" />
                   Facebook
                 </button>
               </div>

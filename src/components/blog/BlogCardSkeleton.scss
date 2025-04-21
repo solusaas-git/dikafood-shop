@@ -1,0 +1,195 @@
+@import '../../styles/variables';
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blog-card-skeleton {
+  height: 380px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 0.5px solid rgba(170, 204, 0, 0.3);
+  box-shadow: none;
+  animation: fadeIn 0.5s ease-in-out;
+  animation-delay: var(--animation-delay, 0s);
+
+  .image-skeleton {
+    height: 180px;
+    width: 100%;
+    background-color: rgba(170, 204, 0, 0.08);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0)
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      animation-delay: var(--animation-delay, 0s);
+    }
+  }
+
+  .content-skeleton {
+    padding: 16px;
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+
+    .category-skeleton {
+      height: 20px;
+      width: 30%;
+      background-color: rgba(170, 204, 0, 0.1);
+      border-radius: 4px;
+      margin-bottom: 12px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        animation-delay: var(--animation-delay, 0s);
+      }
+    }
+
+    .title-skeleton {
+      height: 36px;
+      width: 90%;
+      background-color: rgba(170, 204, 0, 0.1);
+      border-radius: 4px;
+      margin-bottom: 12px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        animation-delay: var(--animation-delay, 0s);
+      }
+    }
+
+    .excerpt-skeleton {
+      height: 16px;
+      width: 100%;
+      background-color: rgba(170, 204, 0, 0.1);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      position: relative;
+
+      &.short {
+        width: 80%;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        animation-delay: var(--animation-delay, 0s);
+      }
+    }
+
+    .meta-skeleton {
+      height: 16px;
+      width: 60%;
+      background-color: rgba(170, 204, 0, 0.1);
+      border-radius: 4px;
+      margin-top: auto;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.5),
+          rgba(255, 255, 255, 0)
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        animation-delay: var(--animation-delay, 0s);
+      }
+    }
+  }
+}
+
+.blog-card-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
