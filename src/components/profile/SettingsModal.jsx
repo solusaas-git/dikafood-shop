@@ -47,11 +47,11 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
 
     // Simple validation
     const errors = {};
-    if (!currentPassword) errors.currentPassword = 'Current password is required';
-    if (!newPassword) errors.newPassword = 'New password is required';
-    else if (newPassword.length < 6) errors.newPassword = 'Password must be at least 6 characters';
-    if (!confirmPassword) errors.confirmPassword = 'Please confirm your password';
-    else if (newPassword !== confirmPassword) errors.confirmPassword = 'Passwords do not match';
+    if (!currentPassword) errors.currentPassword = 'Le mot de passe actuel est requis';
+    if (!newPassword) errors.newPassword = 'Le nouveau mot de passe est requis';
+    else if (newPassword.length < 6) errors.newPassword = 'Le mot de passe doit contenir au moins 6 caractères';
+    if (!confirmPassword) errors.confirmPassword = 'Veuillez confirmer votre mot de passe';
+    else if (newPassword !== confirmPassword) errors.confirmPassword = 'Les mots de passe ne correspondent pas';
 
     if (Object.keys(errors).length > 0) {
       setPasswordErrors(errors);
@@ -92,18 +92,18 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
         <div className="settings-section">
           <h4>
             <Lock size={18} weight="duotone" />
-            Change Password
+            Changer le mot de passe
           </h4>
 
           {changePasswordSuccess && (
             <div className="success-message">
-              Password changed successfully!
+              Mot de passe modifié avec succès !
             </div>
           )}
 
           <form onSubmit={handlePasswordChange} className="password-form">
             <div className="form-group">
-              <label htmlFor="currentPassword">Current Password</label>
+              <label htmlFor="currentPassword">Mot de passe actuel</label>
               <input
                 type="password"
                 id="currentPassword"
@@ -117,7 +117,7 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="newPassword">New Password</label>
+              <label htmlFor="newPassword">Nouveau mot de passe</label>
               <input
                 type="password"
                 id="newPassword"
@@ -131,7 +131,7 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm New Password</label>
+              <label htmlFor="confirmPassword">Confirmer le nouveau mot de passe</label>
               <input
                 type="password"
                 id="confirmPassword"
@@ -145,7 +145,7 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
             </div>
 
             <button type="submit" className="btn-primary">
-              Update Password
+              Mettre à jour le mot de passe
             </button>
           </form>
         </div>
@@ -153,14 +153,14 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
         <div className="settings-section">
           <h4>
             <Bell size={18} weight="duotone" />
-            Notification Preferences
+            Préférences de notification
           </h4>
 
           <div className="settings-options">
             <div className="setting-option">
               <div className="setting-text">
-                <span>Order updates</span>
-                <small>Get notified about your order status</small>
+                <span>Mises à jour des commandes</span>
+                <small>Recevoir des notifications sur l'état de vos commandes</small>
               </div>
               <button
                 className="toggle-btn"
@@ -176,8 +176,8 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
 
             <div className="setting-option">
               <div className="setting-text">
-                <span>Promotions and deals</span>
-                <small>Receive promotions, discounts, and special offers</small>
+                <span>Promotions et offres</span>
+                <small>Recevoir des promotions, réductions et offres spéciales</small>
               </div>
               <button
                 className="toggle-btn"
@@ -193,8 +193,8 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
 
             <div className="setting-option">
               <div className="setting-text">
-                <span>New product announcements</span>
-                <small>Be the first to know about new products</small>
+                <span>Annonces de nouveaux produits</span>
+                <small>Soyez les premiers à connaître les nouveaux produits</small>
               </div>
               <button
                 className="toggle-btn"
@@ -210,8 +210,8 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
 
             <div className="setting-option">
               <div className="setting-text">
-                <span>Weekly newsletter</span>
-                <small>Get our weekly newsletter with recipes and tips</small>
+                <span>Newsletter hebdomadaire</span>
+                <small>Recevez notre newsletter hebdomadaire avec des recettes et des conseils</small>
               </div>
               <button
                 className="toggle-btn"
@@ -230,14 +230,14 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
         <div className="settings-section">
           <h4>
             <ShieldCheck size={18} weight="duotone" />
-            Privacy Settings
+            Paramètres de confidentialité
           </h4>
 
           <div className="settings-options">
             <div className="setting-option">
               <div className="setting-text">
-                <span>Share usage data</span>
-                <small>Help us improve by sharing anonymous usage data</small>
+                <span>Partager les données d'utilisation</span>
+                <small>Aidez-nous à améliorer nos services en partageant des données anonymes</small>
               </div>
               <button
                 className="toggle-btn"
@@ -253,8 +253,8 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
 
             <div className="setting-option">
               <div className="setting-text">
-                <span>Save payment information</span>
-                <small>Securely save payment methods for faster checkout</small>
+                <span>Enregistrer les informations de paiement</span>
+                <small>Enregistrer vos informations de paiement pour des achats plus rapides</small>
               </div>
               <button
                 className="toggle-btn"
@@ -270,8 +270,8 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
 
             <div className="setting-option">
               <div className="setting-text">
-                <span>Save order history</span>
-                <small>Keep a record of your previous orders</small>
+                <span>Conserver l'historique des commandes</span>
+                <small>Enregistrer votre historique de commandes pour une référence future</small>
               </div>
               <button
                 className="toggle-btn"
@@ -294,7 +294,7 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="My Account"
+      title="Mon Compte"
       sidebar={<ModalNavSidebar activeSection="settings" onSectionChange={handleSectionChange} />}
     >
       {renderSettingsContent()}

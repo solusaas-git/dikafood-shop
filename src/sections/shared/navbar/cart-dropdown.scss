@@ -22,6 +22,7 @@
     color: var(--light-yellow-1);
     box-shadow: 0 2px 8px rgba(10, 92, 38, 0.06);
     gap: 6px;
+    width: 100%;
 
     &:hover, &.active {
       background: rgba(255, 255, 255, 0.25);
@@ -40,7 +41,7 @@
 
     .dropdown-arrow {
       color: var(--light-yellow-1);
-      font-size: 16px;
+      // font-size: 12px;
       transition: transform 0.2s ease;
       margin-left: 4px;
       display: flex;

@@ -7,7 +7,12 @@ export default function HeroBackground() {
 
     return (
         <div className={`hero-background ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''}`}>
-            <div className="overlay-gradient"></div>
+            <div className="background-pattern" />
+            <div className="background-gradient"
+                style={{
+                    opacity: isMobile ? 0.85 : isTablet ? 0.75 : 0.6
+                }}
+            />
         </div>
     );
 }

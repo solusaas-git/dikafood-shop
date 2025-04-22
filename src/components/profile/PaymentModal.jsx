@@ -57,11 +57,11 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
 
     // Simple validation
     const newErrors = {};
-    if (!newCard.cardNumber) newErrors.cardNumber = 'Card number is required';
-    if (!newCard.cardName) newErrors.cardName = 'Cardholder name is required';
-    if (!newCard.expMonth) newErrors.expMonth = 'Expiration month is required';
-    if (!newCard.expYear) newErrors.expYear = 'Expiration year is required';
-    if (!newCard.cvv) newErrors.cvv = 'Security code is required';
+    if (!newCard.cardNumber) newErrors.cardNumber = 'Le numéro de carte est requis';
+    if (!newCard.cardName) newErrors.cardName = 'Le nom du titulaire est requis';
+    if (!newCard.expMonth) newErrors.expMonth = 'Le mois d\'expiration est requis';
+    if (!newCard.expYear) newErrors.expYear = 'L\'année d\'expiration est requise';
+    if (!newCard.cvv) newErrors.cvv = 'Le code de sécurité est requis';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -132,10 +132,10 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
       <div className="payment-modal">
         {showAddForm ? (
           <div className="add-payment-form">
-            <h4>Add New Card</h4>
+            <h4>Ajouter une nouvelle carte</h4>
             <form onSubmit={handleAddCard}>
               <div className="form-group">
-                <label htmlFor="cardNumber">Card Number</label>
+                <label htmlFor="cardNumber">Numéro de carte</label>
                 <input
                   type="text"
                   id="cardNumber"
@@ -150,12 +150,12 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="cardName">Cardholder Name</label>
+                <label htmlFor="cardName">Nom du titulaire</label>
                 <input
                   type="text"
                   id="cardName"
                   name="cardName"
-                  placeholder="John Doe"
+                  placeholder="Jean Dupont"
                   value={newCard.cardName}
                   onChange={handleInputChange}
                   className={errors.cardName ? 'error' : ''}
@@ -165,7 +165,7 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="expMonth">Expiry Month</label>
+                  <label htmlFor="expMonth">Mois d'expiration</label>
                   <select
                     id="expMonth"
                     name="expMonth"
@@ -182,7 +182,7 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="expYear">Expiry Year</label>
+                  <label htmlFor="expYear">Année d'expiration</label>
                   <select
                     id="expYear"
                     name="expYear"
@@ -190,7 +190,7 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
                     onChange={handleInputChange}
                     className={errors.expYear ? 'error' : ''}
                   >
-                    <option value="">YYYY</option>
+                    <option value="">AAAA</option>
                     {Array.from({ length: 10 }, (_, i) => {
                       const year = new Date().getFullYear() + i;
                       return <option key={year} value={year}>{year}</option>;
@@ -221,10 +221,10 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
                   className="btn-secondary"
                   onClick={() => setShowAddForm(false)}
                 >
-                  Cancel
+                  Annuler
                 </button>
                 <button type="submit" className="btn-primary">
-                  Add Card
+                  Ajouter la carte
                 </button>
               </div>
             </form>
@@ -235,7 +235,7 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
               {paymentMethods.length === 0 ? (
                 <div className="no-payment-methods">
                   <Bank size={48} weight="duotone" />
-                  <p>You don't have any payment methods yet.</p>
+                  <p>Vous n'avez pas encore ajouté de moyen de paiement.</p>
                 </div>
               ) : (
                 paymentMethods.map(method => (
@@ -249,13 +249,13 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
                           {method.brand} •••• {method.last4}
                           {method.isDefault && (
                             <span className="default-badge">
-                              <CheckCircle size={14} weight="fill" />
-                              Default
+                              <CheckCircle size={12} weight="fill" />
+                              Par défaut
                             </span>
                           )}
                         </div>
                         <div className="card-expiry">
-                          Expires {String(method.expMonth).padStart(2, '0')}/{method.expYear}
+                          Expire le {String(method.expMonth).padStart(2, '0')}/{method.expYear}
                         </div>
                       </div>
                     </div>
@@ -265,27 +265,26 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
                           className="set-default-btn"
                           onClick={() => handleSetDefault(method.id)}
                         >
-                          Set as Default
+                          Définir par défaut
                         </button>
                       )}
                       <button
                         className="delete-btn"
                         onClick={() => handleDeleteCard(method.id)}
                       >
-                        <Trash size={16} weight="bold" />
+                        <Trash size={18} weight="bold" />
                       </button>
                     </div>
                   </div>
                 ))
               )}
             </div>
-
             <button
               className="add-payment-btn"
               onClick={() => setShowAddForm(true)}
             >
-              <Plus size={20} weight="bold" />
-              Add Payment Method
+              <Plus size={18} />
+              Ajouter un moyen de paiement
             </button>
           </>
         )}
@@ -297,7 +296,7 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="My Account"
+      title="Mon Compte"
       sidebar={<ModalNavSidebar activeSection="payment" onSectionChange={handleSectionChange} />}
     >
       {renderPaymentContent()}

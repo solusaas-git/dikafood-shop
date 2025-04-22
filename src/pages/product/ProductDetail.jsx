@@ -21,7 +21,10 @@ import {
   ChartBar,
   ArrowRight,
   CheckCircle,
-  X
+  X,
+  Factory,
+  Drop,
+  Package
 } from "@phosphor-icons/react";
 import NavBar from '../../sections/shared/navbar/NavBar';
 import ProductBreadcrumb from '../../components/product/breadcrumb/ProductBreadcrumb';
@@ -39,40 +42,82 @@ import CountryFlag from "../../components/ui/CountryFlag";
 // Import product data
 import { getProductById, getRelatedProducts } from '../../data/products';
 
-// Product Header Component
-const ProductHeader = ({ product, stockStatus }) => (
-  <div className="product-header">
-    <div className="header-top">
-      <div className="product-category">
-        <Leaf weight="duotone" size={16} />
-        {product.category}
-      </div>
+// Brand Card Component
+const BrandCard = ({ product }) => {
+  const [brandLogo, setBrandLogo] = useState(null);
 
-      {/* Show stock status */}
-      {stockStatus && (
-        <div className={`stock-info ${stockStatus.status}`}>
-          <ShieldCheck weight="fill" size={16} />
-          <span>{stockStatus.text}</span>
-        </div>
-      )}
+  useEffect(() => {
+    const getBrandLogo = async () => {
+      if (product.brand) {
+        try {
+          // Convert brand name to kebab case for file name matching
+          const brandId = product.brand.toLowerCase()
+            .replace(/[^\w\s]/gi, '')
+            .replace(/\s+/g, '-');
+
+          // Try to import the brand logo dynamically
+          try {
+            // First try with the specific naming pattern
+            const logoPath = `/images/brands/${brandId}-logo.svg`;
+            setBrandLogo(logoPath);
+          } catch (error) {
+            try {
+              // If that fails, try the general naming pattern
+              const logoPath = `/images/brands/${brandId}-logo.svg`;
+              setBrandLogo(logoPath);
+            } catch (error) {
+              console.error('Brand logo not found:', error);
+              setBrandLogo(null);
+            }
+          }
+        } catch (error) {
+          console.error('Error loading brand logo:', error);
+          setBrandLogo(null);
+        }
+      }
+    };
+
+    getBrandLogo();
+  }, [product.brand]);
+
+  return (
+    <div className="brand-card">
+      <div className="brand-logo-container">
+        {brandLogo ? (
+          <img src={brandLogo} alt={product.brand} className="brand-logo" />
+        ) : (
+          <Factory weight="duotone" size={32} />
+        )}
+      </div>
     </div>
-    <h1 className="product-title">{product.name}</h1>
-  </div>
-);
+  );
+};
+
+// Product Header Component
+const ProductHeader = ({ product }) => {
+  return (
+    <div className="product-header">
+      <h1 className="product-title">{product.name}</h1>
+    </div>
+  );
+};
 
 // Product Price Component
 const ProductPrice = ({ product, selectedVariant }) => (
-  <div className="product-price-container">
-    <span className="current-price">{selectedVariant ? selectedVariant.price : product.price} Dh</span>
-    {product.oldPrice && (
-      <span className="old-price">{product.oldPrice} Dh</span>
-    )}
-    {product.discount && (
-      <span className="discount-badge">
-        <Tag weight="duotone" size={16} />
-        -{product.discount}
-      </span>
-    )}
+  <div className="product-price-section">
+    <div className="product-price-container">
+      <span className="current-price">{selectedVariant ? selectedVariant.price : product.price} MAD</span>
+      {product.oldPrice && (
+        <span className="old-price">{product.oldPrice} MAD</span>
+      )}
+      {product.discount && (
+        <span className="discount-badge">
+          <Tag weight="duotone" size={16} />
+          -{product.discount}
+        </span>
+      )}
+    </div>
+    <BrandCard product={product} />
   </div>
 );
 
@@ -86,49 +131,65 @@ const ProductOptions = ({
 }) => {
   return (
     <div className="product-options-container">
-      <div className="selectors-row">
+      <div className="options-wrapper">
         {product.variants && product.variants.length > 0 && (
-          <div className="product-variants">
-            <h4 className="variant-label">Choisir l'option</h4>
-            <div className="variant-options">
-              {product.variants.map((variant) => (
-                <button
-                  key={variant.id}
-                  type="button"
-                  className={`variant-button ${
-                    selectedVariant && selectedVariant.id === variant.id
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={() => onVariantChange(variant)}
-                >
-                  {variant.size}
-                </button>
-              ))}
+          <div className="sub-container variant-container">
+            <div className="sub-header">
+              <div className="header-title">
+                <h4 className="variant-label">Choisir l'option</h4>
+              </div>
+            </div>
+            <div className="sub-content">
+              <div className="product-variants">
+                <div className="variant-options">
+                  {product.variants.map((variant) => (
+                    <button
+                      key={variant.id}
+                      type="button"
+                      className={`variant-button ${
+                        selectedVariant && selectedVariant.id === variant.id
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() => onVariantChange(variant)}
+                    >
+                      {variant.size}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
 
-        <div className="quantity-selector">
-          <h4 className="quantity-label">Quantité</h4>
-          <div className="quantity-row">
-            <div className="quantity-controls">
-              <button
-                type="button"
-                className="quantity-button"
-                onClick={() => quantity > 1 && onQuantityChange(quantity - 1)}
-                disabled={quantity <= 1}
-              >
-                <Minus weight="bold" size={16} />
-              </button>
-              <span className="quantity-value">{quantity}</span>
-              <button
-                type="button"
-                className="quantity-button"
-                onClick={() => onQuantityChange(quantity + 1)}
-              >
-                <Plus weight="bold" size={16} />
-              </button>
+        <div className="sub-container quantity-container">
+          <div className="sub-header">
+            <div className="header-title">
+              <h4 className="quantity-label">Quantité</h4>
+            </div>
+          </div>
+          <div className="sub-content">
+            <div className="quantity-selector">
+              <div className="quantity-row">
+                <div className="quantity-controls">
+                  <button
+                    type="button"
+                    className="quantity-button"
+                    onClick={() => quantity > 1 && onQuantityChange(quantity - 1)}
+                    disabled={quantity <= 1}
+                  >
+                    <Minus weight="bold" size={16} />
+                  </button>
+                  <span className="quantity-value">{quantity}</span>
+                  <button
+                    type="button"
+                    className="quantity-button"
+                    onClick={() => onQuantityChange(quantity + 1)}
+                  >
+                    <Plus weight="bold" size={16} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -145,16 +206,16 @@ const ProductActions = ({ addToCart, stockStatus }) => (
       onClick={() => addToCart(true)}
       disabled={stockStatus?.status === 'out-of-stock'}
     >
-      <CreditCard weight="duotone" size={18} />
-      Acheter maintenant
+      <CreditCard weight="duotone" size={20} />
+      Acheter
     </button>
     <button
       className="secondary-button add-to-cart-secondary"
       onClick={() => addToCart(false)}
       disabled={stockStatus?.status === 'out-of-stock'}
     >
-      <ShoppingCart weight="duotone" size={18} />
-      Ajouter au panier
+      <ShoppingCart weight="duotone" size={20} />
+      Ajouter
     </button>
   </div>
 );
@@ -162,6 +223,27 @@ const ProductActions = ({ addToCart, stockStatus }) => (
 // Product Details Table Component
 const ProductDetailsTable = ({ product }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [countryFlag, setCountryFlag] = useState('');
+
+  useEffect(() => {
+    // Fetch country flag when product.origin changes
+    if (product.origin) {
+      // Converting country name to country code might require a mapping
+      // For simplicity, we'll assume product.origin contains the country code (e.g., "ma" for Morocco)
+      const countryCode = product.origin.toLowerCase().slice(0, 2);
+      fetch(`https://flagcdn.com/32x24/${countryCode}.png`)
+        .then(response => {
+          if (response.ok) {
+            setCountryFlag(`https://flagcdn.com/32x24/${countryCode}.png`);
+          } else {
+            console.error('Failed to fetch country flag');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching country flag:', error);
+        });
+    }
+  }, [product.origin]);
 
   const toggleDetails = () => {
     setIsExpanded(!isExpanded);
@@ -189,7 +271,7 @@ const ProductDetailsTable = ({ product }) => {
           <div className="detail-row">
             <span className="detail-label">Origine</span>
             <span className="detail-value">
-              {product.origin && <CountryFlag country={product.origin} size="small" />}
+              {countryFlag && <img src={countryFlag} alt={product.origin} className="country-flag" />}
               {product.origin}
             </span>
           </div>
@@ -366,7 +448,10 @@ const RecommendedProducts = ({ currentProductId, category }) => {
 
   return (
     <div className="recommended-products-section">
-      <h3 className="section-title">Produits Recommandés</h3>
+      <h3 className="section-title">
+        <ShoppingBag weight="duotone" size={20} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+        Produits Recommandés
+      </h3>
       <div className="products-grid">
         {products.map(product => (
           <RecommendedProductCard key={product.id} product={product} />
@@ -417,13 +502,15 @@ const ProductDetail = () => {
           // Initialize reviews
           setReviews(foundProduct.reviews || [
             {
-              name: "Sophie Martin",
+              id: "r1",
+              name: "François Dupont",
               date: "15 juin 2023",
               rating: 5,
               title: "Excellent produit",
               text: "J'adore ce produit ! La qualité est exceptionnelle et je recommande vivement."
             },
             {
+              id: "r2",
               name: "Thomas Dubois",
               date: "3 mai 2023",
               rating: 4,
@@ -431,12 +518,14 @@ const ProductDetail = () => {
               text: "Le goût est excellent, mais l'emballage pourrait être amélioré. Sinon je suis très satisfait de mon achat."
             },
             {
+              id: "r3",
               name: "Marie Laurent",
               date: "27 avril 2023",
               rating: 5,
               text: "Livraison rapide et produit conforme à mes attentes. Je rachèterai !"
             },
             {
+              id: "r4",
               name: "Jean Dupont",
               date: "18 avril 2023",
               rating: 4,
@@ -444,7 +533,8 @@ const ProductDetail = () => {
               text: "Produit de bonne qualité, bon rapport qualité-prix. Je recommande."
             },
             {
-              name: "Celine Moreau",
+              id: "r5",
+              name: "Céline Moreau",
               date: "2 mars 2023",
               rating: 5,
               title: "Parfait !",
@@ -683,155 +773,164 @@ const ProductDetail = () => {
         category: { id: product.categoryId, name: product.category }
       }} />
 
-      <div className="container">
-        {/* Unified Product Container */}
-        <div className="unified-product-container">
-          {/* Gallery Section */}
-          <div className="product-section gallery-section">
-            <div className="gallery-wrapper">
-            <div className="main-image">
-              <img
-                  src={selectedVariant ? selectedVariant.image : (product.image || '')}
-                alt={product.name}
-              />
-            </div>
-            <div className="thumbnails">
-                {product.variants && product.variants.map((variant, index) => (
-                  <div
-                    key={variant.id}
-                    className={`thumbnail ${selectedVariant?.id === variant.id ? 'active' : ''}`}
-                    onClick={() => {
-                      setSelectedVariant(variant);
-                      setSelectedImage(index);
-                    }}
-                  >
-                    <img src={variant.image} alt={`${product.name} - ${variant.size}`} />
-          </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Ratings Summary moved below the gallery */}
-            <div className="reviews-summary-container">
-              <div className="reviews-header collapsible-header">
-                <div className="header-title">
-                  <ChartBar weight="duotone" size={18} />
-                  <h3 className="reviews-title">Notation produit</h3>
+      {/* Full-width wrapper for unified product container */}
+      <div className="product-container-wrapper">
+        <div className="container">
+          {/* Unified Product Container */}
+          <div className="unified-product-container">
+            {/* Gallery Section */}
+            <div className="product-section gallery-section">
+              <div className="gallery-wrapper">
+                <div className="main-image">
+                  {stockStatus && (
+                    <div className={`stock-info ${stockStatus.status}`}>
+                      <ShieldCheck weight="fill" size={16} />
+                      <span>{stockStatus.text}</span>
+                    </div>
+                  )}
+                  <img
+                    src={selectedVariant ? selectedVariant.image : (product.image || '')}
+                    alt={product.name}
+                  />
+                </div>
+                <div className="thumbnails">
+                  {product.variants && product.variants.map((variant, index) => (
+                    <div
+                      key={variant.id}
+                      className={`thumbnail ${selectedVariant?.id === variant.id ? 'active' : ''}`}
+                      onClick={() => {
+                        setSelectedVariant(variant);
+                        setSelectedImage(index);
+                      }}
+                    >
+                      <img src={variant.image} alt={`${product.name} - ${variant.size}`} />
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="reviews-summary">
-                <div className="rating-overall">
-                  <div className="rating-value">{product.rating.toFixed(1)}</div>
-                  <div className="stars">
-                    {[...Array(5)].map((_, index) => {
-                      if (index < Math.floor(product.rating)) {
-                        // Full star
-                        return <Star key={index} weight="duotone" size={24} className="star-filled duotone" />;
-                      } else if (index < Math.ceil(product.rating) && !Number.isInteger(product.rating)) {
-                        // Half star
-                        return <Star key={index} weight="duotone" size={24} className="star-half duotone" />;
-                      } else {
-                        // Empty star
-                        return <Star key={index} weight="duotone" size={24} className="star-empty duotone" />;
-                      }
-                    })}
+
+              {/* Ratings Summary moved below the gallery */}
+              <div className="reviews-summary-container">
+                <div className="reviews-header collapsible-header">
+                  <div className="header-title">
+                    <ChartBar weight="duotone" size={16} />
+                    <h3 className="reviews-title">Notation produit</h3>
                   </div>
-                  <p className="review-count">Basé sur {product.reviewCount} avis</p>
                 </div>
+                <div className="reviews-summary">
+                  <div className="rating-overall">
+                    <div className="rating-value">{product.rating.toFixed(1)}</div>
+                    <div className="stars">
+                      {[...Array(5)].map((_, index) => {
+                        if (index < Math.floor(product.rating)) {
+                          // Full star
+                          return <Star key={index} weight="duotone" size={16} className="star-filled duotone" />;
+                        } else if (index < Math.ceil(product.rating) && !Number.isInteger(product.rating)) {
+                          // Half star
+                          return <Star key={index} weight="duotone" size={16} className="star-half duotone" />;
+                        } else {
+                          // Empty star
+                          return <Star key={index} weight="duotone" size={16} className="star-empty duotone" />;
+                        }
+                      })}
+                    </div>
+                    <p className="review-count">{product.reviewCount} avis</p>
+                  </div>
 
-                <div className="rating-breakdown">
-                  {ratingDistribution.map((data, index) => {
-                    const starNumber = 5 - index;
+                  <div className="rating-breakdown">
+                    {ratingDistribution.map((data, index) => {
+                      const starNumber = 5 - index;
 
-                    return (
-                      <div className="rating-bar" key={starNumber}>
-                        <div className="star-label">{starNumber} étoiles</div>
-                        <div className="progress">
-                          <div
-                            className="progress-fill"
-                            style={{ width: `${data.percentage}%` }}
-                          ></div>
+                      return (
+                        <div className="rating-bar" key={starNumber}>
+                          <div className="star-label">{starNumber} étoiles</div>
+                          <div className="progress">
+                            <div
+                              className="progress-fill"
+                              style={{ width: `${data.percentage}%` }}
+                            ></div>
+                          </div>
+                          <div className="count">{data.count}</div>
                         </div>
-                        <div className="count">{data.count}</div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
 
-                  <button
-                    className="write-review-button soft"
-                    onClick={handleOpenReviewModal}
-                  >
-                    <ChatCircleText weight="duotone" size={16} />
-                    Écrire un avis
-                  </button>
+                    <button
+                      className="write-review-button soft"
+                      onClick={handleOpenReviewModal}
+                    >
+                      <ChatCircleText weight="duotone" size={14} />
+                      Écrire un avis
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Info Section */}
+            <div className="product-section info-section">
+              {/* Product Header (Category, Title) */}
+              <ProductHeader product={product} />
+
+              {/* Product Price */}
+              <ProductPrice product={product} selectedVariant={selectedVariant} />
+
+              {/* Purchase Options moved to top of info section */}
+              <div className="purchase-options">
+                <div className="purchase-header collapsible-header" onClick={() => setPurchaseExpanded(!purchaseExpanded)}>
+                  <div className="header-title">
+                    <ShoppingBag weight="duotone" size={18} />
+                    <h3 className="section-title">Options d'achat</h3>
           </div>
+                  <CaretRight
+                    size={18}
+                    weight="bold"
+                    className={`toggle-icon ${purchaseExpanded ? 'expanded' : ''}`}
+                  />
+                </div>
+                {purchaseExpanded && (
+                  <>
+                    <ProductOptions
+                      product={product}
+                      selectedVariant={selectedVariant}
+                      quantity={quantity}
+                      onVariantChange={setSelectedVariant}
+                      onQuantityChange={setQuantity}
+                    />
 
-          {/* Info Section */}
-          <div className="product-section info-section">
-            {/* Product Header (Category, Title) */}
-            <ProductHeader product={product} stockStatus={stockStatus} />
-
-            {/* Product Price */}
-            <ProductPrice product={product} selectedVariant={selectedVariant} />
-
-            {/* Purchase Options moved to top of info section */}
-            <div className="purchase-options">
-              <div className="purchase-header collapsible-header" onClick={() => setPurchaseExpanded(!purchaseExpanded)}>
-                <div className="header-title">
-                  <ShoppingBag weight="duotone" size={18} />
-                  <h3 className="section-title">Options d'achat</h3>
-        </div>
-                <CaretRight
-                  size={18}
-                  weight="bold"
-                  className={`toggle-icon ${purchaseExpanded ? 'expanded' : ''}`}
-                />
+                    {/* Action buttons */}
+                    <ProductActions
+                      addToCart={addToCart}
+                      stockStatus={stockStatus}
+                    />
+                  </>
+                )}
               </div>
-              {purchaseExpanded && (
-                <>
-                  <ProductOptions
-                    product={product}
-                    selectedVariant={selectedVariant}
-                    quantity={quantity}
-                    onVariantChange={setSelectedVariant}
-                    onQuantityChange={setQuantity}
-                  />
 
-                  {/* Action buttons */}
-                  <ProductActions
-                    addToCart={addToCart}
-                    stockStatus={stockStatus}
-                  />
-                </>
-              )}
+              {/* Product Short Description moved to info section */}
+              <ProductShortDescription product={product} />
+
+              {/* Product Details Table */}
+              <ProductDetailsTable product={product} />
             </div>
-
-            {/* Product Short Description moved to info section */}
-            <ProductShortDescription product={product} />
-
-            {/* Product Details Table */}
-            <ProductDetailsTable product={product} />
           </div>
-        </div>
 
-        {/* Reviews Section - Full Width */}
-        <div className="reviews-container">
-          <ProductReviewsSection
-            product={product}
-            reviews={reviews}
-            newReviewId={newReviewId}
-          />
-        </div>
+          {/* Reviews Section - Full Width */}
+          <div className="reviews-container">
+            <ProductReviewsSection
+              product={product}
+              reviews={reviews}
+              newReviewId={newReviewId}
+            />
+          </div>
 
-        {/* Recommended Products Section */}
-        <div className="recommended-products-container">
-          <RecommendedProducts
-            currentProductId={product.id}
-            category={product.category}
-          />
+          {/* Recommended Products Section */}
+          <div className="recommended-products-container">
+            <RecommendedProducts
+              currentProductId={product.id}
+              category={product.category}
+            />
+          </div>
         </div>
       </div>
 

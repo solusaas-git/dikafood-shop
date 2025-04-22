@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRight, Leaf } from "@phosphor-icons/react";
 import './ProductCard.scss';
 
 /**
@@ -12,6 +12,7 @@ import './ProductCard.scss';
  * @param {string} props.product.name - Product name
  * @param {string} props.product.image - Product image URL
  * @param {number} props.product.price - Product price
+ * @param {string} props.product.brand - Optional product brand
  * @param {Array} props.product.variants - Optional product variants
  * @param {string} props.className - Optional additional CSS class
  * @returns {JSX.Element}
@@ -33,6 +34,14 @@ const ProductCard = ({ product, className = '' }) => {
         <img src={productImage} alt={product.name} />
       </div>
       <div className="product-info">
+        {product.brand ? (
+          <div className="brand-badge">
+            <Leaf size={14} weight="fill" className="badge-icon" />
+            <span className="badge-text">{product.brand}</span>
+          </div>
+        ) : (
+          <div className="brand-badge-placeholder"></div>
+        )}
         <h4 className="product-name">{product.name}</h4>
         <div className="product-price">{productPrice} Dh</div>
         <ArrowRight size={18} weight="bold" className="arrow-icon" />

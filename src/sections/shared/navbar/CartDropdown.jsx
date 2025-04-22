@@ -113,7 +113,7 @@ const CartDropdown = ({ onClose }) => {
         <CaretDown
           weight="bold"
           className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
-          size={16}
+          size={14}
         />
       </button>
 

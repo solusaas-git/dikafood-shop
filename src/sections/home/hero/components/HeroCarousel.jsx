@@ -4,8 +4,6 @@ import { products } from '../../../../data/products';
 import ProductCard from '../../../../components/cards/product/ProductCard';
 import './hero-carousel.scss';
 import { useBreakpoint } from '../../../../hooks/useBreakpoint';
-import { ArrowRight } from '@phosphor-icons/react';
-import { Link } from 'react-router-dom';
 
 export default function HeroCarousel() {
     const { isMobile, isTablet, isLaptop } = useBreakpoint();
@@ -20,6 +18,9 @@ export default function HeroCarousel() {
         return variants;
     });
 
+    // Always use carousel regardless of viewport size
+    const shouldUseCarousel = true;
+
     const carouselOptions = {
         loop: true,
         align: 'center',
@@ -27,12 +28,10 @@ export default function HeroCarousel() {
         containScroll: 'trimSnaps',
         slidesToScroll: 1,
         breakpoints: {
-            '(min-width: 1200px)': { slidesToShow: 4 },
-            '(min-width: 992px)': { slidesToShow: 3 },
-            '(min-width: 768px)': { slidesToShow: 2.5 },
-            '(min-width: 576px)': { slidesToShow: 2 },
-            '(max-width: 575px)': {
-                slidesToShow: 1.2,
+            '(min-width: 1024px)': { slidesToShow: 3 },
+            '(min-width: 768px)': { slidesToShow: 2 },
+            '(max-width: 767px)': {
+                slidesToShow: 1,
                 containScroll: true
             }
         }
@@ -50,6 +49,17 @@ export default function HeroCarousel() {
             className={isMobile ? 'mobile' : isTablet ? 'tablet' : ''}
         />
     );
+
+    // This block will never execute now, but keeping it for future reference
+    if (!shouldUseCarousel) {
+        return (
+            <div className="hero-carousel">
+                <div className="products-grid">
+                    {products.map(renderProduct)}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={`hero-carousel ${isMobile ? 'mobile' : isTablet ? 'tablet' : ''}`}>

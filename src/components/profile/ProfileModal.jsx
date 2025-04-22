@@ -46,17 +46,17 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
     const newErrors = {};
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+      newErrors.firstName = 'Le prénom est requis';
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+      newErrors.lastName = 'Le nom est requis';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'L\'email est requis';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = 'L\'email est invalide';
     }
 
     setErrors(newErrors);
@@ -77,12 +77,12 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
         setIsEditing(false);
       } else {
         setErrors({
-          general: result.error || 'Failed to update profile'
+          general: result.error || 'Échec de la mise à jour du profil'
         });
       }
     } catch (error) {
       setErrors({
-        general: 'An error occurred. Please try again.'
+        general: 'Une erreur s\'est produite. Veuillez réessayer.'
       });
     } finally {
       setLoading(false);
@@ -114,7 +114,7 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
             )}
 
             <div className="form-group">
-              <label htmlFor="firstName">First Name</label>
+              <label htmlFor="firstName">Prénom</label>
               <div className="input-with-icon">
                 <User size={18} weight="duotone" />
                 <input
@@ -130,7 +130,7 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="lastName">Last Name</label>
+              <label htmlFor="lastName">Nom</label>
               <div className="input-with-icon">
                 <User size={18} weight="duotone" />
                 <input
@@ -162,7 +162,7 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="phone">Phone Number</label>
+              <label htmlFor="phone">Numéro de téléphone</label>
               <div className="input-with-icon">
                 <Phone size={18} weight="duotone" />
                 <input
@@ -176,7 +176,7 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="address">Address</label>
+              <label htmlFor="address">Adresse</label>
               <div className="input-with-icon">
                 <MapPin size={18} weight="duotone" />
                 <input
@@ -196,14 +196,14 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
                 onClick={() => setIsEditing(false)}
                 disabled={loading}
               >
-                Cancel
+                Annuler
               </button>
               <button
                 type="submit"
                 className="btn-primary"
                 disabled={loading}
               >
-                {loading ? 'Saving...' : 'Save Changes'}
+                {loading ? 'Enregistrement...' : 'Enregistrer'}
               </button>
             </div>
           </form>
@@ -229,17 +229,17 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
               <div className="info-item">
                 <div className="info-label">
                   <Phone size={18} weight="duotone" />
-                  <span>Phone Number</span>
+                  <span>Numéro de téléphone</span>
                 </div>
-                <div className="info-value">{user?.phone || 'Not specified'}</div>
+                <div className="info-value">{user?.phone || 'Non spécifié'}</div>
               </div>
 
               <div className="info-item">
                 <div className="info-label">
                   <MapPin size={18} weight="duotone" />
-                  <span>Address</span>
+                  <span>Adresse</span>
                 </div>
-                <div className="info-value">{user?.address || 'Not specified'}</div>
+                <div className="info-value">{user?.address || 'Non spécifiée'}</div>
               </div>
             </div>
 
@@ -247,7 +247,7 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
               className="edit-profile-btn"
               onClick={() => setIsEditing(true)}
             >
-              Edit Profile
+              Modifier le profil
             </button>
           </div>
         )}
@@ -259,7 +259,7 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="My Account"
+      title="Mon Compte"
       sidebar={<ModalNavSidebar activeSection={activeSection} onSectionChange={handleSectionChange} />}
     >
       {renderProfileContent()}

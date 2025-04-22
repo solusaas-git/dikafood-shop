@@ -9,21 +9,21 @@ const SAMPLE_ORDERS = [
   {
     id: 'ORD102938',
     date: '2023-09-15',
-    status: 'Delivered',
+    status: 'Livré',
     total: 126.50,
     items: 3
   },
   {
     id: 'ORD102457',
     date: '2023-08-22',
-    status: 'Delivered',
+    status: 'Livré',
     total: 94.75,
     items: 2
   },
   {
     id: 'ORD101890',
     date: '2023-07-10',
-    status: 'Delivered',
+    status: 'Livré',
     total: 212.30,
     items: 5
   }
@@ -41,13 +41,13 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'MAD'
     }).format(amount);
   };
 
@@ -64,8 +64,8 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
         {orders.length === 0 ? (
           <div className="no-orders">
             <ShoppingBag size={48} weight="duotone" />
-            <p>You haven't placed any orders yet.</p>
-            <button className="btn-primary">Start Shopping</button>
+            <p>Vous n'avez pas encore passé de commande.</p>
+            <button className="btn-primary">Commencer vos achats</button>
           </div>
         ) : (
           <div className="orders-list">
@@ -74,7 +74,7 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
                 <div className="order-header">
                   <div className="order-title">
                     <Package size={20} weight="duotone" />
-                    <span>Order #{order.id}</span>
+                    <span>Commande #{order.id}</span>
                   </div>
                   <div className={`order-status ${order.status.toLowerCase()}`}>
                     {order.status}
@@ -84,11 +84,11 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
                 <div className="order-details">
                   <div className="order-detail-item">
                     <Calendar size={16} weight="duotone" />
-                    <span>Ordered on {formatDate(order.date)}</span>
+                    <span>Commandé le {formatDate(order.date)}</span>
                   </div>
                   <div className="order-detail-item">
                     <ShoppingBag size={16} weight="duotone" />
-                    <span>{order.items} {order.items === 1 ? 'item' : 'items'}</span>
+                    <span>{order.items} {order.items === 1 ? 'article' : 'articles'}</span>
                   </div>
                   <div className="order-detail-item">
                     <Receipt size={16} weight="duotone" />
@@ -97,7 +97,7 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
                 </div>
 
                 <button className="view-order-btn">
-                  View Details
+                  Voir les détails
                   <ArrowRight size={16} weight="bold" />
                 </button>
               </div>
@@ -112,7 +112,7 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="My Account"
+      title="Mon Compte"
       sidebar={<ModalNavSidebar activeSection="orders" onSectionChange={handleSectionChange} />}
     >
       {renderOrdersContent()}

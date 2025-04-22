@@ -340,8 +340,8 @@ const AuthDropdown = ({ onClose }) => {
   const renderLoginForm = () => (
     <div className="auth-dropdown-content login-form">
       <div className="dropdown-header">
-        <h3>Sign In</h3>
-        <p>Access your account</p>
+        <h3>Se Connecter</h3>
+        <p>Accéder à votre compte</p>
       </div>
 
       {errors.general && (
@@ -358,7 +358,7 @@ const AuthDropdown = ({ onClose }) => {
             <input
               type="email"
               name="email"
-              placeholder="Your email address"
+              placeholder="Votre adresse email"
               value={loginData.email}
               onChange={handleLoginChange}
               className={errors.email ? 'error' : ''}
@@ -373,7 +373,7 @@ const AuthDropdown = ({ onClose }) => {
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="Your password"
+              placeholder="Votre mot de passe"
               value={loginData.password}
               onChange={handleLoginChange}
               className={errors.password ? 'error' : ''}
@@ -403,14 +403,14 @@ const AuthDropdown = ({ onClose }) => {
               checked={loginData.remember}
               onChange={handleLoginChange}
             />
-            <label htmlFor="dropdown-remember">Remember me</label>
+            <label htmlFor="dropdown-remember">Me souvenir</label>
           </div>
           <button
             type="button"
             className="forgot-password"
             onClick={toggleForgotPassword}
           >
-            Forgot password?
+            Mot de passe oublié ?
           </button>
         </div>
 
@@ -420,14 +420,14 @@ const AuthDropdown = ({ onClose }) => {
           disabled={loading}
         >
           {!loading && <SignIn size={16} weight="duotone" />}
-          {loading ? 'Signing in...' : 'Sign In'}
+          {loading ? 'Connexion en cours...' : 'Se Connecter'}
         </button>
 
         <div className="dropdown-footer">
           <p>
-            Don't have an account?{' '}
+            Pas de compte ?{' '}
             <button type="button" className="dropdown-link" onClick={toggleAuthMode}>
-              Register
+              Créer un compte
             </button>
           </p>
         </div>
@@ -446,8 +446,8 @@ const AuthDropdown = ({ onClose }) => {
         >
           <ArrowLeft size={16} weight="bold" />
         </button>
-        <h3>Create Account</h3>
-        <p>Join our community</p>
+        <h3>Créer un compte</h3>
+        <p>Rejoignez notre communauté</p>
       </div>
 
       {errors.general && (
@@ -465,7 +465,7 @@ const AuthDropdown = ({ onClose }) => {
               <input
                 type="text"
                 name="firstName"
-                placeholder="First name"
+                placeholder="Prénom"
                 value={registerData.firstName}
                 onChange={handleRegisterChange}
                 className={errors.firstName ? 'error' : ''}
@@ -480,7 +480,7 @@ const AuthDropdown = ({ onClose }) => {
               <input
                 type="text"
                 name="lastName"
-                placeholder="Last name"
+                placeholder="Nom"
                 value={registerData.lastName}
                 onChange={handleRegisterChange}
                 className={errors.lastName ? 'error' : ''}
@@ -496,7 +496,7 @@ const AuthDropdown = ({ onClose }) => {
             <input
               type="email"
               name="email"
-              placeholder="Your email address"
+              placeholder="Votre adresse email"
               value={registerData.email}
               onChange={handleRegisterChange}
               className={errors.email ? 'error' : ''}
@@ -511,7 +511,7 @@ const AuthDropdown = ({ onClose }) => {
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="Create password"
+              placeholder="Créer un mot de passe"
               value={registerData.password}
               onChange={handleRegisterChange}
               className={errors.password ? 'error' : ''}
@@ -538,7 +538,7 @@ const AuthDropdown = ({ onClose }) => {
             <input
               type={showPassword ? 'text' : 'password'}
               name="confirmPassword"
-              placeholder="Confirm password"
+              placeholder="Confirmer le mot de passe"
               value={registerData.confirmPassword}
               onChange={handleRegisterChange}
               className={errors.confirmPassword ? 'error' : ''}
@@ -553,14 +553,14 @@ const AuthDropdown = ({ onClose }) => {
           disabled={loading}
         >
           {!loading && <UserPlus size={16} weight="duotone" />}
-          {loading ? 'Creating account...' : 'Create Account'}
+          {loading ? 'Création du compte en cours...' : 'Créer un compte'}
         </button>
 
         <div className="dropdown-footer">
           <p>
-            Already have an account?{' '}
+            Vous avez déjà un compte ?{' '}
             <button type="button" className="dropdown-link" onClick={goBackToLogin}>
-              Sign In
+              Se Connecter
             </button>
           </p>
         </div>
@@ -579,8 +579,8 @@ const AuthDropdown = ({ onClose }) => {
         >
           <ArrowLeft size={16} weight="bold" />
         </button>
-        <h3>Reset Password</h3>
-        <p>We'll send you a reset link</p>
+        <h3>Réinitialiser le mot de passe</h3>
+        <p>Nous vous enverrons un lien de réinitialisation</p>
       </div>
 
       {errors.general && (
@@ -609,7 +609,7 @@ const AuthDropdown = ({ onClose }) => {
       ) : (
         <form onSubmit={handleForgotPasswordSubmit} className="dropdown-form">
           <div className="text-wrapper">
-            <p>Enter your email address and we'll send you a link to reset your password.</p>
+            <p>Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.</p>
           </div>
           <div className="form-group">
             <div className="input-with-icon">
@@ -617,7 +617,7 @@ const AuthDropdown = ({ onClose }) => {
               <input
                 type="email"
                 name="email"
-                placeholder="Your email address"
+                placeholder="Votre adresse email"
                 value={forgotPasswordData.email}
                 onChange={handleForgotPasswordChange}
                 className={errors.email ? 'error' : ''}
@@ -632,14 +632,14 @@ const AuthDropdown = ({ onClose }) => {
             disabled={loading}
           >
             {!loading && <PaperPlaneRight size={16} weight="duotone" />}
-            {loading ? 'Sending...' : 'Send Reset Link'}
+            {loading ? 'Envoi en cours...' : 'Envoyer le lien de réinitialisation'}
           </button>
 
           <div className="dropdown-footer">
             <p>
-              Remembered your password?{' '}
+              Vous avez déjà un compte ?{' '}
               <button type="button" className="dropdown-link" onClick={goBackToLogin}>
-                Sign In
+                Se Connecter
               </button>
             </p>
           </div>
@@ -652,7 +652,7 @@ const AuthDropdown = ({ onClose }) => {
     <div className="auth-dropdown-content profile-menu">
       <div className="dropdown-header">
         <span className="user-name">
-          {user?.firstName ? `Hi, ${user.firstName}` : 'My Account'}
+          {user?.firstName ? `Bonjour, ${user.firstName}` : 'Mon Compte'}
         </span>
       </div>
 
@@ -663,7 +663,7 @@ const AuthDropdown = ({ onClose }) => {
           aria-label="My Profile"
         >
           <User size={20} weight="duotone" />
-          My Profile
+          Mon Profil
         </button>
 
         <button
@@ -672,7 +672,7 @@ const AuthDropdown = ({ onClose }) => {
           aria-label="My Orders"
         >
           <Package size={20} weight="duotone" />
-          My Orders
+          Mes Commandes
         </button>
 
         <button
@@ -681,7 +681,7 @@ const AuthDropdown = ({ onClose }) => {
           aria-label="Payment Methods"
         >
           <CreditCard size={20} weight="duotone" />
-          Payment Methods
+          Méthodes de paiement
         </button>
 
         <button
@@ -690,7 +690,7 @@ const AuthDropdown = ({ onClose }) => {
           aria-label="Settings"
         >
           <Gear size={20} weight="duotone" />
-          Settings
+          Paramètres
         </button>
 
         <div className="dropdown-divider"></div>
@@ -699,10 +699,10 @@ const AuthDropdown = ({ onClose }) => {
           type="button"
           onClick={handleLogout}
           className="logout-button"
-          aria-label="Sign Out"
+          aria-label="Se déconnecter"
         >
           <SignOut size={20} weight="duotone" />
-          Sign Out
+          Se déconnecter
         </button>
       </div>
     </div>
@@ -732,7 +732,7 @@ const AuthDropdown = ({ onClose }) => {
         {isLoggedIn ? (
           <>
             <User size={20} weight="duotone" />
-            <span className="username-display">{user?.firstName || 'Account'}</span>
+            <span className="username-display">{user?.firstName || 'Compte'}</span>
             <CaretDown
               size={14}
               weight="bold"
@@ -742,7 +742,7 @@ const AuthDropdown = ({ onClose }) => {
         ) : (
           <>
             <SignIn size={20} weight="duotone" />
-            <span className="username-display">Sign In</span>
+            <span className="username-display">Se Connecter</span>
             <CaretDown
               size={14}
               weight="bold"

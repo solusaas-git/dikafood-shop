@@ -9,7 +9,7 @@ export const brandsData = [
         description: "Représentant l'essence de la culture oléicole marocaine, Oued Fès offre une huile d'olive extra vierge aux notes fruitées et équilibrées.",
         characteristics: "Fruitée • Artisanale • Premium",
         usage: "Assaisonnement • Cuisson",
-        image: "/images/brands/ouedfes-logo.svg",
+        image: "/images/brands/oued-fs-logo.svg",
     },
     {
         id: 'biladi',
@@ -20,6 +20,16 @@ export const brandsData = [
         characteristics: "Stable • Économique • Polyvalente",
         usage: "Friture • Cuisson",
         image: "/images/brands/biladi-logo.svg",
+    },
+    {
+        id: 'dika-extra',
+        title: "Dika Extra Vièrge",
+        icon: SunHorizon,
+        type: "Huile d'olive extra vierge",
+        description: "Huile d'olive extra vierge Dika, première pression à froid. Une qualité supérieure pour vos plats.",
+        characteristics: "Pure • Pressée à froid • Premium",
+        usage: "Salades • Assaisonnements • Cuisine fine",
+        image: "/images/brands/dika-logo.svg",
     },
     {
         id: 'chourouk',
@@ -41,14 +51,4 @@ export const brandsData = [
         usage: "Polyvalente • Friture • Pâtisserie",
         image: "/images/brands/nouarati-logo.svg",
     },
-    {
-        id: 'dika-extra',
-        title: "Dika Extra Vièrge",
-        icon: SunHorizon,
-        type: "Huile d'olive extra vierge",
-        description: "Huile d'olive extra vierge Dika, première pression à froid. Une qualité supérieure pour vos plats.",
-        characteristics: "Pure • Pressée à froid • Premium",
-        usage: "Salades • Assaisonnements • Cuisine fine",
-        image: "/images/brands/dika-logo.svg",
-    }
-]; 
+];
