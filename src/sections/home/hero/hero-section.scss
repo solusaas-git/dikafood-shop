@@ -25,6 +25,7 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         flex-direction: column;
         justify-content: center;
         gap: map-get(map-get($spacing, 'desktop'), 'gap');
+        padding: 0 var(--section-padding);
     }
 
     .content-wrapper {
@@ -33,24 +34,34 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         align-items: center;
         justify-content: center;
         gap: 80px;
-        // gap: map-get(map-get($spacing, 'desktop'), 'gap');
-        // padding: calc(map-get(map-get($spacing, 'desktop'), 'padding-y') / 2) 0;
+        width: 100%;
+    }
+
+    // Ensure the carousel container has proper spacing
+    .hero-carousel {
+        margin-top: 40px;
+        width: 100%;
     }
 
     @include respond-to('laptop') {
-        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'tablet'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 0 map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
-            padding: 0 map-get(map-get($spacing, 'tablet'), 'container-padding');
+            padding: 0 var(--section-padding);
             gap: map-get(map-get($spacing, 'tablet'), 'gap');
+        }
+
+        .hero-carousel {
+            margin-top: 32px;
         }
     }
 
     @include respond-to('mobile') {
-        padding: calc(map-get(map-get($spacing, 'mobile'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'mobile'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'mobile'), 'padding-y') + var(--navbar-height)) 0 map-get(map-get($spacing, 'mobile'), 'padding-y');
 
         .hero-container {
-            padding: 0 map-get(map-get($spacing, 'mobile'), 'container-padding');
+            padding: 0;
+            // padding: 0 var(--section-padding);
             gap: map-get(map-get($spacing, 'mobile'), 'gap');
         }
 
@@ -58,13 +69,17 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
             gap: map-get(map-get($spacing, 'mobile'), 'gap');
             padding: calc(map-get(map-get($spacing, 'mobile'), 'padding-y') / 2) 0;
         }
+
+        .hero-carousel {
+            margin-top: 24px;
+        }
     }
 }
 
 // Laptop styles
 @media screen and (max-width: 1024px) {
     .hero-section {
-        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'tablet'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 0 map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
             gap: clamp(28px, 3.5%, 40px);
@@ -79,7 +94,7 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
 // Tablet styles
 @media screen and (max-width: 768px) {
     .hero-section {
-        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) var(--section-padding) map-get(map-get($spacing, 'tablet'), 'padding-y');
+        padding: calc(map-get(map-get($spacing, 'tablet'), 'padding-y') + var(--navbar-height)) 0 map-get(map-get($spacing, 'tablet'), 'padding-y');
 
         .hero-container {
             width: 100%;
@@ -89,15 +104,6 @@ $hero-padding-bottom: clamp(80px, 10%, 120px);
         .content-wrapper {
             gap: clamp(36px, 4.5%, 48px);
             padding: clamp(20px, 2.5%, 28px) 0;
-        }
-
-        .embla {
-            margin-left: 0px;
-            margin-right: 0px;
-            width: 100%;
-        }
-        .embla__viewport {
-            width: 100%;
         }
     }
 }

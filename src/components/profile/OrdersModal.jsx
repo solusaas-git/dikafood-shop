@@ -52,8 +52,9 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
   };
 
   const handleSectionChange = (section) => {
-    // If we need to navigate to other modals entirely
-    if (section !== 'orders' && onClose) {
+    // If navigating to a different section modal
+    if (section !== 'orders') {
+      // Call the parent's onClose with the next section to navigate to
       onClose(section);
     }
   };
@@ -111,7 +112,7 @@ const OrdersModal = ({ isOpen, onClose, initialSection = 'orders' }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => onClose()}
       title="Mon Compte"
       sidebar={<ModalNavSidebar activeSection="orders" onSectionChange={handleSectionChange} />}
     >

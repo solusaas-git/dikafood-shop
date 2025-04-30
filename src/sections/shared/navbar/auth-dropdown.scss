@@ -1,3 +1,4 @@
+@use "sass:map";
 @import "../../../styles/variables";
 @import "../../../styles/mixins";
 
@@ -34,17 +35,48 @@ $color-error: #DC2626; // error from variables.scss
   --input-bg: #2A2A2A;
 }
 
+// Breakpoints for responsive styling
+$breakpoints: (
+  'mobile': 576px,
+  'tablet': 768px,
+  'laptop': 1024px,
+  'desktop': 1200px
+);
+
+@mixin respond-to($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (max-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+}
+
 .auth-dropdown {
   position: relative;
   display: inline-block;
   z-index: 1000;
 
-  // Mobile-specific styles
-  .mobile-user-actions & {
+  // Mobile-specific styling
+  &.mobile {
+    width: 100%;
+
     .dropdown-trigger {
-      .username-display {
-        display: inline-block !important; // Override the media query that hides it
-      }
+      width: 100%;
+      justify-content: center;
+    }
+
+    .dropdown-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 360px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
     }
   }
 
@@ -53,20 +85,28 @@ $color-error: #DC2626; // error from variables.scss
     align-items: center;
     gap: 6px;
     background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    font-size: 14px;
-    transition: all 0.2s ease;
     color: var(--light-yellow-1);
-    height: 100%; // Match height with cart dropdown
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
 
-    .username-display {
+    &.mobile {
+      border-radius: 12px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+
+      &:hover, &.active {
+        background: rgba(255, 255, 255, 0.12);
+      }
+    }
+
+    .btn-text {
+      font-size: 14px;
       font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 120px;
     }
 
     .dropdown-arrow {
@@ -77,47 +117,43 @@ $color-error: #DC2626; // error from variables.scss
         transform: rotate(180deg);
       }
     }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    &.active {
+      background: rgba(255, 255, 255, 0.15);
+    }
   }
 
   .dropdown-container {
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    min-width: 300px;
-    background-color: var(--light-yellow-1);
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 320px;
     overflow: hidden;
-    z-index: 1500;
-    animation: dropdownFadeIn 0.3s ease forwards;
-    border: 1px solid var(--logo-lime);
-    transform-origin: top right;
+    z-index: 1000;
 
-    @media (max-width: 576px) {
-      width: 300px;
-      right: -100px;
-    }
-
-    // Style fix for mobile menu
-    .mobile-user-actions & {
+    &.mobile {
       width: 100%;
       right: auto;
-      max-width: 380px; // Provide enough space for registration form
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 360px;
     }
 
-    @keyframes dropdownFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @include respond-to('mobile') {
+      width: 300px;
     }
   }
 
   .dropdown-header {
+    padding-left: 16px;
+    padding-right: 16px;
     padding-top: 24px;
     padding-bottom: 16px;
     margin-bottom: 16px;
@@ -379,57 +415,101 @@ $color-error: #DC2626; // error from variables.scss
 
   // Profile menu styles
   .profile-menu {
-    padding: 4px 16px 16px; /* Add padding around the entire profile menu */
+    padding: 20px;
 
-    .dropdown-items {
-      display: flex;
-      flex-direction: column;
-      gap: 12px; /* Increase gap between menu items */
-      margin-top: 8px;
+    .profile-header {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
-      button {
+      .profile-info {
         display: flex;
         align-items: center;
-        gap: 12px; /* Increase gap between icon and text */
-        padding: 14px 20px; /* Increase padding inside buttons */
-        background: rgba(255, 255, 255, 0.5);
-        border: 1px solid var(--logo-lime);
-        border-radius: 25px;
-        text-align: left;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        color: var(--logo-green);
-        font-weight: 500;
-        font-size: 15px; /* Slightly larger font */
+        gap: 12px;
 
-        svg {
-          color: var(--logo-green);
-          font-size: 18px; /* Larger icons */
-          flex-shrink: 0; /* Prevent icon from shrinking */
+        .profile-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: rgba(170, 204, 0, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--logo-lime);
         }
 
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.7);
-        }
+        .profile-name {
+          display: flex;
+          flex-direction: column;
 
-        &.logout-button {
-          margin-top: 4px; /* Add a bit more space before logout */
-
-          svg {
-            color: $color-error;
+          .name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-green-7);
           }
 
-          &:hover {
-            background-color: rgba($color-error, 0.05);
-            color: $color-error;
+          .email {
+            font-size: 13px;
+            color: var(--dark-green-6);
           }
         }
       }
+    }
 
-      .dropdown-divider {
-        height: 1px;
-        background-color: var(--logo-lime);
-        margin: 12px 0; /* Increase margin around divider */
+    .profile-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+
+      .profile-action {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        background: none;
+        border: none;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 14px;
+        color: var(--dark-green-7);
+        transition: background 0.2s ease;
+
+        svg {
+          color: var(--logo-lime);
+        }
+
+        &:hover {
+          background: rgba(170, 204, 0, 0.08);
+        }
+      }
+    }
+
+    .logout-action {
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding-top: 16px;
+
+      .logout-button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        background: rgba(170, 204, 0, 0.1);
+        border: 1px solid rgba(170, 204, 0, 0.2);
+        border-radius: 8px;
+        color: var(--dark-green-7);
+        font-size: 14px;
+        transition: all 0.2s ease;
+
+        svg {
+          color: var(--logo-lime);
+        }
+
+        &:hover {
+          background: rgba(170, 204, 0, 0.15);
+        }
       }
     }
   }
@@ -437,11 +517,115 @@ $color-error: #DC2626; // error from variables.scss
 
 // Forgot password panel
 .forgot-password-form {
-  padding: 0;
+  padding: 24px;
 
-  .text-wrapper {
+  .form-header {
+    margin-bottom: 20px;
+
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--logo-lime);
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 16px;
+      padding: 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    h3 {
+      font-size: 20px;
+      color: var(--dark-green-7);
+      margin: 0 0 8px;
+    }
+
+    p {
+      color: var(--dark-green-6);
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+}
+
+// Reset sent confirmation
+.reset-sent {
+  padding: 24px;
+  text-align: center;
+
+  .icon-container {
     margin-bottom: 16px;
-    font-size: 13px;
-    color: var(--text-light);
+
+    svg {
+      color: var(--logo-lime);
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  h3 {
+    font-size: 20px;
+    color: var(--dark-green-7);
+    margin: 0 0 12px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--dark-green-6);
+    margin: 0 0 20px;
+  }
+
+  .back-to-login {
+    background: none;
+    border: none;
+    color: var(--logo-lime);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Error state
+.general-error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+// Adjust mobile dropdown positioning
+.auth-dropdown.mobile {
+  .dropdown-container {
+    top: calc(100% + 8px);
+    right: 0;
+    width: 280px;
+    max-width: 90vw;
+
+    // Special positioning for the mobile navbar dropdowns
+    @include respond-to('desktop') {
+      &.navbar-mobile {
+        position: fixed;
+        top: calc(var(--navbar-height-mobile) + 8px);
+        right: var(--section-padding-mobile, 16px);
+      }
+    }
   }
 }

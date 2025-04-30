@@ -1,0 +1,45 @@
+// Checkout Variables
+:root {
+  // Color System
+  --logo-green: #0A5C26;
+  --logo-green-rgb: 10, 92, 38;
+  --logo-lime: #AACC00;
+  --logo-lime-soft: rgba(170, 204, 0, 0.2);
+  --logo-lime-softer: rgba(170, 204, 0, 0.15);
+  --dark-green-2: #0B6E2E;
+  --dark-green-3: #0D7F34;
+  --dark-green-6: #0F8F3A;
+  --dark-green-6-rgb: 15, 143, 58;
+  --dark-green-7: #064018;
+  --dark-green-7-rgb: 6, 64, 24;
+  --dark-green-soft: rgba(10, 92, 38, 0.85);
+  --light-green-6: #F0F8E8;
+  --light-lime: #E1EAC0;
+  --dark-yellow-1: #EBEB47;
+  --light-yellow-1: #FFFBE6;
+
+  // Neutral Colors
+  --neutral-100: #F8F7F5;
+  --neutral-200: #F0EFED;
+  --neutral-300: #E5E4E2;
+  --neutral-600: #8A8884;
+
+  // Text Colors
+  --text-primary: #1C1C1C;
+  --text-secondary: #505050;
+
+  // Borders
+  --border-light: rgba(10, 92, 38, 0.1);
+  --border-medium: rgba(10, 92, 38, 0.2);
+
+  // Border Radii
+  --radius-full: 9999px;
+  --radius-large: 16px;
+  --radius-medium: 12px;
+  --radius-small: 8px;
+
+  // Layout
+  --sidebar-width: 320px;
+  --checkout-sidebar-width: 380px;
+  --checkout-main-width: calc(100% - 420px);
+}

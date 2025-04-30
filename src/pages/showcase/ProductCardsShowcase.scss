@@ -1,0 +1,359 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/main';
+
+:root {
+  --showcase-bg: #F8F7F5;
+  --showcase-border: rgba(170, 204, 0, 0.2);
+  --showcase-header: #0A5C26;
+  --showcase-text: #1C1C1C;
+  --showcase-code-bg: #f5f5f5;
+  --showcase-tab-active: #AACC00;
+}
+
+@import '../../pages/shop/shop.scss';
+
+.showcase-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  background-color: white;
+
+  @include mobile {
+    padding: 1rem;
+  }
+
+  // Global override for all product cards in showcase
+  .product-card,
+  .recommended-product-card {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    filter: none !important;
+    transition: transform 0.2s ease;
+
+    &:hover, &:focus, &:active {
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      -moz-box-shadow: none !important;
+      filter: none !important;
+
+      .product-image img {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  // Override shop-specific styles
+  .product-grid .product-card,
+  .product-card-grid .product-card {
+    box-shadow: none !important;
+
+    &:hover {
+      box-shadow: none !important;
+    }
+  }
+
+  // Only keep box shadow for featured products
+  .product-card.featured {
+    border: 2px solid var(--showcase-tab-active);
+    box-shadow: 0 4px 12px rgba(170, 204, 0, 0.15) !important;
+
+    &:hover {
+      box-shadow: 0 6px 16px rgba(170, 204, 0, 0.2) !important;
+    }
+  }
+
+  .product-card.no-shadow {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    filter: none !important;
+    transition: transform 0.2s ease, background-color 0.2s ease !important;
+    border: 1px solid rgba(170, 204, 0, 0.3);
+    background-color: #fff;
+
+    &:hover, &:focus, &:active {
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      -moz-box-shadow: none !important;
+      filter: none !important;
+      border-color: rgba(170, 204, 0, 0.6);
+      background-color: #fff;
+    }
+  }
+}
+
+.showcase-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--showcase-border);
+  text-align: center;
+
+  h1 {
+    font-size: 2.5rem;
+    color: var(--showcase-header);
+    margin-bottom: 0.5rem;
+    font-family: 'Chillax', sans-serif;
+
+    @include mobile {
+      font-size: 1.75rem;
+    }
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: var(--showcase-text);
+    opacity: 0.8;
+
+    @include mobile {
+      font-size: 1rem;
+    }
+  }
+}
+
+.showcase-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  .tab-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--showcase-bg);
+    border: 1px solid var(--showcase-border);
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--showcase-text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(170, 204, 0, 0.1);
+      border-color: rgba(170, 204, 0, 0.4);
+    }
+
+    &.active {
+      background-color: var(--showcase-tab-active);
+      color: #0A5C26;
+      border-color: var(--showcase-tab-active);
+    }
+
+    @include mobile {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.showcase-content {
+  background-color: var(--showcase-bg);
+  border-radius: 1rem;
+  padding: 2rem;
+
+  @include mobile {
+    padding: 1rem;
+  }
+}
+
+.card-showcase-section {
+  h2 {
+    font-size: 1.75rem;
+    color: var(--showcase-header);
+    margin-bottom: 0.5rem;
+    font-family: 'Chillax', sans-serif;
+
+    @include mobile {
+      font-size: 1.5rem;
+    }
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    color: var(--showcase-header);
+    margin: 1.5rem 0 0.5rem;
+    font-family: 'Chillax', sans-serif;
+
+    @include mobile {
+      font-size: 1.15rem;
+    }
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    color: var(--showcase-text);
+    opacity: 0.8;
+  }
+}
+
+.use-case-description {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-left: 3px solid var(--showcase-tab-active);
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.2rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--dark-green-7);
+  }
+}
+
+.product-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+
+  @include tablet {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  &.shop-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+    @include tablet {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+
+    .product-card {
+      // Override shop.scss styles completely
+      height: auto;
+      transform: none;
+      box-shadow: none !important;
+      transition: transform 0.2s ease !important;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: none !important;
+
+        .product-image img {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+}
+
+.component-code {
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+
+  pre {
+    background-color: var(--showcase-code-bg);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    border: 1px solid var(--showcase-border);
+
+    @include mobile {
+      font-size: 0.75rem;
+      padding: 1rem;
+    }
+  }
+}
+
+// Product badge styles
+.product-badge {
+  &.limited {
+    background-color: rgba(155, 107, 204, 0.2);
+    border: 1px solid rgba(155, 107, 204, 0.4);
+    color: #4C2882;
+
+    svg {
+      color: #4C2882;
+    }
+  }
+}
+
+// Special fix for shop product hover state
+.showcase-container .product-card-grid.shop-grid .product-card {
+  &, &.no-shadow {
+    transition: transform 0.2s ease !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    border: 1px solid rgba(170, 204, 0, 0.3);
+
+    &:hover, &:focus, &:active {
+      transform: translateY(-5px) !important;
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+      border-color: rgba(170, 204, 0, 0.6);
+
+      .product-image img {
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+// Fix for skeleton grids
+.product-card-skeleton-grid,
+.recommended-product-card-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+
+  @include tablet {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+// Additional shop override at the bottom of the file to ensure it takes precedence
+.showcase-container .product-card-grid.shop-grid .product-card {
+  box-shadow: none !important;
+
+  &:hover, &:focus, &:active {
+    box-shadow: none !important;
+  }
+}
+
+// Reset any transform properties from shop.scss that might be interfering
+.product-card.no-shadow {
+  transform: none !important;
+  box-shadow: none !important;
+
+  &:hover {
+    box-shadow: none !important;
+    transform: translateY(-5px) !important;
+  }
+}
+
+// At the end of the file, add this to forcefully override all shop.scss styles
+.showcase-container .product-card-grid .product-card.no-shadow {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  transition: transform 0.2s ease, border-color 0.2s ease !important;
+
+  &:hover, &:focus, &:active {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+  }
+}

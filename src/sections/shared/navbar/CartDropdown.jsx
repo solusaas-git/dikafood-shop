@@ -15,26 +15,11 @@ import './cart-dropdown.scss';
 // Import actions
 import { removeFromCart, updateQuantity } from '../../../store/actions/cartActions';
 
-const CartDropdown = ({ onClose }) => {
+const CartDropdown = ({ onClose, isMobile = false, isNavbarMobile = false }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-
-  // Check if the screen is mobile
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 480);
-    };
-
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-
-    return () => {
-      window.removeEventListener('resize', checkIfMobile);
-    };
-  }, []);
 
   const subtotal = cartItems.reduce((total, item) => {
     return total + (item.price * item.quantity);
@@ -97,32 +82,35 @@ const CartDropdown = ({ onClose }) => {
   };
 
   return (
-    <div className="cart-dropdown" ref={dropdownRef}>
+    <div className={`cart-dropdown ${isMobile ? 'mobile' : ''}`} ref={dropdownRef}>
       <button
-        className={`dropdown-trigger ${isOpen ? 'active' : ''}`}
+        className={`dropdown-trigger ${isOpen ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
         onClick={toggleDropdown}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         <span className="cart-icon">
-          <ShoppingCart weight="duotone" size={20} />
+          <ShoppingCart weight="duotone" size={isMobile ? 20 : 20} />
           {getCartCount() > 0 && (
             <span className="cart-count">{getCartCount()}</span>
           )}
         </span>
-        <CaretDown
-          weight="bold"
-          className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
-          size={14}
-        />
+        {!isMobile && <span className="btn-text">Panier</span>}
+        {(!isMobile || isNavbarMobile) && (
+          <CaretDown
+            weight="bold"
+            className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
+            size={isMobile ? 14 : 14}
+          />
+        )}
       </button>
 
       {isOpen && (
-        <div className="dropdown-container">
+        <div className={`dropdown-container ${isMobile ? 'mobile' : ''} ${isNavbarMobile ? 'navbar-mobile' : ''}`}>
           <div className="cart-dropdown-content">
             <div className="dropdown-header">
               <h3>Mon Panier ({getCartCount()} articles)</h3>
-              <button className="close-button" onClick={toggleDropdown} aria-label="Close cart">
+              <button className="close-button" onClick={toggleDropdown} aria-label="Fermer le panier">
                 <X size={18} weight="bold" />
               </button>
             </div>
@@ -130,7 +118,7 @@ const CartDropdown = ({ onClose }) => {
             {cartItems.length === 0 ? (
               <div className="empty-cart">
                 <div className="empty-cart-icon">
-                  <ShoppingCart size={48} weight="duotone" />
+                  <ShoppingCart size={isMobile ? 40 : 48} weight="duotone" />
                 </div>
                 <p>Votre panier est vide</p>
                 <Link to="/shop" className="shop-link" onClick={toggleDropdown}>
@@ -146,7 +134,7 @@ const CartDropdown = ({ onClose }) => {
                         {checkImageExists(item.image) ? (
                           <img src={item.image} alt={item.name} />
                         ) : (
-                          <Package weight="duotone" size={24} />
+                          <Package weight="duotone" size={isMobile ? 20 : 24} />
                         )}
                       </div>
                       <div className="item-details">
@@ -156,26 +144,26 @@ const CartDropdown = ({ onClose }) => {
                           <button
                             className="quantity-btn"
                             onClick={() => handleQuantityChange(item.id, -1, item.quantity)}
-                            aria-label="Decrease quantity"
+                            aria-label="Diminuer la quantité"
                           >
-                            <Minus size={14} weight="bold" />
+                            <Minus size={isMobile ? 12 : 14} weight="bold" />
                           </button>
                           <span>{item.quantity}</span>
                           <button
                             className="quantity-btn"
                             onClick={() => handleQuantityChange(item.id, 1, item.quantity)}
-                            aria-label="Increase quantity"
+                            aria-label="Augmenter la quantité"
                           >
-                            <Plus size={14} weight="bold" />
+                            <Plus size={isMobile ? 12 : 14} weight="bold" />
                           </button>
                         </div>
                       </div>
                       <button
                         className="remove-item"
                         onClick={() => handleRemoveItem(item.id)}
-                        aria-label="Remove item"
+                        aria-label="Retirer l'article"
                       >
-                        <X size={16} weight="bold" />
+                        <X size={isMobile ? 14 : 16} weight="bold" />
                       </button>
                     </div>
                   ))}
@@ -190,7 +178,7 @@ const CartDropdown = ({ onClose }) => {
                       Continuer
                     </Link>
                     <Link to="/checkout" className="checkout-button" onClick={toggleDropdown}>
-                      <ShoppingBagOpen weight="duotone" />
+                      <ShoppingBagOpen weight="duotone" size={isMobile ? 18 : 20} />
                       Commander
                     </Link>
                   </div>

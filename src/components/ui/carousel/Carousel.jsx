@@ -12,6 +12,7 @@ export function Carousel({
     },
     className = "",
     showControls = true,
+    disableTransform = false,
     ...props
 }) {
     const [emblaRef, emblaApi] = useEmblaCarousel(opts)
@@ -37,7 +38,29 @@ export function Carousel({
         onSelect()
         emblaApi.on('select', onSelect)
         emblaApi.on('reInit', onSelect)
-    }, [emblaApi, onSelect])
+
+        // Apply transform fix if requested
+        if (disableTransform) {
+            const fixTransform = () => {
+                const container = emblaApi.containerNode()
+                if (container) {
+                    container.classList.add('transform-fixed')
+                }
+            }
+
+            fixTransform()
+            emblaApi.on('reInit', fixTransform)
+
+            return () => {
+                emblaApi.off('reInit', fixTransform)
+            }
+        }
+
+        return () => {
+            emblaApi.off('select', onSelect)
+            emblaApi.off('reInit', onSelect)
+        }
+    }, [emblaApi, onSelect, disableTransform])
 
     return (
         <div className={`embla ${className}`} {...props}>

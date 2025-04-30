@@ -1,0 +1,16 @@
+// Main Checkout Styles File
+@import '../../../global.scss';
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+// Import all modular SCSS files
+@import 'variables';
+@import 'layout';
+@import 'header';
+@import 'steps';
+@import 'cart-summary';
+@import 'forms';
+@import 'shipping-options';
+@import 'payment-methods';
+@import 'buttons';
+@import 'mobile';

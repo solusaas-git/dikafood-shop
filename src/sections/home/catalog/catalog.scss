@@ -54,7 +54,7 @@ $background-color_3: var(--dark-green-7);
 		display: flex;
 		width: 100%;
 		max-width: var(--section-max-width);
-		background: linear-gradient(135deg, 
+		background: linear-gradient(135deg,
 			white 0%,
 			var(--light-yellow-1) 100%
 		);
@@ -100,7 +100,7 @@ $background-color_3: var(--dark-green-7);
 				left: 0;
 				width: 100%;
 				height: 100%;
-				background: linear-gradient(135deg, 
+				background: linear-gradient(135deg,
 					rgba(var(--light-yellow-1-rgb), 0.3) 0%,
 					rgba(var(--light-yellow-2-rgb), 0.3) 100%
 				);
@@ -134,11 +134,7 @@ $background-color_3: var(--dark-green-7);
 						top: 0;
 						width: 40px;
 						height: 100%;
-						background: linear-gradient(
-							to right,
-							rgba(var(--dark-green-7-rgb), 0.3),
-							rgba(var(--dark-green-7-rgb), 0.1)
-						);
+
 						transform: rotateY(90deg) translateX(-20px);
 						transform-origin: left;
 						border-radius: 2px;
@@ -154,7 +150,7 @@ $background-color_3: var(--dark-green-7);
 						height: 100%;
 						background: transparent;
 						transform: translateZ(-40px);
-						box-shadow: 
+						box-shadow:
 							1px 1px 0 rgba(255, 255, 255, 0.8),
 							2px 2px 0 rgba(255, 255, 255, 0.7),
 							3px 3px 0 rgba(255, 255, 255, 0.6),
@@ -171,7 +167,7 @@ $background-color_3: var(--dark-green-7);
 						transform: scale(0.65);
 						transform-origin: center;
 						border-radius: 8px;
-						box-shadow: 
+						box-shadow:
 							0 40px 80px -20px rgba(0, 0, 0, 0.3),
 							0 0 20px rgba(0, 0, 0, 0.1),
 							-1px 0 2px rgba(0, 0, 0, 0.05);
@@ -252,7 +248,7 @@ $background-color_3: var(--dark-green-7);
 						justify-content: center;
 						color: var(--dark-green-7);
 						border: 1px solid var(--dark-yellow-1);
-						box-shadow: 
+						box-shadow:
 							0 2px 4px rgba(var(--dark-green-7-rgb), 0.04),
 							0 1px 2px rgba(var(--dark-green-7-rgb), 0.02);
 

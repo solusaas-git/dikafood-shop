@@ -302,48 +302,208 @@ export const productCategories = [
     { id: 'cooking', name: 'Huiles de Cuisson', count: products.filter(p => p.category === 'cooking').length }
 ];
 
-// Function to get a product by ID
+// Sort options for product sorting
+export const sortOptions = [
+    { id: 'featured', label: 'Plus populaires', icon: 'Star' },
+    { id: 'newest', label: 'Plus récents', icon: 'ClockClockwise' },
+    { id: 'price-low', label: 'Prix: Croissant', icon: 'SortAscending' },
+    { id: 'price-high', label: 'Prix: Décroissant', icon: 'SortDescending' },
+    { id: 'rating', label: 'Avis clients', icon: 'Star' }
+];
+
+/**
+ * Get a product by ID
+ * @param {string} id - Product ID
+ * @returns {Object|null} - Product object or null if not found
+ */
 export const getProductById = (id) => {
-    return products.find(product => product.id === id);
+    return products.find(product => product.id === id) || null;
 };
 
 /**
  * Get related products by category
  * @param {string} currentProductId - Current product ID to exclude from results
  * @param {string} category - Category to filter by
+ * @param {number} limit - Maximum number of products to return
  * @returns {Promise<Array>} - Array of related products
  */
-export const getRelatedProducts = async (currentProductId, category) => {
-  // In a real app, this would be an API call with filters
-  // Here we'll simulate by filtering the mock data
-
-  // Filter products by category and exclude current product
-  const related = products.filter(product =>
-    product.id !== currentProductId &&
-    product.category === category
-  );
-
-  // If we don't have enough products in the same category, add some from other categories
-  if (related.length < 4) {
-    const otherProducts = products.filter(product =>
-      product.id !== currentProductId &&
-      product.category !== category
+export const getRelatedProducts = async (currentProductId, category, limit = 4) => {
+    // Filter products by category and exclude current product
+    const related = products.filter(product =>
+        product.id !== currentProductId &&
+        product.category === category
     );
 
-    // Randomly select enough products to have at least 4 recommendations
-    const neededCount = 4 - related.length;
-    const randomProducts = otherProducts
-      .sort(() => 0.5 - Math.random()) // Shuffle array
-      .slice(0, neededCount);
+    // If we don't have enough products in the same category, add some from other categories
+    if (related.length < limit) {
+        const otherProducts = products.filter(product =>
+            product.id !== currentProductId &&
+            product.category !== category
+        );
 
-    return [...related, ...randomProducts];
-  }
+        // Randomly select enough products to have at least 'limit' recommendations
+        const neededCount = limit - related.length;
+        const randomProducts = otherProducts
+            .sort(() => 0.5 - Math.random()) // Shuffle array
+            .slice(0, neededCount);
 
-  return related;
+        return [...related, ...randomProducts];
+    }
+
+    return related.slice(0, limit);
 };
 
-// Function to get all products in a category
+/**
+ * Get all products in a category
+ * @param {string} categoryId - Category ID
+ * @returns {Array} - Array of products
+ */
 export const getProductsByCategory = (categoryId) => {
-    if (categoryId === 'all') return products;
+    if (categoryId === 'all') return [...products];
     return products.filter(product => product.category === categoryId);
+};
+
+/**
+ * Filter products by search query
+ * @param {Array} productsList - Products to filter
+ * @param {string} query - Search query
+ * @returns {Array} - Filtered products
+ */
+export const searchProducts = (productsList, query) => {
+    if (!query || query.trim() === '') return productsList;
+
+    const searchTerms = query.toLowerCase().trim().split(' ');
+
+    return productsList.filter(product => {
+        const searchableText = `${product.name} ${product.brand} ${product.description} ${product.shortDescription}`.toLowerCase();
+        return searchTerms.every(term => searchableText.includes(term));
+    });
+};
+
+/**
+ * Sort products by selected sort option
+ * @param {Array} productsList - Products to sort
+ * @param {string} sortOption - Sort option ID
+ * @returns {Array} - Sorted products
+ */
+export const sortProducts = (productsList, sortOption) => {
+    const products = [...productsList]; // Create a copy to avoid mutating the original
+
+    switch (sortOption) {
+        case 'price-low':
+            return products.sort((a, b) => {
+                const aPrice = a.variants[0]?.price || 0;
+                const bPrice = b.variants[0]?.price || 0;
+                return aPrice - bPrice;
+            });
+
+        case 'price-high':
+            return products.sort((a, b) => {
+                const aPrice = a.variants[0]?.price || 0;
+                const bPrice = b.variants[0]?.price || 0;
+                return bPrice - aPrice;
+            });
+
+        case 'rating':
+            return products.sort((a, b) => b.rating - a.rating);
+
+        case 'newest':
+            return products.filter(p => p.isNew).concat(products.filter(p => !p.isNew));
+
+        case 'featured':
+        default:
+            return products.filter(p => p.isBestseller).concat(products.filter(p => !p.isBestseller));
+    }
+};
+
+/**
+ * Filter products by price range
+ * @param {Array} productsList - Products to filter
+ * @param {number} minPrice - Minimum price
+ * @param {number} maxPrice - Maximum price
+ * @returns {Array} - Filtered products
+ */
+export const filterProductsByPrice = (productsList, minPrice, maxPrice) => {
+    if (minPrice === undefined && maxPrice === undefined) return productsList;
+
+    return productsList.filter(product => {
+        // Get the lowest price among variants
+        const lowestPrice = Math.min(...product.variants.map(v => v.price));
+
+        // Apply min and max filters if defined
+        const aboveMinPrice = minPrice !== undefined ? lowestPrice >= minPrice : true;
+        const belowMaxPrice = maxPrice !== undefined ? lowestPrice <= maxPrice : true;
+
+        return aboveMinPrice && belowMaxPrice;
+    });
+};
+
+/**
+ * Format price with currency symbol
+ * @param {number} price - Price to format
+ * @param {string} currency - Currency code (default: 'Dh')
+ * @returns {string} - Formatted price
+ */
+export const formatPrice = (price, currency = 'Dh') => {
+    return `${price.toFixed(2)} ${currency}`;
+};
+
+/**
+ * Get default product image
+ * @param {Object} product - Product object
+ * @returns {string} - Image URL
+ */
+export const getProductImage = (product) => {
+    if (!product) return '';
+    return product.variants[0]?.image || '';
+};
+
+/**
+ * Check if product has discount
+ * @param {Object} product - Product object
+ * @returns {boolean} - True if product has discount
+ */
+export const hasDiscount = (product) => {
+    if (!product) return false;
+    return product.variants.some(v => v.discountPrice);
+};
+
+/**
+ * Get default variant of a product
+ * @param {Object} product - Product object
+ * @returns {Object|null} - Default variant or null
+ */
+export const getDefaultVariant = (product) => {
+    if (!product || !product.variants || !product.variants.length) return null;
+    return product.variants[0];
+};
+
+/**
+ * Apply multiple filters to products
+ * @param {Object} filters - Filter configuration
+ * @param {string} filters.category - Category ID
+ * @param {string} filters.searchQuery - Search query
+ * @param {string} filters.sortOption - Sort option ID
+ * @param {number} filters.minPrice - Minimum price
+ * @param {number} filters.maxPrice - Maximum price
+ * @returns {Array} - Filtered and sorted products
+ */
+export const getFilteredProducts = ({
+    category = 'all',
+    searchQuery = '',
+    sortOption = 'featured',
+    minPrice,
+    maxPrice
+}) => {
+    // Get products by category
+    let filteredProducts = getProductsByCategory(category);
+
+    // Apply search filter
+    filteredProducts = searchProducts(filteredProducts, searchQuery);
+
+    // Apply price filter
+    filteredProducts = filterProductsByPrice(filteredProducts, minPrice, maxPrice);
+
+    // Apply sorting
+    return sortProducts(filteredProducts, sortOption);
 };

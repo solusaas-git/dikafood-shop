@@ -1,88 +1,394 @@
+@import '../../../styles/variables';
+
 .product-gallery {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 16px;
+  gap: 20px;
 
-  .main-image {
-    width: 100%;
-    position: relative;
-    aspect-ratio: 1 / 1;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--light-green-1);
-    background-color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-
-    &:hover {
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 4px;
-      transition: transform 0.3s ease;
-    }
-  }
-
-  .thumbnails {
+  // Desktop layout styling
+  .product-gallery-desktop {
     display: flex;
-    gap: 8px;
-    padding: 0 4px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 16px;
 
-    .thumbnail {
-      width: 80px;
-      height: 80px;
-      border-radius: 8px;
+    .main-image {
+      width: 100%;
+      position: relative;
+      aspect-ratio: 1 / 1;  // Square aspect ratio for desktop
+      border-radius: 12px;
       overflow: hidden;
-      border: 2px solid transparent;
+      border: 1px solid rgba($accent-lime, 0.3);
       background-color: white;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      padding: 3px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
 
-      &.active {
-        border-color: var(--logo-lime);
-      }
-
-      &:hover:not(.active) {
-        transform: translateY(-2px);
-        border-color: var(--light-green-4);
+      &:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
       }
 
       img {
         width: 100%;
         height: 100%;
         object-fit: contain;
+        padding: 4px;
+        transition: transform 0.3s ease;
+      }
+    }
+
+    .thumbnails {
+      display: flex;
+      gap: 8px;
+      padding: 0 4px;
+      flex-wrap: wrap;
+
+      .thumbnail {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 3px;
+
+        &.active {
+          border-color: var(--logo-lime);
+        }
+
+        &:hover:not(.active) {
+          transform: translateY(-2px);
+          border-color: var(--light-green-4);
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      @media (max-width: 768px) {
+        justify-content: center;
+      }
+    }
+  }
+
+  // Mobile layout with portrait orientation and carousel
+  .product-gallery-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    // Main image with portrait orientation
+    .main-image-container {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: zoom-in;
+      transition: all 0.3s ease;
+
+      &.zoomed {
+        cursor: zoom-out;
+        .main-image {
+          img {
+            transform: scale(1.5);
+          }
+          .zoom-indicator {
+            opacity: 0;
+          }
+        }
+      }
+
+      .main-image {
+        width: 100%;
+        aspect-ratio: 3 / 4; // Portrait orientation
+        border: 1px solid rgba($accent-lime, 0.3);
+        background-color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 8px;
+          transition: transform 0.5s ease;
+        }
+
+        .zoom-indicator {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          width: 36px;
+          height: 36px;
+          background-color: rgba(255, 255, 255, 0.8);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: $logo-green;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          opacity: 0.7;
+          transition: all 0.3s ease;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    // Thumbnails container and carousel
+    .thumbnails-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      position: relative;
+      padding: 0 8px;
+      margin-top: 8px;
+
+      .carousel-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(255, 253, 235, 0.9);
+        border: 1px solid rgba($accent-lime, 0.3);
+        color: $logo-green;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 5;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        flex-shrink: 0;
+        margin: 0 4px;
+
+        // Increase icon size for better visibility
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        &:hover {
+          background-color: $logo-green;
+          color: white;
+          border-color: $logo-green;
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba($logo-green, 0.3);
+        }
+
+        &.disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          background-color: rgba(255, 255, 255, 0.6);
+
+          &:hover {
+            background-color: white;
+            color: $logo-green;
+            border-color: rgba($accent-lime, 0.3);
+          }
+        }
+      }
+
+      .prev {
+        margin-right: 4px;
+      }
+
+      .next {
+        margin-left: 4px;
+      }
+
+      .embla {
+        overflow: hidden;
+        flex: 1;
+        margin: 0 2px;
+        --slide-spacing: 10px;
+        --slide-size: 80px;
+        --slide-height: 80px;
+
+        .embla__container {
+          display: flex;
+          backface-visibility: hidden;
+          touch-action: pan-y;
+          /* Add smooth scrolling for iOS Safari for smoother scroll behavior */
+          -webkit-overflow-scrolling: touch;
+          /* Better animation transitions */
+          transition-property: transform;
+          transition-timing-function: ease-out;
+        }
+
+        .embla__slide {
+          flex: 0 0 auto;
+          min-width: 0;
+          position: relative;
+          padding: 0 5px;
+          width: var(--slide-size);
+          scroll-snap-align: center;
+
+          &.thumbnail {
+            .thumbnail-inner {
+              border: 2px solid transparent;
+              border-radius: 10px;
+              overflow: hidden;
+              transition: all 0.2s ease;
+              height: var(--slide-height);
+              background-color: white;
+              padding: 3px;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                transition: transform 0.2s ease;
+              }
+            }
+
+            &.active .thumbnail-inner {
+              border-color: var(--logo-lime);
+              background-color: rgba(var(--logo-lime-rgb), 0.1);
+              transform: scale(1.05);
+            }
+
+            &:hover:not(.active) .thumbnail-inner {
+              border-color: var(--light-green-4);
+              transform: translateY(-2px);
+            }
+          }
+        }
       }
     }
   }
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-  .product-gallery {
-    .thumbnails {
-      justify-content: center;
+/* Mobile-specific styles */
+.product-gallery {
+  &.mobile {
+    .product-gallery-mobile {
+      .main-image-container {
+        .main-image {
+          aspect-ratio: 1 / 1.5; // Even more portrait on mobile
+          border-radius: 8px;
+        }
+      }
+
+      .thumbnails-container {
+        .carousel-button {
+          width: 32px;
+          height: 32px;
+
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
+
+        .embla {
+          --slide-spacing: 6px;
+          --slide-size: 65px;
+          --slide-height: 65px;
+        }
+
+        .thumbnails {
+          .thumbnail {
+            min-width: 60px;
+            height: 60px;
+            border-radius: 6px;
+
+            .thumbnail-inner {
+              border-radius: 6px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.tablet {
+    .product-gallery-mobile {
+      .main-image-container {
+        .main-image {
+          aspect-ratio: 3 / 4; // Standard portrait for tablets
+        }
+      }
+
+      .thumbnails-container {
+        .embla {
+          --slide-spacing: 8px;
+          --slide-size: 75px;
+          --slide-height: 75px;
+        }
+
+        .thumbnails {
+          .thumbnail {
+            min-width: 70px;
+            height: 70px;
+          }
+        }
+      }
     }
   }
 }
 
-@media (max-width: 576px) {
-  .product-gallery {
-    .main-image {
-      border-radius: 8px;
-    }
+/* Responsive improvements for different screen sizes */
+@media (max-width: 480px) {
+  .product-gallery.mobile {
+    .product-gallery-mobile {
+      .thumbnails-container {
+        .embla {
+          --slide-size: 60px;
+          --slide-height: 60px;
+          --slide-spacing: 5px;
+        }
 
-    .thumbnails {
-      .thumbnail {
-        width: 60px;
-        height: 60px;
-        border-radius: 6px;
+        .carousel-button {
+          width: 28px;
+          height: 28px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .product-gallery.mobile {
+    .product-gallery-mobile {
+      .thumbnails-container {
+        .embla {
+          --slide-size: 70px;
+          --slide-height: 70px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .product-gallery {
+    .main-image-container {
+      .main-image {
+        aspect-ratio: 3 / 4; // Maintain portrait aspect ratio on larger screens
       }
     }
   }

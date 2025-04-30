@@ -2,10 +2,10 @@
 
 .product-card {
   background-color: white;
-  border-radius: 12px;
-  border: 1px solid rgba(170, 204, 0, 0.3); /* Softer border color */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03); /* Lighter shadow */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 15px;
+  // border: 1px solid rgba(170, 204, 0, 0.3); /* Softer border color */
+  // box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03); /* Lighter shadow */
+  // transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -13,11 +13,11 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
-  aspect-ratio: 3/5; /* Portrait-oriented aspect ratio */
+  // aspect-ratio: 3/5; /* Portrait-oriented aspect ratio */
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06); /* Lighter hover shadow */
+    // box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06); /* Lighter hover shadow */
 
     .product-image img {
       transform: scale(1.05);

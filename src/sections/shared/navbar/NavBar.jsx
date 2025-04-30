@@ -25,9 +25,11 @@ import {
     Package
 } from "@phosphor-icons/react";
 import logoUrl from "../../../assets/svg/dikafood-logo-light-3.svg";
+import faviconUrl from "../../../../favicon.svg";
 import { scrollToContactForm } from '../footer/Footer';
 import AuthDropdown from './AuthDropdown';
 import CartDropdown from './CartDropdown';
+import { isMobile, isTablet } from 'react-device-detect';
 
 // Navigation config (with direct text labels)
 const NAV_ITEMS = [
@@ -55,6 +57,8 @@ function NavBar({ onClick, isOpen, onClose }) {
     const menuRef = useRef(null);
     const [localIsOpen, setLocalIsOpen] = useState(isOpen);
     const [cartItemCount, setCartItemCount] = useState(0);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const isMobileDevice = isMobile || isTablet;
 
     // Use auth context
     const { isLoggedIn, logout } = useAuth();
@@ -63,6 +67,19 @@ function NavBar({ onClick, isOpen, onClose }) {
     useEffect(() => {
         setLocalIsOpen(isOpen);
     }, [isOpen]);
+
+    // Handle scroll events for navbar appearance
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY;
+            setIsScrolled(scrollPosition > 20);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     // Mock cart data - in a real app this would come from a cart context or redux store
     useEffect(() => {
@@ -85,17 +102,6 @@ function NavBar({ onClick, isOpen, onClose }) {
         handleClose();
     };
 
-    const scrollToForm = () => {
-        const formElement = document.querySelector('#form');
-        if (formElement) {
-            formElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-        }
-        handleClose();
-    };
-
     const handleToggle = () => {
         const newState = !localIsOpen;
         setLocalIsOpen(newState);
@@ -112,10 +118,8 @@ function NavBar({ onClick, isOpen, onClose }) {
     // Handle escape key
     useEffect(() => {
         const handleKeyPress = (e) => {
-            if (e.key === 'Escape') {
-                if (localIsOpen) {
-                    handleClose();
-                }
+            if (e.key === 'Escape' && localIsOpen) {
+                handleClose();
             }
         };
 
@@ -145,7 +149,7 @@ function NavBar({ onClick, isOpen, onClose }) {
     }, [localIsOpen]);
 
     return (
-        <div className="nav-bar-container">
+        <div className={`nav-bar-container ${isScrolled ? 'scrolled' : ''}`}>
             {localIsOpen && (
                 <div
                     className={`nav-overlay ${localIsOpen ? 'active' : ''}`}
@@ -155,69 +159,106 @@ function NavBar({ onClick, isOpen, onClose }) {
             )}
 
             <div className="nav-bar">
-                <div className="logo">
-                    <a href="/">
-                        <img src={logoUrl} alt="Logo" />
-                    </a>
-                </div>
-
-                <div className="menu">
-                    {NAV_ITEMS.map((link) => (
-                        <Button
-                            key={link.path}
-                            icon={link.icon}
-                            to={link.path}
-                            name={link.label}
-                            theme="link"
-                            size="small"
-                            isActive={pathname === link.path}
-                            aria-current={pathname === link.path ? "page" : undefined}
-                        />
-                    ))}
-                </div>
-
-                <div className="cta">
-                    <Button
-                        icon={<ShoppingBag size={24} weight="duotone" />}
-                        to="/shop"
-                        name="Nos produits"
-                        theme="primary"
-                        size="small"
-                    />
-                    <div className="action-buttons">
-                        <div className="user-button">
-                            <AuthDropdown onClose={handleClose} />
+                {/* Mobile Layout - Split into two containers */}
+                <div className="mobile-container">
+                    {/* Left container - Favicon and Menu Toggle */}
+                    <div className="mobile-left-container">
+                        <div className="favicon">
+                            <a href="/">
+                                <img src={faviconUrl} alt="DikaFood Icon" />
+                            </a>
                         </div>
 
-                        <div className="cart-button">
-                            <CartDropdown onClose={handleClose} />
+                        {/* Mobile Menu Toggle Button */}
+                        <div className="menu-phone">
+                            <span
+                                onClick={handleToggle}
+                                role="button"
+                                aria-expanded={localIsOpen}
+                                aria-controls="mobile-menu"
+                                aria-label={localIsOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                                tabIndex="0"
+                            >
+                                {localIsOpen ? (
+                                    <X size={24} weight="bold" />
+                                ) : (
+                                    <List size={24} weight="bold" />
+                                )}
+                                <CaretDown
+                                    weight="bold"
+                                    className={`menu-arrow ${localIsOpen ? 'open' : ''}`}
+                                    size={14}
+                                />
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Right container - Auth and Cart dropdowns */}
+                    <div className="mobile-right-container">
+                        <div className="mobile-actions">
+                            <div className="user-button">
+                                <AuthDropdown onClose={handleClose} isMobile={true} isNavbarMobile={true} />
+                            </div>
+                            <div className="cart-button">
+                                <CartDropdown onClose={handleClose} isMobile={true} isNavbarMobile={true} />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="menu-phone" ref={menuRef}>
-                    <span
-                        onClick={handleToggle}
-                        role="button"
-                        aria-expanded={localIsOpen}
-                        aria-controls="mobile-menu"
-                        aria-label={localIsOpen ? "Close menu" : "Open menu"}
-                        tabIndex="0"
-                    >
-                        {localIsOpen ? (
-                            <X size={24} weight="bold" />
-                        ) : (
-                            <List size={24} weight="bold" />
-                        )}
-                    </span>
+                {/* Desktop Layout - No changes */}
+                <div className="desktop-container">
+                    <div className="logo">
+                        <a href="/">
+                            <img src={logoUrl} alt="DikaFood Logo" />
+                        </a>
+                    </div>
+
+                    {/* Desktop Menu */}
+                    <div className="menu">
+                        {NAV_ITEMS.map((link) => (
+                            <Button
+                                key={link.path}
+                                icon={link.icon}
+                                to={link.path}
+                                name={link.label}
+                                theme="link"
+                                size="small"
+                                isActive={pathname === link.path}
+                                aria-current={pathname === link.path ? "page" : undefined}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Desktop CTA & Actions */}
+                    <div className="cta">
+                        <Button
+                            icon={<ShoppingBag size={24} weight="duotone" />}
+                            to="/shop"
+                            name="Nos produits"
+                            theme="primary"
+                            size="small"
+                        />
+                        <div className="action-buttons">
+                            <div className="user-button">
+                                <AuthDropdown onClose={handleClose} />
+                            </div>
+
+                            <div className="cart-button">
+                                <CartDropdown onClose={handleClose} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            {/* Mobile Menu Dropdown */}
             <div
-                id="mobile-menu"
-                className={`mobile-menu ${localIsOpen ? 'active' : ''} d-mobile-only`}
+                className={`mobile-menu ${localIsOpen ? 'active' : ''}`}
+                ref={menuRef}
             >
                 <div className="mobile-menu-content">
+                    {/* Mobile Navigation Links */}
                     <div className="mobile-links">
                         {NAV_ITEMS.map((link) => (
                             <Button
@@ -234,23 +275,15 @@ function NavBar({ onClick, isOpen, onClose }) {
                         ))}
                     </div>
 
-                    <div className="mobile-user-actions">
-                        <div className="user-button">
-                            <AuthDropdown onClose={handleClose} />
-                        </div>
-                        <div className="cart-button">
-                            <CartDropdown onClose={handleClose} />
-                        </div>
-                    </div>
-
+                    {/* Mobile CTA Button */}
                     <div className="mobile-cta">
                         <Button
-                            icon={<ShoppingBag size={24} weight="duotone" />}
+                            icon={<ShoppingBag size={22} weight="duotone" />}
                             to="/shop"
                             onClick={handleClose}
-                            name="Nos produits"
+                            name="Voir tous nos produits"
                             theme="primary"
-                            size="medium"
+                            size="large"
                         />
                     </div>
                 </div>
@@ -259,7 +292,7 @@ function NavBar({ onClick, isOpen, onClose }) {
     );
 }
 
-// Error Boundary
+// Error boundary for the NavBar component
 class NavbarErrorBoundary extends React.Component {
     state = { hasError: false };
 
@@ -269,8 +302,9 @@ class NavbarErrorBoundary extends React.Component {
 
     render() {
         if (this.state.hasError) {
-            return <div className="navbar-fallback">Menu temporarily unavailable</div>;
+            return <div className="nav-bar-error">Une erreur est survenue. Veuillez rafraîchir la page.</div>;
         }
+
         return this.props.children;
     }
 }
@@ -281,6 +315,6 @@ const NavBarWithErrorBoundary = (props) => {
             <NavBar {...props} />
         </NavbarErrorBoundary>
     );
-}
+};
 
 export default NavBarWithErrorBoundary;

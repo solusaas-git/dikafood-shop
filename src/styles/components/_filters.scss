@@ -4,19 +4,21 @@
 // Shop Controls Section
 .shop-controls {
   @include flex-row(1rem, flex-start, center);
-  margin-bottom: 2rem;
   flex-wrap: wrap;
 
   .shop-search {
+    border-radius: 25px;
     flex: 1;
     min-width: 300px;
     position: relative;
+    height: 100%;
 
     input {
+      height: 100%;
       width: 100%;
       padding: 0.75rem 0.75rem 0.75rem 2.5rem;
       border: 1px solid $border-color;
-      border-radius: $border-radius;
+      border-radius: 25px;
       font-size: map-get($font-sizes, 'sm');
       transition: border-color $transition-fast;
 
@@ -55,6 +57,7 @@
   }
 
   .shop-sort {
+    border-radius: 8px;
     position: relative;
 
     label {
@@ -119,13 +122,12 @@
   top: 2rem;
 
   .filter-section {
-    margin-bottom: 2rem;
+    // margin-bottom: 2rem;
 
     .filter-title {
-      font-size: map-get($font-sizes, 'lg');
-      margin-bottom: 1rem;
-      font-weight: $font-weight-semibold;
-      @include flex-row(0.5rem);
+      font-size: 0.95rem;
+      font-weight: 500;
+      // @include flex-row(0.5rem);
     }
 
     .filter-options {
@@ -156,7 +158,7 @@
 
   // Price Range Slider
   .price-slider {
-    margin-top: 1.5rem;
+    // margin-top: 1.5rem;
 
     .price-range {
       margin-bottom: 1rem;

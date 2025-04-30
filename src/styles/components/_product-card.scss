@@ -169,4 +169,6 @@
 // Shop Product Card Variation
 .product-card-shop {
   @extend .product-card;
+  border: none;
+  box-shadow: none;
 }

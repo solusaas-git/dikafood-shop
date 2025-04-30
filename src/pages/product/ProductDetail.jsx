@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
@@ -24,10 +24,18 @@ import {
   X,
   Factory,
   Drop,
-  Package
+  Package,
+  ChartLineUp,
+  ShoppingBagOpen,
+  Timer,
+  Truck,
+  Fire,
+  Check,
+  ArrowsCounterClockwise
 } from "@phosphor-icons/react";
 import NavBar from '../../sections/shared/navbar/NavBar';
 import ProductBreadcrumb from '../../components/product/breadcrumb/ProductBreadcrumb';
+import ProductGallery from '../../components/product/gallery/ProductGallery';
 import './product-detail.scss';
 import { Carousel, CarouselSlide } from "../../components/ui/carousel/Carousel";
 import useEmblaCarousel from 'embla-carousel-react';
@@ -38,6 +46,8 @@ import RecommendedProductCard from '../../components/product/card/RecommendedPro
 import { RecommendedProductCardSkeletonGrid } from '../../components/product/card/RecommendedProductCardSkeleton';
 import ReviewModal from '../../components/product/reviews/ReviewModal';
 import CountryFlag from "../../components/ui/CountryFlag";
+import { isMobile, isTablet } from 'react-device-detect';
+import { formatCurrency } from '../../utils/format';
 
 // Import product data
 import { getProductById, getRelatedProducts } from '../../data/products';
@@ -94,9 +104,9 @@ const BrandCard = ({ product }) => {
 };
 
 // Product Header Component
-const ProductHeader = ({ product }) => {
+const ProductHeader = ({ product, isMobile = false }) => {
   return (
-    <div className="product-header">
+    <div className={`product-header ${isMobile ? 'mobile-header' : ''}`}>
       <h1 className="product-title">{product.name}</h1>
     </div>
   );
@@ -152,6 +162,7 @@ const ProductOptions = ({
                           : ""
                       }`}
                       onClick={() => onVariantChange(variant)}
+                      aria-label={`Sélectionner ${variant.size}`}
                     >
                       {variant.size}
                     </button>
@@ -199,8 +210,8 @@ const ProductOptions = ({
 };
 
 // Product Actions Component
-const ProductActions = ({ addToCart, stockStatus }) => (
-  <div className="product-actions">
+const ProductActions = ({ addToCart, stockStatus, isMobileLayout = false }) => (
+  <div className={`product-actions ${isMobileLayout ? 'mobile-actions' : ''}`}>
     <button
       className="add-to-cart-button"
       onClick={() => addToCart(true)}
@@ -220,10 +231,116 @@ const ProductActions = ({ addToCart, stockStatus }) => (
   </div>
 );
 
+// Mobile Purchase Actions Component (Sticky)
+const MobilePurchaseActions = ({
+  product,
+  selectedVariant,
+  quantity,
+  onVariantChange,
+  onQuantityChange,
+  onAddToCart,
+  expanded,
+  onToggleExpand
+}) => {
+  return (
+    <div className="mobile-purchase-actions-container">
+      <div className="mobile-purchase-summary">
+        <div className="mobile-summary-content">
+          <div className="mobile-product-info" onClick={onToggleExpand}>
+            <div className="mobile-product-price">
+              {formatCurrency(selectedVariant?.price || product?.price || 0)}
+            </div>
+            <div className="mobile-product-quantity">
+              {quantity} article{quantity > 1 ? 's' : ''}
+            </div>
+          </div>
+
+          <div className="mobile-summary-actions">
+            <button
+              className="mobile-action-button add"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddToCart(false);
+              }}
+              aria-label="Ajouter au panier"
+            >
+              <div className="cart-plus-icon">
+                <ShoppingCart weight="duotone" size={16} />
+                <Plus weight="bold" size={14} className="plus-icon" />
+              </div>
+            </button>
+            <button
+              className="mobile-action-button buy"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddToCart(true);
+              }}
+            >
+              <CreditCard weight="duotone" size={22} />
+              <span>Acheter</span>
+            </button>
+          </div>
+        </div>
+
+        <button
+          className="mobile-expand-toggle"
+          onClick={onToggleExpand}
+        >
+          <span>Options</span>
+          <CaretRight weight="bold" size={18} className={expanded ? 'rotate' : ''} />
+        </button>
+      </div>
+
+      {expanded && (
+        <div className="mobile-purchase-expanded">
+          <div className="mobile-purchase-options">
+            <div className="mobile-options-row">
+              {product?.variants && product.variants.length > 0 && (
+                <div className="mobile-variants">
+                  <label>Choisir l'option</label>
+                  <div className="mobile-variant-buttons">
+                    {product.variants.map((variant, idx) => (
+                      <button
+                        key={idx}
+                        className={`mobile-variant-button ${selectedVariant?.id === variant.id ? 'active' : ''}`}
+                        onClick={() => onVariantChange(variant)}
+                        aria-label={`Sélectionner ${variant.name || variant.size}`}
+                      >
+                        {variant.name || variant.size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mobile-quantity">
+                <label>Quantité</label>
+                <div className="mobile-quantity-controls">
+                  <button
+                    onClick={() => quantity > 1 && onQuantityChange(quantity - 1)}
+                    disabled={quantity <= 1}
+                  >
+                    <Minus size={18} weight="bold" />
+                  </button>
+                  <span>{quantity}</span>
+                  <button onClick={() => onQuantityChange(quantity + 1)}>
+                    <Plus size={18} weight="bold" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Product Details Table Component
 const ProductDetailsTable = ({ product }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [countryFlag, setCountryFlag] = useState('');
+  const isMobileView = isMobile || isTablet;
 
   useEffect(() => {
     // Fetch country flag when product.origin changes
@@ -264,10 +381,25 @@ const ProductDetailsTable = ({ product }) => {
       </div>
       {isExpanded && (
         <div className="details-content">
-          <div className="detail-row">
-            <span className="detail-label">Marque</span>
-            <span className="detail-value">{product.brand}</span>
-          </div>
+          {/* Brand Card - Only displayed on mobile */}
+          {isMobileView && (
+            <div className="detail-row brand-row">
+              <span className="detail-label">Marque</span>
+              <div className="detail-value brand-detail-value">
+                <span className="brand-name-value">{product.brand}</span>
+                <BrandCard product={product} />
+              </div>
+            </div>
+          )}
+
+          {/* Brand text - Only displayed on desktop */}
+          {!isMobileView && (
+            <div className="detail-row">
+              <span className="detail-label">Marque</span>
+              <span className="detail-value">{product.brand}</span>
+            </div>
+          )}
+
           <div className="detail-row">
             <span className="detail-label">Origine</span>
             <span className="detail-value">
@@ -329,48 +461,73 @@ const ProductShortDescription = ({ product }) => {
 // Product Reviews Section Component with success notification
 const ProductReviewsSection = ({ product, reviews, newReviewId }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(true);
+  const isMobileView = isMobile || isTablet;
 
   const toggleReviews = () => {
     setIsExpanded(!isExpanded);
   };
 
   const renderStars = (rating) => {
-    return (
-      <div className="stars">
-        {[...Array(5)].map((_, index) => {
-          if (index < Math.floor(rating)) {
-            // Full star
-            return <Star key={index} weight="duotone" className="star-filled duotone" />;
-          } else if (index < Math.ceil(rating) && !Number.isInteger(rating)) {
-            // Half star
-            return <Star key={index} weight="duotone" className="star-half duotone" />;
-          } else {
-            // Empty star
-            return <Star key={index} weight="duotone" className="star-empty duotone" />;
-          }
-        })}
-      </div>
-    );
+    return Array.from({ length: 5 }).map((_, index) => (
+      <Star
+        key={index}
+        weight="duotone"
+        className={index < rating ? "star-filled duotone" : "star-empty duotone"}
+        size={16}
+      />
+    ));
   };
 
-  // Set up autoplay plugin options
-  const autoplayOptions = {
-    delay: 4000,
-    stopOnInteraction: false,
-    stopOnMouseEnter: false,
-    rootNode: (emblaRoot) => emblaRoot
-  };
+  // Set up autoplay options with a longer delay for reading reviews
+  const autoplayOptions = { delay: 6000, stopOnInteraction: true };
 
-  // Create custom embla carousel instance with autoplay
+  // Set up responsive options based on screen size
+  const emblaOptions = useMemo(() => ({
+    loop: false,
+    align: 'start',
+    containScroll: 'trimSnaps',
+    direction: 'ltr',
+    dragFree: true
+  }), []);
+
+  // Set up Embla Carousel instance
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: 'start',
-      containScroll: 'trimSnaps',
-      direction: 'ltr'
-    },
+    emblaOptions,
     [Autoplay(autoplayOptions)]
   );
+
+  // Add scroll functions for navigation controls
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  // Handle selection state changes
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  // Set up event listeners
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+
+    onSelect();
+
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
+  }, [emblaApi, onSelect]);
 
   return (
     <div className="product-reviews-section">
@@ -417,6 +574,29 @@ const ProductReviewsSection = ({ product, reviews, newReviewId }) => {
                   ))}
                 </div>
               </div>
+
+              {/* Add carousel navigation controls */}
+              {reviews.length > 1 && (
+                <>
+                  <button
+                    className={`carousel-button prev ${!prevBtnEnabled ? 'disabled' : ''}`}
+                    onClick={scrollPrev}
+                    disabled={!prevBtnEnabled}
+                    aria-label="Voir avis précédents"
+                  >
+                    <ArrowRight size={isMobileView ? 18 : 20} weight="bold" style={{ transform: 'rotate(180deg)' }} />
+                  </button>
+
+                  <button
+                    className={`carousel-button next ${!nextBtnEnabled ? 'disabled' : ''}`}
+                    onClick={scrollNext}
+                    disabled={!nextBtnEnabled}
+                    aria-label="Voir avis suivants"
+                  >
+                    <ArrowRight size={isMobileView ? 18 : 20} weight="bold" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -428,13 +608,55 @@ const ProductReviewsSection = ({ product, reviews, newReviewId }) => {
 // Recommended Products Component
 const RecommendedProducts = ({ currentProductId, category }) => {
   const [products, setProducts] = useState([]);
+  const isMobileView = isMobile || isTablet;
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(true);
+
+  // Set up carousel options
+  const emblaOptions = useMemo(() => ({
+    loop: false,
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: true
+  }), []);
+
+  // Set up carousel for mobile view
+  const [emblaRef, emblaApi] = useEmblaCarousel(emblaOptions);
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+
+    onSelect();
+
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
+  }, [emblaApi, onSelect]);
 
   useEffect(() => {
     // In a real app this would be an API call
     const fetchRecommendedProducts = async () => {
       try {
         const relatedProducts = await getRelatedProducts(currentProductId, category);
-        setProducts(relatedProducts.slice(0, 4)); // Limit to 4 products
+        setProducts(relatedProducts.slice(0, 6)); // Increased to 6 products for carousel
       } catch (error) {
         console.error("Error fetching recommended products:", error);
       }
@@ -446,12 +668,56 @@ const RecommendedProducts = ({ currentProductId, category }) => {
   // If no products, don't render the section
   if (!products || products.length === 0) return null;
 
-  return (
+  return isMobileView ? (
+    <div className="recommended-products-mobile">
+      <div className="section-header">
+        <h3 className="section-title">
+          <ShoppingBag weight="duotone" size={20} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+          Produits Recommandés
+        </h3>
+      </div>
+
+      <div className="recommended-products-carousel">
+        <button
+          className={`carousel-button prev ${!prevBtnEnabled ? 'disabled' : ''}`}
+          onClick={scrollPrev}
+          disabled={!prevBtnEnabled}
+          aria-label="Voir produits précédents"
+        >
+          <ArrowRight size={isMobileView ? 18 : 20} weight="bold" style={{ transform: 'rotate(180deg)' }} />
+        </button>
+
+        <div className="embla">
+          <div className="embla__viewport" ref={emblaRef}>
+            <div className="embla__container">
+              {products.map(product => (
+                <div key={product.id} className="embla__slide">
+                  <RecommendedProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <button
+          className={`carousel-button next ${!nextBtnEnabled ? 'disabled' : ''}`}
+          onClick={scrollNext}
+          disabled={!nextBtnEnabled}
+          aria-label="Voir produits suivants"
+        >
+          <ArrowRight size={isMobileView ? 18 : 20} weight="bold" />
+        </button>
+      </div>
+    </div>
+  ) : (
     <div className="recommended-products-section">
-      <h3 className="section-title">
-        <ShoppingBag weight="duotone" size={20} style={{ marginRight: "8px", verticalAlign: "middle" }} />
-        Produits Recommandés
-      </h3>
+      <div className="section-header">
+        <h3 className="section-title">
+          <ShoppingBag weight="duotone" size={20} style={{ marginRight: "8px", verticalAlign: "middle" }} />
+          Produits Recommandés
+        </h3>
+      </div>
+
       <div className="products-grid">
         {products.map(product => (
           <RecommendedProductCard key={product.id} product={product} />
@@ -469,11 +735,12 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [purchaseExpanded, setPurchaseExpanded] = useState(true);
-  // Add state for review modal
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [mobilePurchaseExpanded, setMobilePurchaseExpanded] = useState(false);
   const [reviews, setReviews] = useState([]);
-  const [newReviewId, setNewReviewId] = useState(null);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [newReviewId, setNewReviewId] = useState(null);
+  const isMobileView = isMobile || isTablet;
 
   useEffect(() => {
     // In a real implementation, this would be an API call
@@ -607,6 +874,11 @@ const ProductDetail = () => {
     }
   };
 
+  // Toggle mobile purchase options expand/collapse
+  const toggleMobilePurchase = () => {
+    setMobilePurchaseExpanded(!mobilePurchaseExpanded);
+  };
+
   if (loading) {
     return (
       <div className="product-detail-page">
@@ -625,16 +897,38 @@ const ProductDetail = () => {
           <div className="unified-product-container">
             {/* Gallery Section Loading Skeleton */}
             <div className="product-section gallery-section">
-              <div className="gallery-wrapper">
-                <div className="main-image skeleton-loader">
-                  <div className="skeleton-image"></div>
+              <div className="gallery-wrapper skeleton-gallery">
+                <div className="skeleton-desktop">
+                  <div className="main-image skeleton-loader">
+                    <div className="skeleton-image"></div>
+                  </div>
+                  <div className="thumbnails">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="thumbnail skeleton-loader">
+                        <div className="skeleton-thumb"></div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="thumbnails">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="thumbnail skeleton-loader">
-                      <div className="skeleton-thumb"></div>
+                <div className="skeleton-mobile">
+                  <div className="main-image-container">
+                    <div className="main-image skeleton-loader">
+                      <div className="skeleton-image"></div>
                     </div>
-                  ))}
+                  </div>
+                  <div className="thumbnails-container">
+                    <div className="embla">
+                      <div className="embla__container thumbnails">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="embla__slide thumbnail skeleton-loader">
+                            <div className="thumbnail-inner">
+                              <div className="skeleton-thumb"></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -759,7 +1053,7 @@ const ProductDetail = () => {
   const ratingDistribution = generateRatingDistribution(product.reviewCount);
 
   return (
-    <div className="product-detail-page">
+    <div className={`product-detail-page ${mobilePurchaseExpanded ? 'expanded-purchase' : ''}`}>
       <Helmet>
         <title>{product.name} | DikaFood</title>
         <meta name="description" content={product.shortDescription || `${product.name} - High quality product from DikaFood`} />
@@ -778,36 +1072,21 @@ const ProductDetail = () => {
         <div className="container">
           {/* Unified Product Container */}
           <div className="unified-product-container">
+            {/* Mobile-only header displayed above gallery */}
+            {isMobileView && (
+              <div className="mobile-product-header">
+                <ProductHeader product={product} isMobile={true} />
+              </div>
+            )}
+
+          <div className="main-sections">
             {/* Gallery Section */}
             <div className="product-section gallery-section">
-              <div className="gallery-wrapper">
-                <div className="main-image">
-                  {stockStatus && (
-                    <div className={`stock-info ${stockStatus.status}`}>
-                      <ShieldCheck weight="fill" size={16} />
-                      <span>{stockStatus.text}</span>
-                    </div>
-                  )}
-                  <img
-                    src={selectedVariant ? selectedVariant.image : (product.image || '')}
-                    alt={product.name}
-                  />
-                </div>
-                <div className="thumbnails">
-                  {product.variants && product.variants.map((variant, index) => (
-                    <div
-                      key={variant.id}
-                      className={`thumbnail ${selectedVariant?.id === variant.id ? 'active' : ''}`}
-                      onClick={() => {
-                        setSelectedVariant(variant);
-                        setSelectedImage(index);
-                      }}
-                    >
-                      <img src={variant.image} alt={`${product.name} - ${variant.size}`} />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ProductGallery
+                product={product}
+                initialVariant={selectedVariant}
+                key={selectedVariant?.id}
+              />
 
               {/* Ratings Summary moved below the gallery */}
               <div className="reviews-summary-container">
@@ -854,14 +1133,6 @@ const ProductDetail = () => {
                         </div>
                       );
                     })}
-
-                    <button
-                      className="write-review-button soft"
-                      onClick={handleOpenReviewModal}
-                    >
-                      <ChatCircleText weight="duotone" size={14} />
-                      Écrire un avis
-                    </button>
                   </div>
                 </div>
               </div>
@@ -869,43 +1140,49 @@ const ProductDetail = () => {
 
             {/* Info Section */}
             <div className="product-section info-section">
-              {/* Product Header (Category, Title) */}
-              <ProductHeader product={product} />
+              {/* Desktop-only product header */}
+              {!isMobileView && (
+                <ProductHeader product={product} />
+              )}
 
-              {/* Product Price */}
-              <ProductPrice product={product} selectedVariant={selectedVariant} />
+              {/* Product Price - only show in desktop view */}
+              {!isMobileView && (
+                <ProductPrice product={product} selectedVariant={selectedVariant} />
+              )}
 
-              {/* Purchase Options moved to top of info section */}
-              <div className="purchase-options">
-                <div className="purchase-header collapsible-header" onClick={() => setPurchaseExpanded(!purchaseExpanded)}>
-                  <div className="header-title">
-                    <ShoppingBag weight="duotone" size={18} />
-                    <h3 className="section-title">Options d'achat</h3>
-          </div>
-                  <CaretRight
-                    size={18}
-                    weight="bold"
-                    className={`toggle-icon ${purchaseExpanded ? 'expanded' : ''}`}
-                  />
+              {/* Purchase Options - only show in desktop view */}
+              {!isMobileView && (
+                <div className="purchase-options">
+                  <div className="purchase-header collapsible-header" onClick={() => setPurchaseExpanded(!purchaseExpanded)}>
+                    <div className="header-title">
+                      <ShoppingBag weight="duotone" size={18} />
+                      <h3 className="section-title">Options d'achat</h3>
+                    </div>
+                    <CaretRight
+                      size={18}
+                      weight="bold"
+                      className={`toggle-icon ${purchaseExpanded ? 'expanded' : ''}`}
+                    />
+                  </div>
+                  {purchaseExpanded && (
+                    <>
+                      <ProductOptions
+                        product={product}
+                        selectedVariant={selectedVariant}
+                        quantity={quantity}
+                        onVariantChange={setSelectedVariant}
+                        onQuantityChange={setQuantity}
+                      />
+
+                      {/* Action buttons */}
+                      <ProductActions
+                        addToCart={addToCart}
+                        stockStatus={stockStatus}
+                      />
+                    </>
+                  )}
                 </div>
-                {purchaseExpanded && (
-                  <>
-                    <ProductOptions
-                      product={product}
-                      selectedVariant={selectedVariant}
-                      quantity={quantity}
-                      onVariantChange={setSelectedVariant}
-                      onQuantityChange={setQuantity}
-                    />
-
-                    {/* Action buttons */}
-                    <ProductActions
-                      addToCart={addToCart}
-                      stockStatus={stockStatus}
-                    />
-                  </>
-                )}
-              </div>
+              )}
 
               {/* Product Short Description moved to info section */}
               <ProductShortDescription product={product} />
@@ -913,6 +1190,8 @@ const ProductDetail = () => {
               {/* Product Details Table */}
               <ProductDetailsTable product={product} />
             </div>
+          </div>
+
           </div>
 
           {/* Reviews Section - Full Width */}
@@ -924,15 +1203,39 @@ const ProductDetail = () => {
             />
           </div>
 
-          {/* Recommended Products Section */}
-          <div className="recommended-products-container">
-            <RecommendedProducts
-              currentProductId={product.id}
-              category={product.category}
-            />
-          </div>
+          {/* Recommended Products Section - Only show container on desktop */}
+          {!isMobileView && (
+            <div className="recommended-products-container">
+              <RecommendedProducts
+                currentProductId={product.id}
+                category={product.category}
+              />
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Mobile recommended products - outside container for full width */}
+      {isMobileView && (
+        <RecommendedProducts
+          currentProductId={product.id}
+          category={product.category}
+        />
+      )}
+
+      {/* Mobile sticky purchase actions */}
+      {isMobileView && (
+        <MobilePurchaseActions
+          product={product}
+          selectedVariant={selectedVariant}
+          quantity={quantity}
+          onVariantChange={setSelectedVariant}
+          onQuantityChange={setQuantity}
+          onAddToCart={addToCart}
+          expanded={mobilePurchaseExpanded}
+          onToggleExpand={toggleMobilePurchase}
+        />
+      )}
 
       {/* Add ReviewModal at the root level */}
       <ReviewModal

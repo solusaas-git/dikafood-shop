@@ -36,8 +36,9 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
   }, [isOpen, changePasswordSuccess]);
 
   const handleSectionChange = (section) => {
-    // If we need to navigate to other modals entirely
-    if (section !== 'settings' && onClose) {
+    // If navigating to a different section modal
+    if (section !== 'settings') {
+      // Call the parent's onClose with the next section to navigate to
       onClose(section);
     }
   };
@@ -293,7 +294,7 @@ const SettingsModal = ({ isOpen, onClose, initialSection = 'settings' }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => onClose()}
       title="Mon Compte"
       sidebar={<ModalNavSidebar activeSection="settings" onSectionChange={handleSectionChange} />}
     >

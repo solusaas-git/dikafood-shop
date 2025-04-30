@@ -25,7 +25,7 @@ export default function Reviews() {
     return (
         <section className={`reviews-section ${isMobile ? 'mobile' : ''}`}>
             <div className="container">
-                <SectionHeader 
+                <SectionHeader
                     icon={ChatCircleText}
                     title="Témoignages Clients"
                     subtitle="Découvrez ce que nos clients disent de nos produits"
@@ -35,7 +35,7 @@ export default function Reviews() {
             </div>
 
             <div className="reviews-carousel">
-                <Carousel 
+                <Carousel
                     opts={{
                         align: isMobile ? 'center' : 'start',
                         loop: true,
@@ -47,8 +47,8 @@ export default function Reviews() {
                 >
                     {extendedReviews.map((review, index) => (
                         <CarouselSlide key={`${review.id}-${index}`}>
-                            <CardReview 
-                                review={review} 
+                            <CardReview
+                                review={review}
                                 isMobile={isMobile}
                             />
                         </CarouselSlide>

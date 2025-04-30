@@ -95,12 +95,10 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
       setIsEditing(false);
     }
 
-    // Change the section
-    setActiveSection(section);
-
-    // If we need to navigate to other modals entirely
-    if (section !== 'profile' && onClose) {
-      onClose(section); // Pass the section to onClose for the parent to handle
+    // If navigating to a different section modal
+    if (section !== 'profile') {
+      // Call the parent's onClose with the next section to navigate to
+      onClose(section);
     }
   };
 
@@ -258,9 +256,9 @@ const ProfileModal = ({ isOpen, onClose, initialSection = 'profile' }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => onClose()}
       title="Mon Compte"
-      sidebar={<ModalNavSidebar activeSection={activeSection} onSectionChange={handleSectionChange} />}
+      sidebar={<ModalNavSidebar activeSection="profile" onSectionChange={handleSectionChange} />}
     >
       {renderProfileContent()}
     </Modal>

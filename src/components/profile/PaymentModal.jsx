@@ -46,8 +46,9 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
   }, [isOpen, showAddForm]);
 
   const handleSectionChange = (section) => {
-    // If we need to navigate to other modals entirely
-    if (section !== 'payment' && onClose) {
+    // If navigating to a different section modal
+    if (section !== 'payment') {
+      // Call the parent's onClose with the next section to navigate to
       onClose(section);
     }
   };
@@ -295,7 +296,7 @@ const PaymentModal = ({ isOpen, onClose, initialSection = 'payment' }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => onClose()}
       title="Mon Compte"
       sidebar={<ModalNavSidebar activeSection="payment" onSectionChange={handleSectionChange} />}
     >

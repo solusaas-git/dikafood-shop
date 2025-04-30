@@ -34,7 +34,7 @@
         align-items: center;
         transition: opacity 0.2s ease;
         width: clamp(240px, 25%, 280px); /* Slightly narrower width for portrait orientation */
-        aspect-ratio: 3/5; /* Match product card portrait aspect ratio */
+        // aspect-ratio: 3/5; /* Match product card portrait aspect ratio */
 
         /* Ensure all product cards are the same size */
         .product-card {
@@ -150,14 +150,14 @@
             width: calc(100% - 32px);
             padding: 0;
             margin: 0;
-            aspect-ratio: 3/5; /* Maintain portrait aspect ratio on mobile */
+            // aspect-ratio: 3/5; /* Maintain portrait aspect ratio on mobile */
 
             .product-card {
-                width: 100%;
-                height: 100%;
+                width: fit-content;
+                height: fit-content;
                 margin: 0 auto;
                 max-width: 280px;
-                aspect-ratio: 3/5; /* Ensure consistent aspect ratio */
+                // aspect-ratio: 3/5; /* Ensure consistent aspect ratio */
             }
         }
 

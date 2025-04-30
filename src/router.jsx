@@ -19,13 +19,7 @@ import ResetPassword from './pages/auth/ResetPassword';
 import ColorsShowcase from './pages/showcase/ColorsShowcase';
 import LimeColorTest from './pages/showcase/LimeColorTest';
 import ColorSystemDemo from './pages/showcase/ColorSystemDemo';
-
-// Management pages
-import Management from './pages/management/Management';
-import Dashboard from './pages/management/Dashboard';
-import Products from './pages/management/products/Products';
-import Orders from './pages/management/orders/Orders';
-import Customers from './pages/management/customers/Customers';
+import ProductCardsShowcase from './pages/showcase/ProductCardsShowcase';
 
 export const router = createBrowserRouter([
     {
@@ -105,51 +99,12 @@ export const router = createBrowserRouter([
                 element: <ColorSystemDemo />
             },
             {
+                path: 'product-cards',
+                element: <ProductCardsShowcase />
+            },
+            {
                 path: '*',
                 element: <NotFound />
-            }
-        ]
-    },
-    {
-        path: '/management',
-        element: <Management />,
-        children: [
-            {
-                index: true,
-                element: <Dashboard />
-            },
-            {
-                path: 'products',
-                element: <Products />
-            },
-            {
-                path: 'orders',
-                element: <Orders />
-            },
-            {
-                path: 'customers',
-                element: <Customers />
-            },
-            // Placeholder routes for future pages
-            {
-                path: 'banks',
-                element: <div className="placeholder-page">Page de gestion des banques</div>
-            },
-            {
-                path: 'delivery',
-                element: <div className="placeholder-page">Page de gestion des méthodes de livraison</div>
-            },
-            {
-                path: 'sessions',
-                element: <div className="placeholder-page">Page de gestion des sessions</div>
-            },
-            {
-                path: 'users',
-                element: <div className="placeholder-page">Page de gestion des utilisateurs</div>
-            },
-            {
-                path: 'settings',
-                element: <div className="placeholder-page">Page des paramètres</div>
             }
         ]
     }

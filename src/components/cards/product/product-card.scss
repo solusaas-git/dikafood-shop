@@ -21,8 +21,8 @@ $shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 		var(--light-yellow-1) 0%,
 		white 100%
 	);
-	border-radius: 20px;
-	border: 2px solid var(--dark-yellow-1) !important;
+	// border-radius: 20px;
+	// border: 2px solid var(--dark-yellow-1) !important;
 	overflow: hidden;
 	cursor: pointer;
 	transition: all 0.3s ease;
@@ -30,7 +30,7 @@ $shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 
 	&:hover {
 		transform: translateY(-4px);
-		box-shadow: $shadow-md;
+		// box-shadow: $shadow-md;
 
 		.product-image img {
 			transform: scale(1.05);
@@ -43,7 +43,7 @@ $shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 
 	&:active {
 		transform: translateY(-2px);
-		box-shadow: $shadow-sm;
+		// box-shadow: $shadow-sm;
 	}
 
 	// Base styles for desktop

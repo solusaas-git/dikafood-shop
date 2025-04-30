@@ -26,7 +26,7 @@ import OrdersModal from '../../../components/profile/OrdersModal';
 import PaymentModal from '../../../components/profile/PaymentModal';
 import SettingsModal from '../../../components/profile/SettingsModal';
 
-const AuthDropdown = ({ onClose }) => {
+const AuthDropdown = ({ onClose, isMobile = false, isNavbarMobile = false }) => {
   const navigate = useNavigate();
   const { login, register, isLoggedIn, logout, user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
@@ -35,8 +35,11 @@ const AuthDropdown = ({ onClose }) => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Modal states
-  const [activeModal, setActiveModal] = useState(null);
+  // Modal states - track all modals with a single state
+  const [modalState, setModalState] = useState({
+    activeModal: null,
+    isModalOpen: false
+  });
 
   const [loginData, setLoginData] = useState({
     email: '',
@@ -298,18 +301,29 @@ const AuthDropdown = ({ onClose }) => {
   };
 
   const handleProfileNavigation = (modalType) => {
-    setActiveModal(modalType);
+    // Close dropdown and open selected modal
     setIsOpen(false);
+    setModalState({
+      activeModal: modalType,
+      isModalOpen: true
+    });
+
     if (onClose) onClose();
   };
 
-  const handleCloseModal = (nextModalType) => {
-    // If a next modal type is provided, open that modal
+  const handleModalChange = (nextModalType) => {
+    // If next modal type is provided, switch to that modal
     if (nextModalType && typeof nextModalType === 'string') {
-      setActiveModal(nextModalType);
+      setModalState({
+        activeModal: nextModalType,
+        isModalOpen: true
+      });
     } else {
-      // Otherwise just close the current modal
-      setActiveModal(null);
+      // Otherwise close the modal
+      setModalState({
+        activeModal: null,
+        isModalOpen: false
+      });
     }
   };
 
@@ -649,60 +663,42 @@ const AuthDropdown = ({ onClose }) => {
   );
 
   const renderProfileMenu = () => (
-    <div className="auth-dropdown-content profile-menu">
-      <div className="dropdown-header">
-        <span className="user-name">
-          {user?.firstName ? `Bonjour, ${user.firstName}` : 'Mon Compte'}
-        </span>
+    <div className="profile-menu">
+      <div className="profile-header">
+        <div className="profile-info">
+          <div className="profile-avatar">
+            <User size={isMobile ? 22 : 24} weight="duotone" />
+          </div>
+          <div className="profile-name">
+            <span className="name">{user.firstName} {user.lastName}</span>
+            <span className="email">{user.email}</span>
+          </div>
+        </div>
       </div>
 
-      <div className="dropdown-items">
-        <button
-          type="button"
-          onClick={() => handleProfileNavigation('profile')}
-          aria-label="My Profile"
-        >
-          <User size={20} weight="duotone" />
-          Mon Profil
+      <div className="profile-actions">
+        <button className="profile-action" onClick={() => handleProfileNavigation('PROFILE')}>
+          <User size={isMobile ? 18 : 20} weight="duotone" />
+          <span>Mon Profil</span>
         </button>
-
-        <button
-          type="button"
-          onClick={() => handleProfileNavigation('orders')}
-          aria-label="My Orders"
-        >
-          <Package size={20} weight="duotone" />
-          Mes Commandes
+        <button className="profile-action" onClick={() => handleProfileNavigation('ORDERS')}>
+          <Package size={isMobile ? 18 : 20} weight="duotone" />
+          <span>Mes Commandes</span>
         </button>
-
-        <button
-          type="button"
-          onClick={() => handleProfileNavigation('payment')}
-          aria-label="Payment Methods"
-        >
-          <CreditCard size={20} weight="duotone" />
-          Méthodes de paiement
+        <button className="profile-action" onClick={() => handleProfileNavigation('PAYMENT')}>
+          <CreditCard size={isMobile ? 18 : 20} weight="duotone" />
+          <span>Moyens de Paiement</span>
         </button>
-
-        <button
-          type="button"
-          onClick={() => handleProfileNavigation('settings')}
-          aria-label="Settings"
-        >
-          <Gear size={20} weight="duotone" />
-          Paramètres
+        <button className="profile-action" onClick={() => handleProfileNavigation('SETTINGS')}>
+          <Gear size={isMobile ? 18 : 20} weight="duotone" />
+          <span>Paramètres</span>
         </button>
+      </div>
 
-        <div className="dropdown-divider"></div>
-
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="logout-button"
-          aria-label="Se déconnecter"
-        >
-          <SignOut size={20} weight="duotone" />
-          Se déconnecter
+      <div className="logout-action">
+        <button className="logout-button" onClick={handleLogout}>
+          <SignOut size={isMobile ? 18 : 20} weight="duotone" />
+          <span>Déconnexion</span>
         </button>
       </div>
     </div>
@@ -720,67 +716,89 @@ const AuthDropdown = ({ onClose }) => {
     }
   };
 
+  // Render the appropriate modal based on modalState
+  const renderModal = () => {
+    switch(modalState.activeModal) {
+      case 'PROFILE':
+        return (
+          <ProfileModal
+            isOpen={modalState.isModalOpen}
+            onClose={handleModalChange}
+            user={user}
+          />
+        );
+      case 'ORDERS':
+        return (
+          <OrdersModal
+            isOpen={modalState.isModalOpen}
+            onClose={handleModalChange}
+          />
+        );
+      case 'PAYMENT':
+        return (
+          <PaymentModal
+            isOpen={modalState.isModalOpen}
+            onClose={handleModalChange}
+          />
+        );
+      case 'SETTINGS':
+        return (
+          <SettingsModal
+            isOpen={modalState.isModalOpen}
+            onClose={handleModalChange}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <>
-    <div className="auth-dropdown" ref={dropdownRef}>
+    <div className={`auth-dropdown ${isMobile ? 'mobile' : ''}`} ref={dropdownRef}>
       <button
-        className="dropdown-trigger"
+        className={`dropdown-trigger ${isOpen ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
         onClick={toggleDropdown}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         {isLoggedIn ? (
           <>
-            <User size={20} weight="duotone" />
-            <span className="username-display">{user?.firstName || 'Compte'}</span>
-            <CaretDown
-              size={14}
-              weight="bold"
-              className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
-            />
+            <User weight="duotone" size={isMobile ? 20 : 20} />
+            {!isMobile && <span className="btn-text">Mon Compte</span>}
+            {/* Always show dropdown arrow for navbar mobile, or desktop */}
+            {(!isMobile || isNavbarMobile) && (
+              <CaretDown
+                weight="bold"
+                className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
+                size={isMobile ? 14 : 14}
+              />
+            )}
           </>
         ) : (
           <>
-            <SignIn size={20} weight="duotone" />
-            <span className="username-display">Se Connecter</span>
-            <CaretDown
-              size={14}
-              weight="bold"
-              className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
-            />
+            <SignIn weight="duotone" size={isMobile ? 20 : 20} />
+            {!isMobile && <span className="btn-text">Connexion</span>}
+            {/* Always show dropdown arrow for navbar mobile, or desktop */}
+            {(!isMobile || isNavbarMobile) && (
+              <CaretDown
+                weight="bold"
+                className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
+                size={isMobile ? 14 : 14}
+              />
+            )}
           </>
         )}
       </button>
 
       {isOpen && (
-        <div className="dropdown-container">
+        <div className={`dropdown-container ${isMobile ? 'mobile' : ''} ${isNavbarMobile ? 'navbar-mobile' : ''}`}>
           {renderAuthContent()}
         </div>
       )}
-    </div>
 
-      {/* Modals */}
-      <ProfileModal
-        isOpen={activeModal === 'profile'}
-        onClose={handleCloseModal}
-        initialSection="profile"
-      />
-      <OrdersModal
-        isOpen={activeModal === 'orders'}
-        onClose={handleCloseModal}
-        initialSection="orders"
-      />
-      <PaymentModal
-        isOpen={activeModal === 'payment'}
-        onClose={handleCloseModal}
-        initialSection="payment"
-      />
-      <SettingsModal
-        isOpen={activeModal === 'settings'}
-        onClose={handleCloseModal}
-        initialSection="settings"
-      />
-    </>
+      {/* Render the active modal */}
+      {renderModal()}
+    </div>
   );
 };
 
