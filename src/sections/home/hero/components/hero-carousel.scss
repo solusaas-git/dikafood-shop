@@ -81,8 +81,8 @@
 
             .embla__slide {
                 flex: 0 0 auto;
-                min-width: min-content;
-                width: 280px;
+                // min-width: min-content;
+                // width: 280px;
                 padding: 0;
                 position: relative;
                 display: flex;
@@ -184,7 +184,7 @@
 
             .embla__slide {
                 flex: 0 0 auto;
-                width: 260px;
+                // width: 260px;
                 position: relative;
                 display: flex;
                 justify-content: center;
@@ -237,6 +237,8 @@
         margin-right: calc(-1 * var(--section-padding));
 
         .mobile-carousel-wrapper {
+            display: flex;
+            justify-content: center;
             position: relative;
             width: 100%;
             overflow: visible;
@@ -267,17 +269,42 @@
 
             .embla__slide {
                 flex: 0 0 auto;
-                min-width: calc(100% - 40px); // Almost full width minus some margins
-                width: calc(100% - 40px);
+                min-width: 85%;
+                width: 85%;
                 padding: 0;
                 position: relative;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 420px;  // Maintained height for slides
 
-                .product-slide.mobile .product-card {
-                    min-height: 320px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                .product-slide.mobile {
+                    height: 420px;  // Maintained height
+                    width: 280px;   // Maintained width
+
+                    .product-card {
+                        height: 420px;  // Maintained height
+                        width: 280px;   // Maintained width
+                        min-height: unset;
+                        max-width: unset;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                        display: flex;
+                        flex-direction: column;
+
+                        .product-image {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            height: 220px;
+
+                            img {
+                                max-width: 90%;
+                                max-height: 90%;
+                                object-fit: contain;
+                                object-position: center;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -310,8 +337,30 @@
     .hero-carousel.mobile {
         .mobile-products-carousel {
             .embla__slide {
-                min-width: calc(100% - 32px);
-                width: calc(100% - 32px);
+                min-width: 90%;
+                width: 90%;
+                height: 380px;  // Maintained height for small screens
+
+                .product-slide.mobile {
+                    height: 380px;  // Maintained height
+                    width: 240px;   // Maintained width
+
+                    .product-card {
+                        height: 380px;
+                        width: 240px;
+                        min-height: unset !important;
+                        max-width: unset !important;
+
+                        .product-image {
+                            height: 200px !important;
+
+                            img {
+                                max-width: 95% !important;
+                                max-height: 95% !important;
+                            }
+                        }
+                    }
+                }
             }
 
             .embla__button {
@@ -330,10 +379,6 @@
                 &--next {
                     right: 4px;
                 }
-            }
-
-            .product-slide.mobile .product-card {
-                min-height: 280px !important;
             }
         }
     }

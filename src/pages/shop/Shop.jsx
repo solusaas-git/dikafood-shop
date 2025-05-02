@@ -125,22 +125,6 @@ const MobileBottomActionBar = ({ activeFiltersCount, onToggleMobileFilters, onTo
       </div>
       Trier
     </button>
-    <button
-      className="bottom-bar-button"
-    >
-      <div className="icon-container">
-        <SquaresFour size={20} weight="duotone" />
-      </div>
-      Grille
-    </button>
-    <button
-      className="bottom-bar-button"
-    >
-      <div className="icon-container">
-        <CurrencyDollar size={20} weight="duotone" />
-      </div>
-      Prix
-    </button>
   </div>
 );
 
@@ -954,89 +938,6 @@ const Shop = () => {
                   <span className="filter-badge">{activeFiltersCount()}</span>
                 )}
               </button>
-            )}
-
-            {/* Shop Controls - Desktop Version */}
-            {!isMobileDevice ? (
-              <div className="shop-controls">
-                <div className="shop-search">
-                  <div className="search-icon-container">
-                    <MagnifyingGlass size={18} weight="duotone" />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Rechercher des produits..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  {searchQuery && (
-                    <button className="clear-search" onClick={() => setSearchQuery('')}>
-                      <X size={16} weight="duotone" />
-                    </button>
-                  )}
-                </div>
-                <div className="shop-sort" ref={dropdownRef}>
-                  <div
-                    className={`sort-selected ${isDropdownOpen ? 'active' : ''}`}
-                    onClick={toggleDropdown}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        toggleDropdown();
-                      }
-                    }}
-                    aria-expanded={isDropdownOpen}
-                    role="button"
-                    aria-haspopup="listbox"
-                    tabIndex={0}
-                  >
-                    <div className="sort-header">
-                      <span className="sort-icon"><ArrowsDownUp size={16} weight="duotone" /></span>
-                      <span>{getCurrentSortLabel()}</span>
-                    </div>
-                    <CaretDown size={16} weight="duotone" className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`} />
-                  </div>
-                  {isDropdownOpen && (
-                    <>
-                      <div className="dropdown-backdrop" onClick={() => { setIsDropdownOpen(false); setFocusedIndex(-1); }} />
-                      <div className="sort-dropdown" role="listbox">
-                        {sortOptions.map((option, index) => (
-                          <div
-                            key={option.id}
-                            ref={el => optionsRef.current[index] = el}
-                            className={`sort-option ${option.id === sortOption ? 'active' : ''} ${focusedIndex === index ? 'focused' : ''}`}
-                            onClick={() => handleSortChange(option.id)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                handleSortChange(option.id);
-                              }
-                            }}
-                            role="option"
-                            aria-selected={option.id === sortOption}
-                            tabIndex={0}
-                          >
-                            <div className="sort-option-content">
-                              <span className="sort-icon">{option.icon}</span>
-                              <span>{option.label}</span>
-                            </div>
-                            {option.id === sortOption && <Check size={16} weight="duotone" className="check-icon" />}
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            ) : (
-              /* Mobile Sort Options */
-              <div className="mobile-shop-controls">
-                <MobileSortOptions
-                  currentSort={sortOption}
-                  onSortChange={handleSortChange}
-                  sortOptions={sortOptions}
-                />
-              </div>
             )}
 
             {/* Shop Results */}

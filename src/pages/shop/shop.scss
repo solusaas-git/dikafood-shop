@@ -948,7 +948,7 @@
       padding: 12px;
 
       img {
-        max-height: 160px;
+        // max-height: 160px;
       }
     }
 
@@ -1162,7 +1162,7 @@
   }
 
   .product-card .product-image {
-    height: 180px;
+    // ;
   }
 
   .product-info .product-title {
@@ -1734,17 +1734,69 @@
   .mobile-product-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 0 12px;
+    gap: 16px;
+    padding: 0 16px;
     margin-bottom: 80px; // Adjusted for bottom bar
+
+    // Ensure even spacing and good layout for different mobile sizes
+    @media (max-width: 480px) {
+      gap: 12px;
+      padding: 0 12px;
+    }
+
+    @media (max-width: 375px) {
+      gap: 10px;
+      padding: 0 10px;
+    }
 
     @media (max-width: 340px) {
       gap: 8px;
       padding: 0 8px;
     }
 
+    // Ensure shop product cards have consistent size in mobile view
     .product-card {
       margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      .product-image {
+        aspect-ratio: 1 / 1;
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          max-width: 90%;
+          max-height: 90%;
+          object-fit: contain;
+        }
+      }
+
+      .product-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .product-title {
+          // Ensure consistent height and text truncation
+          min-height: 40px;
+          max-height: 40px;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          font-size: 14px;
+          margin-bottom: 8px;
+        }
+      }
+
+      .product-actions {
+        margin-top: auto;
+      }
     }
   }
 
@@ -2045,20 +2097,6 @@
   }
 }
 
-// Mobile product grid
-.mobile-product-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  padding: 0 12px;
-  margin-bottom: 80px; // Adjusted for bottom bar
-
-  @media (max-width: 340px) {
-    gap: 8px;
-    padding: 0 8px;
-  }
-}
-
 // Shop filter tags styling
 .shop-filters-tags {
   display: flex;
@@ -2276,6 +2314,141 @@
           background-color: rgba(170, 204, 0, 0.05);
         }
       }
+    }
+  }
+}
+
+// Mobile product card styling
+.product-card.mobile {
+  border-radius: 12px;
+
+  .product-image {
+    padding: 12px;
+    aspect-ratio: 1;
+
+    img {
+      max-width: 85%;
+      max-height: 85%;
+    }
+
+    .product-badges {
+      top: 6px;
+      left: 6px;
+
+      .product-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+
+        svg {
+          width: 10px;
+          height: 10px;
+        }
+      }
+    }
+  }
+
+  .product-info {
+    padding: 8px 10px;
+    gap: 8px;
+
+    .product-title {
+      font-size: 14px;
+      line-height: 1.3;
+      padding-bottom: 6px;
+      min-height: 36px;
+      max-height: 40px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .product-meta-container {
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .product-price-tag {
+      padding: 3px 8px;
+      border-radius: 20px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .current-price {
+        font-size: 13px;
+      }
+
+      .old-price {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .product-actions {
+    margin-top: auto;
+    opacity: 1;
+    transform: none;
+    padding: 8px 10px;
+
+    .add-to-cart-btn {
+      height: 32px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .view-product-btn {
+      width: 32px;
+      height: 32px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+// Mobile shop results adjustments
+@media (max-width: 576px) {
+  .shop-results {
+    border-radius: 12px;
+    margin-bottom: 16px;
+
+    .results-header {
+      padding: 10px 16px;
+
+      .results-count {
+        font-size: 0.85rem;
+
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+
+  .results-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--dark-green-7);
+    width: 100%;
+    justify-content: center;
+
+    svg {
+      color: var(--logo-green);
+    }
+
+    span {
+      font-weight: 600;
     }
   }
 }

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag, Pencil, ArrowSquareOut, X, Tag, NumberCircleOne, NumberCircleTwo, NumberCircleThree, ArrowUpRight, Info, Warning, Plus, Minus, CaretDown, Truck, Clock, CurrencyCircleDollar } from '@phosphor-icons/react';
 import CheckoutSteps from './components/CheckoutSteps';
+import MobileBottomNav from './components/MobileBottomNav';
 import ContactLocationForm from './components/ContactLocationForm';
 import PaymentShippingForm from './components/PaymentForm';
 import RecapForm from './components/RecapForm';
@@ -35,12 +36,13 @@ const mockCartItems = [
 
 const Checkout = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth <= 576);
   // Use mock cart instead of redux state for demo
   const [cart, setCart] = useState({
     items: mockCartItems
   });
-  const [isItemsListVisible, setIsItemsListVisible] = useState(true);
+  const [isItemsListVisible, setIsItemsListVisible] = useState(!isMobile);
   const [isTotalsVisible, setIsTotalsVisible] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -51,12 +53,21 @@ const Checkout = () => {
   // Handle window resize for responsive layout
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 992);
+      const mobileWidth = window.innerWidth <= 768;
+      const smallMobileWidth = window.innerWidth <= 576;
+
+      setIsMobile(mobileWidth);
+      setIsSmallMobile(smallMobileWidth);
+
+      // Only auto-collapse items list on initial mobile view
+      if (!isItemsListVisible && !mobileWidth) {
+        setIsItemsListVisible(true);
+      }
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [isItemsListVisible]);
 
   // Form data state
   const [formData, setFormData] = useState({
@@ -201,25 +212,12 @@ const Checkout = () => {
     setIsTotalsVisible(!isTotalsVisible);
   };
 
+  // Determine total number of steps (needed for mobile nav)
+  const totalSteps = 3; // Contact, Payment, Recap
+
   return (
     <div className="checkout-page">
       <div className="page-container">
-        {currentStep < 3 && (
-          <div className="checkout-header">
-            <button
-              className={`back-button ${currentStep === 0 ? 'disabled' : ''}`}
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              aria-label={currentStep === 0 ? "Retour (désactivé sur la première étape)" : "Retour à l'étape précédente"}
-            >
-              <ArrowLeft size={20} weight="duotone" />
-            </button>
-            <div className="steps-container">
-              <CheckoutSteps currentStep={currentStep} />
-            </div>
-          </div>
-        )}
-
         {currentStep < 3 ? (
           <div className="checkout-content">
             <div className="checkout-main">
@@ -234,10 +232,10 @@ const Checkout = () => {
                     className={`summary-header collapsible ${isItemsListVisible ? 'open' : 'closed'}`}
                     onClick={toggleItemsList}
                   >
-                    <ShoppingBag size={20} weight="duotone" />
-                    <h3>Votre Commande</h3>
+                    <ShoppingBag size={isSmallMobile ? 16 : 20} weight="duotone" />
+                    <h3>Votre Commande {cart.items.length > 0 && `(${cart.items.length})`}</h3>
                     <CaretDown
-                      size={16}
+                      size={isSmallMobile ? 14 : 16}
                       className={`toggle-icon ${isItemsListVisible ? 'open' : 'closed'}`}
                     />
                   </div>
@@ -252,35 +250,34 @@ const Checkout = () => {
                           <div className="item-content">
                             <div className="item-title">
                               <h4>{item.name}</h4>
-                              {item.variant && <div className="item-variant">{item.variant}</div>}
+                              <p className="item-variant">{item.variant}</p>
                             </div>
                             <div className="item-actions">
-                              <div className="item-price">
-                                {formatMAD(item.price)}
-                              </div>
                               <div className="quantity-controls">
                                 <button
                                   className="quantity-btn minus"
                                   onClick={() => decreaseQuantity(item.id)}
                                   disabled={item.quantity <= 1}
+                                  aria-label="Diminuer la quantité"
                                 >
-                                  <Minus size={16} weight="bold" />
+                                  <Minus size={isSmallMobile ? 14 : 16} weight="bold" />
                                 </button>
                                 <span className="quantity">{item.quantity}</span>
                                 <button
                                   className="quantity-btn plus"
                                   onClick={() => increaseQuantity(item.id)}
+                                  aria-label="Augmenter la quantité"
                                 >
-                                  <Plus size={16} weight="bold" />
+                                  <Plus size={isSmallMobile ? 14 : 16} weight="bold" />
                                 </button>
+                              </div>
+                              <div className="item-price">
+                                {formatMAD(item.price * item.quantity)}
                               </div>
                             </div>
                           </div>
                         </div>
                       ))}
-                      <div className="cart-items-footer">
-                        <span>Total: {cart.items.reduce((acc, item) => acc + item.quantity, 0)} articles</span>
-                      </div>
                     </div>
                   )}
 
@@ -288,9 +285,10 @@ const Checkout = () => {
                     className={`summary-totals-header collapsible ${isTotalsVisible ? 'open' : 'closed'}`}
                     onClick={toggleTotals}
                   >
-                    <h3>Résumé</h3>
+                    <CurrencyCircleDollar size={isSmallMobile ? 16 : 20} weight="duotone" />
+                    <h3>Totaux</h3>
                     <CaretDown
-                      size={16}
+                      size={isSmallMobile ? 14 : 16}
                       className={`toggle-icon ${isTotalsVisible ? 'open' : 'closed'}`}
                     />
                   </div>
@@ -302,24 +300,16 @@ const Checkout = () => {
                         <span>{formatMAD(subtotal)}</span>
                       </div>
                       <div className="summary-row">
-                        <span>Frais de livraison</span>
-                        <span>{formatMAD(shippingCost)}</span>
-                      </div>
-                      <div className="shipping-notice">
-                        <Info size={14} weight="duotone" />
-                        Les frais de livraison seront calculés en fonction du mode de livraison choisi à l'étape suivante.
+                        <span>Livraison</span>
+                        <span>{shippingCost === 0 ? 'Gratuit' : formatMAD(shippingCost)}</span>
                       </div>
                       <div className="summary-row">
-                        <span>Taxes</span>
+                        <span>Taxes estimées</span>
                         <span>{formatMAD(tax)}</span>
                       </div>
                       <div className="summary-row total">
                         <span>Total</span>
                         <span>{formatMAD(total)}</span>
-                      </div>
-                      <div className="shipping-notice">
-                        <Warning size={14} weight="duotone" />
-                        Ce montant est estimatif et pourra changer en fonction des options choisies ultérieurement.
                       </div>
                     </div>
                   )}
@@ -370,6 +360,26 @@ const Checkout = () => {
           <div className="checkout-content confirmation">
             {renderStepContent()}
           </div>
+        )}
+
+        {/* Mobile Bottom Navigation */}
+        {currentStep < 3 && (
+          <MobileBottomNav
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            prevStep={prevStep}
+            nextStep={nextStep}
+            placeOrder={placeOrder}
+            cart={cart}
+            subtotal={subtotal}
+            shippingCost={shippingCost}
+            tax={tax}
+            total={total}
+            formatMAD={formatMAD}
+            increaseQuantity={increaseQuantity}
+            decreaseQuantity={decreaseQuantity}
+            formData={formData}
+          />
         )}
       </div>
     </div>

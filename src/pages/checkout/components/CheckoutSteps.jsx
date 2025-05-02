@@ -1,11 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, CreditCard, CheckCircle, CaretRight } from '@phosphor-icons/react';
 
 const CheckoutSteps = ({ currentStep }) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 576);
+
+  // Handle window resize for responsive steps
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 576);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const steps = [
-    { name: 'Contact & Localisation', icon: <MapPin size={18} weight="duotone" /> },
-    { name: 'Paiement & Livraison', icon: <CreditCard size={18} weight="duotone" /> },
-    { name: 'Récapitulatif', icon: <CheckCircle size={18} weight="duotone" /> }
+    {
+      name: 'Contact & Localisation',
+      shortName: 'Contact',
+      icon: <MapPin size={isMobile ? 16 : 18} weight="duotone" />
+    },
+    {
+      name: 'Paiement & Livraison',
+      shortName: 'Paiement',
+      icon: <CreditCard size={isMobile ? 16 : 18} weight="duotone" />
+    },
+    {
+      name: 'Récapitulatif',
+      shortName: 'Récap',
+      icon: <CheckCircle size={isMobile ? 16 : 18} weight="duotone" />
+    }
   ];
 
   return (
@@ -23,17 +47,19 @@ const CheckoutSteps = ({ currentStep }) => {
             <div className={stepClassName}>
               <div className="step-icon">
                 {isCompleted ? (
-                  <CheckCircle size={18} weight="duotone" className="completed-icon" />
+                  <CheckCircle size={isMobile ? 16 : 18} weight="duotone" className="completed-icon" />
                 ) : (
                   step.icon
                 )}
               </div>
-              <span className="step-text">{step.name}</span>
+              <span className="step-text">
+                {isMobile ? step.shortName : step.name}
+              </span>
             </div>
 
             {index < steps.length - 1 && (
               <div className={`step-divider ${isCompleted ? 'completed' : ''}`}>
-                <CaretRight size={12} weight="duotone" />
+                <CaretRight size={isMobile ? 10 : 12} weight="duotone" />
               </div>
             )}
           </React.Fragment>

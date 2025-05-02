@@ -56,8 +56,6 @@ export default function ProductCard({
                     <img
                         src={activeVariant?.image || product.image}
                         alt={`${product.brand} - ${activeVariant?.size || 'Product'}`}
-                        width={isMobile ? 160 : isTablet ? 180 : 200}
-                        height={isMobile ? 160 : isTablet ? 180 : 200}
                     />
                 </div>
 

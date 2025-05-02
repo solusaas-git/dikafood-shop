@@ -31,7 +31,8 @@ function App() {
 
     // Check if current route is shop or product detail page
     const isShopOrProductPage = location.pathname === '/shop' ||
-                                location.pathname.includes('/product/');
+                                location.pathname.includes('/product/') ||
+                                location.pathname.includes('/checkout');
 
     const handleNavToggle = () => {
         setIsOpenNav(prev => !prev);
