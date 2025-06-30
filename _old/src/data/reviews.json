@@ -1,0 +1,82 @@
+[
+    {
+        "id": "rev1",
+        "author": {
+            "name": "Amina B.",
+            "location": "Casablanca"
+        },
+        "rating": 5,
+        "date": "2024-03-15",
+        "product": {
+            "name": "Huile d'olive Dika",
+            "variant": "Extra Vierge"
+        },
+        "verified": true,
+        "comment": "J'ai essayé l'huile d'olive Dika, et elle est parfaite pour mes salades et mes plats de tous les jours. La qualité est exceptionnelle.",
+        "highlights": ["Qualité", "Usage Quotidien", "Goût"]
+    },
+    {
+        "id": "rev2",
+        "author": {
+            "name": "Mohammed R.",
+            "location": "Fès"
+        },
+        "rating": 5,
+        "date": "2024-03-10",
+        "product": {
+            "name": "Huile d'olive Dika",
+            "variant": "Première Pression"
+        },
+        "verified": true,
+        "comment": "Une huile d'olive authentique avec un goût traditionnel qui me rappelle celle de mon enfance. Parfaite pour la cuisine marocaine.",
+        "highlights": ["Tradition", "Authenticité", "Saveur"]
+    },
+    {
+        "id": "rev3",
+        "author": {
+            "name": "Sarah L.",
+            "location": "Rabat"
+        },
+        "rating": 5,
+        "date": "2024-03-08",
+        "product": {
+            "name": "Huile d'olive Dika",
+            "variant": "Bio"
+        },
+        "verified": true,
+        "comment": "Je suis ravie d'avoir découvert cette huile bio. Le goût est pur et l'arôme est délicieux. Je l'utilise aussi bien pour la cuisson que pour assaisonner.",
+        "highlights": ["Bio", "Polyvalente", "Pure"]
+    },
+    {
+        "id": "rev4",
+        "author": {
+            "name": "Karim H.",
+            "location": "Marrakech"
+        },
+        "rating": 4,
+        "date": "2024-03-05",
+        "product": {
+            "name": "Huile d'olive Dika",
+            "variant": "Extra Vierge"
+        },
+        "verified": true,
+        "comment": "Très bonne huile d'olive, avec un goût équilibré. J'apprécie particulièrement son arôme fruité et sa texture onctueuse.",
+        "highlights": ["Équilibrée", "Fruitée", "Onctueuse"]
+    },
+    {
+        "id": "rev5",
+        "author": {
+            "name": "Fatima Z.",
+            "location": "Tanger"
+        },
+        "rating": 5,
+        "date": "2024-03-01",
+        "product": {
+            "name": "Huile d'olive Dika",
+            "variant": "Première Pression"
+        },
+        "verified": true,
+        "comment": "Une huile d'exception ! Je l'utilise quotidiennement et je suis impressionnée par sa qualité constante. Le service client est également remarquable.",
+        "highlights": ["Service", "Constance", "Premium"]
+    }
+]

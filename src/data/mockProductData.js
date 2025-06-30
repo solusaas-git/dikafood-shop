@@ -1,0 +1,127 @@
+// Mock product data for development and testing
+export const mockRelatedProducts = [
+  {
+    id: 1,
+    name: "Couscous Royal",
+    description: "Traditional Moroccan couscous with tender meat and vegetables",
+    price: 45.00,
+    originalPrice: 55.00,
+    image: "/images/products/couscous-royal.jpg",
+    rating: 4.8,
+    reviewCount: 127,
+    category: "Main Dishes",
+    tags: ["Traditional", "Popular", "Vegetarian Option"],
+    isAvailable: true,
+    preparationTime: "25-30 min",
+    spiceLevel: "Mild"
+  },
+  {
+    id: 2,
+    name: "Tagine de Poulet",
+    description: "Slow-cooked chicken tagine with preserved lemons and olives",
+    price: 38.00,
+    originalPrice: 45.00,
+    image: "/images/products/tagine-poulet.jpg",
+    rating: 4.9,
+    reviewCount: 89,
+    category: "Main Dishes",
+    tags: ["Traditional", "Chicken", "Slow Cooked"],
+    isAvailable: true,
+    preparationTime: "35-40 min",
+    spiceLevel: "Medium"
+  },
+  {
+    id: 3,
+    name: "Pastilla aux Pigeons",
+    description: "Delicate pigeon pie with almonds and cinnamon",
+    price: 52.00,
+    originalPrice: 65.00,
+    image: "/images/products/pastilla-pigeons.jpg",
+    rating: 4.7,
+    reviewCount: 56,
+    category: "Specialties",
+    tags: ["Premium", "Traditional", "Festive"],
+    isAvailable: true,
+    preparationTime: "45-50 min",
+    spiceLevel: "Mild"
+  },
+  {
+    id: 4,
+    name: "Harira Soup",
+    description: "Hearty Moroccan soup with lentils, chickpeas, and tender meat",
+    price: 22.00,
+    originalPrice: 28.00,
+    image: "/images/products/harira-soup.jpg",
+    rating: 4.6,
+    reviewCount: 203,
+    category: "Soups",
+    tags: ["Traditional", "Comfort Food", "Ramadan"],
+    isAvailable: true,
+    preparationTime: "20-25 min",
+    spiceLevel: "Medium"
+  },
+  {
+    id: 5,
+    name: "Briouats au Poulet",
+    description: "Crispy chicken-filled pastries with aromatic spices",
+    price: 18.00,
+    originalPrice: 25.00,
+    image: "/images/products/briouats-poulet.jpg",
+    rating: 4.5,
+    reviewCount: 167,
+    category: "Appetizers",
+    tags: ["Crispy", "Popular", "Street Food"],
+    isAvailable: true,
+    preparationTime: "15-20 min",
+    spiceLevel: "Mild"
+  },
+  {
+    id: 6,
+    name: "Mechoui",
+    description: "Slow-roasted lamb with traditional Moroccan spices",
+    price: 75.00,
+    originalPrice: 90.00,
+    image: "/images/products/mechoui.jpg",
+    rating: 4.9,
+    reviewCount: 78,
+    category: "Specialties",
+    tags: ["Premium", "Lamb", "Festive"],
+    isAvailable: true,
+    preparationTime: "60-75 min",
+    spiceLevel: "Medium"
+  }
+];
+
+export const mockProducts = [
+  ...mockRelatedProducts,
+  {
+    id: 7,
+    name: "Rfissa",
+    description: "Traditional dish with shredded msemen, chicken, and lentils",
+    price: 42.00,
+    originalPrice: 50.00,
+    image: "/images/products/rfissa.jpg",
+    rating: 4.4,
+    reviewCount: 45,
+    category: "Main Dishes",
+    tags: ["Traditional", "Comfort Food"],
+    isAvailable: true,
+    preparationTime: "30-35 min",
+    spiceLevel: "Mild"
+  },
+  {
+    id: 8,
+    name: "Mint Tea",
+    description: "Traditional Moroccan mint tea with green tea and fresh mint",
+    price: 8.00,
+    originalPrice: 12.00,
+    image: "/images/products/mint-tea.jpg",
+    rating: 4.8,
+    reviewCount: 234,
+    category: "Beverages",
+    tags: ["Traditional", "Refreshing", "Popular"],
+    isAvailable: true,
+    preparationTime: "5-10 min",
+    spiceLevel: "None"
+  }
+]; 

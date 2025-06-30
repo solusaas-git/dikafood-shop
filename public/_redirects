@@ -1,0 +1,5 @@
+# Redirect domain aliases to primary domain
+https://www.dikafood.com/* https://dikafood.com/:splat 301!
+
+# Handle pushState routing
+/* /index.html 200

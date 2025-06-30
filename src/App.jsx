@@ -1,109 +1,32 @@
-import './App.scss';
-import './global.scss';
-import './reset.css';
-import './classes.scss';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import NavBar from './sections/shared/navbar/NavBar';
-import { useState, useEffect } from 'react';
-import FloatingButtons from './components/ui/floating-buttons/FloatingButtons';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { NotificationProvider } from '@/contexts/NotificationContextNew';
+import { CartProvider } from '@/contexts/CartContext';
+import { PendingActionProvider } from '@/contexts/PendingActionContext';
+import { I18nProvider } from '@/utils/i18n';
+import AppRoutes from '@/router/routes';
+import NotificationManager from '@/components/ui/feedback/NotificationManager';
 
-// Create a wrapper component to handle scroll restoration
-function ScrollToTop() {
-    const location = useLocation();
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [location.pathname]);
-
-    return null;
-}
-
+/**
+ * 🚀 App Component - Clean Integration Ready
+ * Updated to use the new clean API service and contexts
+ */
 function App() {
-    const [isOpenNav, setIsOpenNav] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const location = useLocation();
-    const navigate = useNavigate();
-
-    // Check if current route is blog or legal pages
-    const hideNavigation = location.pathname.startsWith('/blog') ||
-                          location.pathname === '/terms' ||
-                          location.pathname === '/privacy';
-
-    // Check if current route is shop or product detail page
-    const isShopOrProductPage = location.pathname === '/shop' ||
-                                location.pathname.includes('/product/') ||
-                                location.pathname.includes('/checkout');
-
-    const handleNavToggle = () => {
-        setIsOpenNav(prev => !prev);
-    };
-
-    const handleNavClose = () => {
-        setIsOpenNav(false);
-    };
-
-    // Close mobile menu when navigating between routes
-    useEffect(() => {
-        handleNavClose();
-    }, [location.pathname]);
-
-    // Add scroll listener
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    // Handle any scrollToContact state passed during navigation
-    useEffect(() => {
-        if (location.state && location.state.scrollToContact) {
-            // Clear the state to avoid scrolling on refresh
-            window.history.replaceState({}, document.title);
-
-            // Wait for page content to load
-            setTimeout(() => {
-                const contactForm = document.querySelector('#contact-form');
-                if (contactForm) {
-                    contactForm.scrollIntoView({ behavior: 'smooth' });
-                }
-            }, 500);
-        }
-    }, [location.state]);
-
-    return (
-        <>
-            <ScrollToTop />
-            <div className={`App ${isScrolled ? 'scrolled' : ''}`}>
-                {!hideNavigation && (
-                    <>
-                        {isOpenNav && (
-                            <div
-                                className="overlay"
-                                onClick={handleNavClose}
-                                role="presentation"
-                            />
-                        )}
-
-                        <div className="nav-wrapper">
-                            <NavBar
-                                isOpen={isOpenNav}
-                                onClick={handleNavToggle}
-                                onClose={handleNavClose}
-                            />
-                        </div>
-
-                        {/* Only show floating buttons if not on shop or product detail page */}
-                        {!isShopOrProductPage && <FloatingButtons />}
-                    </>
-                )}
-
-                <Outlet />
-            </div>
-        </>
-    );
+  return (
+    <I18nProvider defaultLocale="fr">
+      <NotificationProvider>
+        <AuthProvider>
+          <CartProvider>
+            <PendingActionProvider>
+              <div className="App">
+                <AppRoutes />
+                <NotificationManager position="bottomCenter" />
+              </div>
+            </PendingActionProvider>
+          </CartProvider>
+        </AuthProvider>
+      </NotificationProvider>
+    </I18nProvider>
+  );
 }
 
 export default App;

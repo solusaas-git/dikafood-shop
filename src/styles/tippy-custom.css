@@ -1,0 +1,43 @@
+/* Custom Tippy.js styles */
+.tippy-box {
+  background-color: white;
+  color: #2A3A32; /* dark-green-7 */
+  border: 1px solid rgba(203, 245, 0, 0.2); /* logo-lime/20 */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.tippy-content {
+  padding: 0;
+}
+
+/* Ensure the tooltip follows the cursor smoothly */
+.tippy-box[data-animation=fade][data-state=hidden] {
+  opacity: 0;
+}
+
+.tippy-box[data-state=hidden] {
+  opacity: 0;
+}
+
+.tippy-box[data-state=visible] {
+  opacity: 1;
+}
+
+.tippy-box[data-placement^=top] {
+  transform-origin: bottom;
+}
+
+.tippy-box[data-placement^=bottom] {
+  transform-origin: top;
+}
+
+.tippy-box[data-placement^=left] {
+  transform-origin: right;
+}
+
+.tippy-box[data-placement^=right] {
+  transform-origin: left;
+}

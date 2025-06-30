@@ -1,0 +1,7 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="120" rx="12" fill="#F5F5F5"/>
+  <path d="M30 37.5H90M30 60H90M30 82.5H90" stroke="#CCCCCC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 22.5V97.5" stroke="#CCCCCC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="40" y="40" width="40" height="40" rx="4" fill="#EEEEEE" stroke="#CCCCCC" stroke-width="2"/>
+  <text x="60" y="65" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#999999">Logo</text>
+</svg>

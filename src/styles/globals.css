@@ -1,0 +1,360 @@
+/* Z-index system - Direct values used in JSX instead of variables
+:root {
+  --z-content: 1;
+  --z-backdrop: 10;
+  --z-header: 50;
+  --z-navbar: 60;
+  --z-dropdown: 70;
+  --z-modal: 80;
+  --z-tooltip: 90;
+}
+*/
+
+/* Add dropdown animation */
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: dropdown-in 0.2s ease-out forwards;
+}
+
+/* Mobile menu portal styling */
+#mobile-menu-portal {
+  pointer-events: none;
+  z-index: 180;
+  position: fixed;
+  inset: 0;
+}
+
+#mobile-menu-portal > * {
+  pointer-events: auto;
+}
+
+/* Mobile navbar dropdown styling */
+.navbar-dropdown-container {
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(139, 195, 74, 0.3);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+/* Base phone input container */
+.phone-input-container {
+  width: 100%;
+}
+
+/* Override react-international-phone default styles */
+.react-international-phone-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: white;
+  border: 1px solid rgba(139, 195, 74, 0.7);
+  border-radius: 9999px; /* fully rounded */
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.react-international-phone-input-container:focus-within {
+  border-color: rgba(139, 195, 74, 1);
+  box-shadow: 0 0 0 1px rgba(139, 195, 74, 1);
+}
+
+/* Country selector button styling */
+.react-international-phone-country-selector-button {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  height: 100% !important;
+  padding: 0.75rem !important;
+  padding-left: 1rem !important; /* matches pl-4 */
+  padding-right: 0.5rem !important; /* matches pr-2 */
+  border: none !important;
+  background: transparent !important;
+  border-right: 1px solid rgba(139, 195, 74, 0.3) !important;
+  border-radius: 9999px 0 0 9999px !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+  color: rgba(34, 69, 34, 0.7) !important;
+}
+
+.react-international-phone-country-selector-button:hover {
+  background: rgba(139, 195, 74, 0.05) !important;
+}
+
+.react-international-phone-country-selector-button:focus {
+  outline: none !important;
+  background: rgba(139, 195, 74, 0.1) !important;
+}
+
+/* Phone input field styling */
+.react-international-phone-input {
+  flex: 1 !important;
+  height: 100% !important;
+  padding: 0.75rem 1rem !important;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  font-size: 0.9375rem !important;
+  color: rgba(34, 69, 34, 1) !important;
+}
+
+.react-international-phone-input::placeholder {
+  color: rgba(34, 69, 34, 0.7) !important;
+}
+
+/* Country selector dropdown styling */
+.react-international-phone-country-selector-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(4px) !important;
+  border: 1px solid rgba(139, 195, 74, 0.7) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  z-index: 50 !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  margin-top: 0.25rem !important;
+}
+
+.react-international-phone-country-selector-dropdown__list-item {
+  padding: 0.5rem 0.75rem !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.react-international-phone-country-selector-dropdown__list-item:last-child {
+  border-bottom: none !important;
+}
+
+.react-international-phone-country-selector-dropdown__list-item:hover {
+  background: rgba(139, 195, 74, 0.05) !important;
+}
+
+/* Error state styling */
+.phone-input-container.error .react-international-phone-input-container {
+  border-color: rgba(239, 68, 68, 0.6) !important;
+}
+
+.phone-input-container.error .react-international-phone-input-container:focus-within {
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3) !important;
+}
+
+.phone-input-container.error .react-international-phone-country-selector-button {
+  border-right-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Input with icon styling */
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(139, 195, 74, 0.6);
+  z-index: 10;
+}
+
+.input-with-icon .input-icon::after {
+  content: '';
+  position: absolute;
+  right: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 1rem;
+  background: rgba(139, 195, 74, 0.2);
+}
+
+.input-with-icon input {
+  padding-left: 2.5rem;
+}
+
+.field-icon::after {
+  content: '';
+  position: absolute;
+  right: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 1rem;
+  background: rgba(139, 195, 74, 0.2);
+}
+
+/* Catalog font styling */
+.font-catalog {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.catalog-title-container {
+  position: relative;
+  display: inline-block;
+}
+
+.catalog-title-container::before,
+.catalog-title-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 2rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 195, 74, 0.5), transparent);
+}
+
+.catalog-title-container::before {
+  right: 100%;
+  margin-right: 1rem;
+}
+
+.catalog-title-container::after {
+  left: 100%;
+  margin-left: 1rem;
+}
+
+.catalog-cover-hover .catalog-title-container::before,
+.catalog-cover-hover .catalog-title-container::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+}
+
+.catalog-cover-hover .catalog-title-container::before {
+  right: 100%;
+  margin-right: 1rem;
+}
+
+.catalog-cover-hover .catalog-title-container::after {
+  left: 100%;
+  margin-left: 1rem;
+}
+
+@media (min-width: 768px) {
+  .catalog-title-container {
+    font-size: 1.5rem;
+  }
+
+  .catalog-title-container::before,
+  .catalog-title-container::after {
+    width: 3rem;
+  }
+
+  .catalog-cover-hover .catalog-title-container::before,
+  .catalog-cover-hover .catalog-title-container::after {
+    width: 3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .font-catalog {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+}
+
+/* Icon text separator styling */
+.icon-text-separator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-text-separator > *:first-child::after {
+  content: '';
+  position: absolute;
+  right: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 1rem;
+  background: rgba(139, 195, 74, 0.2);
+}
+
+.icon-text-separator > div:first-child {
+  position: relative;
+}
+
+/* Button with icon styling */
+.btn-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-with-icon > *:first-child::after {
+  content: '';
+  position: absolute;
+  right: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 1rem;
+  background: rgba(139, 195, 74, 0.2);
+}
+
+.btn-with-icon > div:first-child {
+  position: relative;
+}
+
+/* Background-specific separator colors */
+.bg-logo-lime .icon-text-separator > *:first-child::after,
+.bg-logo-lime .btn-with-icon > *:first-child::after {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.text-white .icon-text-separator > *:first-child::after,
+.text-white .btn-with-icon > *:first-child::after {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.text-dark-green-7 .icon-text-separator > *:first-child::after,
+.text-dark-green-7 .btn-with-icon > *:first-child::after {
+  background: rgba(34, 69, 34, 0.2);
+}
+
+.bg-transparent .icon-text-separator > *:first-child::after,
+.bg-transparent .btn-with-icon > *:first-child::after {
+  background: rgba(139, 195, 74, 0.2);
+}
+
+.bg-dark-green-7 .icon-text-separator > *:first-child::after,
+.bg-dark-green-7 .btn-with-icon > *:first-child::after {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Conditional separator display */
+.icon-text-separator:not(:has(span:not(:empty))) > *:first-child::after,
+.btn-with-icon:not(:has(span:not(:empty))) > *:first-child::after {
+  display: none;
+}
+
+.icon-text-separator.mobile-nav-item > div:first-child::after,
+.btn-with-icon.mobile-nav-item > div:first-child::after {
+  display: none;
+}
+
+/* Hover effects */
+.icon-text-separator:hover > *:first-child::after,
+.btn-with-icon:hover > *:first-child::after {
+  background: rgba(139, 195, 74, 0.4);
+}
+

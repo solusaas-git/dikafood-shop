@@ -1,82 +1,90 @@
 [
-    {
-        "id": "rev1",
-        "author": {
-            "name": "Amina B.",
-            "location": "Casablanca"
-        },
-        "rating": 5,
-        "date": "2024-03-15",
-        "product": {
-            "name": "Huile d'olive Dika",
-            "variant": "Extra Vierge"
-        },
-        "verified": true,
-        "comment": "J'ai essayé l'huile d'olive Dika, et elle est parfaite pour mes salades et mes plats de tous les jours. La qualité est exceptionnelle.",
-        "highlights": ["Qualité", "Usage Quotidien", "Goût"]
+  {
+    "id": 1,
+    "author": {
+      "name": "Ahmed Benali",
+      "location": "Casablanca, Morocco"
     },
-    {
-        "id": "rev2",
-        "author": {
-            "name": "Mohammed R.",
-            "location": "Fès"
-        },
-        "rating": 5,
-        "date": "2024-03-10",
-        "product": {
-            "name": "Huile d'olive Dika",
-            "variant": "Première Pression"
-        },
-        "verified": true,
-        "comment": "Une huile d'olive authentique avec un goût traditionnel qui me rappelle celle de mon enfance. Parfaite pour la cuisine marocaine.",
-        "highlights": ["Tradition", "Authenticité", "Saveur"]
+    "rating": 5,
+    "comment": "Excellent service! The food was delivered hot and fresh. The delivery was on time and the packaging was perfect. Highly recommend DikaFood for anyone looking for quality Moroccan cuisine.",
+    "date": "2024-01-15T10:30:00Z",
+    "verified": true
+  },
+  {
+    "id": 2,
+    "author": {
+      "name": "Fatima Zahra",
+      "location": "Rabat, Morocco"
     },
-    {
-        "id": "rev3",
-        "author": {
-            "name": "Sarah L.",
-            "location": "Rabat"
-        },
-        "rating": 5,
-        "date": "2024-03-08",
-        "product": {
-            "name": "Huile d'olive Dika",
-            "variant": "Bio"
-        },
-        "verified": true,
-        "comment": "Je suis ravie d'avoir découvert cette huile bio. Le goût est pur et l'arôme est délicieux. Je l'utilise aussi bien pour la cuisson que pour assaisonner.",
-        "highlights": ["Bio", "Polyvalente", "Pure"]
+    "rating": 4,
+    "comment": "Great experience with DikaFood. The couscous was delicious and the portions were generous. The app is easy to use and the delivery was quick. Will definitely order again!",
+    "date": "2024-01-12T14:20:00Z",
+    "verified": true
+  },
+  {
+    "id": 3,
+    "author": {
+      "name": "Youssef Alami",
+      "location": "Marrakech, Morocco"
     },
-    {
-        "id": "rev4",
-        "author": {
-            "name": "Karim H.",
-            "location": "Marrakech"
-        },
-        "rating": 4,
-        "date": "2024-03-05",
-        "product": {
-            "name": "Huile d'olive Dika",
-            "variant": "Extra Vierge"
-        },
-        "verified": true,
-        "comment": "Très bonne huile d'olive, avec un goût équilibré. J'apprécie particulièrement son arôme fruité et sa texture onctueuse.",
-        "highlights": ["Équilibrée", "Fruitée", "Onctueuse"]
+    "rating": 5,
+    "comment": "Amazing traditional Moroccan dishes! The tagine was perfectly cooked and the spices were authentic. The customer service was excellent and they accommodated my special dietary requirements.",
+    "date": "2024-01-10T18:45:00Z",
+    "verified": true
+  },
+  {
+    "id": 4,
+    "author": {
+      "name": "Amina Tazi",
+      "location": "Fez, Morocco"
     },
-    {
-        "id": "rev5",
-        "author": {
-            "name": "Fatima Z.",
-            "location": "Tanger"
-        },
-        "rating": 5,
-        "date": "2024-03-01",
-        "product": {
-            "name": "Huile d'olive Dika",
-            "variant": "Première Pression"
-        },
-        "verified": true,
-        "comment": "Une huile d'exception ! Je l'utilise quotidiennement et je suis impressionnée par sa qualité constante. Le service client est également remarquable.",
-        "highlights": ["Service", "Constance", "Premium"]
-    }
+    "rating": 4,
+    "comment": "Very satisfied with my order. The pastilla was crispy and flavorful, just like homemade. The delivery driver was polite and the food arrived in perfect condition.",
+    "date": "2024-01-08T12:15:00Z",
+    "verified": false
+  },
+  {
+    "id": 5,
+    "author": {
+      "name": "Karim Mansouri",
+      "location": "Tangier, Morocco"
+    },
+    "rating": 5,
+    "comment": "DikaFood exceeded my expectations! The harira soup was authentic and warming, perfect for the cold weather. The app interface is intuitive and the payment process was smooth.",
+    "date": "2024-01-05T19:30:00Z",
+    "verified": true
+  },
+  {
+    "id": 6,
+    "author": {
+      "name": "Nadia El Fassi",
+      "location": "Agadir, Morocco"
+    },
+    "rating": 4,
+    "comment": "Great quality food and fast delivery. The briouats were crispy and the mint tea was refreshing. The packaging kept everything hot and the presentation was beautiful.",
+    "date": "2024-01-03T16:20:00Z",
+    "verified": true
+  },
+  {
+    "id": 7,
+    "author": {
+      "name": "Hassan Berrada",
+      "location": "Oujda, Morocco"
+    },
+    "rating": 5,
+    "comment": "Outstanding service! The mechoui was tender and flavorful, exactly as I remember from my grandmother's cooking. The delivery was prompt and the food was still hot when it arrived.",
+    "date": "2024-01-01T20:10:00Z",
+    "verified": true
+  },
+  {
+    "id": 8,
+    "author": {
+      "name": "Leila Benjelloun",
+      "location": "Tetouan, Morocco"
+    },
+    "rating": 4,
+    "comment": "Very happy with my experience. The rfissa was delicious and the portions were generous. The app is user-friendly and the delivery tracking feature is very helpful.",
+    "date": "2023-12-30T13:45:00Z",
+    "verified": false
+  }
 ]

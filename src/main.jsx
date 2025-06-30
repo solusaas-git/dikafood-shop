@@ -1,21 +1,30 @@
+import './styles/fonts.css'; // Custom font definitions
+import './assets/fonts/fonts.css'; // Arabic fonts (Cairo)
+import './assets/fonts/arabic-utils.css'; // Arabic typography utilities
+import './styles/global.css';
+import './styles/tailwind.css'; // This will be created by the build process
+
+// Import React and ReactDOM
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import store from './store';
-import { router } from './router';
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-// import './index.css';
+import { I18nProvider } from './utils/i18n.jsx';
+import CurrencyProvider from './contexts/CurrencyContext';
+import App from './App';
+import config from './config';
 
+// Render the App component to the DOM
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <AuthProvider>
-        <HelmetProvider>
-          <RouterProvider router={router} />
-        </HelmetProvider>
-      </AuthProvider>
-    </Provider>
-  </React.StrictMode>,
+    <BrowserRouter>
+      <HelmetProvider>
+        <I18nProvider defaultLocale="fr">
+          <CurrencyProvider>
+            <App />
+          </CurrencyProvider>
+        </I18nProvider>
+      </HelmetProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );
