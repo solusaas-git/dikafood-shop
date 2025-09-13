@@ -1,0 +1,24 @@
+/**
+ * DikaFood Transition Speed Variables
+ * CSS custom properties for consistent transition timing
+ */
+
+/* Animation Variables */
+:root {
+  /* Transition Speeds - Used by components that need CSS variables */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-bezier: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Accessibility - Respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

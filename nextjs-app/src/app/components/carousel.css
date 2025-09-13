@@ -1,0 +1,55 @@
+/* Product carousel specific styles */
+.product-carousel {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  max-width: var(--container-width);
+}
+
+.product-carousel .carousel-track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Mobile specific styles */
+@media (max-width: 767px) {
+  .product-carousel {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .product-carousel .carousel-track {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Make sure carousel controls are visible on all backgrounds */
+.product-carousel .carousel-control {
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure product cards are properly centered */
+.product-carousel .carousel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+/* Set fixed height for hero product cards */
+.product-carousel .carousel-item a {
+  height: 100%;
+}
+
+/* Ensure the carousel container is centered */
+.container .product-carousel {
+  margin-left: auto;
+  margin-right: auto;
+}

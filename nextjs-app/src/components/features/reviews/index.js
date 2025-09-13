@@ -1,0 +1,1 @@
+export { default as EmblaReviewCarousel } from './EmblaReviewCarousel';
