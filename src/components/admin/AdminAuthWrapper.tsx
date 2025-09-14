@@ -67,7 +67,7 @@ export default function AdminAuthWrapper({
 
   // Show loading spinner while checking authentication
   if (authLoading || (!isAuthorized && !authError && pathname !== '/admin/login')) {
-    return <PageLoader message="Vérification de l'authentification..." />;
+    return <PageLoader message="Vérification de l'authentification..." className="" />;
   }
 
   // Show error message if there's an auth error

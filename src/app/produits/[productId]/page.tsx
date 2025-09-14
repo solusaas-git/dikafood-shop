@@ -16,7 +16,7 @@ export default function ProductDetail() {
 
   return (
     <>
-      {isLoading && <PageLoader message="Chargement du produit..." />}
+      {isLoading && <PageLoader message="Chargement du produit..." className="" />}
       <MainLayout>
         <ProductDetailPage 
           productId={productId} 

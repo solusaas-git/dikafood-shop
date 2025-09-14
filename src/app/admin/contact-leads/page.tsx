@@ -102,6 +102,7 @@ export default function ContactLeadsPage() {
     hasNextPage: false,
     hasPreviousPage: false
   });
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedLead, setSelectedLead] = useState<ContactLead | null>(null);
@@ -129,7 +130,7 @@ export default function ContactLeadsPage() {
     if (!authLoading && isAuthenticated) {
       fetchContactLeads();
     }
-  }, [currentPage, searchTerm, statusFilter, sourceFilter, priorityFilter, dateFrom, dateTo, authLoading, isAuthenticated]);
+  }, [currentPage, itemsPerPage, searchTerm, statusFilter, sourceFilter, priorityFilter, dateFrom, dateTo, authLoading, isAuthenticated]);
 
   // Don't render anything if not authenticated or still loading
   if (authLoading) {
@@ -155,7 +156,7 @@ export default function ContactLeadsPage() {
 
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: '20',
+        limit: itemsPerPage.toString(),
         search: searchTerm,
         status: statusFilter,
         source: sourceFilter,
@@ -591,7 +592,13 @@ export default function ContactLeadsPage() {
         <PaginationControls
           currentPage={pagination.currentPage}
           totalPages={pagination.totalPages}
+          totalItems={pagination.totalItems}
+          itemsPerPage={pagination.itemsPerPage}
           onPageChange={setCurrentPage}
+          onItemsPerPageChange={(newItemsPerPage) => {
+            setItemsPerPage(newItemsPerPage);
+            setCurrentPage(1);
+          }}
         />
       )}
 

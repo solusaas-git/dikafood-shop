@@ -430,7 +430,7 @@ const EmailTab: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <LucideIcon 
-                    name={settings.testStatus === 'success' ? 'check-circle' : 'x-circle'} 
+                    name={settings.testStatus === 'success' ? 'checkcircle' : 'xcircle'} 
                     size="sm" 
                     className={settings.testStatus === 'success' ? 'text-green-500' : 'text-red-500'}
                   />

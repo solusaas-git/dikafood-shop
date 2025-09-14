@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Icon } from '@/components/ui/icons';
+import { Loader2, Check, Clock, X, AlertTriangle, Users, Search, Inbox } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/utils/i18n';
 import { PaginationControls } from '../../../components/ui/navigation/Pagination';
@@ -95,7 +95,7 @@ export default function CatalogLeadsPage() {
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="flex items-center gap-2 text-gray-600">
-          <Icon name="circlenotch" size="lg" className="animate-spin" />
+          <Loader2 className="h-5 w-5 animate-spin" />
           <span>{t('common.loading')}</span>
         </div>
       </div>
@@ -173,13 +173,14 @@ export default function CatalogLeadsPage() {
 
   const getStatusBadge = (lead: CatalogLead) => {
     const statusConfig = {
-      sent: { bg: 'bg-green-100', text: 'text-green-800', icon: 'check', label: t('admin.catalogLeads.status.sent') },
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: 'clock', label: t('admin.catalogLeads.status.pending') },
-      failed: { bg: 'bg-red-100', text: 'text-red-800', icon: 'x', label: t('admin.catalogLeads.status.failed') }
+      sent: { bg: 'bg-green-100', text: 'text-green-800', icon: Check, label: t('admin.catalogLeads.status.sent') },
+      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: Clock, label: t('admin.catalogLeads.status.pending') },
+      failed: { bg: 'bg-red-100', text: 'text-red-800', icon: X, label: t('admin.catalogLeads.status.failed') }
     };
     
     const config = statusConfig[lead.status] || statusConfig.pending;
     const hasError = lead.emailError;
+    const IconComponent = config.icon;
     
     return (
       <span 
@@ -188,9 +189,9 @@ export default function CatalogLeadsPage() {
         }`}
         title={hasError ? `${t('admin.catalogLeads.error')}: ${lead.emailError}` : undefined}
       >
-        <Icon name={config.icon as any} size="xs" />
+        <IconComponent className="h-3 w-3" />
         {config.label}
-        {hasError && <Icon name="exclamationmark" size="xs" className="ml-0.5" />}
+        {hasError && <AlertTriangle className="h-3 w-3 ml-0.5" />}
       </span>
     );
   };
@@ -215,7 +216,7 @@ export default function CatalogLeadsPage() {
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="flex items-center gap-2 text-gray-600">
-          <Icon name="circlenotch" size="lg" className="animate-spin" />
+          <Loader2 className="h-5 w-5 animate-spin" />
           <span>{t('admin.catalogLeads.loadingLeads')}</span>
         </div>
       </div>
@@ -231,7 +232,7 @@ export default function CatalogLeadsPage() {
           <p className="text-gray-600">{t('admin.catalogLeads.subtitle')}</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Icon name="users" size="sm" />
+          <Users className="h-4 w-4" />
           <span>{pagination.totalCount} {t('admin.catalogLeads.totalRequests')}</span>
         </div>
       </div>
@@ -299,7 +300,7 @@ export default function CatalogLeadsPage() {
             onClick={clearFilters}
             className="text-sm text-gray-600 hover:text-gray-800 flex items-center gap-1"
           >
-            <Icon name="x" size="xs" />
+            <X className="h-3 w-3" />
             {t('admin.catalogLeads.clearFilters')}
           </button>
           
@@ -308,7 +309,7 @@ export default function CatalogLeadsPage() {
             onClick={handleSearch}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
           >
-            <Icon name="magnifyingglass" size="sm" />
+            <Search className="h-4 w-4" />
             {t('admin.catalogLeads.searchButton')}
           </button>
         </div>
@@ -317,7 +318,7 @@ export default function CatalogLeadsPage() {
       {/* Error State */}
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center gap-2">
-          <Icon name="warning" size="sm" />
+          <AlertTriangle className="h-4 w-4" />
           {error}
         </div>
       )}
@@ -326,7 +327,7 @@ export default function CatalogLeadsPage() {
       <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
         {leads.length === 0 && !loading ? (
           <div className="p-8 text-center text-gray-500">
-            <Icon name="inbox" size="xl" className="mx-auto mb-3 opacity-50" />
+            <Inbox className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>{t('admin.catalogLeads.noRequests')}</p>
           </div>
         ) : (
