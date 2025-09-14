@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotification } from '@/contexts/NotificationContextNew';
 import { useTranslation } from '../../../utils/i18n';
@@ -148,7 +148,7 @@ const CustomersPage = () => {
     fetchCustomers(1, newLimit);
   };
 
-  const fetchCustomers = async (page = 1, limit = pagination.limit) => {
+  const fetchCustomers = useCallback(async (page = 1, limit = pagination.limit) => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -187,11 +187,11 @@ const CustomersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.limit, searchTerm, statusFilter, customerTypeFilter, sortBy, sortOrder, t, addNotification]);
 
   useEffect(() => {
     fetchCustomers();
-  }, [searchTerm, statusFilter, customerTypeFilter, sortBy, sortOrder]);
+  }, [fetchCustomers]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

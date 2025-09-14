@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   EnvelopeSimple,
@@ -118,38 +118,8 @@ export default function ContactLeadsPage() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
 
-  // Authentication check
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.replace('/admin/login');
-    }
-  }, [isAuthenticated, authLoading, router]);
-
-  // Fetch contact leads effect
-  useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      fetchContactLeads();
-    }
-  }, [currentPage, itemsPerPage, searchTerm, statusFilter, sourceFilter, priorityFilter, dateFrom, dateTo, authLoading, isAuthenticated]);
-
-  // Don't render anything if not authenticated or still loading
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-96">
-        <div className="flex items-center gap-2 text-gray-600">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-logo-lime"></div>
-          <span>{t('common.loading')}</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
   // Fetch contact leads
-  const fetchContactLeads = async () => {
+  const fetchContactLeads = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -185,7 +155,37 @@ export default function ContactLeadsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, itemsPerPage, searchTerm, statusFilter, sourceFilter, priorityFilter, dateFrom, dateTo]);
+
+  // Authentication check
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.replace('/admin/login');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
+  // Fetch contact leads effect
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      fetchContactLeads();
+    }
+  }, [fetchContactLeads, authLoading, isAuthenticated]);
+
+  // Don't render anything if not authenticated or still loading
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-96">
+        <div className="flex items-center gap-2 text-gray-600">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-logo-lime"></div>
+          <span>{t('common.loading')}</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   // Handle search
   const handleSearch = (e: React.FormEvent) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useNotification } from '@/contexts/NotificationContextNew';
 import { useAuth } from '@/contexts/AuthContext';
@@ -111,7 +111,7 @@ const ProductsPage = () => {
     fetchProducts(1, newLimit);
   };
 
-  const fetchProducts = async (page = 1, limit = pagination.limit) => {
+  const fetchProducts = useCallback(async (page = 1, limit = pagination.limit) => {
     try {
       setLoading(true);
       setError(null);
@@ -155,7 +155,7 @@ const ProductsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.limit, searchTerm, statusFilter, featuredFilter, sortBy, sortOrder, t, addNotification]);
 
   // Authentication check
   useEffect(() => {
@@ -168,7 +168,7 @@ const ProductsPage = () => {
     if (!authLoading && isAuthenticated) {
       fetchProducts();
     }
-  }, [sortBy, sortOrder, authLoading, isAuthenticated]);
+  }, [fetchProducts, authLoading, isAuthenticated]);
 
   // Close column toggler when clicking outside
   useEffect(() => {

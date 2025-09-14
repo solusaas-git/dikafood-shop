@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../contexts/AuthContext';
 import LucideIcon from '../../../components/ui/icons/LucideIcon';
@@ -77,7 +77,7 @@ const CitiesPage = () => {
     setCurrentPage(1);
   };
 
-  const fetchCities = async () => {
+  const fetchCities = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -111,7 +111,7 @@ const CitiesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, itemsPerPage, searchTerm, filterRegion, filterActive, filterDelivery]);
 
   useEffect(() => {
     if (!authLoading) {
@@ -128,7 +128,7 @@ const CitiesPage = () => {
       
       fetchCities();
     }
-  }, [user, isAuthenticated, authLoading, router, currentPage, itemsPerPage, searchTerm, filterRegion, filterActive, filterDelivery]);
+  }, [user, isAuthenticated, authLoading, router, fetchCities]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

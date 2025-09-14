@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNotification } from '@/contexts/NotificationContextNew';
 import LucideIcon from '../../../components/ui/icons/LucideIcon';
 import { PaginationControls } from '../../../components/ui/navigation/Pagination';
@@ -57,7 +57,7 @@ const CategoriesPage = () => {
     setCurrentPage(1);
   };
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -103,11 +103,11 @@ const CategoriesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, itemsPerPage, addNotification]);
 
   useEffect(() => {
     fetchCategories();
-  }, [currentPage, itemsPerPage]);
+  }, [fetchCategories]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
