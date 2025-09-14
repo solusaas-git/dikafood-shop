@@ -11,7 +11,7 @@ const accordionStyles = tv({
     triggerActive: 'border-b border-white/10',
     title: 'flex-1 text-left text-lg font-medium text-light-green-6',
     icon: 'text-light-green-6 transition-all duration-300',
-    content: 'max-h-0 px-6 overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+    content: 'max-h-0 px-6 overflow-hidden transition-all duration-300 ease-out',
     contentActive: 'max-h-[500px] p-6 pt-5 pb-7',
     contentInner: 'text-light-green-6 text-base leading-relaxed opacity-90',
   },

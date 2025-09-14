@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { tv } from 'tailwind-variants';
 import { NavigationIcon } from '../icons';
 
@@ -73,7 +73,7 @@ export default function Breadcrumb({
               )}
 
               {item.href && !isActive ? (
-                <Link to={item.href} className="hover:underline">
+                <Link href={item.href} className="hover:underline">
                   {isFirst && showHomeIcon && (
                     <NavigationIcon name="home" size="sm" className={styles.homeIcon} />
                   )}

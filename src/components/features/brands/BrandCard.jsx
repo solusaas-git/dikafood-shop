@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/data-display';
 import { Icon } from '@/components/ui/icons';
 import { useTranslation } from '@/utils/i18n';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
-import '@/styles/tippy-custom.css';
-import { followCursor } from 'tippy.js';
-import { BrandTooltip } from '@/components/features/brands';
 import useBreakpoint from '@/hooks/useBreakpoint';
+import { BrandTooltip } from '@/components/features/brands';
 import { createPortal } from 'react-dom';
 
 /**
@@ -20,7 +16,7 @@ import { createPortal } from 'react-dom';
  * @param {string} brand.logo - Brand logo URL
  * @param {string} className - Additional styling for the component
  */
-const BrandCard = React.memo(({
+const BrandCard = ({
   brand,
   className = ''
 }) => {
@@ -28,8 +24,9 @@ const BrandCard = React.memo(({
   const [error, setError] = useState(false);
   const { locale } = useTranslation();
   const { isMobile } = useBreakpoint();
-  const [showTooltip, setShowTooltip] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   // Function to determine the correct logo path based on locale
   const getLogoPath = useCallback(() => {
@@ -56,7 +53,7 @@ const BrandCard = React.memo(({
 
   // Listen for forced refreshes from parent components
   useEffect(() => {
-    const brandsSection = document.getElementById('brands-section');
+    const brandsSection = typeof document !== 'undefined' ? document.getElementById('brands-section') : null;
     if (!brandsSection) return;
 
     const handleLanguageChange = () => {
@@ -71,6 +68,26 @@ const BrandCard = React.memo(({
     };
   }, [getLogoPath]);
 
+  // Hover handlers
+  const handleMouseEnter = (e) => {
+    setIsHovering(true);
+    if (!isMobile) {
+      setTooltipPosition({ x: e.clientX, y: e.clientY });
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isMobile && showTooltip) {
+      setTooltipPosition({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    setShowTooltip(false);
+  };
+
   // Mobile click handler
   const handleClick = () => {
     if (isMobile) {
@@ -78,23 +95,11 @@ const BrandCard = React.memo(({
     }
   };
 
-  // Hover handlers
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-  };
-
-  // Tooltip content
-  const tooltipContent = <BrandTooltip brand={brand} isMobile={false} />;
-
   // Create the card content
   const cardContent = (
-    <div className="brand-image w-full h-full flex items-center justify-center p-3 pt-6">
+    <div className="brand-image w-full h-full flex items-center justify-center p-6">
       {error ? (
-        <div className="logo-fallback flex flex-col items-center justify-center text-dark-green-5">
+        <div className="logo-fallback flex flex-col items-center justify-center text-dark-green-5 w-full h-full">
           <Icon name="buildings" sizeInPixels={64} weight="duotone" className="mb-2 opacity-80" />
           <span className="text-2xl font-bold text-dark-green-6 uppercase">
             {(brand && (brand.displayName || brand.name)) ? (brand.displayName || brand.name).charAt(0) : "?"}
@@ -105,21 +110,41 @@ const BrandCard = React.memo(({
           key={`logo-${locale}-${brand?.id || 'unknown'}`}
           src={logoUrl}
           alt={`Logo ${brand && (brand.displayName || brand.name) ? (brand.displayName || brand.name) : 'Brand'}`}
-          className="max-w-[85%] max-h-[90%] object-contain transition-transform duration-250"
+          className="max-w-full max-h-full object-contain transition-transform duration-250"
           draggable="false"
           onError={() => setError(true)}
+          style={{ 
+            display: 'block',
+            margin: 'auto',
+            objectPosition: 'center'
+          }}
         />
       )}
     </div>
   );
 
-  // Mobile tooltip drawer using portal
-  const mobileTooltipPortal = showTooltip && isMobile && createPortal(
+  // Custom tooltip (React 19 compatible)
+  const desktopTooltip = showTooltip && !isMobile && typeof document !== 'undefined' && createPortal(
+    <div
+      className="fixed z-[100] pointer-events-none"
+      style={{
+        left: Math.min(tooltipPosition.x + 15, window.innerWidth - 320),
+        top: Math.max(tooltipPosition.y - 200, 20),
+        maxWidth: '300px'
+      }}
+    >
+      <BrandTooltip brand={brand} isMobile={false} />
+    </div>,
+    document.body
+  );
+
+  // Mobile tooltip drawer
+  const mobileTooltip = showTooltip && isMobile && typeof document !== 'undefined' && createPortal(
     <div className="fixed inset-0 z-[100]">
       <div
         className="fixed inset-0 bg-black/50"
         onClick={() => setShowTooltip(false)}
-      ></div>
+      />
       <div className="fixed bottom-0 left-0 right-0 z-[110]">
         <BrandTooltip
           brand={brand}
@@ -131,7 +156,7 @@ const BrandCard = React.memo(({
     document.body
   );
 
-  // For mobile, render the card without Tippy
+  // For mobile, render the card with click tooltip
   if (isMobile) {
     return (
       <>
@@ -141,71 +166,43 @@ const BrandCard = React.memo(({
           <Card
             variant="brandLime"
             padding="none"
-            className="w-full h-full"
+            className="w-full h-full cursor-pointer"
+            onClick={handleClick}
           >
             {cardContent}
           </Card>
-          {/* Transparent overlay for click handling */}
-          <div
-            className="absolute inset-0 z-10 cursor-pointer"
-            onClick={handleClick}
-            aria-label={`View ${brand?.displayName || 'brand'} details`}
-          />
         </div>
-        {mobileTooltipPortal}
+        {mobileTooltip}
       </>
     );
   }
 
-  // For desktop, create a wrapper with hover detection
+  // For desktop, create a wrapper with hover detection and tooltip
   return (
-    <div
-      className={`relative w-[240px] h-52 flex items-center justify-center transition-all duration-200 ease-in-out ${isHovering ? '-translate-y-1' : ''} ${className}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <Card
-        variant="brandLime"
-        padding="none"
-        className={`w-full h-full ${isHovering ? 'ring-2 ring-logo-lime' : ''}`}
+    <>
+      <div
+        className={`relative w-[240px] h-52 flex items-center justify-center transition-all duration-200 ease-in-out ${isHovering ? '-translate-y-1' : ''} ${className}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
-        {cardContent}
-      </Card>
+        <Card
+          variant="brandLime"
+          padding="none"
+          className={`w-full h-full ${isHovering ? 'ring-2 ring-logo-lime' : ''}`}
+        >
+          {cardContent}
+        </Card>
 
-      {/* Transparent overlay for tooltip trigger */}
-      <Tippy
-        content={tooltipContent}
-        plugins={[followCursor]}
-        followCursor={true}
-        arrow={false}
-        interactive={false}
-        appendTo={document.body}
-        maxWidth={320}
-        duration={0}
-        delay={[0, 100]}
-        zIndex={90}
-        trigger="mouseenter"
-        hideOnClick={false}
-        popperOptions={{
-          strategy: 'fixed',
-          modifiers: [
-            {
-              name: 'preventOverflow',
-              options: {
-                boundary: document.body,
-                padding: 8,
-              },
-            },
-          ],
-        }}
-      >
+        {/* Transparent overlay for hover detection */}
         <div
           className="absolute inset-0 z-10 cursor-pointer"
           aria-label={`View ${brand?.displayName || 'brand'} details`}
         />
-      </Tippy>
-    </div>
+      </div>
+      {desktopTooltip}
+    </>
   );
-});
+};
 
 export default BrandCard;

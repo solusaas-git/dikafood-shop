@@ -27,29 +27,45 @@ class SessionService {
    * Initialize session - guest or authenticated
    */
   initializeSession() {
+    // Only initialize on client-side
+    if (typeof window === 'undefined') {
+      // Server-side: set default guest session
+      this.sessionType = 'guest';
+      this.isAuthenticated = false;
+      return;
+    }
+
     // Try to restore authenticated session first
     const token = localStorage.getItem(config.AUTH.tokenKey);
-    if (token && !this.isTokenExpired(token)) {
-      this.sessionType = 'authenticated';
-      this.isAuthenticated = true;
-      // sessionId will be extracted from token when needed
+    if (token) {
+      if (!this.isTokenExpired(token)) {
+        this.sessionType = 'authenticated';
+        this.isAuthenticated = true;
+        // sessionId will be extracted from token when needed
+      } else {
+        // Token exists but is expired - start as guest but keep token for refresh
+        this.sessionType = 'guest';
+        this.isAuthenticated = false;
+        this.sessionId = this.getOrCreateGuestSessionId();
+      }
     } else {
-      // Initialize as guest session
+      // No token - initialize as guest session
       this.sessionType = 'guest';
       this.isAuthenticated = false;
       this.sessionId = this.getOrCreateGuestSessionId();
     }
 
-    console.log(`🎯 Session initialized: ${this.sessionType}`, {
-      sessionId: this.sessionId,
-      isAuthenticated: this.isAuthenticated
-    });
   }
 
   /**
    * Get or create guest session ID
    */
   getOrCreateGuestSessionId() {
+    // Server-side: generate temporary session ID
+    if (typeof window === 'undefined') {
+      return this.generateGuestSessionId();
+    }
+
     let sessionId = localStorage.getItem('dikafood_session_id');
     if (!sessionId) {
       sessionId = this.generateGuestSessionId();
@@ -121,11 +137,21 @@ class SessionService {
       headers['x-session-id'] = sessionId;
     }
     
-    // Include auth token if authenticated
-    if (this.isAuthenticated) {
+    // Always check for auth token in localStorage (regardless of isAuthenticated flag)
+    // This ensures tokens are included even if SessionService state is not properly synced
+    // Send token even if expired - let the API service handle refresh
+    if (typeof window !== 'undefined') {
       const token = localStorage.getItem(config.AUTH.tokenKey);
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+        
+        // Update session state if token is still valid
+        if (!this.isTokenExpired(token)) {
+          if (!this.isAuthenticated) {
+            this.isAuthenticated = true;
+            this.sessionType = 'authenticated';
+          }
+        }
       }
     }
     
@@ -139,15 +165,9 @@ class SessionService {
     const previousSessionId = this.sessionId;
     const previousType = this.sessionType;
     
-    console.log('🔄 Transitioning from guest to authenticated session', {
-      previousSessionId,
-      previousType,
-      newUser: loginResponse.user?.id
-    });
 
     // Store guest session ID for cart merge before changing session type
     this.guestSessionIdForMerge = previousSessionId;
-    console.log('💾 Stored guest session ID for merge:', this.guestSessionIdForMerge);
 
     // Update session state
     this.sessionType = 'authenticated';
@@ -161,7 +181,6 @@ class SessionService {
       guestSessionId: previousSessionId
     });
     
-    console.log('✅ Session transitioned to authenticated');
   }
 
   /**
@@ -171,7 +190,6 @@ class SessionService {
     const previousUserId = this.userId;
     const previousSessionId = this.getSessionId();
     
-    console.log('🔄 Transitioning from authenticated to guest session');
 
     // Update session state
     this.sessionType = 'guest';
@@ -187,14 +205,12 @@ class SessionService {
       to: { type: 'guest', sessionId: this.sessionId }
     });
     
-    console.log('✅ Session transitioned to guest');
   }
 
   /**
    * Clear session completely (for security/logout)
    */
   clearSession() {
-    console.log('🧹 Clearing session completely');
     
     // Clear all session data
     this.sessionId = null;

@@ -120,9 +120,39 @@ const headerIconStyles = tv({
 
 // Main component content
 const BenefitsSectionContent = () => {
-  // State to track if mobile view
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  // State to track if mobile view (SSR safe)
+  const [isMobile, setIsMobile] = useState(false);
+  const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const { t } = useTranslation(translations);
+
+  // Initialize mobile state after component mounts (SSR safe)
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
+  // Preload benefit images
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = [
+        '/images/benefits/recolte.webp',
+        '/images/benefits/pressage.webp',
+        '/images/benefits/qualite.webp',
+        '/images/benefits/naturel.webp'
+      ].map(src => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve(); // Still resolve on error to not block
+          img.src = src;
+        });
+      });
+
+      await Promise.all(imagePromises);
+      setImagesPreloaded(true);
+    };
+
+    preloadImages();
+  }, []);
 
   // Handle window resize
   useEffect(() => {
@@ -171,8 +201,8 @@ const BenefitsSectionContent = () => {
       role="article"
       aria-label={benefit.ariaLabel}
     >
-      {/* Background image that reveals on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-500 z-0 overflow-hidden">
+      {/* Background image that reveals on hover - preloaded for instant display */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-300 z-0 overflow-hidden">
         <OptimizedImage
           src={benefit.image}
           alt=""
@@ -181,7 +211,8 @@ const BenefitsSectionContent = () => {
           height={300}
           hasWebp={true}
           hasResponsive={true}
-          lazy={true}
+          lazy={false}
+          fetchPriority="high"
           className="w-full h-full object-cover"
           sizes="(max-width: 768px) 100vw, 300px"
           aria-hidden="true"

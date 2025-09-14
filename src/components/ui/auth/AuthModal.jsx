@@ -196,12 +196,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess, redirectPath = '/checkout' }) =
 
     try {
       // Parse phone number into the format expected by the backend.
-      let phoneData = {
-        country: 'MA',
-        countryCallingCode: '+212',
-        national: '600000000',
-        international: '+212600000000'
-      };
+      let phoneData = null;
 
       if (formData.phoneNumber && formData.phoneNumber.trim()) {
         const phoneNumber = formData.phoneNumber.trim();
@@ -213,7 +208,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess, redirectPath = '/checkout' }) =
             international: phoneNumber
           };
         } else if (phoneNumber.startsWith('+')) {
-            const callingCodeMatch = phoneNumber.match(/^\\+(\\d{1,3})/);
+            const callingCodeMatch = phoneNumber.match(/^\+(\d{1,3})/);
             if (callingCodeMatch) {
               const callingCode = '+' + callingCodeMatch[1];
               const nationalNumber = phoneNumber.substring(callingCode.length);
@@ -224,6 +219,14 @@ const AuthModal = ({ isOpen, onClose, onSuccess, redirectPath = '/checkout' }) =
                 international: phoneNumber
               };
             }
+        } else {
+          // If no + prefix, assume it's a Moroccan number
+          phoneData = {
+            country: 'MA',
+            countryCallingCode: '+212',
+            national: phoneNumber,
+            international: '+212' + phoneNumber
+          };
         }
       }
 
@@ -232,7 +235,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess, redirectPath = '/checkout' }) =
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password,
-        phone: phoneData.international || undefined // Use 'phone' field name expected by backend
+        ...(phoneData && { phone: phoneData.international }) // Only include phone if provided
       };
 
       // The auth events will handle loading states and success/error flows

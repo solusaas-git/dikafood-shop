@@ -35,10 +35,10 @@ const formGroupStyles = tv({
   variants: {
     layout: {
       default: 'grid grid-cols-1',
-      inline: 'grid grid-cols-1 md:grid-cols-2 gap-4',
+      inline: 'grid grid-cols-1 md:grid-cols-2 gap-4 items-end',
       stacked: 'flex flex-col gap-4',
-      grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4',
-      responsive: 'grid grid-cols-1 md:grid-cols-2 gap-4',
+      grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start',
+      responsive: 'grid grid-cols-1 md:grid-cols-2 gap-4 items-start',
     },
   },
   defaultVariants: {
@@ -262,11 +262,13 @@ Form.InputWithIcon = function FormInputWithIcon({
         </div>
       </div>
 
-      {error && (
-        <div className="text-feedback-error text-xs flex items-center gap-1 ml-3">
-          <span>{error}</span>
-        </div>
-      )}
+      <div className="h-4 flex items-center">
+        {error && (
+          <div className="text-feedback-error text-xs flex items-center gap-1 ml-3">
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -299,7 +301,7 @@ Form.Select = function FormSelect({
   className = '',
   ...props
 }) {
-  const baseClass = "w-full pl-10 pr-4 py-2.5 border border-amber-200 rounded-full focus:ring-2 focus:ring-logo-lime/50 focus:border-logo-lime outline-none transition bg-white appearance-none";
+  const baseClass = `w-full ${icon ? 'pl-10' : 'pl-4'} pr-10 py-2.5 border border-amber-200 rounded-full focus:ring-2 focus:ring-logo-lime/50 focus:border-logo-lime outline-none transition bg-white appearance-none`;
 
   return (
     <div className="space-y-1">
@@ -334,11 +336,13 @@ Form.Select = function FormSelect({
         </div>
       </div>
 
-      {error && (
-        <div className="text-feedback-error text-xs flex items-center gap-1 ml-3">
-          <span>{error}</span>
-        </div>
-      )}
+      <div className="h-4 flex items-center">
+        {error && (
+          <div className="text-feedback-error text-xs flex items-center gap-1 ml-3">
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

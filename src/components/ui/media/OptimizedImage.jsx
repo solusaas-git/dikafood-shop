@@ -264,7 +264,7 @@ export default function OptimizedImage({
           width={width || undefined}
           height={height || undefined}
           loading={priority ? "eager" : (lazy ? "lazy" : "eager")}
-          fetchpriority={priority ? "high" : "auto"}
+          fetchPriority={priority ? "high" : "auto"}
           onError={handleError}
           onLoad={handleLoad}
           className={`object-${fit} w-full h-full transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}

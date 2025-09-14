@@ -73,7 +73,7 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
         setInternalProducts(productsCache);
         setActiveVariants(activeVariantsCache);
         setIsVisible(true);
-        if (onLoaded) setTimeout(() => onLoaded(), 300);
+        if (onLoaded) onLoaded();
       }
       return;
     }
@@ -109,7 +109,7 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
         setInternalProducts(processedProducts);
         setActiveVariants(initialVariants);
         setIsVisible(true);
-        if (onLoaded) setTimeout(() => onLoaded(), 300);
+        if (onLoaded) onLoaded();
       } else {
         console.error(response?.message || t('errors.no_products'));
         setInternalProducts([]);
@@ -179,17 +179,17 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
     >
       <Carousel
         itemWidth={getItemWidth()}
-        spacing={isMobile ? "tight" : "normal"}
+        spacing={isMobile ? "normal" : "wide"}
         snap="center"
-        padding={isMobile ? "wide" : "default"}
+        padding="wide"
         autoScroll={false}
         showControls={true}
         controlSize={controlSize || (isMobile ? "small" : "medium")}
         controlVariant="lime"
         controlsPosition={controlsPosition || "middle"}
         controlsClassName={controlsClassName || "px-4 md:px-8"}
-        className="product-carousel z-0 py-3 w-full mx-auto h-full"
-        trackClassName={trackClassName || "flex justify-center items-center"}
+        className="product-carousel z-0 py-3 w-full mx-auto h-full flex justify-center"
+        trackClassName={trackClassName || "justify-center items-center"}
       >
         {products.map(product => (
           <Carousel.Item key={product.id || product.productId} className="h-full">

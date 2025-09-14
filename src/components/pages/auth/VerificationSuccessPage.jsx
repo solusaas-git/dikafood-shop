@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContextNew';
 import { useTranslation } from '@/utils/i18n';
@@ -57,7 +57,7 @@ const translations = {
 
 const VerificationSuccessPage = () => {
   const { t } = useTranslation(translations);
-  const navigate = useNavigate();
+  const router = useRouter();
   const [searchParams] = useSearchParams();
   const { checkAuth } = useAuth();
   const { success, error } = useNotification();
@@ -74,14 +74,14 @@ const VerificationSuccessPage = () => {
       setEmail(emailParam);
     } else {
       // If no email, redirect to signup
-      navigate('/signup');
+      router.push('/signup');
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, router]);
 
   const verifyCode = async (code, userEmail) => {
     setStatus('processing');
     try {
-              const response = await fetch(`${config.API.backendUrl}/public/verify`, {
+      const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const VerificationSuccessPage = () => {
         // Refresh auth state and redirect on successful verification
         setTimeout(async () => {
           await checkAuth();
-          navigate('/checkout');
+          router.push('/checkout');
         }, 1500); // Add a small delay for the user to see the success message
       } else {
         setStatus('error');
@@ -128,7 +128,7 @@ const VerificationSuccessPage = () => {
     
     setIsResending(true);
     try {
-              const response = await fetch(`${config.API.backendUrl}/public/resend-verification`, {
+      const response = await fetch('/api/auth/resend-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -152,11 +152,11 @@ const VerificationSuccessPage = () => {
   };
 
   const handleStartShopping = () => {
-    navigate('/shop');
+    router.push('/shop');
   };
 
   const handleExploreProducts = () => {
-    navigate('/');
+    router.push('/');
   };
 
   const handleCodeChange = (e) => {

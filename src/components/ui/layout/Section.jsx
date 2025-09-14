@@ -220,6 +220,7 @@ const Section = React.forwardRef(({
   headerSize = 'medium',
   titleSize = 'medium',
   descriptionSize = 'medium',
+  onLoad,
   children,
   ...props
 }, ref) => {
@@ -268,6 +269,7 @@ const Section = React.forwardRef(({
           objectPosition={backgroundObjectPosition}
           customStyles={backgroundCustomStyles}
           customContainerStyles={backgroundCustomContainerStyles}
+          onLoad={onLoad}
         />
       )}
 

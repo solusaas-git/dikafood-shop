@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useNotification } from '@/contexts/NotificationContextNew';
 import { useTranslation } from '@/utils/i18n';
 import Icon from '@components/ui/icons/Icon';
@@ -60,7 +60,7 @@ const translations = {
 
 const PasswordResetPage = () => {
   const { t } = useTranslation(translations);
-  const navigate = useNavigate();
+  const router = useRouter();
   const { success, error } = useNotification();
   
   const [step, setStep] = useState(1); // 1: email, 2: code, 3: password, 4: success
@@ -323,7 +323,7 @@ const PasswordResetPage = () => {
             <p className="text-neutral-700 text-lg mb-8 leading-relaxed">{t('success_message')}</p>
             
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => router.push('/login')}
               className="w-full bg-gradient-to-r from-logo-green to-dark-green-2 text-white py-4 px-8 rounded-full font-semibold text-lg hover:shadow-lg hover:scale-105 transition-all duration-300 transform"
             >
               {t('login_button')}
@@ -354,7 +354,7 @@ const PasswordResetPage = () => {
           {step < 4 && (
             <div className="text-center mt-8">
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => router.push('/login')}
                 className="text-neutral-600 hover:text-logo-green transition-colors duration-300"
               >
                 {t('back_to_login')}

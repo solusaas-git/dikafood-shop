@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import Icon from '../icons/Icon';
 import { useTranslation } from '../../../utils/i18n';
 import translations from './translations/Footer';
@@ -51,7 +51,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company info */}
           <div>
-            <Link to="/">
+            <Link href="/">
               <img
                 src="/images/logo-light.svg"
                 alt="DikaFood Logo"
@@ -85,16 +85,16 @@ export default function Footer() {
               <h4 className="font-medium text-white text-lg">{t('section_navigation')}</h4>
             </div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-              <Link to="/" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
+              <Link href="/" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
                 {t('nav_home')}
               </Link>
-              <Link to="/about" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
+              <Link href="/about" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
                 {t('nav_about')}
               </Link>
-              <Link to="/shop" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
+              <Link href="/shop" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
                 {t('products_viewall')}
               </Link>
-              <Link to="/contact" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
+              <Link href="/contact" className="text-white/90 hover:text-dark-yellow-1 transition-colors text-sm">
                 {t('nav_contact')}
               </Link>
             </div>
@@ -157,11 +157,11 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center md:items-baseline pt-8 mt-8 border-t border-white/10 text-sm">
           <p className="text-white/80 mb-2 md:mb-0">© {currentYear} Dikafood. {t('copyright')}</p>
           <div className="flex space-x-4">
-            <Link to="/terms" className="text-white/80 hover:text-dark-yellow-1 transition-colors">
+            <Link href="/terms" className="text-white/80 hover:text-dark-yellow-1 transition-colors">
               {t('legal_terms')}
             </Link>
             <span className="text-white/50">·</span>
-            <Link to="/privacy" className="text-white/80 hover:text-dark-yellow-1 transition-colors">
+            <Link href="/privacy" className="text-white/80 hover:text-dark-yellow-1 transition-colors">
               {t('legal_privacy')}
             </Link>
           </div>

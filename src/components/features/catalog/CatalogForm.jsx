@@ -144,11 +144,30 @@ export default function CatalogForm({ onSubmitSuccess, initialData = INITIAL_FOR
       setIsSubmitting(true);
       setSubmitError(null);
 
-      // Since we only have download endpoints, simulate a successful request
-      // and provide catalog URLs for both languages
+      // Submit form data to backend
+      const response = await fetch('/api/catalog-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData
+          // No language preference - user will select in modal
+        })
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to submit catalog request');
+      }
+
+      // Call success handler with the response data
       onSubmitSuccess({
         userData: {
           ...formData,
+          leadId: result.data.leadId,
+          emailSent: result.data.emailSent,
           submittedAt: new Date().toISOString(),
           catalogUrls: {
             fr: '/api/catalogs/fr',
@@ -167,7 +186,7 @@ export default function CatalogForm({ onSubmitSuccess, initialData = INITIAL_FOR
 
   return (
     <div className={`${styles.container} ${className}`}>
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form} suppressHydrationWarning>
         {/* Display submit error if any */}
         {submitError && (
           <div className={styles.submitError}>
@@ -176,9 +195,9 @@ export default function CatalogForm({ onSubmitSuccess, initialData = INITIAL_FOR
           </div>
         )}
 
-        <div className={styles.fieldsContainer}>
+        <div className={styles.fieldsContainer} suppressHydrationWarning>
           {/* Name field */}
-          <div className={`${styles.field} ${errors.name && touched.name ? 'border-feedback-error/60 ring-1 ring-feedback-error/30' : ''}`}>
+          <div className={`${styles.field} ${errors.name && touched.name ? 'border-feedback-error/60 ring-1 ring-feedback-error/30' : ''}`} suppressHydrationWarning>
             <div className={styles.fieldIcon}>
               <Icon name="user" size={20} />
             </div>
@@ -201,7 +220,7 @@ export default function CatalogForm({ onSubmitSuccess, initialData = INITIAL_FOR
           )}
 
           {/* Surname field */}
-          <div className={`${styles.field} ${errors.surname && touched.surname ? 'border-feedback-error/60 ring-1 ring-feedback-error/30' : ''}`}>
+          <div className={`${styles.field} ${errors.surname && touched.surname ? 'border-feedback-error/60 ring-1 ring-feedback-error/30' : ''}`} suppressHydrationWarning>
             <div className={styles.fieldIcon}>
               <Icon name="user" size={20} />
             </div>
@@ -224,7 +243,7 @@ export default function CatalogForm({ onSubmitSuccess, initialData = INITIAL_FOR
           )}
 
           {/* Email field */}
-          <div className={`${styles.field} ${errors.email && touched.email ? 'border-feedback-error/60 ring-1 ring-feedback-error/30' : ''}`}>
+          <div className={`${styles.field} ${errors.email && touched.email ? 'border-feedback-error/60 ring-1 ring-feedback-error/30' : ''}`} suppressHydrationWarning>
             <div className={styles.fieldIcon}>
               <Icon name="envelope" size={20} />
             </div>
@@ -258,6 +277,7 @@ export default function CatalogForm({ onSubmitSuccess, initialData = INITIAL_FOR
             error={errors.telephone && touched.telephone}
             errorMessage={errors.telephone}
             defaultCountry="ma"
+            suppressHydrationWarning
           />
         </div>
 

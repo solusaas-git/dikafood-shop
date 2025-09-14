@@ -35,7 +35,7 @@ const Page = ({
         type={type}
         additionalMeta={additionalMeta}
       />
-      <main className={`${backgroundClass} ${className}`}>
+      <main className={`${backgroundClass} ${className} pt-20 min-h-screen`}>
         {children}
       </main>
     </>

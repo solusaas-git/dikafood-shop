@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import Page from '@components/ui/layout/Page';
 import ContentContainer from '@components/ui/layout/ContentContainer';
 
@@ -14,10 +15,12 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContextNew';
 import { usePendingAction } from '@/contexts/PendingActionContext';
+import { useLoading } from '@/contexts/LoadingContext';
 
 // Components
 import ProductCard from '@/components/ui/product/ProductCard';
 import LoadingSpinner from '@/components/ui/loading/LoadingSpinner';
+import PageLoader from '@components/ui/loading/PageLoader';
 import Icon from '@/components/ui/icons/Icon';
 // Checkout-related imports removed - functionality disabled until backend implementation
 import CheckoutDisabledModal from '@/components/ui/modals/CheckoutDisabledModal';
@@ -32,21 +35,53 @@ import { getProductImageUrlById } from '@/services/api';
 
 const PRODUCTS_PER_PAGE = 12;
 
-function AsyncImage({ imageId, alt, ...props }) {
+function AsyncImage({ imageId, imageUrl, alt, ...props }) {
   const [src, setSrc] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  
   React.useEffect(() => {
     let mounted = true;
+    setLoading(true);
+    
+    // If we have a direct imageUrl, use it
+    if (imageUrl) {
+      if (mounted) {
+        setSrc(imageUrl);
+        setLoading(false);
+      }
+      return;
+    }
+    
+    // Otherwise, try to get the URL by ID (legacy support)
     if (imageId) {
       getProductImageUrlById(imageId).then(url => {
-        if (mounted) setSrc(url);
+        if (mounted) {
+          setSrc(url);
+          setLoading(false);
+        }
+      }).catch(() => {
+        if (mounted) {
+          setSrc(null);
+          setLoading(false);
+        }
       });
     } else {
       setSrc(null);
+      setLoading(false);
     }
+    
     return () => { mounted = false; };
-  }, [imageId]);
-  if (!src) return <div className="bg-gray-100 w-full h-full flex items-center justify-center text-gray-400">No Image</div>;
-  return <img src={src} alt={alt} {...props} />;
+  }, [imageId, imageUrl]);
+  
+  if (loading) {
+    return <div className="bg-gray-100 w-full h-full flex items-center justify-center text-gray-400">Loading...</div>;
+  }
+  
+  if (!src) {
+    return <div className="bg-gray-100 w-full h-full flex items-center justify-center text-gray-400">No Image</div>;
+  }
+  
+  return <img src={src} alt={alt} {...props} className={`w-full h-full object-contain ${props.className || ''}`} />;
 }
 
 
@@ -60,7 +95,7 @@ const ShopProductCard = ({
   ...props
 }) => {
   // const { addToCart, isInCart, cart } = useCart();
-  const { addItem, getItemInCart, cart } = useCart();
+  const { addItem, getItemInCart, cart, loading: cartLoading } = useCart();
   const { formatPrice } = useCurrency();
   const { isLoggedIn, isGuest } = useAuth();
   const { success } = useNotification(); // Temporarily disable error to debug
@@ -128,8 +163,11 @@ const ShopProductCard = ({
   // Add state for direct purchase loading
   const [isDirectPurchaseLoading, setIsDirectPurchaseLoading] = useState(false);
 
-  // Get product price
-  const price = activeVariant?.price || product.unitPrice || product.price || 0;
+  // Get product prices (promotional and regular)
+  const regularPrice = activeVariant?.price || product.unitPrice || product.price || 0;
+  const promotionalPrice = activeVariant?.promotionalPrice;
+  const hasPromotion = promotionalPrice && promotionalPrice > 0 && promotionalPrice < regularPrice;
+  const displayPrice = hasPromotion ? promotionalPrice : regularPrice;
 
   console.log(product)
 
@@ -147,10 +185,10 @@ const ShopProductCard = ({
 
   // Reset loading state when cart loading state changes to false
   useEffect(() => {
-    if (!cart.loading && isCardLoading) {
+    if (!cartLoading && isCardLoading) {
       setIsCardLoading(false);
     }
-  }, [cart.loading]);
+  }, [cartLoading, isCardLoading]);
 
   // Prevent event propagation for the add to cart button
   const handleAddToCart = (e) => {
@@ -176,8 +214,7 @@ const ShopProductCard = ({
           setShowSuccess(true);
           setAddedToCart(true);
 
-          // Use event bus to notify that an item was added to cart
-          cartEvents.itemAdded({ product, variant: activeVariant });
+          // Event is now automatically emitted by CartContext
 
           // Reset to default state after 2 seconds
           setTimeout(() => {
@@ -244,19 +281,28 @@ const ShopProductCard = ({
     <div className="relative h-full min-w-[200px] flex flex-col">
       {/* Card container with ContentContainer-like styling */}
       <div className="h-full flex flex-col rounded-xl overflow-hidden border border-logo-lime/30 bg-white transition-all duration-300 hover:border-logo-lime/50">
-        {/* Product image container with soft overlay */}
-        <div className="relative overflow-hidden h-40 sm:h-44 md:h-48">
+        {/* Product image container with soft overlay - vertical rectangle */}
+        <div className="relative overflow-hidden h-56 sm:h-64 md:h-72">
           {/* Permanent soft lime green overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-logo-lime/5 to-light-yellow-1/10 z-10"></div>
 
           {/* Hover overlay */}
           <div className="absolute inset-0 bg-logo-lime/10 opacity-0 hover:opacity-100 transition-opacity duration-300 z-10"></div>
 
-          {/* Image */}
-          <AsyncImage
-            imageId={activeVariant?.image || (product.images && product.images[0])}
-            alt={product.title || product.name}
-          />
+          {/* Image with padding - show variant-specific image */}
+          <div className="absolute inset-0 p-4 z-20">
+            <AsyncImage
+              key={`${product.id}-${activeVariant?._id || activeVariant?.id || activeVariant?.size || 'default'}`}
+              imageUrl={
+                // Priority: variant imageUrl (from API transformation) -> product image -> product images array
+                activeVariant?.imageUrl ||
+                product.image ||
+                (product.images && product.images[0])
+              }
+              imageId={activeVariant?.image || (product.images && product.images[0])} // Fallback for legacy
+              alt={`${product.title || product.name} - ${activeVariant?.size || ''}`}
+            />
+          </div>
 
           {/* Absolutely positioned brand tag */}
           {(product.brand || product.brandName) && (
@@ -285,6 +331,8 @@ const ShopProductCard = ({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      
+                      // Only change the variant in the current card, don't navigate
                       onVariantChange(variant);
                     }}
                   >
@@ -326,37 +374,47 @@ const ShopProductCard = ({
           </h3>
         </div>
 
-        {/* Footer with independent slide-up hover effect */}
-        <div className="relative border-t bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70 border-logo-lime/30 h-12 sm:h-14 group/footer">
-          {/* Price row - always visible */}
-          <div className="px-2 sm:px-3 py-2 sm:py-3 flex items-center justify-between h-12 sm:h-14 cursor-pointer">
-            <span className="font-medium text-sm sm:text-base text-dark-green-7">{formatPriceWithSmallDecimals(price)}</span>
-
-            {/* Subtle hover indicator */}
-            <div className="opacity-40 group-hover/footer:opacity-0 transition-opacity duration-300">
-              <Icon name="caretup" size="xs" className="text-dark-green-7 transform rotate-12" />
-            </div>
+        {/* Footer with always visible CTA buttons */}
+        <div className="border-t bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70 border-logo-lime/30">
+          {/* Price row */}
+          <div className="px-3 py-2 border-b border-logo-lime/20">
+            {hasPromotion ? (
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <span className="font-medium text-sm sm:text-base text-red-600">
+                  {formatPriceWithSmallDecimals(displayPrice)}
+                </span>
+                <span className="text-xs sm:text-sm text-gray-500 line-through">
+                  {formatPriceWithSmallDecimals(regularPrice)}
+                </span>
+                <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium">
+                  -{Math.round(((regularPrice - promotionalPrice) / regularPrice) * 100)}%
+                </span>
+              </div>
+            ) : (
+              <div className="text-center">
+                <span className="font-medium text-sm sm:text-base text-dark-green-7">
+                  {formatPriceWithSmallDecimals(displayPrice)}
+                </span>
+              </div>
+            )}
           </div>
 
-          {/* Action buttons panel - slides up from bottom */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70 border-t border-logo-lime/30 px-5 sm:px-6 py-2.5 sm:py-3 transform translate-y-full group-hover/footer:translate-y-0 transition-transform duration-300 ease-out shadow-lg rounded-b-xl">
+          {/* Action buttons - always visible */}
+          <div className="px-3 py-3">
             <div className="grid grid-cols-2 gap-2 w-full">
               {/* Direct purchase button */}
               <button
                 onClick={handleDirectPurchase}
                 disabled={isDirectPurchaseLoading}
-                className="inline-flex items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium gap-1.5
-                  bg-dark-green-6/80 text-white border border-dark-green-6/80 hover:bg-dark-green-6 transition-all duration-200 relative z-40"
+                className="inline-flex items-center justify-center px-2 py-2 rounded-lg text-xs font-medium gap-1
+                  bg-dark-green-6 text-white border border-dark-green-6 hover:bg-dark-green-7 transition-all duration-200 relative z-40"
                 title="Acheter maintenant"
               >
                 <Icon name="creditcard" size="xs" className="text-white" />
                 {isDirectPurchaseLoading ? (
                   <Icon name="circlenotch" size="xs" className="text-white animate-spin" />
                 ) : (
-                  <>
-                    <div className="w-px h-3 bg-white/30 mx-1"></div>
-                    <Icon name="arrowright" size="xs" className="text-white" />
-                  </>
+                  <span className="hidden sm:inline ml-1">Acheter</span>
                 )}
               </button>
 
@@ -364,10 +422,10 @@ const ShopProductCard = ({
               <button
                 onClick={handleAddToCart}
                 disabled={isCardLoading || showSuccess}
-                className={`inline-flex items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium gap-1.5
+                className={`inline-flex items-center justify-center px-2 py-2 rounded-lg text-xs font-medium gap-1
               ${showSuccess
                     ? 'bg-green-100 text-green-700 border border-green-300'
-                    : 'bg-logo-lime/15 text-dark-green-7 border border-logo-lime/25 hover:bg-logo-lime/25'
+                    : 'bg-logo-lime/20 text-dark-green-7 border border-logo-lime/30 hover:bg-logo-lime/30'
                   } transition-all duration-200 relative z-40`}
                 title="Ajouter au panier"
               >
@@ -376,14 +434,11 @@ const ShopProductCard = ({
                   <Icon name="circlenotch" size="xs" className={`${showSuccess ? 'text-green-700' : 'text-dark-green-7'} animate-spin`} />
                 ) : showSuccess ? (
                   <>
-                    <div className="w-px h-3 bg-green-700/30 mx-1"></div>
-                    <Icon name="check" size="xs" className="text-green-700" />
+                    <Icon name="check" size="xs" className="text-green-700 ml-1" />
+                    <span className="hidden sm:inline ml-1">Ajouté</span>
                   </>
                 ) : (
-                  <>
-                    <div className={`w-px h-3 mx-1 ${showSuccess ? 'bg-green-700/30' : 'bg-dark-green-7/30'}`}></div>
-                    <Icon name="plus" size="xs" className={`${showSuccess ? 'text-green-700' : 'text-dark-green-7'}`} />
-                  </>
+                  <span className="hidden sm:inline ml-1">Panier</span>
                 )}
               </button>
             </div>
@@ -391,10 +446,9 @@ const ShopProductCard = ({
         </div>
       </div>
 
-      {/* Clickable overlay for the card excluding footer */}
-      <Link
-        to={`/produits/${product._id || product.slug || product.id || product.productId}`}
-        className="absolute inset-0 bottom-12 sm:bottom-14 z-20"
+      {/* Clickable overlay for the card excluding footer - removed Link to avoid conflict with onClick */}
+      <div
+        className="absolute inset-0 bottom-20 z-20 cursor-pointer"
         aria-label={`Voir ${product.title || product.name}`}
         {...props}
       />
@@ -406,7 +460,7 @@ const ShopProductCard = ({
 
 // Shop Hero Section Component
 const ShopHero = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleCatalogClick = () => {
     // Scroll to the products section on the current page
@@ -436,7 +490,7 @@ const ShopHero = () => {
             src="/images/shop/shop-hero.webp"
             alt="Huile d'olive artisanale - DikaFood"
             className="w-full h-full object-cover object-[center_30%] md:object-[center_35%]"
-            fetchpriority="high"
+            fetchPriority="high"
           />
         </picture>
         {/* Overlay with gradient */}
@@ -826,8 +880,9 @@ const SortOptions = ({ currentSort, onSortChange, sortOptions }) => (
 
 // Main Shop Component
 const ShopPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { showLoading } = useLoading();
   const [loading, setLoading] = useState(false);
   const { isMobile, isTablet } = useBreakpoint();
   const [error, setError] = useState(null);
@@ -855,13 +910,17 @@ const ShopPage = () => {
   // Modal states
   const [showCheckoutDisabledModal, setShowCheckoutDisabledModal] = useState(false);
 
-  // Load categories and brands on component mount
+  // Load categories, brands, and initial products in parallel on component mount
   useEffect(() => {
-    const loadFilters = async () => {
+    const loadInitialData = async () => {
       try {
-        const [categoriesResponse, brandsResponse] = await Promise.all([
+        setLoading(true);
+        
+        // Load categories, brands, and products in parallel for better performance
+        const [categoriesResponse, brandsResponse, productsResponse] = await Promise.all([
           api.getCategories(),
-          api.getBrands()
+          api.getBrands(),
+          api.getProducts({ sortBy: 'featured', sortDirection: 'desc' }) // Load featured products first
         ]);
 
         // Set categories with proper mapping
@@ -879,6 +938,7 @@ const ShopPage = () => {
 
         // Set brands with proper mapping and filtering
         if (brandsResponse && brandsResponse.success && brandsResponse.data && Array.isArray(brandsResponse.data)) {
+          
           const validBrands = brandsResponse.data
             .filter(brand =>
               brand.name &&
@@ -887,10 +947,12 @@ const ShopPage = () => {
               brand.name.trim() !== ''
             )
             .map(brand => ({
-              id: brand.name,
+              id: brand.id || brand.name,
               name: brand.displayName || brand.name,
+              logo: brand.logo, // Keep the logo object from API
               productCount: brand.productCount || 0
             }));
+
 
           // If no valid brands found, use default brands
           if (validBrands.length === 0) {
@@ -909,7 +971,16 @@ const ShopPage = () => {
           setBrands([]);
         }
 
+        // Set initial products
+        if (productsResponse && productsResponse.success && Array.isArray(productsResponse.data.products)) {
+          setAllProducts(productsResponse.data.products);
+        } else {
+          setAllProducts([]);
+        }
+
       } catch (error) {
+        console.error('Failed to load initial data:', error);
+        
         // Fallback to hardcoded values
         const fallbackCategories = [
           { id: 'olive oil', name: 'Huile d\'olive', productCount: 0 },
@@ -925,9 +996,13 @@ const ShopPage = () => {
 
         setCategories(fallbackCategories);
         setBrands(fallbackBrands);
+        setAllProducts([]);
+      } finally {
+        setLoading(false);
       }
     };
-    loadFilters();
+    
+    loadInitialData();
   }, []);
 
   // Sort options
@@ -972,16 +1047,13 @@ const ShopPage = () => {
       });
     }
 
-    // Expand products to include variants as separate cards
+    // Expand products to include variants as separate cards (but with variant selectors)
     const expandedProducts = [];
     filtered.forEach((product, productIndex) => {
       if (product.variants && product.variants.length > 0) {
-        // Create a separate card for each variant
-        product.variants.forEach((variant, variantIndex) => {
-          // Skip variants without size information
-          if (!variant.size) {
-            return;
-          }
+        // Filter variants that match price and volume criteria
+        const validVariants = product.variants.filter(variant => {
+          if (!variant.size) return false;
 
           // Extract price and volume information
           const variantPrice = variant.price || product.price || 0;
@@ -989,11 +1061,9 @@ const ShopPage = () => {
           // Parse volume from size (assuming format like "250ml" or "1L")
           let variantVolume = 0;
           if (variant.size) {
-            // Try to extract a number from the size string
             const sizeMatch = variant.size.match(/(\d+)/);
             if (sizeMatch && sizeMatch[1]) {
               variantVolume = parseInt(sizeMatch[1]);
-
               // If it's in liters (e.g., "1L"), convert to ml
               if (variant.size.toLowerCase().includes('l') && !variant.size.toLowerCase().includes('ml') && variantVolume < 100) {
                 variantVolume *= 1000;
@@ -1001,35 +1071,44 @@ const ShopPage = () => {
             }
           }
 
-          // Only add variants that match the price and volume filters
-          // For volume, only filter if we could parse a numeric volume
+          // Check if variant passes filters
           const passesVolumeFilter = variantVolume === 0 ||
             (variantVolume >= volumeRange[0] && variantVolume <= volumeRange[1]);
-
           const passesPriceFilter = variantPrice >= priceRange[0] && variantPrice <= priceRange[1];
 
-          if (passesPriceFilter && passesVolumeFilter) {
-            const expandedProduct = {
-              ...product,
-              activeVariant: variant,
-              // Use a formatted title with the variant size
-              title: `${product.title || product.name}`,
-              displayVariantSelector: false,
-              _id: product._id || product.id, // Use the actual product MongoDB ID
-              id: `${product._id || product.id}-${variant._id || variant.size}`, // Create a unique display ID
-              // Add a sortable price and volume field
-              sortablePrice: variantPrice,
-              sortableVolume: variantVolume
-            };
+          return passesPriceFilter && passesVolumeFilter;
+        });
 
-            console.log('🔄 ShopPage - Expanded product created:', {
-              originalProduct: { _id: product._id, id: product.id, name: product.name },
-              variant: { _id: variant._id, id: variant.id, size: variant.size },
-              expandedProduct: { _id: expandedProduct._id, id: expandedProduct.id, title: expandedProduct.title }
-            });
+        // Create a separate card for each valid variant
+        validVariants.forEach((variant, variantIndex) => {
+          // Extract price and volume information for this specific variant
+          const variantPrice = variant.price || product.price || 0;
 
-            expandedProducts.push(expandedProduct);
+          // Parse volume from size for sorting
+          let variantVolume = 0;
+          if (variant.size) {
+            const sizeMatch = variant.size.match(/(\d+)/);
+            if (sizeMatch && sizeMatch[1]) {
+              variantVolume = parseInt(sizeMatch[1]);
+              // If it's in liters (e.g., "1L"), convert to ml
+              if (variant.size.toLowerCase().includes('l') && !variant.size.toLowerCase().includes('ml') && variantVolume < 100) {
+                variantVolume *= 1000;
+              }
+            }
           }
+
+          const expandedProduct = {
+            ...product,
+            variants: product.variants, // Keep ALL variants for the selector
+            activeVariant: variant, // This specific variant is active for this card
+            displayVariantSelector: true, // Enable variant selector on each card
+            _id: product._id || product.id, // Use the actual product MongoDB ID
+            id: `${product._id || product.id}-${variant._id || variant.size}`, // Create a unique display ID per card
+            sortablePrice: variantPrice,
+            sortableVolume: variantVolume
+          };
+
+          expandedProducts.push(expandedProduct);
         });
       } else {
         // Products without variants - apply price filter
@@ -1038,8 +1117,10 @@ const ShopPage = () => {
         if (productPrice >= priceRange[0] && productPrice <= priceRange[1]) {
           expandedProducts.push({
             ...product,
+            activeVariant: null,
             displayVariantSelector: false,
             _id: product._id || product.id, // Use the actual product MongoDB ID
+            id: product._id || product.id,
             sortablePrice: productPrice,
             sortableVolume: 0
           });
@@ -1098,6 +1179,11 @@ const ShopPage = () => {
   };
 
   useEffect(() => {
+    // Skip loading on initial mount since loadInitialData handles it
+    if (!searchQuery && selectedCategories.length === 0 && selectedBrands.length === 0 && currentSort === 'featured') {
+      return;
+    }
+    
     // Build params for API call
     const params = {};
     if (searchQuery) params.q = searchQuery;
@@ -1107,31 +1193,21 @@ const ShopPage = () => {
       params.sortBy = getSortField(currentSort);
       params.sortDirection = getSortDirection(currentSort);
     }
-    // Optionally add price/volume range if you want backend filtering
-    // params.minPrice = priceRange[0];
-    // params.maxPrice = priceRange[1];
-    // params.minVolume = volumeRange[0];
-    // params.maxVolume = volumeRange[1];
 
     let isMounted = true;
-    setProducts([]); // Optionally show loading spinner
-    setTotalProducts(0);
+    setLoading(true);
 
     api.getProducts(params)
       .then(response => {
         if (isMounted && response && response.success && Array.isArray(response.data.products)) {
-          console.log('📦 ShopPage - Products loaded:', {
-            count: response.data.products.length,
-            firstProduct: response.data.products[0],
-            productIds: response.data.products.map(p => ({ _id: p._id, id: p.id, name: p.name }))
-          });
           setAllProducts(response.data.products);
         } else if (isMounted) {
           setAllProducts([]);
         }
         setLoading(false);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Failed to load products:', error);
         if (isMounted) setAllProducts([]);
         setLoading(false);
       });
@@ -1373,27 +1449,31 @@ const ShopPage = () => {
               {/* Categories */}
               <div className="border-b border-gray-200">
                 <div className="p-4">
+                  <h4 className="font-medium mb-3 text-dark-green-7 flex items-center gap-2">
+                    <Icon name="tag" size="sm" className="text-dark-green-7" />
+                    Catégories
+                  </h4>
                   {categories.length === 0 ? (
                     <div className="text-sm text-gray-500 py-2">
                       Chargement des catégories...
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-2">
                       {categories.map((category) => (
                         <button
                           key={category.id}
-                          className={`py-2 px-3 text-sm rounded-full border transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${selectedCategories.includes(category.id)
+                          className={`w-full py-2 px-3 text-sm rounded-lg border transition-all duration-200 flex items-center gap-2 text-left ${selectedCategories.includes(category.id)
                             ? 'bg-logo-lime/30 border-logo-lime text-dark-green-7 font-medium shadow-sm'
                             : 'bg-white border-logo-lime/30 text-dark-green-6 hover:bg-logo-lime/10'
                             }`}
                           onClick={() => handleCategoryToggle(category.id)}
                         >
                           {selectedCategories.includes(category.id) && (
-                            <Icon name="check" size="xs" className="text-dark-green-7" />
+                            <Icon name="check" size="xs" className="text-dark-green-7 flex-shrink-0" />
                           )}
-                          <span className="truncate">{category.name}</span>
+                          <span className="flex-1 text-left">{category.name}</span>
                           {categoryCounts[category.id] > 0 && (
-                            <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full ml-1 flex-shrink-0">
+                            <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full flex-shrink-0">
                               {categoryCounts[category.id]}
                             </span>
                           )}
@@ -1406,16 +1486,20 @@ const ShopPage = () => {
 
               {/* Brands */}
               <div className="p-4">
+                <h4 className="font-medium mb-3 text-dark-green-7 flex items-center gap-2">
+                  <Icon name="star" size="sm" className="text-dark-green-7" />
+                  Marques
+                </h4>
                 {brands.length === 0 ? (
                   <div className="text-sm text-gray-500 py-2">
                     Chargement des marques...
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
                     {brands.map((brand) => (
                       <button
                         key={brand.id}
-                        className={`py-2 px-3 text-sm rounded-full border transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${selectedBrands.includes(brand.id)
+                        className={`w-full py-3 px-3 text-sm rounded-lg border transition-all duration-200 flex items-center gap-3 text-left ${selectedBrands.includes(brand.id)
                           ? 'bg-logo-lime/30 border-logo-lime text-dark-green-7 font-medium shadow-sm'
                           : 'bg-white border-logo-lime/30 text-dark-green-6 hover:bg-logo-lime/10'
                           }`}
@@ -1424,9 +1508,23 @@ const ShopPage = () => {
                         {selectedBrands.includes(brand.id) && (
                           <Icon name="check" size="xs" className="text-dark-green-7 flex-shrink-0" />
                         )}
-                        <span className="truncate">{brand.name}</span>
+                        <div className="flex-shrink-0 w-12 h-8 flex items-center justify-center bg-white rounded border border-gray-200">
+                          <img 
+                            src={brand.logo?.url || '/images/brands/placeholder-logo.svg'} 
+                            alt={brand.logo?.alt || `${brand.name} logo`}
+                            className="max-w-full max-h-full object-contain"
+                            onLoad={() => {
+                              console.log(`Brand logo loaded successfully: ${brand.name} - ${brand.logo?.url}`);
+                            }}
+                            onError={(e) => {
+                              console.log(`Brand logo failed to load: ${brand.name} - ${brand.logo?.url}, falling back to placeholder`);
+                              e.target.src = '/images/brands/placeholder-logo.svg';
+                            }}
+                          />
+                        </div>
+                        <span className="flex-1 text-left text-xs text-gray-600">{brand.name}</span>
                         {brandCounts[brand.id] > 0 && (
-                          <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full ml-1 flex-shrink-0">
+                          <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full flex-shrink-0">
                             {brandCounts[brand.id]}
                           </span>
                         )}
@@ -1475,16 +1573,43 @@ const ShopPage = () => {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-4 sm:gap-x-3 sm:gap-y-4 md:gap-x-4 md:gap-y-5 auto-rows-fr justify-items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-x-4 gap-y-6 auto-rows-fr justify-items-center">
                   {products.map((product) => (
                     <ShopProductCard
                       key={product.id}
                       product={product}
                       activeVariant={product.activeVariant}
-                      onVariantChange={() => { }}
-                      displayVariantSelector={false}
+                      onVariantChange={(variant) => {
+                        // Update the active variant for this specific product
+                        setProducts(prevProducts => 
+                          prevProducts.map(p => 
+                            p.id === product.id 
+                              ? { ...p, activeVariant: variant }
+                              : p
+                          )
+                        );
+                      }}
+                      displayVariantSelector={product.displayVariantSelector}
                       onShowCheckoutDisabled={handleShowCheckoutDisabled}
-                      onClick={() => navigate(`/produits/${product._id || product.id}`)}
+                      onClick={() => {
+                        // Navigate to product page with the currently active variant
+                        const variantParam = product.activeVariant?._id || product.activeVariant?.id || product.activeVariant?.size || product.activeVariant?.name;
+                        const productSlugOrId = product.slug || product._id || product.id;
+                        const productUrl = variantParam 
+                          ? `/produits/${productSlugOrId}?variant=${encodeURIComponent(variantParam)}`
+                          : `/produits/${productSlugOrId}`;
+                        
+                        console.log('🔄 ShopPage: Navigating to product:', {
+                          product: { _id: product._id, name: product.name },
+                          activeVariant: product.activeVariant,
+                          variantParam: variantParam,
+                          productUrl: productUrl
+                        });
+                        
+                        // Show loading before navigation
+                        showLoading('Chargement du produit...');
+                        router.push(productUrl);
+                      }}
                     />
                   ))}
                 </div>
@@ -1630,27 +1755,31 @@ const ShopPage = () => {
                   {/* Categories */}
                   <div className="border-b border-gray-200">
                     <div className="p-4">
+                      <h4 className="font-medium mb-3 text-dark-green-7 flex items-center gap-2">
+                        <Icon name="tag" size="sm" className="text-dark-green-7" />
+                        Catégories
+                      </h4>
                       {categories.length === 0 ? (
                         <div className="text-sm text-gray-500 py-2">
                           Chargement des catégories...
                         </div>
                       ) : (
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-2">
                           {categories.map((category) => (
                             <button
                               key={category.id}
-                              className={`py-2 px-3 text-sm rounded-full border transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${selectedCategories.includes(category.id)
+                              className={`w-full py-2 px-3 text-sm rounded-lg border transition-all duration-200 flex items-center gap-2 text-left ${selectedCategories.includes(category.id)
                                 ? 'bg-logo-lime/30 border-logo-lime text-dark-green-7 font-medium shadow-sm'
                                 : 'bg-white border-logo-lime/30 text-dark-green-6 hover:bg-logo-lime/10'
                                 }`}
                               onClick={() => handleCategoryToggle(category.id)}
                             >
                               {selectedCategories.includes(category.id) && (
-                                <Icon name="check" size="xs" className="text-dark-green-7" />
+                                <Icon name="check" size="xs" className="text-dark-green-7 flex-shrink-0" />
                               )}
-                              <span className="truncate">{category.name}</span>
+                              <span className="flex-1 text-left">{category.name}</span>
                               {categoryCounts[category.id] > 0 && (
-                                <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full ml-1 flex-shrink-0">
+                                <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full flex-shrink-0">
                                   {categoryCounts[category.id]}
                                 </span>
                               )}
@@ -1663,16 +1792,20 @@ const ShopPage = () => {
 
                   {/* Brands */}
                   <div className="p-4">
+                    <h4 className="font-medium mb-3 text-dark-green-7 flex items-center gap-2">
+                      <Icon name="star" size="sm" className="text-dark-green-7" />
+                      Marques
+                    </h4>
                     {brands.length === 0 ? (
                       <div className="text-sm text-gray-500 py-2">
                         Chargement des marques...
                       </div>
                     ) : (
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-2">
                         {brands.map((brand) => (
                           <button
                             key={brand.id}
-                            className={`py-2 px-3 text-sm rounded-full border transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${selectedBrands.includes(brand.id)
+                            className={`w-full py-3 px-3 text-sm rounded-lg border transition-all duration-200 flex items-center gap-3 text-left ${selectedBrands.includes(brand.id)
                               ? 'bg-logo-lime/30 border-logo-lime text-dark-green-7 font-medium shadow-sm'
                               : 'bg-white border-logo-lime/30 text-dark-green-6 hover:bg-logo-lime/10'
                               }`}
@@ -1681,9 +1814,23 @@ const ShopPage = () => {
                             {selectedBrands.includes(brand.id) && (
                               <Icon name="check" size="xs" className="text-dark-green-7 flex-shrink-0" />
                             )}
-                            <span className="truncate">{brand.name}</span>
+                            <div className="flex-shrink-0 w-12 h-8 flex items-center justify-center bg-white rounded border border-gray-200">
+                              <img 
+                                src={brand.logo?.url || '/images/brands/placeholder-logo.svg'} 
+                                alt={brand.logo?.alt || `${brand.name} logo`}
+                                className="max-w-full max-h-full object-contain"
+                                onLoad={() => {
+                                  console.log(`Brand logo loaded successfully: ${brand.name} - ${brand.logo?.url}`);
+                                }}
+                                onError={(e) => {
+                                  console.log(`Brand logo failed to load: ${brand.name} - ${brand.logo?.url}, falling back to placeholder`);
+                                  e.target.src = '/images/brands/placeholder-logo.svg';
+                                }}
+                              />
+                            </div>
+                            <span className="flex-1 text-left text-xs text-gray-600">{brand.name}</span>
                             {brandCounts[brand.id] > 0 && (
-                              <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full ml-1 flex-shrink-0">
+                              <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full flex-shrink-0">
                                 {brandCounts[brand.id]}
                               </span>
                             )}

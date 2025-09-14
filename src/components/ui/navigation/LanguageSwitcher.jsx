@@ -4,7 +4,7 @@ import { useTranslation, useLocale, LANGUAGES } from '../../../utils/i18n';
 import FlagImage from '../common/FlagImage';
 import Menu from './Menu';
 import MenuTrigger from './MenuTrigger';
-import Icon from '../icons/Icon';
+import LucideIcon from '../icons/LucideIcon';
 
 /**
  * Language switcher component
@@ -86,7 +86,7 @@ const LanguageSwitcher = ({
     return (
       <div className="flex items-center gap-3 py-3 bg-gradient-to-br from-amber-50 to-amber-100/70 border-b border-logo-lime/20">
         <div className="w-10 h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center ml-3">
-          <Icon name="translate" size="lg" className="text-dark-green-7" />
+          <LucideIcon name="translate" size="lg" className="text-dark-green-7" />
         </div>
         <h3 className="text-lg font-medium text-dark-green-7 truncate max-w-[220px]">Langue / Language</h3>
       </div>
@@ -104,7 +104,7 @@ const LanguageSwitcher = ({
           className="bg-dark-green-7/80 backdrop-blur-md border border-white/10 shadow-lg p-3 text-white hover:bg-dark-green-6/80 transition-colors"
           icon={
             <div className="flex items-center justify-center">
-              <Icon name="translate" size="md" className="text-dark-yellow-1" />
+              <LucideIcon name="translate" size="md" className="text-dark-yellow-1" />
             </div>
           }
         />
@@ -213,7 +213,7 @@ const LanguageSwitcher = ({
             <span className="text-sm">{lang.name}</span>
             {locale === lang.code && (
               <span className="ml-auto">
-                <Icon name="check" size="sm" className="text-dark-green-7" />
+                <LucideIcon name="check" size="sm" className="text-dark-green-7" />
               </span>
             )}
           </button>

@@ -67,12 +67,14 @@ const INITIAL_FORM_STATE = {
  * @param {Function} props.onSuccess - Callback function called on successful form submission
  * @param {Function} props.onError - Callback function called on form submission error
  * @param {Object} props.initialData - Initial data for the form
+ * @param {string} props.source - Source of the form ('landing' or 'contact')
  * @param {Object} props.className - Additional CSS class for the form container
  */
 const ContactForm = ({
   onSuccess,
   onError,
   initialData = INITIAL_FORM_STATE,
+  source = 'landing',
   className = ''
 }) => {
   const { t, locale } = useTranslation(translations);
@@ -212,9 +214,29 @@ const ContactForm = ({
       setIsSubmitting(true);
       setSubmitError(null);
 
-      // TODO: Implement contact endpoint in backend
-      // For now, simulate successful submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Prepare form data for API
+      const contactData = {
+        name: `${formData.name} ${formData.surname}`.trim(),
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        source: source || 'landing' // Use prop or default to 'landing'
+      };
+
+      // Submit to contact leads API
+      const response = await fetch('/api/contact-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData)
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to submit contact form');
+      }
 
       // Show success message
       setSubmitSuccess(true);
@@ -252,7 +274,7 @@ const ContactForm = ({
   };
 
   return (
-    <form className={`${s.content()} ${className}`} onSubmit={handleSubmit} noValidate>
+    <form className={`${s.content()} ${className}`} onSubmit={handleSubmit} noValidate suppressHydrationWarning>
       <div className={s.row()}>
         <div className={s.field()}>
           <input

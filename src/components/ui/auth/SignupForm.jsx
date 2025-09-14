@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { StyledTextField, Checkbox, PhoneInput, EnhancedInputField } from '../inputs';
 import Icon from '../icons/Icon';
 import { useTranslation } from '../../../utils/i18n';
@@ -132,7 +132,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
 
   if (compact) {
     return (
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={handleSubmit} noValidate suppressHydrationWarning>
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div>
@@ -257,7 +257,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
             label={
               <span className="text-xs">
                 {t('agree_terms_1')}{' '}
-                <Link to="/terms" className="text-logo-lime hover:underline" onClick={(e) => e.stopPropagation()}>
+                <Link href="/terms" className="text-logo-lime hover:underline" onClick={(e) => e.stopPropagation()}>
                   {t('terms_conditions')}
                 </Link>{' '}
                 {t('agree_terms_2')}
@@ -274,7 +274,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
 
         <button
           type="submit"
-          className="py-2.5 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40 text-sm"
+          className="w-full py-3 px-4 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40 text-sm"
         >
           <Icon name="user" weight="duotone" size="sm" color="dark-green" className="mr-2" />
           {t('register_button')}
@@ -410,7 +410,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
           label={
             <span>
               {t('agree_terms_1')}{' '}
-              <Link to="/terms" className="text-logo-lime hover:underline" onClick={(e) => e.stopPropagation()}>
+              <Link href="/terms" className="text-logo-lime hover:underline" onClick={(e) => e.stopPropagation()}>
                 {t('terms_conditions')}
               </Link>{' '}
               {t('agree_terms_2')}
@@ -427,7 +427,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
 
       <button
         type="submit"
-        className="py-3.5 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40"
+        className="w-full py-3.5 px-4 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40"
       >
         <Icon name="userPlus" weight="duotone" size="md" color="dark-green" className="mr-2" />
         {t('create_account_button')}

@@ -309,10 +309,10 @@ function Menu(props) {
         {showCloseButton && (
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-logo-lime/20 hover:bg-logo-lime/30 text-dark-green-7 border border-logo-lime/30 shadow-sm transition-colors"
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/95 hover:bg-white text-dark-green-7 hover:text-dark-green-8 border border-gray-200 hover:border-gray-300 shadow-md hover:shadow-lg transition-all duration-200"
             aria-label="Close menu"
           >
-            <Icon name="x" size="sm" />
+            <Icon name="x" size="sm" className="font-semibold" />
           </button>
         )}
       </div>

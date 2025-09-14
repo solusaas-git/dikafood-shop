@@ -87,6 +87,7 @@ export default function OptimizedBackgroundImage({
   overlayColor,
   customStyles = {},
   customContainerStyles = {},
+  onLoad,
   ...props
 }) {
   // Format paths for different image versions
@@ -201,9 +202,10 @@ export default function OptimizedBackgroundImage({
           alt={alt}
           className={imgClass}
           loading="eager"
-          fetchpriority="high"
+          fetchPriority="high"
           width="1920"
           height="1080"
+          onLoad={onLoad}
           style={{
             ...defaultImageStyles,
             transform: 'none',

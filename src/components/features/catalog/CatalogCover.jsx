@@ -99,7 +99,7 @@ const CatalogCover = ({ className = '' }) => {
                 {/* Small bottle - Biladi 1L */}
                 <div className="relative mx-[-15px] z-[4] flex items-end">
                   <img
-                    src="/images/products/biladi-1L.png"
+                    src="/images/brands/biladi-logo.svg"
                     alt="Biladi 1L"
                     className="h-auto w-[85px] object-contain"
                     loading="lazy"

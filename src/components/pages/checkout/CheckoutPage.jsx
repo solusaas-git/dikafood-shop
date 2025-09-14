@@ -4,22 +4,22 @@
  */
 
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/icons';
 import { Button } from '@/components/ui/inputs';
 import Page from '@/components/ui/layout/Page';
 
 const CheckoutPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     // Optionally redirect after a few seconds
     const timer = setTimeout(() => {
-      navigate('/shop');
+      router.push('/shop');
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [router]);
 
     return (
     <Page
@@ -53,14 +53,14 @@ const CheckoutPage = () => {
           
           <div className="space-y-3">
             <Button
-              onClick={() => navigate('/shop')}
+              onClick={() => router.push('/shop')}
               className="w-full bg-logo-lime/30 hover:bg-logo-lime/40 text-dark-green-7 border border-logo-lime/50"
             >
               Retour à la boutique
             </Button>
             
             <Button
-              onClick={() => navigate('/contact')}
+              onClick={() => router.push('/contact')}
               variant="outline"
               className="w-full"
             >

@@ -23,7 +23,7 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
   const { isMobile, isTablet } = useBreakpoint();
   const [internalProducts, setInternalProducts] = useState(productsCache);
   const [activeVariants, setActiveVariants] = useState(activeVariantsCache);
-  const [isVisible, setIsVisible] = useState(productsCache.length > 0);
+  const [isVisible, setIsVisible] = useState(true); // Always start visible for mock products
   const isFullyLoaded = useRef(hasInitiallyLoaded);
   const carouselRef = useRef(null);
   const [shouldShowControls, setShouldShowControls] = useState(true);
@@ -32,6 +32,7 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
     className,
     products: externalProducts,
     loading: externalLoading,
+    onAddToCart,
   } = props || {};
 
   // Embla carousel setup with loop enabled and adjusted options based on screen size
@@ -46,9 +47,13 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(true);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(true);
 
+
   // Use external products if provided, otherwise use internal state
-  const products = externalProducts || internalProducts;
+  const products = (externalProducts && externalProducts.length > 0) ? externalProducts 
+    : (internalProducts && internalProducts.length > 0) ? internalProducts 
+    : [];
   const loading = externalLoading !== undefined ? externalLoading : false;
+  
 
   // Check if all slides are visible (optimized with throttling)
   const checkIfAllSlidesVisible = useCallback(() => {
@@ -116,7 +121,7 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
         setInternalProducts(productsCache);
         setActiveVariants(activeVariantsCache);
         setIsVisible(true);
-        if (onLoaded) setTimeout(() => onLoaded(), 300);
+        if (onLoaded) onLoaded();
       }
       return;
     }
@@ -127,36 +132,63 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
     isFullyLoaded.current = true;
 
     try {
-      // Fetch featured products
-      const response = await api.getFeaturedProducts();
+      // Fetch featured variants instead of featured products
+      const response = await api.getFeaturedVariants();
 
-      // Use the new backend response structure
-      const productsArray = Array.isArray(response.data?.products) ? response.data.products : [];
-      const formattedProducts = productsArray.filter(Boolean);
+      if (response && response.success && response.data && response.data.length > 0) {
+        console.log('Featured variants loaded:', response.data.length);
+        
+        // Variants from API are already properly formatted
+        const processedVariants = response.data.filter(Boolean);
         
         // Update global cache
-        productsCache = formattedProducts;
+        productsCache = processedVariants;
 
-        // Initialize active variants
+        // Initialize active variants - each variant is already the active variant
         const initialVariants = {};
-        formattedProducts.forEach(product => {
-          const productId = product.productId || product.id;
-          if (product.variants && product.variants.length > 0) {
-            initialVariants[productId] = product.variants[0];
-          }
+        processedVariants.forEach(variant => {
+          const variantId = variant.id;
+          // For variants, the variant itself is the active variant
+          initialVariants[variantId] = variant.variants?.[0] || {
+            _id: variant.variantId,
+            id: variant.variantId,
+            size: variant.size,
+            price: variant.price,
+            originalPrice: variant.originalPrice,
+            promotionalPrice: variant.promotionalPrice,
+            stock: variant.stock,
+            sku: variant.sku,
+            weight: variant.weight,
+            dimensions: variant.dimensions,
+            imageUrl: variant.image,
+            imageUrls: variant.images,
+            featured: variant.featured
+          };
         });
 
         // Update global cache
         activeVariantsCache = initialVariants;
 
         // Set state
-        setInternalProducts(formattedProducts);
+        setInternalProducts(processedVariants);
         setActiveVariants(initialVariants);
         setIsVisible(true);
-        if (onLoaded) setTimeout(() => onLoaded(), 300);
+        if (onLoaded) onLoaded();
+      } else {
+        console.log('No featured variants found');
+        // No fallback - just show empty state
+        setInternalProducts([]);
+        setActiveVariants({});
+        setIsVisible(true);
+        if (onLoaded) onLoaded();
+      }
     } catch (err) {
-      console.error('Error fetching products for hero carousel:', err);
+      console.error('Error fetching featured variants for hero carousel:', err);
+      // No fallback - just show empty state on error
       setInternalProducts([]);
+      setActiveVariants({});
+      setIsVisible(true);
+      if (onLoaded) onLoaded();
     }
   }, [t, internalProducts.length, onLoaded, externalProducts]);
 
@@ -179,6 +211,7 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
       setIsVisible(true);
       if (onLoaded) setTimeout(() => onLoaded(), 300);
     } else {
+      // Fetch real featured variants from API
       fetchProducts();
     }
   }, [fetchProducts, onLoaded, externalProducts]);
@@ -226,6 +259,8 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
     };
   }, [emblaApi, checkIfAllSlidesVisible, throttledCheckIfAllSlidesVisible]);
 
+  // Debug render state
+
   // Loading state
   if (loading) {
     return (
@@ -233,7 +268,7 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
         <div className="container relative flex justify-center">
           <div className="flex gap-4 overflow-hidden py-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse bg-gray-200 rounded-lg w-[280px] h-[400px]"></div>
+              <div key={i} className="animate-pulse bg-gray-200 rounded-lg w-[280px] h-[420px]"></div>
             ))}
           </div>
         </div>
@@ -248,25 +283,26 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
 
   return (
     <div
-      className={`w-full relative pt-4 md:pt-6 ${className || ''}`}
+      className={`w-full relative pt-2 md:pt-3 ${className || ''}`}
       ref={ref}
       style={{ opacity: isVisible ? 1 : 0 }}
     >
-      <div className="relative w-full mx-auto px-4 md:px-10" ref={carouselRef}>
+      <div className="relative w-full mx-auto px-3 md:px-6" ref={carouselRef}>
         {/* Viewport */}
         <div className="overflow-hidden w-full" ref={emblaRef}>
           {/* Container */}
-          <div className="flex select-none -ml-2 md:-ml-2.5">
+          <div className="flex select-none">
             {products.map(product => (
               <div
-                className={`relative min-w-0 ${isMobile ? 'pl-2 w-[calc(100%-8px)]' : 'pl-2.5 w-[280px]'} md:w-[280px] flex-shrink-0 h-[400px]`}
+                className={`relative min-w-0 ${isMobile ? 'pl-1.5 w-[calc(100%-6px)]' : 'pl-1.5 w-[240px]'} md:w-[240px] flex-shrink-0 h-[340px]`}
                 key={product._id || product.id || product.productId}
               >
-                <div className="relative overflow-hidden px-1.5 h-full pt-2">
+                <div className="relative overflow-hidden px-0.5 h-full pt-0.5">
                   <HeroProductCard
                     product={product}
                     activeVariant={activeVariants[product._id || product.id || product.productId] || (product.variants && product.variants[0])}
                     onVariantChange={(variant) => handleVariantChange(product._id || product.id || product.productId, variant)}
+                    onAddToCart={onAddToCart}
                   />
                 </div>
               </div>
@@ -277,21 +313,21 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
         {/* Navigation buttons - only shown when needed */}
         {shouldShowControls && (
           <>
-            <button
-              className="absolute z-10 top-1/2 -translate-y-1/2 left-0 md:left-2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
-              onClick={scrollPrev}
-              aria-label="Previous product"
-              type="button"
-            >
-              <ArrowLeft weight="bold" size={24} className="text-dark-green-7" />
-            </button>
-            <button
-              className="absolute z-10 top-1/2 -translate-y-1/2 right-0 md:right-2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
-              onClick={scrollNext}
-              aria-label="Next product"
-              type="button"
-            >
-              <ArrowRight weight="bold" size={24} className="text-dark-green-7" />
+              <button
+                className="absolute z-10 top-1/2 -translate-y-1/2 left-1 md:left-2 w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-light-yellow-2 focus:ring-offset-1 hover:border hover:border-logo-lime/60 active:border active:border-logo-lime active:shadow-[0_0_0_2px_rgba(203,245,0,0.3)]"
+                onClick={scrollPrev}
+                aria-label="Previous product"
+                type="button"
+              >
+                <ArrowLeft weight="bold" size={16} className="text-dark-green-7" />
+              </button>
+              <button
+                className="absolute z-10 top-1/2 -translate-y-1/2 right-1 md:right-2 w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-light-yellow-2 focus:ring-offset-1 hover:border hover:border-logo-lime/60 active:border active:border-logo-lime active:shadow-[0_0_0_2px_rgba(203,245,0,0.3)]"
+                onClick={scrollNext}
+                aria-label="Next product"
+                type="button"
+              >
+                <ArrowRight weight="bold" size={16} className="text-dark-green-7" />
             </button>
           </>
         )}
@@ -304,7 +340,8 @@ EmblaProductCarousel.propTypes = {
   onLoaded: PropTypes.func,
   className: PropTypes.string,
   products: PropTypes.array,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  onAddToCart: PropTypes.func
 };
 
 export default EmblaProductCarousel;

@@ -71,8 +71,9 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
     if (isOpen) {
       setDownloadStates(INITIAL_DOWNLOAD_STATES);
       setError('');
+      console.log('📋 Modal opened with userData:', userData);
     }
-  }, [isOpen]);
+  }, [isOpen, userData]);
 
   // Handle download button click
   const handleDownload = async (language) => {
@@ -83,6 +84,32 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
         [language]: { ...prev[language], isLoading: true }
       }));
 
+      // First, send email with selected language
+      if (userData?.leadId) {
+        console.log('📧 Sending email for language:', language, 'leadId:', userData.leadId);
+        
+        const emailResponse = await fetch('/api/catalog-leads/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            leadId: userData.leadId,
+            selectedLanguage: language
+          })
+        });
+
+        const emailResult = await emailResponse.json();
+        console.log('📧 Email API response:', emailResult);
+        
+        if (!emailResult.success && !emailResult.data?.alreadySent) {
+          throw new Error(emailResult.message || 'Failed to send email');
+        }
+      } else {
+        console.log('❌ No leadId found in userData:', userData);
+      }
+
+      // Then trigger the download
       const result = await onDownload?.(language);
 
       if (!result || !result.success) {
@@ -201,7 +228,7 @@ export default function CatalogDownloadModal({ isOpen, onClose, userData, onDown
     >
       <div className={styles.content}>
         <p className="text-dark-green-6 mb-6 text-base leading-relaxed">
-          Choisissez la version du catalogue que vous souhaitez télécharger
+          Choisissez la version du catalogue que vous souhaitez recevoir par email et télécharger
         </p>
 
         {error && (

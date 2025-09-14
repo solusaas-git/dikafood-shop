@@ -1,25 +1,26 @@
-import { useNavigate, generatePath } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 /**
  * Custom hook for app navigation
  * Provides convenient methods for navigating to different parts of the app
  */
 const useAppNavigation = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return {
     // General navigation
-    goTo: (path, options) => navigate(path, options),
-    goBack: () => navigate(-1),
-    goHome: () => navigate('/'),
+    goTo: (path, options) => router.push(path),
+    goBack: () => router.back(),
+    goHome: () => router.push('/'),
 
     // Product navigation
-    goToProducts: () => navigate('/produits'),
-    goToProduct: (productId) => navigate(`/produits/${productId}`),
-    goToProductNotFound: () => navigate('/produits/not-found'),
+    goToProducts: () => router.push('/produits'),
+    goToProduct: (productId) => router.push(`/produits/${productId}`),
+    goToProductNotFound: () => router.push('/produits/not-found'),
 
-    // Generate a path with parameters
-    generatePath,
+    // Shop navigation
+    goToShop: () => router.push('/shop'),
+    goToCheckout: () => router.push('/checkout'),
   };
 };
 

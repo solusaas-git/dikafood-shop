@@ -18,7 +18,7 @@ import { useTranslation } from '../../../../utils/i18n';
  * @param {Function} onClick - Click event handler for mobile detail view
  * @param {string} className - Additional styling for the component
  */
-const BrandCard = React.memo(({
+const BrandCard = ({
   brand,
   onMouseEnter,
   onMouseMove,
@@ -75,7 +75,7 @@ const BrandCard = React.memo(({
 
   // Listen for forced refreshes from parent components
   useEffect(() => {
-    const brandsSection = document.getElementById('brands-section');
+    const brandsSection = typeof document !== 'undefined' ? document.getElementById('brands-section') : null;
     if (!brandsSection) return;
 
     const handleLanguageChange = () => {
@@ -112,7 +112,7 @@ const BrandCard = React.memo(({
     <Card
       variant="brandLime"
       padding="none"
-      className={`w-[280px] h-56 flex items-center justify-center transition-all duration-200 ease-in-out ${
+      className={`w-[280px] h-56 flex items-center justify-center transition-all duration-200 ease-in-out mx-auto ${
         active ? 'ring-2 ring-logo-lime -translate-y-1' : 'hover:-translate-y-1'
       } ${className}`}
       onMouseEnter={handleMouseEnter}
@@ -120,13 +120,13 @@ const BrandCard = React.memo(({
       onMouseLeave={onMouseLeave}
       onClick={onClick}
     >
-      <div className="brand-image w-full h-full flex items-center justify-center p-3">
+      <div className="brand-image w-full h-full flex items-center justify-center p-6">
         {isLoading ? (
-          <div className="logo-loading flex items-center justify-center">
+          <div className="logo-loading flex items-center justify-center w-full h-full">
             <LoadingSpinner size="md" className="text-dark-yellow-1" />
           </div>
         ) : error ? (
-          <div className="logo-fallback flex flex-col items-center justify-center text-dark-green-5">
+          <div className="logo-fallback flex flex-col items-center justify-center text-dark-green-5 w-full h-full">
             <Icon name="buildings" sizeInPixels={64} weight="duotone" className="mb-2 opacity-80" />
             <span className="text-2xl font-bold text-dark-green-6 uppercase">
               {(brand && (brand.displayName || brand.name)) ? (brand.displayName || brand.name).charAt(0) : "?"}
@@ -137,14 +137,19 @@ const BrandCard = React.memo(({
             key={`logo-${locale}-${brand?.id || 'unknown'}`}
             src={logoUrl}
             alt={`Logo ${brand && (brand.displayName || brand.name) ? (brand.displayName || brand.name) : 'Brand'}`}
-            className="max-w-[96%] max-h-[96%] object-contain transition-transform duration-250"
+            className="max-w-full max-h-full object-contain transition-transform duration-250"
             draggable="false"
             onError={() => setError(true)}
+            style={{ 
+              display: 'block',
+              margin: 'auto',
+              objectPosition: 'center'
+            }}
           />
         )}
       </div>
     </Card>
   );
-});
+};
 
 export default BrandCard;

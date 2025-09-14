@@ -34,6 +34,10 @@ import {
   Tag,
   Funnel,
   MagnifyingGlass,
+  Trash,
+  Pencil,
+  CurrencyDollar,
+  TrendUp,
 
   // Social icons
   FacebookLogo,
@@ -79,6 +83,12 @@ import {
   ShoppingBag,
   ShoppingCart,
 
+  // Location and transport icons
+  MapPin,
+  Truck,
+  Bank,
+  Money,
+
   // Reviews section icons
   Star,
   StarHalf,
@@ -112,6 +122,7 @@ export const iconRegistry = {
   signout: SignOut,
   gear: Gear,
   creditcard: CreditCard,
+  'credit-card': CreditCard, // Alias for kebab-case
   x: X,
   signin: SignIn,
   list: List,
@@ -120,7 +131,13 @@ export const iconRegistry = {
   minus: Minus,
   tag: Tag,
   funnel: Funnel,
+  trash: Trash,
+  pencil: Pencil,
   magnifyingglass: MagnifyingGlass,
+  search: MagnifyingGlass, // Alias for search
+  currencydollar: CurrencyDollar,
+  trendingup: TrendUp,
+  trendup: TrendUp,
 
   // Social
   facebooklogo: FacebookLogo,
@@ -167,6 +184,13 @@ export const iconRegistry = {
   translate: Translate,
   shoppingbag: ShoppingBag,
   shoppingcart: ShoppingCart,
+
+  // Location and transport
+  mappin: MapPin,
+  'map-pin': MapPin, // Alias for kebab-case
+  truck: Truck,
+  bank: Bank,
+  money: Money,
 
   // Reviews section icons
   star: Star,

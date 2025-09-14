@@ -64,6 +64,7 @@ const bodyStyles = tv({
  * @param {string} bodyAlign - Body content alignment (left, center)
  * @param {boolean} collapsible - Whether the header can be clicked to collapse/expand the content
  * @param {boolean} defaultOpen - Default open state when collapsible is true
+ * @param {function} onToggle - Callback function called when the container is toggled
  */
 const ContentContainer = ({
   variant,
@@ -76,13 +77,18 @@ const ContentContainer = ({
   bodyAlign,
   collapsible = false,
   defaultOpen = true,
+  onToggle,
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   const toggleOpen = () => {
     if (collapsible) {
-      setIsOpen(!isOpen);
+      const newState = !isOpen;
+      setIsOpen(newState);
+      if (onToggle) {
+        onToggle(newState);
+      }
     }
   };
 

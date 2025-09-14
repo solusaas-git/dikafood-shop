@@ -1,5 +1,6 @@
 export default {
   en: {
+    account: "My account",
     login: "Login",
     profile: "My Profile",
     orders: "My Orders",
@@ -53,6 +54,14 @@ export default {
     register_button: "Create Account",
     back_to_login: "Back to Login",
 
+    // Forgot password form
+    forgot_password_title: "Reset Password",
+    forgot_password_description: "Enter your email address and we'll send you a link to reset your password.",
+    email_reset_placeholder: "Enter your email address",
+    send_reset_link: "Send Reset Link",
+    reset_link_sent: "Reset link sent! Please check your email.",
+    back_to_login_link: "Back to Login",
+
     // Form validation messages
     first_name_required: "First name is required",
     last_name_required: "Last name is required",
@@ -87,6 +96,7 @@ export default {
     }
   },
   fr: {
+    account: "Mon compte",
     login: "Se connecter",
     profile: "Mon Profil",
     orders: "Mes Commandes",
@@ -129,8 +139,8 @@ export default {
 
     // Registration form
     register_title: "Créer un compte",
-    first_name_placeholder: "Entrez votre prénom",
-    last_name_placeholder: "Entrez votre nom",
+    first_name_placeholder: "Votre prénom",
+    last_name_placeholder: "Votre nom",
     phone_placeholder: "+212XXXXXXXXX",
     confirm_password: "Confirmer le mot de passe",
     confirm_password_placeholder: "Confirmez votre mot de passe",
@@ -139,6 +149,14 @@ export default {
     agree_terms_2: "de DikaFood",
     register_button: "Créer un compte",
     back_to_login: "Retour à la connexion",
+
+    // Forgot password form
+    forgot_password_title: "Réinitialiser le mot de passe",
+    forgot_password_description: "Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    email_reset_placeholder: "Entrez votre adresse email",
+    send_reset_link: "Envoyer le lien de réinitialisation",
+    reset_link_sent: "Lien de réinitialisation envoyé ! Veuillez vérifier votre email.",
+    back_to_login_link: "Retour à la connexion",
 
     // Form validation messages
     first_name_required: "Le prénom est requis",
@@ -174,6 +192,7 @@ export default {
     }
   },
   ar: {
+    account: "حسابي",
     login: "تسجيل الدخول",
     profile: "ملفي الشخصي",
     orders: "طلباتي",
@@ -226,6 +245,14 @@ export default {
     agree_terms_2: "من ديكافود",
     register_button: "إنشاء حساب",
     back_to_login: "العودة إلى تسجيل الدخول",
+
+    // Forgot password form
+    forgot_password_title: "إعادة تعيين كلمة المرور",
+    forgot_password_description: "أدخل عنوان بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.",
+    email_reset_placeholder: "أدخل عنوان بريدك الإلكتروني",
+    send_reset_link: "إرسال رابط إعادة التعيين",
+    reset_link_sent: "تم إرسال رابط إعادة التعيين! يرجى التحقق من بريدك الإلكتروني.",
+    back_to_login_link: "العودة إلى تسجيل الدخول",
 
     // Form validation messages
     first_name_required: "الاسم الأول مطلوب",

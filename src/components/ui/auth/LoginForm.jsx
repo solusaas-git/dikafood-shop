@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { StyledTextField, Checkbox, EnhancedInputField } from '../inputs';
 import Icon from '../icons/Icon';
 import { useTranslation } from '../../../utils/i18n';
@@ -12,9 +12,10 @@ import translations from '../navigation/translations/AuthMenu';
  * @param {Function} props.onSubmit - Submit handler
  * @param {Function} props.onClose - Close handler
  * @param {Function} props.onGoToSignup - Handler to go to signup form
+ * @param {Function} [props.onForgotPassword] - Optional handler for forgot password (if not provided, uses Link to /forgot-password)
  * @param {boolean} props.compact - Whether to use compact styling
  */
-const LoginForm = ({ onSubmit, onClose, onGoToSignup, compact = false }) => {
+const LoginForm = ({ onSubmit, onClose, onGoToSignup, onForgotPassword, compact = false }) => {
   const { t } = useTranslation(translations);
   const [formData, setFormData] = useState({
     email: '',
@@ -72,7 +73,7 @@ const LoginForm = ({ onSubmit, onClose, onGoToSignup, compact = false }) => {
 
   if (compact) {
     return (
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={handleSubmit} noValidate suppressHydrationWarning>
         <div className="space-y-3">
           <div>
             <EnhancedInputField
@@ -123,18 +124,28 @@ const LoginForm = ({ onSubmit, onClose, onGoToSignup, compact = false }) => {
             onChange={handleChange}
             label={<span className="text-xs">{t('remember_me')}</span>}
           />
-          <Link 
-            to="/forgot-password" 
-            className="text-xs text-logo-lime hover:underline"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {t('forgot_password')}
-          </Link>
+          {onForgotPassword ? (
+            <button
+              type="button"
+              onClick={onForgotPassword}
+              className="text-xs text-logo-lime hover:underline"
+            >
+              {t('forgot_password')}
+            </button>
+          ) : (
+            <Link 
+              href="/forgot-password" 
+              className="text-xs text-logo-lime hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {t('forgot_password')}
+            </Link>
+          )}
         </div>
 
         <button
           type="submit"
-          className="py-2.5 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40 text-sm"
+          className="w-full py-3 px-4 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40 text-sm"
         >
           <Icon name="signIn" weight="duotone" size="sm" color="dark-green" className="mr-2" />
           {t('login_button')}
@@ -196,18 +207,28 @@ const LoginForm = ({ onSubmit, onClose, onGoToSignup, compact = false }) => {
           onChange={handleChange}
           label={t('remember_me')}
         />
-        <Link 
-          to="/forgot-password" 
-          className="text-sm text-logo-lime hover:underline"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {t('forgot_password')}
-        </Link>
+        {onForgotPassword ? (
+          <button
+            type="button"
+            onClick={onForgotPassword}
+            className="text-sm text-logo-lime hover:underline"
+          >
+            {t('forgot_password')}
+          </button>
+        ) : (
+          <Link 
+            href="/forgot-password" 
+            className="text-sm text-logo-lime hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {t('forgot_password')}
+          </Link>
+        )}
       </div>
 
       <button
         type="submit"
-        className="py-3.5 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40"
+        className="w-full py-3.5 px-4 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40"
       >
         <Icon name="signIn" weight="duotone" size="md" color="dark-green" className="mr-2" />
         {t('login_button')}

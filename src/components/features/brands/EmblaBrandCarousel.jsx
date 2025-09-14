@@ -24,15 +24,17 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
     locale
   } = props || {};
 
-  // Embla carousel options - disable dragging on desktop when all cards fit
-  const emblaOptions = useRef({
-    align: 'center',
+  // Embla carousel options - show maximum brands on load
+  const emblaOptions = {
+    align: isMobile ? 'center' : 'start',
     containScroll: 'trimSnaps',
-    dragFree: true,
-    loop: true, // Enable loop for both mobile and desktop
+    dragFree: false,
+    loop: true,
     slidesToScroll: 1,
-    draggable: true // Enable dragging for both
-  }).current;
+    draggable: true,
+    skipSnaps: false,
+    startIndex: 0
+  };
 
   const [emblaRef, emblaApi] = useEmblaCarousel(emblaOptions);
 
@@ -95,6 +97,22 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
     // Initial check
     checkIfAllSlidesVisible();
 
+    // On desktop, if all slides fit, center them by going to a middle slide
+    setTimeout(() => {
+      if (!isMobile && emblaApi && carouselRef.current) {
+        const containerWidth = carouselRef.current.clientWidth;
+        const slidesWidth = emblaApi.slideNodes().reduce((total, slide) => {
+          return total + slide.offsetWidth;
+        }, 0);
+        
+        // If all slides fit, center them by scrolling to the middle
+        if (slidesWidth <= containerWidth) {
+          const middleIndex = Math.floor(brands.length / 2);
+          emblaApi.scrollTo(middleIndex, false); // false = no animation
+        }
+      }
+    }, 100);
+
     return () => {
       window.removeEventListener('resize', throttledCheckIfAllSlidesVisible);
       emblaApi.off('reInit', throttledCheckIfAllSlidesVisible);
@@ -106,7 +124,7 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
         checkIfAllSlidesVisible._throttleTimer = null;
       }
     };
-  }, [emblaApi, checkIfAllSlidesVisible, throttledCheckIfAllSlidesVisible]);
+  }, [emblaApi, checkIfAllSlidesVisible, throttledCheckIfAllSlidesVisible, isMobile, brands.length]);
 
   // Empty state
   if (!brands || brands.length === 0) {
@@ -119,14 +137,14 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
       ref={ref}
       style={{ opacity: isVisible ? 1 : 0 }}
     >
-      <div className="relative w-full mx-auto px-6 md:px-10" ref={carouselRef}>
+      <div className="relative w-full mx-auto px-8 md:px-12 flex justify-center" ref={carouselRef}>
         {/* Viewport */}
-        <div className={`overflow-hidden w-full ${allCardsVisible && !isMobile ? 'flex justify-center' : ''}`} ref={emblaRef}>
+        <div className={`overflow-visible w-full max-w-screen-xl flex justify-center`} ref={emblaRef}>
           {/* Container */}
-          <div className={`flex select-none ${allCardsVisible && !isMobile ? 'justify-center' : '-ml-2'}`}>
+          <div className={`flex select-none justify-center items-center`}>
             {brands.map((brand, index) => (
-              <div className="relative min-w-0 pl-2 flex-shrink-0" key={`${brand.id}-${locale}-${refreshTrigger}-${index}`}>
-                <div className="relative overflow-hidden px-1 h-full pt-2 pb-3">
+              <div className="relative flex-shrink-0 flex items-center justify-center px-2" key={`${brand.id}-${locale}-${refreshTrigger}-${index}`}>
+                <div className="relative h-full py-4 flex items-center justify-center">
                   <BrandCard
                     brand={brand}
                     className="mx-0 my-1 flex-shrink-0"
@@ -137,11 +155,11 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
           </div>
         </div>
 
-        {/* Navigation buttons - always shown on mobile, only when needed on desktop */}
+        {/* Navigation buttons - positioned outside the carousel content */}
         {shouldShowControls && (
           <>
             <button
-              className="absolute z-10 top-1/2 -translate-y-1/2 left-0 md:left-2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
+              className="absolute z-10 top-1/2 -translate-y-1/2 -left-8 md:-left-12 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
               onClick={scrollPrev}
               aria-label="Previous brand"
               type="button"
@@ -149,7 +167,7 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
               <ArrowLeft weight="bold" size={24} className="text-dark-green-7" />
             </button>
             <button
-              className="absolute z-10 top-1/2 -translate-y-1/2 right-0 md:right-2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
+              className="absolute z-10 top-1/2 -translate-y-1/2 -right-8 md:-right-12 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
               onClick={scrollNext}
               aria-label="Next brand"
               type="button"

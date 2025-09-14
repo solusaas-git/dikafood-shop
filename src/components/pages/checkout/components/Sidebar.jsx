@@ -3,27 +3,70 @@ import { Receipt, ShoppingCartSimple } from '@phosphor-icons/react';
 import ContentContainer from '@/components/ui/layout/ContentContainer';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useCart } from '@/contexts/CartContext';
-import { useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import Icon from '@/components/ui/icons/Icon';
 
-const Sidebar = ({ currentStep = 0, orderDetails = null, orderId = null }) => {
-  const { cart, calculateTotals } = useCart();
+const Sidebar = ({ currentStep = 0, formData = null, orderDetails = null, orderId = null, deliveryMethods = [] }) => {
+  const { cart, calculateTotals, loading: cartLoading } = useCart();
   const [loading, setLoading] = useState(false);
   const { formatPrice } = useCurrency();
-  const location = useLocation();
+  const pathname = usePathname();
+
+  // Show loading state if cart is still loading and we don't have order details
+  const isLoading = cartLoading && !orderDetails && !cart;
 
   // Determine which data to display
   const isFirstStep = currentStep === 0;
   // For direct purchases, we have order details but empty cart, so use order data even in step 0
-  const isDirectPurchase = orderDetails && (!cart.items || cart.items.length === 0);
+  const isDirectPurchase = orderDetails && (!cart?.items || cart.items.length === 0);
   const shouldUseOrderData = (currentStep >= 1 && orderDetails) || isDirectPurchase;
   
   // Get items to display
-  const itemsToDisplay = shouldUseOrderData ? (orderDetails.items || []) : (cart.items || []);
+  const itemsToDisplay = shouldUseOrderData ? (orderDetails?.items || []) : (cart?.items || []);
   const dataSource = shouldUseOrderData ? 'order' : 'cart';
 
   // Get all totals from the cart context
-  const { subtotal, shipping, tax, total } = calculateTotals();
+  const { subtotal, regularSubtotal, shipping, tax, total, regularTotal, hasPromotions, savings } = calculateTotals();
+  
+  // Calculate delivery fee based on selected city (for step 0)
+  const [cityDeliveryFee, setCityDeliveryFee] = useState(0);
+  
+  useEffect(() => {
+    // Calculate city delivery fee when a city is selected (maintain across all steps)
+    if (formData?.city) {
+      const fetchCityDeliveryFee = async () => {
+        try {
+          const response = await fetch(`/api/cities?deliveryOnly=true`);
+          const data = await response.json();
+          if (data.success) {
+            const selectedCity = data.data.cities.find(city => city.name === formData.city);
+            setCityDeliveryFee(selectedCity?.deliveryFee || 0);
+          }
+        } catch (error) {
+          console.error('Error fetching city delivery fee:', error);
+        }
+      };
+      fetchCityDeliveryFee();
+    } else {
+      setCityDeliveryFee(0); // Reset when no city selected
+    }
+  }, [formData?.city]);
+
+  // Calculate total delivery cost (city fee + method additional cost)
+  const calculateTotalDeliveryCost = () => {
+    let totalCost = cityDeliveryFee; // Always start with city delivery fee as base
+    
+    // Add delivery method additional cost if selected
+    if (currentStep >= 1 && formData?.deliveryMethodId) {
+      const selectedMethod = deliveryMethods.find(m => m._id === formData.deliveryMethodId);
+      const methodAdditionalCost = selectedMethod?.price || 0;
+      totalCost += methodAdditionalCost;
+    }
+    
+    return totalCost;
+  };
+  
+  // Debug cart data in development
 
   // Define header content with icon
   const headerContent = (
@@ -60,7 +103,7 @@ const Sidebar = ({ currentStep = 0, orderDetails = null, orderId = null }) => {
         </h3>
 
         <div className="max-h-[300px] overflow-y-auto space-y-4 bg-gradient-to-br from-amber-50/80 to-amber-100/40 p-4 rounded-lg">
-          {loading ? (
+          {isLoading ? (
             <div className="py-6 text-center">
               <div className="inline-block w-6 h-6 border-2 border-logo-lime/30 border-t-logo-lime animate-spin rounded-full"></div>
               <p className="mt-2 text-gray-500">Chargement du panier...</p>
@@ -68,25 +111,28 @@ const Sidebar = ({ currentStep = 0, orderDetails = null, orderId = null }) => {
           ) : itemsToDisplay.length > 0 ? (
             itemsToDisplay.map((item, index) => (
               <div
-                key={
-                  // Better key generation for the new format
-                  item.itemId || 
-                  item.id || 
-                  item._id || 
-                  (item.main?.productId ? `${item.main.productId}-${index}` : `item-${index}`)
-                }
+                key={item.id || item._id || `item-${index}`}
                 className="flex gap-3 p-3 bg-white/90 border border-logo-lime/20 rounded-lg hover:shadow-sm transition-all"
               >
                 <div className="w-16 h-16 bg-white rounded-md flex items-center justify-center border border-logo-lime/10">
-                  {(item.productImage || item.image || item.main?.imageId) ? (
+                  {/* Cart item image - prioritize variant image */}
+                  {(dataSource === 'cart' && (item.variant?.imageUrl || item.variant?.imageUrls?.[0] || item.product?.image)) ? (
                     <img
                       src={
-                        // Priority 1: Use existing productImage or image if already processed
+                        item.variant?.imageUrl || 
+                        item.variant?.imageUrls?.[0] || 
+                        item.product?.image
+                      }
+                      alt={item.product?.name || 'Product'}
+                      className="w-full h-full object-contain p-1"
+                      loading="lazy"
+                    />
+                  ) : (dataSource === 'order' && (item.productImage || item.image || item.main?.imageId)) ? (
+                    <img
+                      src={
                         item.productImage || 
                         item.image || 
-                        // Priority 2: Check for storageKey in main object
                         (item.main?.storageKey ? `/storage/files/${item.main.storageKey}?variant=thumbnail` : 
-                        // Priority 3: Legacy imageId support
                         (item.main?.imageId ? `/files/product-images/${item.main.imageId}` : ''))
                       }
                       alt={item.productName || item.main?.productTitle || 'Product'}
@@ -101,45 +147,31 @@ const Sidebar = ({ currentStep = 0, orderDetails = null, orderId = null }) => {
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-dark-green-7">
-                    {item.productName || item.main?.productTitle || 'Product'}
+                    {/* Cart item name */}
+                    {dataSource === 'cart' ? item.product?.name : (item.productName || item.main?.productTitle || 'Product')}
                   </div>
                   <div className="text-xs text-dark-green-6 mb-1">
-                    {/* Size display - prioritize main.size over top-level size */}
-                    {(item.main?.size || item.size) && (
-                      <span className="mr-1">Taille: {item.main?.size || item.size}</span>
+                    {/* Size display */}
+                    {(dataSource === 'cart' ? item.variant?.size : (item.main?.size || item.size)) && (
+                      <span className="mr-1">
+                        Taille: {dataSource === 'cart' ? item.variant?.size : (item.main?.size || item.size)}
+                      </span>
+                    )}
+                    
+                    {/* SKU display */}
+                    {(dataSource === 'cart' && item.variant?.sku) && (
+                      <span className="mr-1">
+                        {item.variant?.size ? '• ' : ''}
+                        SKU: {item.variant.sku}
+                      </span>
                     )}
                     
                     {/* Brand display */}
                     {(item.brand || item.brandDisplayName) && (
                       <span className="mr-1">
-                        {(item.main?.size || item.size) ? '• ' : ''}
+                        {(item.variant?.size || item.main?.size || item.size) ? '• ' : ''}
                         {item.brandDisplayName || item.brand}
                       </span>
-                    )}
-                    
-                    {/* Cart item properties */}
-                    {dataSource === 'cart' && item.itemProperties && Array.isArray(item.itemProperties) && item.itemProperties.length > 0 && (
-                      item.itemProperties.map((prop, propIndex) => {
-                        // Handle different property formats
-                        let displayText = '';
-                        if (typeof prop === 'object') {
-                          // If it's an object with key-value pairs
-                          const values = Object.values(prop).filter(v => v);
-                          if (values.length) {
-                            displayText = values.join(': ');
-                          }
-                        } else if (typeof prop === 'string') {
-                          // If it's a simple string
-                          displayText = prop;
-                        }
-
-                        return displayText ? (
-                          <span key={propIndex} className="mr-1">
-                            • {displayText}
-                            {propIndex < item.itemProperties.filter(p => !!p).length - 1 && ', '}
-                          </span>
-                        ) : null;
-                      })
                     )}
                     
                     {/* Order item properties */}
@@ -154,16 +186,32 @@ const Sidebar = ({ currentStep = 0, orderDetails = null, orderId = null }) => {
                   </div>
                   <div className="flex justify-between items-center mt-1">
                     <span className="text-xs text-dark-green-6">
-                      Qté: {item.quantity || item.main?.quantity || 1}
+                      Qté: {dataSource === 'cart' ? item.quantity : (item.quantity || item.main?.quantity || 1)}
                     </span>
-                    <span className="text-sm font-medium text-dark-green-7">
-                      {formatPrice(
-                        item.totalPrice || 
-                        (item.unitPrice * (item.quantity || 1)) || 
-                        (item.main?.price * (item.main?.quantity || 1)) || 
-                        0
+                    <div className="text-right">
+                      {/* Cart item pricing */}
+                      {dataSource === 'cart' && item.variant?.promotionalPrice && item.variant?.price && item.variant.promotionalPrice < item.variant.price ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs text-gray-500 line-through">
+                            {formatPrice(item.variant.price * item.quantity)}
+                          </span>
+                          <span className="text-sm font-medium text-dark-green-7">
+                            {formatPrice(item.total)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm font-medium text-dark-green-7">
+                          {formatPrice(
+                            dataSource === 'cart' ? item.total : (
+                              item.totalPrice || 
+                              (item.unitPrice * (item.quantity || 1)) || 
+                              (item.main?.price * (item.main?.quantity || 1)) || 
+                              0
+                            )
+                          )}
+                        </span>
                       )}
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -183,43 +231,53 @@ const Sidebar = ({ currentStep = 0, orderDetails = null, orderId = null }) => {
           Résumé de la commande
         </h3>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
+          {/* Sous-total (regular price) */}
           <div className="flex justify-between text-gray-700">
             <span>Sous-total</span>
-            <span>{formatPrice(subtotal)}</span>
+            <span>{formatPrice(regularSubtotal)}</span>
           </div>
 
-          <div className="flex justify-between text-gray-700">
-            <span>Livraison</span>
-            {isFirstStep ? (
-              <span className="text-sm text-dark-green-6 italic">À calculer</span>
-            ) : (
-              <span>{shipping > 0 ? formatPrice(shipping) : 'Gratuit'}</span>
-            )}
-          </div>
-
-          <div className="flex justify-between text-gray-700">
-            <span>TVA (10%)</span>
-            <span>{formatPrice(tax)}</span>
-          </div>
-
-          {isFirstStep && (
-            <div className="mt-2 p-2 bg-amber-50 rounded-lg border border-amber-100 flex items-start gap-2">
-              <Icon name="info" size="sm" color="dark-green" className="mt-0.5 flex-shrink-0" />
-              <span className="text-xs text-dark-green-6">
-                Les frais de livraison seront calculés après avoir choisi votre méthode de livraison.
-              </span>
+          {/* Show discount if there are promotions */}
+          {hasPromotions && savings > 0 && (
+            <div className="flex justify-between text-green-600">
+              <span>Réduction</span>
+              <span>-{formatPrice(savings)}</span>
             </div>
           )}
 
-          <div className="flex justify-between font-medium text-dark-green-1 pt-2 border-t border-amber-100 mt-2">
-            <span>Total</span>
-            <span>{isFirstStep ? `${formatPrice(total)} *` : formatPrice(total)}</span>
+          {/* Show delivery fee in step 0 if city is selected, or in later steps */}
+          {(currentStep === 0 && formData?.city && cityDeliveryFee >= 0) || currentStep >= 1 ? (
+            <div className="flex justify-between text-gray-700">
+              <span>Livraison</span>
+              <span>
+                {(() => {
+                  const totalDeliveryCost = calculateTotalDeliveryCost();
+                  return totalDeliveryCost > 0 ? formatPrice(totalDeliveryCost) : 'Gratuit';
+                })()}
+              </span>
+            </div>
+          ) : null}
+
+          <div className="flex justify-between font-medium text-dark-green-1 pt-3 border-t border-gray-200">
+            <span>Montant à payer</span>
+            <span>
+              {(() => {
+                const totalDeliveryCost = calculateTotalDeliveryCost();
+                if (currentStep === 0 && formData?.city) {
+                  return formatPrice(subtotal + totalDeliveryCost);
+                } else if (currentStep >= 1) {
+                  return formatPrice(subtotal + totalDeliveryCost);
+                } else {
+                  return formatPrice(subtotal);
+                }
+              })()}
+            </span>
           </div>
 
-          {isFirstStep && (
-            <div className="text-xs text-right text-dark-green-6 italic">
-              * Hors frais de livraison
+          {currentStep === 0 && !formData?.city && (
+            <div className="text-xs text-gray-500 italic">
+              * Frais de livraison calculés après sélection de la ville
             </div>
           )}
         </div>

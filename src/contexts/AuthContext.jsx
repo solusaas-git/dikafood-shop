@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 🔐 Clean Auth Context - Simple & Effective
  * Manages authentication state with the new API service
@@ -26,12 +28,11 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is authenticated on app load
   useEffect(() => {
-    checkAuthStatus();
+    checkAuthStatus(true); // Force initial auth check
     
     // Set up automatic token refresh check every 5 minutes
     const refreshInterval = setInterval(() => {
       if (api.isAuthenticated() && api.isTokenExpired()) {
-        console.log('🔄 Token expired, refreshing in background...');
         api.ensureValidToken().catch(error => {
           console.error('Background token refresh failed:', error);
           logout(); // Force logout if refresh fails
@@ -42,8 +43,21 @@ export const AuthProvider = ({ children }) => {
     return () => clearInterval(refreshInterval);
   }, []);
 
-  const checkAuthStatus = async () => {
+  // Add throttling to prevent excessive API calls
+  const [lastAuthCheck, setLastAuthCheck] = useState(0);
+  const AUTH_CHECK_THROTTLE = 30000; // 30 seconds minimum between auth checks
+
+  const checkAuthStatus = async (force = false) => {
+    const now = Date.now();
+    
+    // Throttle auth checks unless forced
+    if (!force && (now - lastAuthCheck) < AUTH_CHECK_THROTTLE) {
+      return;
+    }
+
     try {
+      setLastAuthCheck(now);
+      
       if (!api.isAuthenticated()) {
         setUser(null);
         setIsAuthenticated(false);
@@ -53,7 +67,6 @@ export const AuthProvider = ({ children }) => {
       // Ensure we have a valid token before checking profile
       const tokenValid = await api.ensureValidToken();
       if (!tokenValid) {
-        console.log('❌ Token validation failed, clearing auth state');
         api.clearLocalData();
         setUser(null);
         setIsAuthenticated(false);
@@ -64,10 +77,8 @@ export const AuthProvider = ({ children }) => {
       if (response.success && response.data) {
         setUser(response.data.user);
         setIsAuthenticated(true);
-        console.log('✅ Auth status verified, user logged in');
       } else {
         // Profile fetch failed, clear tokens
-        console.log('❌ Profile fetch failed, clearing auth state');
         api.clearLocalData();
         setUser(null);
         setIsAuthenticated(false);
@@ -75,9 +86,10 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Auth check failed:', error);
       
-      // Handle token expiry gracefully
+      // Handle different types of auth errors gracefully
       if (error.code === 'TOKEN_EXPIRED') {
-        console.log('🔄 Token expired, user needs to login again');
+      } else if (error.message?.includes('Access token required')) {
+      } else if (error.status === 401) {
       }
       
       // Clear potentially invalid tokens
@@ -97,7 +109,6 @@ export const AuthProvider = ({ children }) => {
       if (response.success && response.data) {
         setUser(response.data.user);
         setIsAuthenticated(true);
-        console.log('✅ Login successful, user state updated');
         
         // Emit login success event for SessionService to handle session transition
         eventBus.emit(EVENTS.AUTH_LOGIN_SUCCESS, response.data);
@@ -105,14 +116,12 @@ export const AuthProvider = ({ children }) => {
         // Wait a bit for session transition to complete, then merge cart
         setTimeout(async () => {
           try {
-            console.log('🛒 Merging cart after login...');
             const cartMergeResponse = await api.mergeCart();
             if (cartMergeResponse.success) {
-              console.log('✅ Cart merged successfully');
               // Trigger cart refresh to show merged items
               eventBus.emit(EVENTS.CART_SYNC_REQUESTED);
             } else {
-              console.warn('⚠️ Cart merge returned error:', cartMergeResponse.message);
+              console.warn('Cart merge returned error:', cartMergeResponse.message);
             }
           } catch (mergeError) {
             console.warn('⚠️ Cart merge failed:', mergeError);
@@ -155,14 +164,12 @@ export const AuthProvider = ({ children }) => {
         // Wait a bit for session transition to complete, then merge cart
         setTimeout(async () => {
           try {
-            console.log('🛒 Merging cart after signup...');
             const cartMergeResponse = await api.mergeCart();
             if (cartMergeResponse.success) {
-              console.log('✅ Cart merged successfully');
               // Trigger cart refresh to show merged items
               eventBus.emit(EVENTS.CART_SYNC_REQUESTED);
             } else {
-              console.warn('⚠️ Cart merge returned error:', cartMergeResponse.message);
+              console.warn('Cart merge returned error:', cartMergeResponse.message);
             }
           } catch (mergeError) {
             console.warn('⚠️ Cart merge failed:', mergeError);
@@ -181,11 +188,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      console.log('🚪 Logging out...');
       await api.logout();
-      console.log('✅ Logout API call successful');
     } catch (error) {
-      console.error('❌ Logout API error:', error);
+      console.error('Logout API error:', error);
       // Continue with logout even if API call fails
       // Clear tokens manually as backup
       api.clearLocalData();
@@ -196,29 +201,25 @@ export const AuthProvider = ({ children }) => {
       // Emit logout event (though clearSession already handles this)
       eventBus.emit(EVENTS.AUTH_LOGOUT);
       
-      console.log('✅ User state cleared');
     }
   };
 
   const updateProfile = async (profileData) => {
     try {
-      console.log('👤 Updating profile...');
       const response = await api.updateProfile(profileData);
       
       if (response.success && response.data) {
         setUser(response.data.user);
-        console.log('✅ Profile updated successfully');
         return { success: true, user: response.data.user };
       } else {
-        console.error('❌ Profile update failed:', response.message);
+        console.error('Profile update failed:', response.message);
         return { success: false, error: response.message || 'Profile update failed' };
       }
     } catch (error) {
-      console.error('❌ Profile update error:', error);
+      console.error('Profile update error:', error);
       
       // Handle token expiry during profile update
       if (error.code === 'TOKEN_EXPIRED') {
-        console.log('🔄 Token expired during profile update, user needs to login again');
         logout();
       }
       
@@ -227,8 +228,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Expose a method to refresh the user profile from /auth/me
-  const refreshProfile = async () => {
+  const refreshProfile = async (force = false) => {
+    const now = Date.now();
+    
+    // Throttle profile refreshes unless forced
+    if (!force && (now - lastAuthCheck) < AUTH_CHECK_THROTTLE) {
+      return { success: true, user: user };
+    }
+
     try {
+      setLastAuthCheck(now);
       const response = await api.getProfile();
       if (response.success && response.data) {
         setUser(response.data.user);
@@ -253,6 +262,7 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus,
     refreshProfile,
     isLoggedIn: Boolean(user && isAuthenticated),
+    eventBus, // Add eventBus to the context value
   };
 
   return (

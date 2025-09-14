@@ -1,17 +1,17 @@
 /**
- * DikaFood Frontend Configuration
+ * DikaFood Next.js Configuration
  * Single source of truth for all application settings
  */
 
-// Environment detection
-const isDevelopment = import.meta.env.DEV;
-const isProduction = import.meta.env.PROD;
+// Environment detection for Next.js
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isProduction = process.env.NODE_ENV === 'production';
 
 // API Configuration
 const getApiUrl = () => {
   // Allow override via environment variable for custom setups
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL;
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL;
   }
   
   // Production: use api.dikafood.com
@@ -19,8 +19,8 @@ const getApiUrl = () => {
     return 'https://api.dikafood.com/api';
   }
   
-  // Development: use /api prefix to let Vite proxy handle routing to localhost:3000 (API server)
-  return "/api";
+  // Development: use Next.js API routes
+  return "http://localhost:3000/api";
 };
 
 const config = {
@@ -28,31 +28,31 @@ const config = {
   ENV: {
     isDevelopment,
     isProduction,
-    mode: import.meta.env.MODE || 'development'
+    mode: process.env.NODE_ENV || 'development'
   },
 
   // Application
   APP_NAME: 'DikaFood',
-  APP_VERSION: '1.0.0',
+  APP_VERSION: '2.0.0',
 
   // API Configuration
   API: {
     baseURL: getApiUrl(),
     timeout: 30000,
-    useMockApi: import.meta.env.VITE_USE_MOCK_API === 'true',
+    useMockApi: process.env.NEXT_PUBLIC_USE_MOCK_API === 'true',
     // For internal use - actual backend URL (needed for some services)
-    backendUrl: isProduction ? 'https://api.dikafood.com' : 'http://localhost:3000'
+    backendUrl: isProduction ? 'https://api.dikafood.com' : 'http://localhost:3001'
   },
 
   // Frontend URLs
   FRONTEND: {
-    baseUrl: isProduction ? 'https://dikafood.com' : `http://localhost:${import.meta.env.VITE_PORT || 3000}`,
+    baseUrl: isProduction ? 'https://dikafood.com' : `http://localhost:3000`,
     assetsUrl: isProduction ? 'https://dikafood.com/assets' : '/assets'
   },
 
   // Authentication
   AUTH: {
-    tokenKey: 'dikafood_auth_token',
+    tokenKey: 'accessToken',
     refreshTokenKey: 'dikafood_refresh_token',
     tokenExpiryKey: 'dikafood_token_expiry',
     userKey: 'dikafood_user'

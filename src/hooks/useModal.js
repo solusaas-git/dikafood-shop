@@ -32,7 +32,7 @@ export function useModal({
   }, [handleEscKey, closeOnEscKey]);
 
   // Handle clicking outside the modal content
-  const closeOnOutsideClick = useCallback((e) => {
+  const handleOutsideClick = useCallback((e) => {
     if (closeOnOutsideClick) {
       onClose();
     }
@@ -56,7 +56,7 @@ export function useModal({
 
   return {
     closeOnEsc: handleEscKey,
-    closeOnOutsideClick
+    closeOnOutsideClick: handleOutsideClick
   };
 }
 

@@ -40,16 +40,28 @@ const BrandDisplay = ({
 
   // Generate logo path from brand name
   const getBrandLogoPath = (name) => {
+    const normalizedName = name ? name.toLowerCase().trim() : '';
     const map = {
       "oued-fes": "/images/brands/oued-fs-logo.svg",
+      "oued fes": "/images/brands/oued-fs-logo.svg",
       "biladi": "/images/brands/biladi-logo.svg",
       "dika": "/images/brands/dika-logo.svg",
       "chourouk": "/images/brands/chourouk-logo.svg",
+      "nouarati": "/images/brands/nouarati-logo.svg",
+      "nourati": "/images/brands/nouarati-logo.svg", // Alternative spelling
     }
-    // if (brandLogo) return brandLogo;
-    if (map[name]) return map[name];
-    if (!name) return '/images/placeholder-brand.svg';
-    return `/images/brands/${name.toLowerCase().replace(/\s+/g, '-')}-logo.svg`;
+    
+    // First check if we have a direct logo URL from the brand object
+    if (brandLogo) return brandLogo;
+    
+    // Check our mapping
+    if (map[normalizedName]) return map[normalizedName];
+    
+    // If no name provided, use placeholder
+    if (!normalizedName) return '/images/placeholder-brand.svg';
+    
+    // Generate path from name as fallback
+    return `/images/brands/${normalizedName.replace(/\s+/g, '-')}-logo.svg`;
   };
 
   const containerClasses = fullWidth ? "w-full" : "";

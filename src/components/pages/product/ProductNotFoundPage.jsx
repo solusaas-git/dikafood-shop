@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import Icon from '@components/ui/icons/Icon';
 import Button from '@components/ui/inputs/Button';
 import ContentPage from '@components/ui/layout/ContentPage';

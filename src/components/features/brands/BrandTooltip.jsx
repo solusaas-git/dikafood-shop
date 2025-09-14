@@ -104,7 +104,9 @@ const BrandTooltip = ({
 
   // Desktop tooltip - simplified for Tippy.js with follow-cursor
   return (
-    <div className="p-3 text-dark-green-7">
+    <div className="relative bg-white rounded-lg shadow-lg border border-gray-200 p-3 text-dark-green-7 max-w-sm">
+      {/* Tooltip arrow */}
+      <div className="absolute -left-1 top-4 w-2 h-2 bg-white border-l border-b border-gray-200 transform rotate-45"></div>
       {/* Header */}
       <div className="flex items-center mb-2 pb-2 border-b border-logo-lime/20">
         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-logo-lime/15 mr-1.5">

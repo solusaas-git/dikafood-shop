@@ -1,25 +1,31 @@
 import React from 'react';
 import { CreditCard, Bank, Money } from '@phosphor-icons/react';
 import { Form } from '@/components/ui/forms';
+import Image from 'next/image';
 
 const SimplePaymentForm = ({ 
   formData, 
   updateFormData, 
-  nextStep, 
+  placeOrder, 
   prevStep, 
   errors, 
   isLoading,
   banks,
-  loadingStates
+  loadingStates,
+  paymentMethods = []
 }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     updateFormData({ [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    nextStep();
+    try {
+      await placeOrder();
+    } catch (error) {
+      console.error('Order placement failed:', error);
+    }
   };
 
   const headerContent = (
@@ -31,26 +37,22 @@ const SimplePaymentForm = ({
     </div>
   );
 
-  const paymentMethodOptions = [
-    {
-      value: 'cash-on-delivery',
-      label: 'Paiement à la livraison',
-      description: 'Payez en espèces à la réception',
-      icon: <Money size={20} weight="duotone" className="text-logo-brown" />
-    },
-    {
-      value: 'bank-transfer',
-      label: 'Virement bancaire',
-      description: 'Virement sur notre compte bancaire',
-      icon: <Bank size={20} weight="duotone" className="text-logo-brown" />
-    },
-    {
-      value: 'stripe',
-      label: 'Carte bancaire',
-      description: 'Paiement sécurisé par carte',
-      icon: <CreditCard size={20} weight="duotone" className="text-logo-brown" />
+  // Get icon based on payment method type
+  const getPaymentIcon = (type) => {
+    switch (type) {
+      case 'cash':
+      case 'cash-on-delivery':
+        return <Money size={24} weight="duotone" className="text-gray-600" />;
+      case 'bank-transfer':
+      case 'bank':
+        return <Bank size={24} weight="duotone" className="text-gray-600" />;
+      case 'card':
+      case 'stripe':
+        return <CreditCard size={24} weight="duotone" className="text-gray-600" />;
+      default:
+        return <Money size={24} weight="duotone" className="text-gray-600" />;
     }
-  ];
+  };
 
   return (
     <Form
@@ -58,25 +60,110 @@ const SimplePaymentForm = ({
       withContainer
       headerContent={headerContent}
       headerVariant="default"
-      submitText="Continuer"
+      submitText="Confirmer la commande"
       cancelText="Retour"
       onCancel={prevStep}
       loading={isLoading}
     >
-      <Form.Group label="Méthode de paiement">
-        <Form.RadioGroup
-          name="paymentMethod"
-          value={formData.paymentMethod}
-          onChange={handleChange}
-          options={paymentMethodOptions}
-          error={errors.paymentMethod}
-          className="flex flex-wrap gap-3"
-          optionClassName="flex-1 min-w-[200px]"
-        />
-      </Form.Group>
+      <div className="space-y-4">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Méthode de paiement
+        </label>
+        
+        {loadingStates.paymentMethods ? (
+          <div className="text-center p-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-logo-brown mx-auto"></div>
+            <span className="mt-2 text-sm text-gray-600">Chargement des méthodes de paiement...</span>
+          </div>
+        ) : paymentMethods.length > 0 ? (
+          <div className="grid gap-4">
+            {paymentMethods.map((method) => {
+              const isSelected = formData.paymentMethod === method._id;
+              
+              return (
+                <div
+                  key={method._id}
+                  onClick={() => updateFormData({ paymentMethod: method._id })}
+                  className={`
+                    relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
+                    ${isSelected 
+                      ? 'border-logo-brown bg-logo-brown/5 shadow-md' 
+                      : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                    }
+                  `}
+                >
+                  {/* Selection indicator */}
+                  <div className={`
+                    absolute top-4 right-4 w-5 h-5 rounded-full border-2 transition-all
+                    ${isSelected 
+                      ? 'border-logo-brown bg-logo-brown' 
+                      : 'border-gray-300'
+                    }
+                  `}>
+                    {isSelected && (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-start gap-4 pr-8">
+                    {/* Logo or Icon */}
+                    <div className="flex-shrink-0">
+                      {method.logo ? (
+                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                          <Image
+                            src={method.logo}
+                            alt={method.name}
+                            width={48}
+                            height={48}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                          {getPaymentIcon(method.type)}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-semibold text-gray-900 text-lg">
+                          {method.name}
+                        </h3>
+                      </div>
+
+                      {method.description && (
+                        <p className="text-sm text-gray-600">
+                          {method.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center p-8 border-2 border-dashed border-gray-200 rounded-xl">
+            <CreditCard size={48} weight="duotone" className="text-gray-400 mx-auto mb-3" />
+            <p className="text-gray-500 font-medium">Aucune méthode de paiement disponible</p>
+            <p className="text-sm text-gray-400 mt-1">Veuillez contacter le support</p>
+          </div>
+        )}
+
+        {errors.paymentMethod && (
+          <p className="text-sm text-red-600 mt-2">{errors.paymentMethod}</p>
+        )}
+      </div>
 
       {/* Bank selection for bank transfer */}
-      {formData.paymentMethod === 'bank-transfer' && (
+      {(() => {
+        const selectedMethod = paymentMethods.find(m => m._id === formData.paymentMethod);
+        return selectedMethod && (selectedMethod.type === 'bank-transfer' || selectedMethod.type === 'bank');
+      })() && (
         <Form.Group label="Sélectionnez votre banque">
           {loadingStates.banks ? (
             <div className="text-center p-4">
@@ -123,7 +210,10 @@ const SimplePaymentForm = ({
       )}
 
       {/* Note for Stripe */}
-      {formData.paymentMethod === 'stripe' && (
+      {(() => {
+        const selectedMethod = paymentMethods.find(m => m._id === formData.paymentMethod);
+        return selectedMethod && (selectedMethod.type === 'card' || selectedMethod.type === 'stripe');
+      })() && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-center gap-2 text-blue-700">
             <CreditCard size={16} />

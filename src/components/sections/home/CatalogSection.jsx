@@ -26,6 +26,11 @@ const CatalogSection = () => {
   const handleFormSuccess = useCallback(({ userData }) => {
     setSubmittedData(userData);
     setIsModalOpen(true);
+    
+    // Show success message if email was sent
+    if (userData.emailSent) {
+      console.log('✅ Catalog sent successfully to:', userData.email);
+    }
   }, []);
 
   // Handler for catalog download from modal

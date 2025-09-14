@@ -62,16 +62,16 @@ const ContactInfo = ({ className = '' }) => {
           <div className={s.itemContent()}>
             <span className={s.itemLabel()}>{t('contact.info.phone.label')}</span>
             <a
-              href="tel:+212661323704"
-              className={s.itemValue()}
-            >
-              +212 661 323 704
-            </a>
-            <a
               href="tel:+212535942682"
               className={s.itemValue()}
             >
-              +212 535 942 682
+              +212 5 359-42682
+            </a>
+            <a
+              href="tel:+212661323704"
+              className={s.itemValue()}
+            >
+              +212 6 613-23704
             </a>
           </div>
         </div>
@@ -82,10 +82,10 @@ const ContactInfo = ({ className = '' }) => {
           <div className={s.itemContent()}>
             <span className={s.itemLabel()}>{t('contact.info.email.label')}</span>
             <a
-              href="mailto:contact@dikafood.com"
+              href="mailto:contact@dikafood.ma"
               className={s.itemValue()}
             >
-              contact@dikafood.com
+              contact@dikafood.ma
             </a>
           </div>
         </div>
@@ -101,7 +101,7 @@ const ContactInfo = ({ className = '' }) => {
               rel="noopener noreferrer"
               className={s.itemValue()}
             >
-              Km 02 Route ain smen, Fès 30000, Maroc
+              18 Rue Zenata, Fès 30000, Maroc
             </a>
           </div>
         </div>

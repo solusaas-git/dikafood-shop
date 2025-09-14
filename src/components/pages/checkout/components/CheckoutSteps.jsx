@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, CreditCard, CheckCircle, CaretRight } from '@phosphor-icons/react';
 
 const CheckoutSteps = ({ currentStep, isRecovering = false }) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 576);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Initialize mobile state after component mounts (SSR safe)
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 576);
+  }, []);
 
   // Handle window resize for responsive steps
   useEffect(() => {
@@ -24,11 +29,6 @@ const CheckoutSteps = ({ currentStep, isRecovering = false }) => {
       name: 'Paiement & Livraison',
       shortName: 'Paiement',
       icon: <CreditCard size={isMobile ? 16 : 18} weight="duotone" />
-    },
-    {
-      name: 'Récapitulatif',
-      shortName: 'Récap',
-      icon: <CheckCircle size={isMobile ? 16 : 18} weight="duotone" />
     }
   ];
 

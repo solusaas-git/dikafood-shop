@@ -23,17 +23,53 @@ class ApiService {
     this.timeout = config.API.timeout;
     this.isRefreshing = false;
     this.failedQueue = [];
+    // Enable API calls - connect to real backend
+    this.API_DISABLED = config.API.useMockApi || false;
+    // Simple cache for categories and brands (they don't change often)
+    this.cache = new Map();
+    this.cacheExpiry = new Map();
+    this.CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  }
+
+  // 🔧 Cache helper methods
+  getCached(key) {
+    const expiry = this.cacheExpiry.get(key);
+    if (expiry && Date.now() > expiry) {
+      this.cache.delete(key);
+      this.cacheExpiry.delete(key);
+      return null;
+    }
+    return this.cache.get(key);
+  }
+
+  setCached(key, value) {
+    this.cache.set(key, value);
+    this.cacheExpiry.set(key, Date.now() + this.CACHE_DURATION);
   }
 
   // 🔧 Core request method
   async request(endpoint, options = {}) {
+    // Return mock responses when API is disabled
+    if (this.API_DISABLED) {
+      return this.getMockResponse(endpoint, options);
+    }
+
     const {
       method = 'GET',
       body = null,
       headers = {},
       timeout = this.timeout,
-      skipTokenRefresh = false
+      skipTokenRefresh = false,
+      useCache = false
     } = options;
+
+    // Check cache for GET requests on cacheable endpoints
+    if (method === 'GET' && useCache) {
+      const cached = this.getCached(endpoint);
+      if (cached) {
+        return cached;
+      }
+    }
 
     // Check if token needs refresh before making request (unless explicitly skipped)
     if (!skipTokenRefresh && !endpoint.includes('/auth/refresh') && !endpoint.includes('/auth/login')) {
@@ -97,6 +133,11 @@ class ApiService {
 
       // Session ID is now managed by SessionService
 
+      // Cache successful GET responses for cacheable endpoints
+      if (method === 'GET' && useCache && data) {
+        this.setCached(endpoint, data);
+      }
+
       return data;
     } catch (error) {
       if (error.name === 'AbortError') {
@@ -111,10 +152,31 @@ class ApiService {
 
   // 🔐 Authentication Endpoints
   async register(userData) {
-    return this.request('/auth/register', {
+    const response = await this.request('/auth/register', {
       method: 'POST',
       body: userData
     });
+
+    // Store tokens if registration successful (same as login)
+    if (response.success && response.data?.tokens) {
+      const { accessToken, refreshToken, expiresIn } = response.data.tokens;
+      
+      // Store tokens (only on client side)
+      if (typeof window !== 'undefined') {
+        // Store access token
+        localStorage.setItem(config.AUTH.tokenKey, accessToken);
+        
+        // Store refresh token
+        localStorage.setItem(config.AUTH.refreshTokenKey, refreshToken);
+        
+        // Calculate and store expiry time
+        const expiryTime = Date.now() + (expiresIn * 1000); // Convert seconds to milliseconds
+        localStorage.setItem(config.AUTH.tokenExpiryKey, expiryTime.toString());
+      }
+      
+    }
+
+    return response;
   }
 
   async login(credentials) {
@@ -127,17 +189,19 @@ class ApiService {
     if (response.success && response.data?.tokens) {
       const { accessToken, refreshToken, expiresIn } = response.data.tokens;
       
-      // Store access token
-      localStorage.setItem(config.AUTH.tokenKey, accessToken);
+      // Store tokens (only on client side)
+      if (typeof window !== 'undefined') {
+        // Store access token
+        localStorage.setItem(config.AUTH.tokenKey, accessToken);
+        
+        // Store refresh token
+        localStorage.setItem(config.AUTH.refreshTokenKey, refreshToken);
+        
+        // Calculate and store expiry time
+        const expiryTime = Date.now() + (expiresIn * 1000); // Convert seconds to milliseconds
+        localStorage.setItem(config.AUTH.tokenExpiryKey, expiryTime.toString());
+      }
       
-      // Store refresh token
-      localStorage.setItem(config.AUTH.refreshTokenKey, refreshToken);
-      
-      // Calculate and store expiry time
-      const expiryTime = Date.now() + (expiresIn * 1000); // Convert seconds to milliseconds
-      localStorage.setItem(config.AUTH.tokenExpiryKey, expiryTime.toString());
-      
-      console.log('✅ Login successful - tokens stored');
     }
 
     return response;
@@ -149,7 +213,6 @@ class ApiService {
     } finally {
       // Clear session completely (tokens + session data)
       sessionService.clearSession();
-      console.log('🚪 User logged out, session cleared completely');
     }
   }
 
@@ -165,6 +228,9 @@ class ApiService {
   }
 
   async refreshToken() {
+    if (typeof window === 'undefined') {
+      throw new ApiError('Cannot refresh token on server side', 401, 'SSR_NO_REFRESH');
+    }
     const refreshToken = localStorage.getItem(config.AUTH.refreshTokenKey);
     if (!refreshToken) {
       throw new ApiError('No refresh token available', 401, 'NO_REFRESH_TOKEN');
@@ -180,14 +246,15 @@ class ApiService {
     if (response.success && response.data?.tokens) {
       const { accessToken, refreshToken: newRefreshToken, expiresIn } = response.data.tokens;
       
-      localStorage.setItem(config.AUTH.tokenKey, accessToken);
-      localStorage.setItem(config.AUTH.refreshTokenKey, newRefreshToken);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(config.AUTH.tokenKey, accessToken);
+        localStorage.setItem(config.AUTH.refreshTokenKey, newRefreshToken);
+        
+        // Update expiry time
+        const expiryTime = Date.now() + (expiresIn * 1000);
+        localStorage.setItem(config.AUTH.tokenExpiryKey, expiryTime.toString());
+      }
       
-      // Update expiry time
-      const expiryTime = Date.now() + (expiresIn * 1000);
-      localStorage.setItem(config.AUTH.tokenExpiryKey, expiryTime.toString());
-      
-      console.log('✅ Token refreshed successfully');
     }
 
     return response;
@@ -212,6 +279,10 @@ class ApiService {
     return this.request('/products/featured');
   }
 
+  async getFeaturedVariants() {
+    return this.request('/products/featured?type=variants');
+  }
+
   async searchProducts(query, filters = {}) {
     const params = { q: query, ...filters };
     const searchParams = new URLSearchParams(params);
@@ -219,11 +290,11 @@ class ApiService {
   }
 
   async getCategories() {
-    return this.request('/products/categories');
+    return this.request('/products/categories', { useCache: true });
   }
 
   async getBrands() {
-    return this.request('/products/brands');
+    return this.request('/products/brands', { useCache: true });
   }
 
   // 🛒 Cart Endpoints
@@ -232,7 +303,7 @@ class ApiService {
   }
 
   async addToCart(item) {
-    return this.request('/cart/items', {
+    return this.request('/cart', {
       method: 'POST',
       body: item
     });
@@ -261,32 +332,74 @@ class ApiService {
     return this.request('/cart/summary');
   }
 
-  async mergeCart() {
-    // Get the guest session ID that was stored during login transition
-    const guestSessionId = sessionService.getGuestSessionIdForMerge();
+  async mergeCart(strategy = 'merge', guestSessionId = null) {
+    // Get the guest session ID that was stored during login transition or use provided one
+    const sessionIdToMerge = guestSessionId || sessionService.getGuestSessionIdForMerge();
     
-    console.log('🛒 API mergeCart called with:', {
-      guestSessionId,
-      currentSessionId: sessionService.getSessionId(),
-      sessionInfo: sessionService.getSessionInfo()
-    });
     
     const response = await this.request('/cart/merge', {
       method: 'POST',
-      headers: guestSessionId ? { 'x-guest-session-id': guestSessionId } : {}
+      body: JSON.stringify({
+        strategy,
+        guestSessionId: sessionIdToMerge
+      })
     });
     
-    console.log('🛒 Cart merge response:', response);
     
     // Clear the stored guest session ID after merge attempt
-    sessionService.clearGuestSessionIdForMerge();
+    if (!guestSessionId) {
+      sessionService.clearGuestSessionIdForMerge();
+    }
     
     return response;
   }
 
   // 📄 Catalog Endpoints
   async getCatalog(language = 'fr') {
-    return this.request(`/catalogs/${language}`);
+    try {
+      const response = await fetch(`${this.baseURL}/catalogs/${language}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/pdf',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Create a blob from the response
+      const blob = await response.blob();
+      
+      // Create a download URL
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create a temporary anchor element to trigger download
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `catalogue-dikafood-${language}.pdf`;
+      
+      // Append to body, click, and remove
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      return {
+        success: true,
+        message: 'Catalog downloaded successfully'
+      };
+      
+    } catch (error) {
+      console.error('Catalog download error:', error);
+      return {
+        success: false,
+        error: error.message || 'Failed to download catalog'
+      };
+    }
   }
 
   // 📝 Order Endpoints
@@ -297,10 +410,23 @@ class ApiService {
     });
   }
 
+  // Track order by order number and customer info
+  async trackOrder(orderNumber, email, phone = null) {
+    const params = new URLSearchParams({
+      ...(email && { email }),
+      ...(phone && { phone })
+    });
+    
+    return this.request(`/orders/${orderNumber}?${params}`, {
+      method: 'GET'
+    });
+  }
+
   // 🔄 Token Management Methods
   
   // Check if token is expired or about to expire (within 5 minutes)
   isTokenExpired() {
+    if (typeof window === 'undefined') return true; // SSR compatibility
     const expiryTime = localStorage.getItem(config.AUTH.tokenExpiryKey);
     if (!expiryTime) return true;
     
@@ -311,11 +437,12 @@ class ApiService {
 
   // Ensure we have a valid token, refresh if needed
   async ensureValidToken() {
+    if (this.API_DISABLED) return false; // API disabled
+    if (typeof window === 'undefined') return false; // SSR compatibility
     const token = localStorage.getItem(config.AUTH.tokenKey);
     if (!token) return false;
 
     if (this.isTokenExpired()) {
-      console.log('🔄 Token expired, attempting refresh...');
       const refreshResult = await this.handleTokenRefresh();
       return refreshResult.success;
     }
@@ -357,6 +484,8 @@ class ApiService {
 
   // 🔍 Utility method to check if user is authenticated
   isAuthenticated() {
+    if (this.API_DISABLED) return false; // API disabled
+    if (typeof window === 'undefined') return false; // SSR compatibility
     const token = localStorage.getItem(config.AUTH.tokenKey);
     const refreshToken = localStorage.getItem(config.AUTH.refreshTokenKey);
     return !!(token && refreshToken);
@@ -367,6 +496,50 @@ class ApiService {
   clearLocalData() {
     sessionService.clearSession();
     console.log('🧹 All local data cleared via SessionService');
+  }
+
+  // 🎭 Mock response generator for disabled API
+  getMockResponse(endpoint, options = {}) {
+    const method = options.method || 'GET';
+    
+    // Mock responses for different endpoints
+    if (endpoint.includes('/cart')) {
+      if (method === 'GET') {
+        return Promise.resolve({
+          success: true,
+          data: { cart: { items: [], totalAmount: 0, itemCount: 0 } }
+        });
+      }
+      return Promise.resolve({ success: true, data: { cart: { items: [], totalAmount: 0, itemCount: 0 } } });
+    }
+    
+    if (endpoint.includes('/auth/profile') || endpoint.includes('/profile')) {
+      return Promise.resolve({
+        success: false,
+        message: 'Not authenticated (API disabled)'
+      });
+    }
+    
+    if (endpoint.includes('/auth/login') || endpoint.includes('/auth/register')) {
+      return Promise.resolve({
+        success: false,
+        message: 'Authentication disabled in development'
+      });
+    }
+    
+    if (endpoint.includes('/products')) {
+      return Promise.resolve({
+        success: true,
+        data: { products: [] }
+      });
+    }
+    
+    // Default mock response
+    return Promise.resolve({
+      success: true,
+      data: {},
+      message: 'Mock response (API disabled)'
+    });
   }
 }
 

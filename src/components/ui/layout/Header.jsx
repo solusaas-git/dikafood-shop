@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import Icon from '../icons/Icon';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import LucideIcon from '../icons/LucideIcon';
 import Button from '../inputs/Button';
 import { AuthMenu, LanguageSwitcher } from '../navigation';
 import CartMenu from '../navigation/CartMenu';
 import { useTranslation } from '../../../utils/i18n';
 import translations from './translations/Header';
+import { useCartPanel } from '../../../hooks/useCartPanel';
+import { useLoading } from '../../../contexts/LoadingContext';
 
 // Navigation items with translation keys
 const menuItems = [
@@ -22,22 +25,48 @@ const menuItems = [
   {
     labelKey: 'menu_about',
     path: '/about',
-    icon: 'info'
+    icon: 'heart'
+  },
+  {
+    labelKey: 'menu_contact',
+    path: '/contact',
+    icon: 'mail'
   }
 ];
 
 export default function Header() {
   const { t } = useTranslation(translations);
-  const { pathname } = useLocation();
+  const pathname = usePathname();
+  const { showLoading } = useLoading();
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const mobileNavbarRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    // Check on mount
+    if (typeof window !== 'undefined') {
+      checkMobile();
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+    }
+  }, []);
+
+  // Use cart panel hook to auto-open cart when items are added (no auto-close)
+  useCartPanel(setActiveMenu, isMobile, 0);
+
   // Define CSS variables for menu heights
   useEffect(() => {
-    document.documentElement.style.setProperty('--navbar-height', '80px');
-    document.documentElement.style.setProperty('--navbar-height-mobile', '46px');
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--navbar-height', '80px');
+      document.documentElement.style.setProperty('--navbar-height-mobile', '46px');
+    }
   }, []);
 
   // Close menu when clicking outside
@@ -51,8 +80,10 @@ export default function Header() {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    if (typeof document !== 'undefined') {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
   }, [isOpen]);
 
   // Close menu when route changes
@@ -86,16 +117,24 @@ export default function Header() {
     }
   };
 
+  // Handle navigation link clicks
+  const handleNavClick = (targetPath) => {
+    // Only show loading if navigating to a different page
+    if (pathname !== targetPath) {
+      showLoading('Chargement de la page...');
+    }
+  };
+
   return (
     <header
-      className="fixed top-0 left-0 w-full z-50 py-4"
+      className="fixed top-0 left-0 w-full z-50 py-4 bg-transparent"
     >
       <div className="container mx-auto px-4">
         {/* Desktop Header */}
         <div className="hidden md:flex max-w-6xl mx-auto items-center justify-between rounded-full backdrop-blur-lg bg-dark-green-7/80 shadow-lg border border-white/10 px-4 md:px-6 py-2.5">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="block">
+            <Link href="/" className="block" onClick={() => handleNavClick('/')}>
               <img
                 src="/images/logo-light.svg"
                 alt="DikaFood Logo"
@@ -110,12 +149,13 @@ export default function Header() {
             {menuItems.map((item, index) => (
               <React.Fragment key={item.path}>
                 <Link
-                  to={item.path}
+                  href={item.path}
                   className={`flex items-center gap-1.5 text-white text-sm font-normal py-2.5 px-4 transition-colors hover:text-dark-yellow-1 icon-text-separator ${
                     pathname === item.path ? 'text-dark-yellow-1' : ''
                   }`}
+                  onClick={() => handleNavClick(item.path)}
                 >
-                  <Icon name={item.icon} size="sm" className="shrink-0" />
+                  <LucideIcon name={item.icon} size="sm" className="shrink-0" />
                   <span>{t(item.labelKey)}</span>
                 </Link>
                 {index < menuItems.length - 1 && (
@@ -133,7 +173,7 @@ export default function Header() {
               size="sm"
               className="bg-logo-lime hover:bg-logo-lime/90 text-dark-green-7 rounded-full py-2 px-4 h-[38px] icon-text-separator"
             >
-              <Icon name="shoppingBag" size="sm" className="shrink-0" />
+              <LucideIcon name="shoppingbag" size="sm" className="shrink-0" />
               <span className="text-sm">{t('cta_products')}</span>
             </Button>
 
@@ -183,7 +223,7 @@ export default function Header() {
           >
             {/* Left section - Logo */}
             <div className="flex items-center">
-              <Link to="/" className="flex items-center justify-center h-8 w-8">
+              <Link href="/" className="flex items-center justify-center h-8 w-8">
                 <img
                   src="/favicon.svg"
                   alt="DikaFood"
@@ -246,7 +286,7 @@ export default function Header() {
                 aria-controls="mobile-menu"
                 aria-label={isOpen ? t('close_menu') : t('open_menu')}
               >
-                <Icon name={isOpen ? "x" : "list"} size="sm" />
+                <LucideIcon name={isOpen ? "x" : "menu"} size="sm" />
               </button>
             </div>
           </div>
@@ -272,7 +312,7 @@ export default function Header() {
                 className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
                 aria-label={t('close_menu')}
               >
-                <Icon name="x" size="sm" />
+                <LucideIcon name="x" size="sm" />
               </button>
             </div>
 
@@ -282,14 +322,17 @@ export default function Header() {
                 {menuItems.map((item) => (
                   <Link
                     key={item.path}
-                    to={item.path}
+                    href={item.path}
                     className={`flex items-center gap-3 text-white hover:text-dark-yellow-1 py-3.5 px-5 rounded-full transition-colors icon-text-separator mobile-nav-item ${
                       pathname === item.path ? 'bg-dark-yellow-1/20 text-dark-yellow-1' : ''
                     }`}
-                    onClick={closeMenu}
+                    onClick={() => {
+                      handleNavClick(item.path);
+                      closeMenu();
+                    }}
                   >
                     <div className="flex items-center justify-center w-9 h-9 bg-white/10 rounded-full">
-                      <Icon name={item.icon} size="md" className="shrink-0 text-dark-yellow-1" />
+                      <LucideIcon name={item.icon} size="md" className="shrink-0 text-dark-yellow-1" />
                     </div>
                     <span className="text-base font-medium">{t(item.labelKey)}</span>
                   </Link>
@@ -307,7 +350,7 @@ export default function Header() {
                   className="bg-dark-yellow-1 hover:bg-dark-yellow-2 text-dark-green-7 rounded-full w-full py-3.5 justify-center icon-text-separator"
                   onClick={closeMenu}
                 >
-                  <Icon name="shoppingBag" className="shrink-0" />
+                  <LucideIcon name="shoppingbag" className="shrink-0" />
                   <span className="font-semibold">{t('cta_products')}</span>
                 </Button>
               </div>

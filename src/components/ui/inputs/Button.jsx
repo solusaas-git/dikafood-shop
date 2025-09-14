@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { tv } from 'tailwind-variants';
 import { ActionIcon } from '../icons';
 
@@ -168,11 +168,11 @@ export default function Button({
     </>
   );
 
-  // Use Link for internal routes (react-router)
+  // Use Link for internal routes (Next.js)
   if (to) {
     return (
       <Link
-        to={to}
+        href={to}
         className={`group ${buttonClasses}`}
         {...props}
         aria-disabled={isDisabled || isLoading}

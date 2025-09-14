@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Icon } from '@components/ui';
 
 const ProductBreadcrumb = ({ product, className, isMobile }) => {
@@ -20,7 +20,7 @@ const ProductBreadcrumb = ({ product, className, isMobile }) => {
         {isMobile ? (
           // Mobile view - back to shop only with white sublayer
           <div className="inline-flex bg-white rounded-full py-1 px-1 shadow-md">
-            <Link to="/shop" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-3 py-1 border border-logo-lime/20">
+            <Link href="/shop" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-3 py-1 border border-logo-lime/20">
               <Icon name="caretleft" size="sm" className="text-dark-green-7 mr-1" />
               <span className="text-dark-green-7 font-medium">Retour</span>
             </Link>
@@ -33,14 +33,14 @@ const ProductBreadcrumb = ({ product, className, isMobile }) => {
 
             {/* Breadcrumb content */}
             <div className="relative z-10 flex items-center gap-3">
-              <Link to="/" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-4 py-1.5 border border-logo-lime/20">
+              <Link href="/" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-4 py-1.5 border border-logo-lime/20">
                 <Icon name="house" size="md" className="text-dark-green-7 mr-2" />
                 <span className="text-dark-green-7 font-medium">Accueil</span>
               </Link>
 
               <Icon name="caretright" size="sm" className="text-dark-green-6 opacity-70" />
 
-              <Link to="/shop" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-4 py-1.5 border border-logo-lime/20">
+              <Link href="/shop" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-4 py-1.5 border border-logo-lime/20">
                 <Icon name="shoppingcart" size="md" className="text-dark-green-7 mr-2" />
                 <span className="text-dark-green-7 font-medium">Boutique</span>
               </Link>
@@ -49,7 +49,7 @@ const ProductBreadcrumb = ({ product, className, isMobile }) => {
                 <>
                   <Icon name="caretright" size="sm" className="text-dark-green-6 opacity-70" />
                   <Link
-                    to={categoryPath}
+                    href={categoryPath}
                     className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-4 py-1.5 border border-logo-lime/20"
                   >
                     <Icon name="storefront" size="md" className="text-dark-green-7 mr-2" />

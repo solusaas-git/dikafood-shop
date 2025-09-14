@@ -3,7 +3,7 @@ import { CheckCircle, ShoppingBag, MapPin, CreditCard } from '@phosphor-icons/re
 import { useNotification } from '@/contexts/NotificationContextNew';
 import { Form } from '@/components/ui/forms';
 
-const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder, prevStep }) => {
+const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder, prevStep, deliveryMethods = [] }) => {
   const { error, info } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,13 +39,29 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
       const properties = item.main?.properties || {};
       const propertyStrings = Object.entries(properties).map(([key, value]) => `${key}: ${value}`);
       
-      if (size) propertyStrings.unshift(size);
+      if (size) propertyStrings.unshift(`Taille: ${size}`);
       return propertyStrings.join(' • ');
     }
     
     if (source === 'cart') {
+      const variantInfo = [];
+      
+      // Add size if available
+      if (item.variant?.size) {
+        variantInfo.push(`Taille: ${item.variant.size}`);
+      }
+      
+      // Add SKU if available
+      if (item.variant?.sku) {
+        variantInfo.push(`SKU: ${item.variant.sku}`);
+      }
+      
+      // Add any other properties
       const properties = item.itemProperties || [];
-      return properties.filter(Boolean).join(' • ');
+      const validProperties = properties.filter(Boolean);
+      variantInfo.push(...validProperties);
+      
+      return variantInfo.join(' • ');
     }
     
     return '';
@@ -58,7 +74,7 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
     }
     
     if (source === 'cart') {
-      return item.totalPrice || (item.unitPrice * (item.quantity || 1)) || 0;
+      return item.total || (item.price * item.quantity) || 0;
     }
     
     return 0;
@@ -79,7 +95,11 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
       return item.main?.productTitle || item.productName || 'Product';
     }
     
-    return item.productName || item.name || 'Product';
+    if (source === 'cart') {
+      return item.product?.name || item.productName || item.name || 'Product';
+    }
+    
+    return 'Product';
   };
 
   // Get item image
@@ -88,7 +108,12 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
       return item.main?.imageId ? `/files/product-images/${item.main.imageId}` : item.image;
     }
     
-    return item.image;
+    if (source === 'cart') {
+      // Prioritize variant image, then product image
+      return item.variant?.imageUrl || item.variant?.imageUrls?.[0] || item.product?.image || item.image;
+    }
+    
+    return null;
   };
 
   const handleSubmit = async (e) => {
@@ -114,6 +139,25 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
       <span className="text-dark-green-1 font-medium">Récapitulatif de commande</span>
     </div>
   );
+
+  // Get delivery method display
+  const getDeliveryMethodDisplay = () => {
+    if (!formData.deliveryMethodId) return 'Non spécifié';
+    
+    const method = deliveryMethods.find(m => m._id === formData.deliveryMethodId);
+    return method?.name || method?.data?.name || 'Non spécifié';
+  };
+
+  // Get selected shop display (for pickup)
+  const getSelectedShopDisplay = () => {
+    if (!formData.shopId || !formData.deliveryMethodId) return null;
+    
+    const method = deliveryMethods.find(m => m._id === formData.deliveryMethodId);
+    if (method?.data?.type !== 'pickup') return null;
+    
+    const shop = method?.data?.shops?.find(s => s._id === formData.shopId);
+    return shop ? `${shop.name} - ${shop.address}` : null;
+  };
 
   // Get payment method display
   const getPaymentMethodDisplay = () => {
@@ -207,28 +251,65 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
 
       {/* Delivery Information */}
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-        <h3 className="flex items-center gap-2 font-medium text-gray-800 mb-3">
+        <h3 className="flex items-center gap-2 font-medium text-gray-800 mb-4">
           <MapPin size={18} className="text-gray-600" />
           Informations de livraison
         </h3>
         
-        <div className="space-y-2">
-          <div>
-            <p className="font-medium text-gray-900">
-              {formData.firstName} {formData.lastName}
-            </p>
-            <p className="text-gray-600">{formData.email}</p>
-            <p className="text-gray-600">{formData.phone}</p>
+        <div className="space-y-4">
+          {/* Contact Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Nom complet</label>
+              <p className="mt-1 font-medium text-gray-900">
+                {formData.firstName} {formData.lastName}
+              </p>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Téléphone</label>
+              <p className="mt-1 text-gray-900">{formData.phone}</p>
+            </div>
           </div>
           
           <div>
-            <p className="text-gray-900">
-              {formData.address}
-            </p>
-            <p className="text-gray-600">
-              {formData.city}, {formData.country}
-            </p>
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Email</label>
+            <p className="mt-1 text-gray-900">{formData.email}</p>
           </div>
+          
+          {/* Delivery Method */}
+          <div>
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Méthode de livraison</label>
+            <p className="mt-1 font-medium text-gray-900">{getDeliveryMethodDisplay()}</p>
+            {getSelectedShopDisplay() && (
+              <p className="mt-1 text-sm text-gray-600">{getSelectedShopDisplay()}</p>
+            )}
+          </div>
+          
+          {/* Address (only show if not pickup) */}
+          {(!formData.deliveryMethodId || !deliveryMethods.find(m => m._id === formData.deliveryMethodId && m.data?.type === 'pickup')) && (
+            <div>
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Adresse de livraison</label>
+              <div className="mt-1 p-3 bg-white rounded-lg border border-gray-200">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Livraison
+                    </span>
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      Par défaut
+                    </span>
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-medium text-gray-900">{formData.address}</p>
+                    <p className="text-gray-600">{formData.city} {formData.postalCode && `${formData.postalCode}, `}{formData.country}</p>
+                    {formData.notes && (
+                      <p className="text-gray-500 text-xs mt-1">Instructions: {formData.notes}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -257,7 +338,7 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
       </div>
 
       {/* Confirmation Notice */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <div className="flex gap-3">
           <CheckCircle size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-blue-800">
@@ -265,7 +346,37 @@ const RecapForm = ({ formData, cart, orderDetails, total, formatMAD, placeOrder,
             <p>En confirmant cette commande, vous acceptez nos conditions de vente et notre politique de remboursement.</p>
           </div>
         </div>
-        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+        <button
+          type="button"
+          onClick={prevStep}
+          disabled={isLoading}
+          className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Retour
+        </button>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-logo-lime to-lime-500 text-dark-green-7 font-semibold rounded-full hover:from-lime-500 hover:to-lime-600 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-95"
+        >
+          {isLoading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-dark-green-7/30 border-t-dark-green-7 animate-spin rounded-full mr-2"></div>
+              Finalisation en cours...
+            </>
+          ) : (
+            <>
+              <CheckCircle size={20} weight="duotone" className="mr-2" />
+              Confirmer la commande
+            </>
+          )}
+        </button>
+      </div>
       </form>
     </div>
   );

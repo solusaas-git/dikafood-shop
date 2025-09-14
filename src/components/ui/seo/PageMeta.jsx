@@ -1,6 +1,6 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useLocation } from 'react-router-dom';
+import Head from 'next/head';
+import { usePathname } from 'next/navigation';
 import config from '@/config';
 
 /**
@@ -21,7 +21,7 @@ const PageMeta = ({
   type = 'website',
   additionalMeta = {},
 }) => {
-  const { pathname } = useLocation();
+  const pathname = usePathname();
   const isHomePage = pathname === '/' || pathname === '/home';
 
   // Format the title with site name
@@ -37,7 +37,7 @@ const PageMeta = ({
   const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : `${baseUrl}${imageUrl}`;
 
   return (
-    <Helmet>
+    <Head>
       {/* Basic Meta Tags */}
       <title>{formattedTitle}</title>
       <meta name="description" content={metaDescription} />
@@ -65,10 +65,10 @@ const PageMeta = ({
       {/* Conditional preloading based on page */}
       {isHomePage && (
         <>
-          <link rel="preload" href="/images/backgrounds/hero-banner.webp" as="image" type="image/webp" fetchpriority="high" />
+          <link rel="preload" href="/images/backgrounds/hero-banner.webp" as="image" type="image/webp" fetchPriority="high" />
         </>
       )}
-    </Helmet>
+    </Head>
   );
 };
 

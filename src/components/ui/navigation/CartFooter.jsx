@@ -17,34 +17,40 @@ const CartFooter = ({
   totalAmount = 0,
   formatPrice,
   onCheckout,
-  checkoutText = 'Passer la commande',
+  checkoutText = 'Commencer mes achats',
   isLoading = false,
   totalText = 'Total'
 }) => {
   return (
-    <div className="p-4 border-t border-logo-lime/20 bg-white">
-      {/* Compact Total + Action Layout */}
-      <div className="flex items-center justify-between gap-3">
-        {/* Total Section */}
-        <div className="flex flex-col">
-          <span className="text-xs text-dark-green-6 uppercase tracking-wide font-medium">
-            {totalText}
-          </span>
-          <span className="text-lg font-bold text-dark-green-7">
-            {formatPrice(totalAmount)}
-          </span>
-        </div>
-
-        {/* Checkout Button */}
-        <button
-          onClick={onCheckout}
-          className="flex items-center justify-center gap-2 py-3 px-8 bg-logo-lime/20 text-dark-green-7 font-medium rounded-full border border-logo-lime/30 hover:bg-logo-lime/30 transition-all hover:-translate-y-0.5 hover:shadow-sm icon-text-separator disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isLoading}
-        >
-          {checkoutText}
-          <Icon name="arrowRight" size="sm" className="text-dark-green-7" />
-        </button>
+    <div className="p-4 border-t border-gray-200 bg-gray-50/50">
+      {/* Total Section */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-sm text-gray-600 font-medium">
+          {totalText}
+        </span>
+        <span className="text-xl font-bold text-dark-green-7">
+          {formatPrice(totalAmount)}
+        </span>
       </div>
+
+      {/* Checkout Button - High Contrast Primary CTA */}
+      <button
+        onClick={onCheckout}
+        className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-logo-lime text-dark-green-7 font-bold rounded-full border-2 border-logo-lime hover:bg-logo-lime/90 hover:border-logo-lime/90 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <div className="w-4 h-4 border-2 border-dark-green-7/30 border-t-dark-green-7 animate-spin rounded-full"></div>
+            Traitement...
+          </>
+        ) : (
+          <>
+            <Icon name="shoppingbag" size="sm" className="text-dark-green-7" />
+            {checkoutText}
+          </>
+        )}
+      </button>
     </div>
   );
 };

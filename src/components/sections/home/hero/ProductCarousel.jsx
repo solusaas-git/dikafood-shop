@@ -15,7 +15,7 @@ let activeVariantsCache = {};
 
 /**
  * ProductCarousel component for the hero section
- * Displays featured products in a carousel
+ * Displays featured product variants in a carousel
  */
 const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
   const { t, locale } = useTranslation(translations);
@@ -38,22 +38,22 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
 
   // Fetch products on mount
   const fetchProducts = useCallback(async () => {
-    // Force refresh in development to pick up formatProductData changes
-    const forceRefresh = import.meta.env.DEV && !productsCache.some(p => p.variants?.[0]?.image);
+    // Force refresh in development to pick up variant data changes
+    const forceRefresh = import.meta.env.DEV && !productsCache.some(v => v.image);
     
-    // Skip if we've already loaded products (unless forcing refresh)
+    // Skip if we've already loaded variants (unless forcing refresh)
     if (!forceRefresh && (isFullyLoaded.current || hasInitiallyLoaded || productsCache.length > 0)) {
       if ((hasInitiallyLoaded || productsCache.length > 0) && products.length === 0) {
-        console.log('Using cached products:', productsCache.length);
+        console.log('Using cached variants:', productsCache.length);
         setProducts(productsCache);
         setActiveVariants(activeVariantsCache);
         setIsVisible(true);
-        if (onLoaded) setTimeout(() => onLoaded(), 300);
+        if (onLoaded) onLoaded();
       }
       return;
     }
     
-    console.log('Fetching fresh products data...');
+    console.log('Fetching fresh variant data...');
 
     // Set global flag
     hasInitiallyLoaded = true;
@@ -61,43 +61,56 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
     isFullyLoaded.current = true;
 
     try {
-      // Fetch featured products
-      const response = await api.getFeaturedProducts();
+      // Fetch featured variants instead of featured products
+      const response = await api.getFeaturedVariants();
 
       if (response && response.success && response.data && response.data.length > 0) {
         console.log('Raw API data:', response.data[0]);
         
-        // Products from new API are already properly formatted
-        const processedProducts = response.data.filter(Boolean);
+        // Variants from API are already properly formatted
+        const processedVariants = response.data.filter(Boolean);
         
-        console.log('Product data:', processedProducts[0]);
+        console.log('Variant data:', processedVariants[0]);
 
         // Update global cache
-        productsCache = processedProducts;
+        productsCache = processedVariants;
 
-        // Initialize active variants
+        // Initialize active variants - each variant is already the active variant
         const initialVariants = {};
-        processedProducts.forEach(product => {
-          const productId = product.productId || product.id;
-          if (product.variants && product.variants.length > 0) {
-            initialVariants[productId] = product.variants[0];
-          }
+        processedVariants.forEach(variant => {
+          const variantId = variant.id;
+          // For variants, the variant itself is the active variant
+          initialVariants[variantId] = variant.variants?.[0] || {
+            _id: variant.variantId,
+            id: variant.variantId,
+            size: variant.size,
+            price: variant.price,
+            originalPrice: variant.originalPrice,
+            promotionalPrice: variant.promotionalPrice,
+            stock: variant.stock,
+            sku: variant.sku,
+            weight: variant.weight,
+            dimensions: variant.dimensions,
+            imageUrl: variant.image,
+            imageUrls: variant.images,
+            featured: variant.featured
+          };
         });
 
         // Update global cache
         activeVariantsCache = initialVariants;
 
         // Set state
-        setProducts(processedProducts);
+        setProducts(processedVariants);
         setActiveVariants(initialVariants);
         setIsVisible(true);
-        if (onLoaded) setTimeout(() => onLoaded(), 300);
+        if (onLoaded) onLoaded();
       } else {
-        console.error(response?.message || t('errors.no_products'));
+        console.error(response?.message || t('errors.no_variants'));
         setProducts([]);
       }
     } catch (err) {
-      console.error('Error fetching products for hero carousel:', err);
+      console.error('Error fetching featured variants for hero carousel:', err);
       setProducts([]);
     }
   }, [t, products.length, onLoaded]);

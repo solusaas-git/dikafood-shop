@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { Section } from '@components/ui/layout';
 import { ProductBreadcrumb } from '@components/ui/product';
 import { 
@@ -87,12 +88,29 @@ function AsyncImage({ imageId, alt, className, ...props }) {
   return <img src={src} alt={alt} className={className} {...props} />;
 }
 
-const ProductDetailPage = () => {
-  const { productId } = useParams();
-  const { addToCart } = useCart();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+const ProductDetailPage = ({ productId, onLoadingChange }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Get variant from URL search params
+  const [urlVariantId, setUrlVariantId] = useState(null);
+  
+  useEffect(() => {
+    // Extract variant from Next.js App Router search params
+    const variantParam = searchParams.get('variant');
+    
+    if (variantParam) {
+      // Decode the variant parameter
+      const decodedVariant = decodeURIComponent(variantParam);
+      setUrlVariantId(decodedVariant);
+    } else {
+      setUrlVariantId(null);
+    }
+  }, [searchParams]); // Depend on searchParams
+  const { addItem } = useCart();
+  const [isMobile, setIsMobile] = useState(false);
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Removed local loading state - using global navigation loader instead
   const [error, setError] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [relatedLoading, setRelatedLoading] = useState(false);
@@ -104,6 +122,9 @@ const ProductDetailPage = () => {
 
   // Add resize listener for mobile detection
   useEffect(() => {
+    // Set initial mobile state
+    setIsMobile(window.innerWidth < 768);
+    
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -117,27 +138,43 @@ const ProductDetailPage = () => {
     const fetchProduct = async () => {
       if (!productId) {
         setError('Product ID is required');
-        setLoading(false);
         return;
       }
-
-      setLoading(true);
       try {
         const response = await api.getProduct(productId);
-        if (!response.success || !response.data || !response.data.product) {
+        if (!response.success || !response.data) {
           setError(response.message || 'Failed to fetch product');
-          setLoading(false);
           return;
         }
         // Process the product data to match component expectations
-        const processedProduct = processProductData(response.data.product);
+        const processedProduct = processProductData(response.data);
+        
+        // Check if we should redirect from ID to slug for SEO
+        const isObjectId = /^[0-9a-fA-F]{24}$/.test(productId);
+        const hasSlug = processedProduct.slug && processedProduct.slug !== productId;
+        
+        if (isObjectId && hasSlug) {
+          // Redirect to slug-based URL for better SEO
+          const currentUrl = new URL(window.location.href);
+          const variantParam = currentUrl.searchParams.get('variant');
+          const slugUrl = variantParam 
+            ? `/produits/${processedProduct.slug}?variant=${encodeURIComponent(variantParam)}`
+            : `/produits/${processedProduct.slug}`;
+          
+          // Use replace to avoid adding to browser history
+          window.location.replace(slugUrl);
+          return;
+        }
+        
         setProduct(processedProduct);
         setError(null);
+        // Hide loading when product is successfully loaded
+        if (onLoadingChange) onLoadingChange(false);
       } catch (err) {
         // Silently handle errors - they're already being shown via notifications
         setError('An error occurred while fetching the product');
-      } finally {
-        setLoading(false);
+        // Hide loading on error too
+        if (onLoadingChange) onLoadingChange(false);
       }
     };
 
@@ -213,15 +250,16 @@ const ProductDetailPage = () => {
     return {
       id: backendProduct._id,
       productId: backendProduct._id,
-      name: `${backendProduct.brandDisplayName} ${backendProduct.category} ${firstVariant?.size || ''}`.trim(),
-      title: `${backendProduct.brandDisplayName} ${backendProduct.category} ${firstVariant?.size || ''}`.trim(),
+      name: backendProduct.name,
+      title: backendProduct.name,
       brand: backendProduct.brand,
-      brandDisplayName: backendProduct.brandDisplayName,
+      brandDisplayName: backendProduct.brand,
       category: backendProduct.category,
       description: backendProduct.description,
       imageId: extractImageIdFromUrl(firstVariant?.imageUrl) || null,
       price: firstVariant?.price || 0,
       unitPrice: firstVariant?.price || 0,
+      promotionalPrice: firstVariant?.promotionalPrice || null,
       inStock: (firstVariant?.stock || 0) > 0,
       stock: firstVariant?.stock || 0,
       featured: backendProduct.featured,
@@ -233,10 +271,12 @@ const ProductDetailPage = () => {
         size: variant.size,
         price: variant.price,
         unitPrice: variant.price,
+        promotionalPrice: variant.promotionalPrice || null,
         stock: variant.stock,
         inStock: variant.stock > 0,
         imageId: extractImageIdFromUrl(variant.imageUrl) || null,
-        imageUrls: variant.imageUrls
+        imageUrls: variant.imageUrls,
+        featured: variant.featured || false
       })) || []
     };
   };
@@ -245,26 +285,87 @@ const ProductDetailPage = () => {
   const processProductData = (rawProduct) => {
     if (!rawProduct) return null;
 
-    // Variants: ensure each has an id and name, and extract imageId from imageUrl
+    // Variants: ensure each has an id and name, and use imageUrl directly
     const processedVariants = (rawProduct.variants || []).map(variant => ({
       ...variant,
       id: variant._id,
       name: variant.size || variant.name,
-      imageId: extractImageIdFromUrl(variant.imageUrl)
+      imageUrl: variant.imageUrl || rawProduct.image || '/images/products/dika-500ML.webp'
     }));
 
-    // Images: extract image IDs from URLs, wrap as objects for gallery
-    const images = (rawProduct.images || []).map((img, idx) => ({
-      imageId: extractImageIdFromUrl(img),
-      variant: processedVariants[idx]?.size || 'main'
+    // Create images array from variants, but only include distinct images
+    const legacyVariantImages = processedVariants.map((variant, index) => ({
+      url: variant.imageUrl,
+      variant: variant.size || variant.name || 'default',
+      variantId: variant._id,
+      variantIndex: index
+    })).filter(img => img.url);
+
+    // Remove duplicate images (same URL) but keep the mapping
+    const uniqueVariantImages = [];
+    const seenUrls = new Set();
+    
+    legacyVariantImages.forEach(img => {
+      if (!seenUrls.has(img.url)) {
+        seenUrls.add(img.url);
+        uniqueVariantImages.push(img);
+      }
+    });
+
+    // If we have product images, map them to variants by index
+    const productImages = (rawProduct.images || []).map((img, idx) => ({
+      url: img,
+      variant: processedVariants[idx]?.size || processedVariants[idx]?.name || `variant-${idx}`,
+      variantId: processedVariants[idx]?._id,
+      variantIndex: idx
     }));
 
-    // If no images from rawProduct.images, try to get from variants
-    const finalImages = images.length > 0 ? images : 
-      processedVariants.map(variant => ({
-        imageId: variant.imageId,
-        variant: variant.size || variant.name || 'default'
-      })).filter(img => img.imageId);
+    // Create comprehensive image gallery with both general and variant-specific images
+    let finalImages = [];
+    
+    // 1. Add general product images (not variant-specific)
+    const generalImages = (rawProduct.images || []).map((img, index) => ({
+      url: img.url || img,
+      variant: 'general',
+      imageType: 'general',
+      imageIndex: index,
+      alt: img.alt || `Product image ${index + 1}`,
+      isPrimary: img.isPrimary || false
+    }));
+    
+    // 2. Add variant-specific images
+    const variantImages = processedVariants.map((variant, variantIndex) => {
+      // Get all images for this variant
+      const variantImageUrls = variant.imageUrls || (variant.imageUrl ? [variant.imageUrl] : []);
+      
+      return variantImageUrls.map((imageUrl, imageIndex) => ({
+        url: imageUrl,
+        variant: variant.size || variant.name || `variant-${variantIndex}`,
+        variantId: variant._id,
+        variantIndex: variantIndex,
+        imageType: 'variant',
+        imageIndex: imageIndex,
+        alt: `${variant.size || variant.name} - Image ${imageIndex + 1}`
+      }));
+    }).flat();
+    
+    // 3. Combine images: General images first, then variant images
+    finalImages = [...generalImages, ...variantImages];
+    
+    // 4. Ensure we have at least one image
+    if (finalImages.length === 0) {
+      finalImages = [{ 
+        url: '/images/products/dika-500ML.webp', 
+        variant: 'default',
+        imageType: 'fallback',
+        imageIndex: 0,
+        isPlaceholder: true,
+        alt: 'Product placeholder'
+      }];
+    }
+    
+    
+
 
     // Features and benefits: merge for display
     const features = [
@@ -284,7 +385,7 @@ const ProductDetailPage = () => {
       ...rawProduct,
       id: rawProduct._id,
       variants: processedVariants,
-      images: finalImages.length > 0 ? finalImages : [{ imageId: null, variant: 'default' }],
+      images: finalImages.length > 0 ? finalImages : [{ url: '/images/products/dika-500ML.webp', variant: 'default' }],
       features,
       additionalDetails: details,
       description: rawProduct.description || '',
@@ -308,25 +409,131 @@ const ProductDetailPage = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Initialize selected variant when product changes
+  // Track if we've already processed the URL variant to avoid re-processing
+  const [hasProcessedUrlVariant, setHasProcessedUrlVariant] = useState(false);
+
+  // Initialize selected variant when product changes or URL variant is set
   useEffect(() => {
     if (product && product.variants && product.variants.length > 0) {
-      // Find default variant or use first one
-      const defaultVariant = product.variants.find(v => v.isDefault) || product.variants[0];
-      setSelectedVariant(defaultVariant);
+      let targetVariant = null;
+      
+      // First priority: Use variant from URL if specified and not already processed
+      if (urlVariantId && !hasProcessedUrlVariant) {
+        targetVariant = product.variants.find(v => 
+          v._id === urlVariantId || 
+          v.id === urlVariantId ||
+          (v.size || '').toLowerCase() === urlVariantId.toLowerCase() ||
+          (v.name || '').toLowerCase() === urlVariantId.toLowerCase()
+        );
+        
+        if (targetVariant) {
+          setHasProcessedUrlVariant(true); // Mark as processed
+        }
+      }
+      
+      // Second priority: Find default variant (only if no URL variant was found)
+      if (!targetVariant && !hasProcessedUrlVariant) {
+        targetVariant = product.variants.find(v => v.isDefault);
+        if (targetVariant) {
+        }
+      }
+      
+      // Final fallback: Use first variant (only if no URL variant was found)
+      if (!targetVariant && !hasProcessedUrlVariant) {
+        targetVariant = product.variants[0];
+      }
+      
+      // Only set the variant if we found one and haven't processed URL variant yet
+      if (targetVariant && (!hasProcessedUrlVariant || urlVariantId)) {
+        setSelectedVariant(targetVariant);
+        // Also trigger image selection for the variant (same logic as handleVariantSelect)
+        if (urlVariantId && !hasProcessedUrlVariant) {
+          
+          // Find the best image to display for the selected variant
+          const selectedVariantIndex = product.variants?.findIndex(v => v._id === targetVariant._id);
+          
+          if (selectedVariantIndex !== -1) {
+            // Strategy 1: Find variant-specific images for this variant
+            const variantSpecificImageIndex = product.images?.findIndex(img => 
+              img.imageType === 'variant' && img.variantId === targetVariant._id
+            );
+            
+            if (variantSpecificImageIndex !== -1) {
+              setSelectedImage(variantSpecificImageIndex);
+            } else {
+              // Strategy 2: Find by variant name/size match
+              const variantName = (targetVariant.size || targetVariant.name || '').toLowerCase();
+              const imageByNameIndex = product.images?.findIndex(img => {
+                const imgVariant = (img.variant || '').toLowerCase();
+                return variantName && imgVariant && variantName === imgVariant;
+              });
+              
+              if (imageByNameIndex !== -1) {
+                setSelectedImage(imageByNameIndex);
+              } else {
+                // Strategy 3: Use primary general image if no variant-specific image found
+                const primaryImageIndex = product.images?.findIndex(img => 
+                  img.imageType === 'general' && img.isPrimary
+                );
+                
+                if (primaryImageIndex !== -1) {
+                  setSelectedImage(primaryImageIndex);
+                } else {
+                  // Final fallback: use first available image
+                  setSelectedImage(0);
+                }
+              }
+            }
+          }
+        }
+      }
     }
-  }, [product]);
+  }, [product, urlVariantId, hasProcessedUrlVariant]);
 
   // Handle variant selection
   const handleVariantSelect = (variant) => {
     setSelectedVariant(variant);
-    // Find matching image for this variant if available
-    const variantImageIndex = product.images?.findIndex(img =>
-      img.variant && img.variant.toLowerCase() === (variant.size || variant.name).toLowerCase()
-    );
-    if (variantImageIndex !== -1) {
-      setSelectedImage(variantImageIndex);
+    
+    
+    // Find the best image to display for the selected variant
+    const selectedVariantIndex = product.variants?.findIndex(v => v._id === variant._id);
+    
+    if (selectedVariantIndex !== -1) {
+      // Strategy 1: Find variant-specific images for this variant
+      const variantSpecificImageIndex = product.images?.findIndex(img => 
+        img.imageType === 'variant' && img.variantId === variant._id
+      );
+      
+      if (variantSpecificImageIndex !== -1) {
+        setSelectedImage(variantSpecificImageIndex);
+        return;
+      }
+      
+      // Strategy 2: Find by variant name/size match
+      const variantName = (variant.size || variant.name || '').toLowerCase();
+      const imageByNameIndex = product.images?.findIndex(img => {
+        const imgVariant = (img.variant || '').toLowerCase();
+        return variantName && imgVariant && variantName === imgVariant;
+      });
+      
+      if (imageByNameIndex !== -1) {
+        setSelectedImage(imageByNameIndex);
+        return;
+      }
+      
+      // Strategy 3: Use primary general image if no variant-specific image found
+      const primaryImageIndex = product.images?.findIndex(img => 
+        img.imageType === 'general' && img.isPrimary
+      );
+      
+      if (primaryImageIndex !== -1) {
+        setSelectedImage(primaryImageIndex);
+        return;
+      }
     }
+    
+    // Final fallback: use first available image
+    setSelectedImage(0);
   };
 
   // Handle quantity changes
@@ -347,7 +554,7 @@ const ProductDetailPage = () => {
 
     try {
       // Use the CartContext which has proper brand extraction logic
-      await addToCart({
+      await addItem({
         product: product,
         productId: product.id || product.productId,
         variant: selectedVariant,
@@ -355,8 +562,7 @@ const ProductDetailPage = () => {
         quantity: quantity
       });
 
-      // Use event bus to notify that an item was added to cart
-      cartEvents.itemAdded({ product, variant: selectedVariant });
+      // Event is now automatically emitted by CartContext
 
     } catch (error) {
       console.error('Error adding product to cart:', error);
@@ -373,50 +579,34 @@ const ProductDetailPage = () => {
     // Implement checkout redirection here
   };
 
-  if (loading) {
-    return (
-      <Section
-        className="py-8 relative overflow-hidden flex items-center justify-center min-h-[400px]"
-        fullWidth
-        width="full"
-        style={{
-          background: "linear-gradient(to bottom right, rgba(235, 235, 71, 0.05), rgba(235, 235, 71, 0.1), rgba(235, 235, 71, 0.05))"
-        }}
-      >
-        {/* Section Decorations with white variant for dark background */}
-        <SectionDecorations
-          variant="white"
-          positions={['bottom-right']}
-          customStyles={{
-            bottomRight: {
-              opacity: 0.15,
-              transform: 'scale(1.2) translate(20px, 20px)'
-            }
-          }}
-        />
+  // Handle add to cart for related products
+  const handleRelatedProductAddToCart = async (product, variant) => {
+    try {
+      // Use the selected variant or the first available variant
+      const selectedVariant = variant || (product.variants && product.variants.length > 0 ? product.variants[0] : null);
+      
+      if (!selectedVariant) {
+        showNotification('Erreur', 'Aucune variante disponible pour ce produit', 'error');
+        return;
+      }
 
-        <div className="container max-w-6xl mx-auto px-8 md:px-12 lg:px-16 relative z-10 flex flex-col items-center justify-center">
-          <div className="w-24 h-24 relative animate-pulse">
-            <img
-              src="/favicon.svg"
-              alt="Loading"
-              className="w-full h-full animate-spin-slow"
-              style={{
-                animationDuration: '3s',
-                filter: 'drop-shadow(0 0 8px rgba(168, 203, 56, 0.5))'
-              }}
-            />
-          </div>
-          <p className="text-dark-green-7 mt-4 font-medium">Chargement du produit...</p>
-            </div>
-      </Section>
-    );
+      await addItem(product.id || product._id, selectedVariant._id, 1);
+      showNotification('Succès', `${product.name} ajouté au panier`, 'success');
+    } catch (error) {
+      console.error('Error adding related product to cart:', error);
+      showNotification('Erreur', 'Impossible d\'ajouter le produit au panier', 'error');
+    }
+  };
+
+  // Return null when no product yet and no error (parent handles loading)
+  if (!product && !error) {
+    return null;
   }
 
-  if (error || !product) {
+  if (error) {
     return (
       <Section
-        className="py-8 relative overflow-hidden flex items-center justify-center min-h-[400px]"
+        className="mt-20 relative overflow-hidden flex items-center justify-center min-h-[calc(100vh-5rem)]"
         fullWidth
         width="full"
         style={{
@@ -447,9 +637,9 @@ const ProductDetailPage = () => {
           </div>
           <h2 className="text-2xl font-bold mt-6 mb-2 text-dark-green-7">Produit non trouvé</h2>
           <p className="text-gray-600 mb-6 text-center">{error || 'Le produit demandé n\'a pas pu être trouvé.'}</p>
-          <a href="/produits" className="bg-logo-lime/80 text-dark-green-7 px-6 py-3 rounded-full hover:bg-logo-lime transition-colors shadow-sm">
+          <Link href="/shop" className="bg-logo-lime/80 text-dark-green-7 px-6 py-3 rounded-full hover:bg-logo-lime transition-colors shadow-sm">
             Retour aux produits
-          </a>
+          </Link>
         </div>
       </Section>
     );
@@ -462,14 +652,14 @@ const ProductDetailPage = () => {
 
       {/* Mobile Product Title - Only visible on mobile */}
       {isMobile && (
-        <div className="container max-w-7xl mx-auto px-4 mb-0 mt-0 !pt-[160px]">
+        <div className="container max-w-7xl mx-auto px-4 mb-0 mt-0 !pt-[220px]">
           <h1 className="text-2xl font-normal text-dark-green-7 mb-2 pb-2 border-b border-logo-lime/30">{product.name}</h1>
         </div>
       )}
 
       {/* Main product section */}
       <Section
-        className="py-4 md:py-8 relative overflow-hidden md:!pt-[200px]"
+        className="py-4 md:py-8 relative overflow-hidden !pt-[220px] md:!pt-[300px]"
         fullWidth
         width="full"
         style={{
@@ -488,19 +678,19 @@ const ProductDetailPage = () => {
           }}
         />
 
-        <div className="container max-w-6xl mx-auto px-8 md:px-12 lg:px-16 relative z-10">
+        <div className="container max-w-6xl mx-auto px-4 md:px-8 lg:px-12 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 md:border-t md:border-logo-lime/30 md:pt-6">
-            {/* Left Column: Product Images and Rating */}
+            
+            {/* Left Column: Product Images */}
             <div className={`md:self-start ${isMobile ? '' : 'border-r border-logo-lime/30 pr-8'}`}>
               <ProductImageGallery
                 images={
                   Array.isArray(product.images) && product.images.length > 0
                     ? product.images.map(img => ({
-                        imageId: img.imageId || null,
-                        url: img.url || '/images/placeholder-product.png',
+                        url: img.url || '/images/products/dika-500ML.webp',
                         variant: img.variant || 'default'
                       }))
-                    : [{ imageId: null, url: '/images/placeholder-product.png', variant: 'default' }]
+                    : [{ url: '/images/products/dika-500ML.webp', variant: 'default' }]
                 }
                 selectedImage={selectedImage}
                 onSelectImage={handleImageSelect}
@@ -511,88 +701,89 @@ const ProductDetailPage = () => {
                 isMobile={isMobile}
               />
 
-              {/* Brand Display for Mobile - Between Gallery and Rating */}
-              {isMobile && (
-                <div className="mt-4 mb-4">
-                  <BrandDisplay
-                    brand={product.brand}
-                    size="large"
-                    fullWidth={true}
-                    className="w-full"
-                    isMobile={true}
-                  />
-                </div>
-              )}
-
-              {/* Rating moved below the gallery */}
-              <ProductRatingCard
-                rating={product.rating}
-                reviewCount={product.reviewCount || 69}
-                reviews={[]}
-                useMockData={true}
-                className="mt-4"
-              />
+              {/* Rating below gallery */}
+              <div className="mt-6">
+                <ProductRatingCard
+                  rating={product.rating}
+                  reviewCount={product.reviewCount || 69}
+                  reviews={[]}
+                  useMockData={true}
+                />
+              </div>
             </div>
 
             {/* Right Column: Product Info */}
-            <div>
-              {/* Desktop Product Title - Only visible on desktop */}
-              {!isMobile && (
-                <>
-                  <h1 className="text-3xl font-normal text-dark-green-7 mb-3 pb-2 border-b border-logo-lime/30">{product.name}</h1>
+            <div className="space-y-6">
+              
+              {/* Product Header */}
+              <div>
+                <h1 className="text-2xl md:text-3xl font-normal text-dark-green-7 mb-4 pb-2 border-b border-logo-lime/30">{product.name}</h1>
+                
+                {/* Brand and Price Row */}
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                  <BrandDisplay
+                    brand={product.brand}
+                    size="large"
+                    className="flex-shrink-0"
+                  />
+                  <ProductPriceDisplay
+                    price={selectedVariant 
+                      ? (selectedVariant.promotionalPrice && selectedVariant.promotionalPrice > 0 && selectedVariant.promotionalPrice < selectedVariant.price 
+                         ? selectedVariant.promotionalPrice 
+                         : selectedVariant.price)
+                      : product.price}
+                    currency={product.currency || "MAD"}
+                    isDiscounted={selectedVariant?.promotionalPrice > 0 && selectedVariant?.promotionalPrice < selectedVariant?.price}
+                    originalPrice={selectedVariant?.price}
+                    highlight={true}
+                    className="text-right"
+                  />
+                </div>
 
-                  {/* Brand and Price Row */}
-                  <div className="flex flex-wrap items-center gap-3 mb-6">
-                    <ProductPriceDisplay
-                      price={selectedVariant ? selectedVariant.price : product.price}
-                      currency={product.currency || "MAD"}
-                      isDiscounted={selectedVariant?.originalPrice > 0}
-                      originalPrice={selectedVariant?.originalPrice}
-                      highlight={true}
-                      className="flex-shrink-0"
-                    />
-                    <BrandDisplay
-                      brand={product.brand}
-                      size="large"
-                      className="flex-shrink-0"
-                    />
+                {/* Short Description */}
+                {product.shortDescription && (
+                  <div className="mb-6 p-4 bg-logo-lime/5 rounded-lg border-l-4 border-l-logo-lime">
+                    <p className="text-gray-700 text-sm leading-relaxed">{product.shortDescription}</p>
                   </div>
-                </>
-              )}
+                )}
+              </div>
 
-              {/* Product Options - Only show on desktop */}
-              {!isMobile && (
+              {/* Product Options */}
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Options</h3>
                 <ProductOptions
                   variants={product.variants || []}
                   selectedVariant={selectedVariant}
                   onVariantSelect={handleVariantSelect}
                   quantity={quantity}
                   onQuantityChange={handleQuantityChange}
-                  className="mt-6"
                 />
-              )}
+              </div>
 
-              {/* Action Buttons - Only show on desktop */}
-              {!isMobile && (
+              {/* Action Buttons */}
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
                 <ProductActionButtons
                   onAddToCart={handleAddToCart}
                   onBuyNow={handleBuyNow}
-                  className="mt-8"
                 />
-              )}
+              </div>
 
-              {/* Product Details */}
-              <ProductDetailsSection
-                description={product.description}
-                features={product.features}
-                additionalDetails={product.additionalDetails}
-                isDescriptionOpen={isDescriptionOpen}
-                setIsDescriptionOpen={setIsDescriptionOpen}
-                isDetailsOpen={isDetailsOpen}
-                setIsDetailsOpen={setIsDetailsOpen}
-                className={isMobile ? "mt-4" : "mt-8"}
-              />
             </div>
+          </div>
+
+          {/* Product Details Section - Full Width */}
+          <div className="mt-12 pt-8 border-t border-logo-lime/30">
+            <ProductDetailsSection
+              description={product.description}
+              shortDescription={null} // Already shown above
+              features={product.features}
+              allergens={product.allergens}
+              additionalDetails={product.additionalDetails}
+              isDescriptionOpen={isDescriptionOpen}
+              setIsDescriptionOpen={setIsDescriptionOpen}
+              isDetailsOpen={isDetailsOpen}
+              setIsDetailsOpen={setIsDetailsOpen}
+            />
           </div>
         </div>
       </Section>
@@ -642,6 +833,7 @@ const ProductDetailPage = () => {
               products={relatedProducts}
               loading={relatedLoading}
               className="related-products-carousel"
+              onAddToCart={handleRelatedProductAddToCart}
             />
           </div>
         </Section>
