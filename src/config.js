@@ -9,17 +9,17 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // API Configuration
 const getApiUrl = () => {
-  // Allow override via environment variable for custom setups
-  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
-    return process.env.NEXT_PUBLIC_API_BASE_URL;
-  }
-  
-  // Production: use relative API routes (same domain)
+  // In production, ALWAYS use relative URLs to avoid CORS issues
   if (isProduction) {
     return "/api";
   }
   
-  // Development: use Next.js API routes
+  // In development, allow override via environment variable
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL;
+  }
+  
+  // Development default: use Next.js API routes
   return "/api";
 };
 

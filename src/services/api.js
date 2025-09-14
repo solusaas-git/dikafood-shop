@@ -23,6 +23,8 @@ class ApiService {
     this.timeout = config.API.timeout;
     // Debug: Log the baseURL to verify it's using relative URLs
     console.log('🔧 API Service initialized with baseURL:', this.baseURL);
+    console.log('🌍 Environment:', process.env.NODE_ENV);
+    console.log('🔗 NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
     this.isRefreshing = false;
     this.failedQueue = [];
     // Enable API calls - connect to real backend
