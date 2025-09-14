@@ -21,6 +21,8 @@ class ApiService {
   constructor() {
     this.baseURL = config.API.baseURL;
     this.timeout = config.API.timeout;
+    // Debug: Log the baseURL to verify it's using relative URLs
+    console.log('🔧 API Service initialized with baseURL:', this.baseURL);
     this.isRefreshing = false;
     this.failedQueue = [];
     // Enable API calls - connect to real backend
@@ -86,7 +88,9 @@ class ApiService {
     const sessionHeaders = sessionService.getSessionHeaders();
     Object.assign(requestHeaders, sessionHeaders);
 
+    // Use relative URLs to avoid CORS issues
     const url = `${this.baseURL}${endpoint}`;
+    console.log('🌐 Making API request to:', url);
 
     try {
       // Create abort controller for timeout
