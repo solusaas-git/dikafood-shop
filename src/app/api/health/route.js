@@ -3,28 +3,30 @@ import connectDB from '../../../lib/database.js';
 
 export async function GET() {
   try {
-    // Test database connection
-    await connectDB();
-    
-    return NextResponse.json({
+    // Test basic API functionality
+    const response = {
       success: true,
-      message: 'DikaFood API is running',
+      message: 'API is working!',
       timestamp: new Date().toISOString(),
-      version: '1.0.0',
-      environment: process.env.NODE_ENV || 'development',
-      database: 'Connected'
-    });
+      environment: process.env.NODE_ENV || 'unknown',
+      database: 'not tested'
+    };
+
+    // Test database connection
+    try {
+      await connectDB();
+      response.database = 'connected';
+    } catch (dbError) {
+      response.database = `error: ${dbError.message}`;
+      response.dbError = true;
+    }
+
+    return NextResponse.json(response);
   } catch (error) {
-    console.error('Health check failed:', error);
-    
     return NextResponse.json({
       success: false,
-      message: 'API health check failed',
-      timestamp: new Date().toISOString(),
-      version: '1.0.0',
-      environment: process.env.NODE_ENV || 'development',
-      database: 'Disconnected',
-      error: error.message
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     }, { status: 500 });
   }
 }
