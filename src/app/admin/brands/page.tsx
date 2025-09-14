@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNotification } from '@/contexts/NotificationContextNew';
 import LucideIcon from '../../../components/ui/icons/LucideIcon';
 
@@ -75,7 +75,7 @@ const BrandsPage = () => {
 
   const { addNotification } = useNotification();
 
-  const fetchBrands = async (page = 1) => {
+  const fetchBrands = useCallback(async (page = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -118,11 +118,11 @@ const BrandsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.limit, addNotification, searchTerm]);
 
   useEffect(() => {
     fetchBrands();
-  }, []);
+  }, [fetchBrands]);
 
   const handleLogoUpload = async (file: File) => {
     try {

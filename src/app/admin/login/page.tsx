@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import LucideIcon from '../../../components/ui/icons/LucideIcon';
 import { useTranslation } from '../../../utils/i18n';
 
@@ -233,12 +234,12 @@ export default function AdminLogin() {
 
           {/* Back to main site */}
           <div className="text-center">
-            <a
+            <Link
               href="/"
               className="text-sm text-logo-lime hover:text-logo-lime/80"
             >
               {t('admin.login.backToSite')}
-            </a>
+            </Link>
           </div>
         </form>
       </div>

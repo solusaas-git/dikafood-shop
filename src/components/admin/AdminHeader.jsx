@@ -27,8 +27,8 @@ const AdminHeader = () => {
             onClick={toggleSidebar}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            <Icon 
-              name={sidebarOpen ? 'X' : 'List'} 
+            <LucideIcon 
+              name={sidebarOpen ? 'x' : 'list'} 
               size="md" 
               color="gray" 
             />
