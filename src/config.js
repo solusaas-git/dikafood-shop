@@ -14,13 +14,13 @@ const getApiUrl = () => {
     return process.env.NEXT_PUBLIC_API_BASE_URL;
   }
   
-  // Production: use api.dikafood.com
+  // Production: use relative API routes (same domain)
   if (isProduction) {
-    return 'https://api.dikafood.com/api';
+    return "/api";
   }
   
   // Development: use Next.js API routes
-  return "http://localhost:3000/api";
+  return "/api";
 };
 
 const config = {
@@ -41,7 +41,7 @@ const config = {
     timeout: 30000,
     useMockApi: process.env.NEXT_PUBLIC_USE_MOCK_API === 'true',
     // For internal use - actual backend URL (needed for some services)
-    backendUrl: isProduction ? 'https://api.dikafood.com' : 'http://localhost:3001'
+    backendUrl: isProduction ? 'https://dikafood.com' : 'http://localhost:3000'
   },
 
   // Frontend URLs
