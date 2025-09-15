@@ -168,7 +168,7 @@ const ProductsPage = () => {
     if (!authLoading && isAuthenticated) {
       fetchProducts();
     }
-  }, [fetchProducts, authLoading, isAuthenticated]);
+  }, [authLoading, isAuthenticated]);
 
   // Close column toggler when clicking outside
   useEffect(() => {

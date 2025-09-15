@@ -191,7 +191,7 @@ const CustomersPage = () => {
 
   useEffect(() => {
     fetchCustomers();
-  }, [fetchCustomers]);
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

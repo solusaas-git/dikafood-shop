@@ -9,7 +9,6 @@ import { api } from '@/services/api';
 
 // Hooks
 // import useApi from '@/hooks/useApi';
-import useBreakpoint from '@/hooks/useBreakpoint';
 import useCart from '@/hooks/useCart';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -278,11 +277,11 @@ const ShopProductCard = ({
   };
 
   return (
-    <div className="relative h-full min-w-[200px] flex flex-col">
+    <div className="relative h-full min-w-[160px] md:min-w-[200px] flex flex-col">
       {/* Card container with ContentContainer-like styling */}
-      <div className="h-full flex flex-col rounded-xl overflow-hidden border border-logo-lime/30 bg-white transition-all duration-300 hover:border-logo-lime/50">
+      <div className="h-full flex flex-col rounded-lg md:rounded-xl overflow-hidden border border-logo-lime/30 bg-white transition-all duration-300 hover:border-logo-lime/50">
         {/* Product image container with soft overlay - vertical rectangle */}
-        <div className="relative overflow-hidden h-56 sm:h-64 md:h-72">
+        <div className="relative overflow-hidden h-44 sm:h-52 md:h-64 lg:h-72">
           {/* Permanent soft lime green overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-logo-lime/5 to-light-yellow-1/10 z-10"></div>
 
@@ -290,7 +289,7 @@ const ShopProductCard = ({
           <div className="absolute inset-0 bg-logo-lime/10 opacity-0 hover:opacity-100 transition-opacity duration-300 z-10"></div>
 
           {/* Image with padding - show variant-specific image */}
-          <div className="absolute inset-0 p-4 z-20">
+          <div className="absolute inset-0 p-2.5 md:p-4 z-20">
             <AsyncImage
               key={`${product.id}-${activeVariant?._id || activeVariant?.id || activeVariant?.size || 'default'}`}
               imageUrl={
@@ -306,24 +305,24 @@ const ShopProductCard = ({
 
           {/* Absolutely positioned brand tag */}
           {(product.brand || product.brandName) && (
-            <div className="absolute top-2 left-2 z-30">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/90 text-dark-green-7 border border-logo-lime/25 shadow-sm backdrop-blur-sm">
-                <Icon name={getBrandIcon(product.brand || product.brandName)} size="xs" weight="duotone" className="mr-1 text-dark-green-7" />
-                {typeof product.brand === 'object' ? product.brand.name : (product.brand || product.brandName)}
+            <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 z-30">
+              <span className="inline-flex items-center px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium bg-white/90 text-dark-green-7 border border-logo-lime/25 shadow-sm backdrop-blur-sm">
+                <Icon name={getBrandIcon(product.brand || product.brandName)} size="xs" weight="duotone" className="mr-0.5 md:mr-1 text-dark-green-7" />
+                <span className="hidden sm:inline">{typeof product.brand === 'object' ? product.brand.name : (product.brand || product.brandName)}</span>
               </span>
             </div>
           )}
 
           {/* Size variants - only show if displayVariantSelector is true */}
           {displayVariantSelector && product.variants && product.variants.length > 0 && (
-            <div className="absolute top-2 right-2 z-30 flex flex-col gap-1.5 bg-white/50 p-1 rounded-lg backdrop-blur-sm">
+            <div className="absolute top-1.5 right-1.5 md:top-2 md:right-2 z-30 flex flex-col gap-1 md:gap-1.5 bg-white/50 p-0.5 md:p-1 rounded-lg backdrop-blur-sm">
               {product.variants.map((variant) => {
                 const isActive = activeVariant?.size === variant.size;
                 return (
                   <button
                     key={`${product.id}-${variant.id || variant.size}`}
                     className={`
-                      min-w-[1.75rem] h-6 sm:min-w-[2rem] sm:h-7 px-1.5 text-xs rounded-full flex items-center justify-center font-medium transition-all duration-200
+                      min-w-[1.5rem] h-5 md:min-w-[1.75rem] md:h-6 lg:min-w-[2rem] lg:h-7 px-1 md:px-1.5 text-xs rounded-full flex items-center justify-center font-medium transition-all duration-200
                       ${isActive
                         ? 'bg-logo-lime/30 border-logo-lime border text-dark-green-7 shadow-sm'
                         : 'bg-white border-logo-lime/50 border text-dark-green-6 hover:bg-logo-lime/10'}
@@ -345,28 +344,35 @@ const ShopProductCard = ({
 
           {/* If we're in separate variant mode, show a variant badge */}
           {!displayVariantSelector && activeVariant && activeVariant.size && (
-            <div className="absolute top-2 right-2 z-30 bg-white/80 px-2 py-1 rounded-lg shadow-sm backdrop-blur-sm border border-logo-lime/30">
+            <div className="absolute top-1.5 right-1.5 md:top-2 md:right-2 z-30 bg-white/80 px-1.5 md:px-2 py-0.5 md:py-1 rounded-lg shadow-sm backdrop-blur-sm border border-logo-lime/30">
               <span className="text-xs font-medium text-dark-green-7">{activeVariant.size}</span>
             </div>
           )}
         </div>
 
         {/* Product content */}
-        <div className="flex-grow p-2 sm:p-3 min-h-[4.5rem] sm:min-h-[5rem]">
+        <div className="flex-grow p-1.5 md:p-2 lg:p-3 min-h-[3.5rem] md:min-h-[4.5rem] lg:min-h-[5rem]">
           {/* Category badge */}
           {product.category && (
-            <div className="mb-2">
-              <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
-                <Icon name="tag" size="xs" className="mr-1 text-gray-600" />
-                {product.category === 'olive oil' ? 'Huile d\'olive' :
-                  product.category === 'sunflower oil' ? 'Huile de tournesol' :
-                    product.category}
+            <div className="mb-1.5 md:mb-2">
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                <Icon name="tag" size="xs" className="mr-0.5 md:mr-1 text-gray-600" />
+                <span className="hidden sm:inline">
+                  {product.category === 'olive oil' ? 'Huile d\'olive' :
+                    product.category === 'sunflower oil' ? 'Huile de tournesol' :
+                      product.category}
+                </span>
+                <span className="sm:hidden">
+                  {product.category === 'olive oil' ? 'Olive' :
+                    product.category === 'sunflower oil' ? 'Tournesol' :
+                      product.category}
+                </span>
               </span>
             </div>
           )}
 
           {/* Product name */}
-          <h3 className="text-dark-green-7 font-normal text-xs sm:text-sm leading-tight line-clamp-2">
+          <h3 className="text-dark-green-7 font-normal text-xs md:text-sm leading-tight line-clamp-2">
             {product.title || product.name}
             {!displayVariantSelector && activeVariant && activeVariant.size && (
               <span className="inline-block ml-1 font-medium text-dark-green-7"> - {activeVariant.size}</span>
@@ -377,22 +383,22 @@ const ShopProductCard = ({
         {/* Footer with always visible CTA buttons */}
         <div className="border-t bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70 border-logo-lime/30">
           {/* Price row */}
-          <div className="px-3 py-2 border-b border-logo-lime/20">
+          <div className="px-2 md:px-3 py-1.5 md:py-2 border-b border-logo-lime/20">
             {hasPromotion ? (
-              <div className="flex items-center justify-center gap-2 flex-wrap">
-                <span className="font-medium text-sm sm:text-base text-red-600">
+              <div className="flex items-center justify-center gap-1.5 md:gap-2 flex-wrap">
+                <span className="font-medium text-xs md:text-sm text-red-600">
                   {formatPriceWithSmallDecimals(displayPrice)}
                 </span>
-                <span className="text-xs sm:text-sm text-gray-500 line-through">
+                <span className="text-xs text-gray-500 line-through">
                   {formatPriceWithSmallDecimals(regularPrice)}
                 </span>
-                <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium">
+                <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full font-medium">
                   -{Math.round(((regularPrice - promotionalPrice) / regularPrice) * 100)}%
                 </span>
               </div>
             ) : (
               <div className="text-center">
-                <span className="font-medium text-sm sm:text-base text-dark-green-7">
+                <span className="font-medium text-xs md:text-sm text-dark-green-7">
                   {formatPriceWithSmallDecimals(displayPrice)}
                 </span>
               </div>
@@ -400,13 +406,13 @@ const ShopProductCard = ({
           </div>
 
           {/* Action buttons - always visible */}
-          <div className="px-3 py-3">
-            <div className="grid grid-cols-2 gap-2 w-full">
+          <div className="px-2 md:px-3 py-2 md:py-3">
+            <div className="grid grid-cols-2 gap-1.5 md:gap-2 w-full">
               {/* Direct purchase button */}
               <button
                 onClick={handleDirectPurchase}
                 disabled={isDirectPurchaseLoading}
-                className="inline-flex items-center justify-center px-2 py-2 rounded-lg text-xs font-medium gap-1
+                className="inline-flex items-center justify-center px-1.5 md:px-2 py-1.5 md:py-2 rounded-lg text-xs font-medium gap-0.5 md:gap-1
                   bg-dark-green-6 text-white border border-dark-green-6 hover:bg-dark-green-7 transition-all duration-200 relative z-40"
                 title="Acheter maintenant"
               >
@@ -414,7 +420,7 @@ const ShopProductCard = ({
                 {isDirectPurchaseLoading ? (
                   <Icon name="circlenotch" size="xs" className="text-white animate-spin" />
                 ) : (
-                  <span className="hidden sm:inline ml-1">Acheter</span>
+                  <span className="hidden md:inline ml-0.5">Acheter</span>
                 )}
               </button>
 
@@ -422,7 +428,7 @@ const ShopProductCard = ({
               <button
                 onClick={handleAddToCart}
                 disabled={isCardLoading || showSuccess}
-                className={`inline-flex items-center justify-center px-2 py-2 rounded-lg text-xs font-medium gap-1
+                className={`inline-flex items-center justify-center px-1.5 md:px-2 py-1.5 md:py-2 rounded-lg text-xs font-medium gap-0.5 md:gap-1
               ${showSuccess
                     ? 'bg-green-100 text-green-700 border border-green-300'
                     : 'bg-logo-lime/20 text-dark-green-7 border border-logo-lime/30 hover:bg-logo-lime/30'
@@ -434,11 +440,11 @@ const ShopProductCard = ({
                   <Icon name="circlenotch" size="xs" className={`${showSuccess ? 'text-green-700' : 'text-dark-green-7'} animate-spin`} />
                 ) : showSuccess ? (
                   <>
-                    <Icon name="check" size="xs" className="text-green-700 ml-1" />
-                    <span className="hidden sm:inline ml-1">Ajouté</span>
+                    <Icon name="check" size="xs" className="text-green-700 ml-0.5" />
+                    <span className="hidden md:inline ml-0.5">Ajouté</span>
                   </>
                 ) : (
-                  <span className="hidden sm:inline ml-1">Panier</span>
+                  <span className="hidden md:inline ml-0.5">Panier</span>
                 )}
               </button>
             </div>
@@ -474,7 +480,7 @@ const ShopHero = () => {
   };
 
   return (
-    <div className="relative w-full h-96 md:h-[450px] lg:h-[550px] xl:h-[600px] overflow-hidden pt-20 md:pt-28">
+    <div className="relative w-full h-80 md:h-96 lg:h-[450px] xl:h-[550px] overflow-hidden pt-16 md:pt-20 lg:pt-28">
       <div className="absolute inset-0">
         {/* Responsive image with srcset */}
         <picture>
@@ -499,20 +505,21 @@ const ShopHero = () => {
       <div className="container mx-auto px-4 md:px-6 relative z-20 h-full">
         <div className="flex items-center justify-center h-full">
           {/* Content Section */}
-          <div className="max-w-lg pt-4 md:pt-0 text-center">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-logo-lime/30 text-white border border-logo-lime/40 shadow-sm mb-4">
-              <Icon name="leaf" size="sm" className="mr-1.5 text-white" />
+          <div className="max-w-lg pt-2 md:pt-4 lg:pt-0 text-center">
+            <span className="inline-flex items-center px-2.5 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium bg-logo-lime/30 text-white border border-logo-lime/40 shadow-sm mb-3 md:mb-4">
+              <Icon name="leaf" size="xs" className="md:w-4 md:h-4 mr-1 md:mr-1.5 text-white" />
               Produits locaux
             </span>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-normal mb-6 text-white drop-shadow-sm">Notre Gamme d'Huiles d'Olive</h1>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-4 md:mb-6 text-white drop-shadow-sm">Notre Gamme d'Huiles d'Olive</h1>
             <div className="flex justify-center">
               <button
                 onClick={handleCatalogClick}
-                className="inline-flex items-center px-6 py-3 bg-logo-lime/80 hover:bg-logo-lime text-dark-green-7 rounded-full text-base font-medium transition-colors border border-logo-lime shadow-sm"
+                className="inline-flex items-center px-5 md:px-6 py-2.5 md:py-3 bg-logo-lime/80 hover:bg-logo-lime text-dark-green-7 rounded-full text-sm md:text-base font-medium transition-colors border border-logo-lime shadow-sm"
               >
-                <Icon name="eye" size="sm" className="mr-2" />
-                <div className="w-px h-4 bg-dark-green-7/20 mr-2"></div>
-                Voir notre catalogue
+                <Icon name="eye" size="xs" className="md:w-5 md:h-5 mr-2" />
+                <div className="w-px h-3 md:h-4 bg-dark-green-7/20 mr-2"></div>
+                <span className="hidden sm:inline">Voir notre catalogue</span>
+                <span className="sm:hidden">Catalogue</span>
               </button>
             </div>
           </div>
@@ -524,9 +531,9 @@ const ShopHero = () => {
 
 // Mobile Filter Bar Component
 const MobileFilterBar = ({ activeFiltersCount, onToggleMobileFilters, searchQuery, setSearchQuery }) => (
-  <div className="flex items-center justify-between w-full p-3 bg-white shadow-sm border-b border-logo-lime/20">
+  <div className="flex items-center justify-between w-full p-2.5 md:p-3 bg-white shadow-sm border-b border-logo-lime/20">
     <div className="relative flex-1 mr-2">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
         <Icon name="magnifying-glass" size="xs" className="text-dark-green-6" />
       </div>
       <input
@@ -534,11 +541,11 @@ const MobileFilterBar = ({ activeFiltersCount, onToggleMobileFilters, searchQuer
         placeholder="Rechercher..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="pl-10 pr-10 py-2 w-full border border-logo-lime/30 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-logo-lime/50 bg-white"
+        className="pl-8 pr-8 py-1.5 w-full border border-logo-lime/30 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-logo-lime/50 bg-white"
       />
       {searchQuery && (
         <button
-          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+          className="absolute inset-y-0 right-0 pr-2.5 flex items-center"
           onClick={() => setSearchQuery('')}
         >
           <Icon name="x" size="xs" className="text-dark-green-6" />
@@ -546,13 +553,13 @@ const MobileFilterBar = ({ activeFiltersCount, onToggleMobileFilters, searchQuer
       )}
     </div>
     <button
-      className="flex items-center px-3 py-2 bg-logo-lime/15 rounded-full text-sm font-medium text-dark-green-7 border border-logo-lime/30"
+      className="flex items-center px-2.5 py-1.5 bg-logo-lime/15 rounded-full text-xs font-medium text-dark-green-7 border border-logo-lime/30"
       onClick={onToggleMobileFilters}
     >
       <Icon name="funnel" size="xs" className="mr-1" />
-      Filtrer
+      <span>Filtres</span>
       {activeFiltersCount > 0 && (
-        <span className="ml-1 flex items-center justify-center h-5 w-5 bg-logo-lime/30 text-dark-green-7 text-xs rounded-full border border-logo-lime/30">
+        <span className="ml-1 flex items-center justify-center h-4 w-4 bg-logo-lime/30 text-dark-green-7 text-xs rounded-full border border-logo-lime/30">
           {activeFiltersCount}
         </span>
       )}
@@ -884,7 +891,6 @@ const ShopPage = () => {
   const pathname = usePathname();
   const { showLoading } = useLoading();
   const [loading, setLoading] = useState(false);
-  const { isMobile, isTablet } = useBreakpoint();
   const [error, setError] = useState(null);
   const { success, error: showError, info } = useNotification();
 
@@ -1311,18 +1317,18 @@ const ShopPage = () => {
       <ShopHero />
 
       {/* Mobile Filter Bar (visible on mobile only) */}
-      {isMobile && (
+      <div className="lg:hidden">
         <MobileFilterBar
           activeFiltersCount={activeFiltersCount()}
           onToggleMobileFilters={() => setMobileFiltersOpen(true)}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
-      )}
+      </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <div className="flex flex-col lg:flex-row gap-6 justify-center">
+      <div className="container mx-auto px-3 md:px-4 py-4 md:py-6 max-w-7xl">
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 justify-center">
           {/* Sidebar Filters (desktop) */}
           <div className="hidden lg:block w-72 flex-shrink-0">
             <ContentContainer
@@ -1541,39 +1547,39 @@ const ShopPage = () => {
             <ContentContainer
               title={
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-logo-lime/15 border border-logo-lime/30 flex items-center justify-center">
-                    <Icon name="shopping-bag" size="md" className="text-dark-green-7" />
+                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/15 border border-logo-lime/30 flex items-center justify-center">
+                    <Icon name="shopping-bag" size="xs" className="md:w-5 md:h-5 text-dark-green-7" />
                   </div>
-                  <span>Nos produits par variante</span>
+                  <span className="text-sm md:text-base">Nos produits par variante</span>
                 </div>
               }
               headerVariant="lime"
               headerClassName="bg-gradient-to-r from-logo-lime/20 to-logo-lime/5 border-b border-logo-lime/30 shadow-sm"
-              bodyClassName="p-6"
+              bodyClassName="p-3 md:p-6"
             >
               {/* Products Grid */}
               {loading ? (
-                <div className="flex justify-center items-center h-64">
+                <div className="flex justify-center items-center h-48 md:h-64">
                   <LoadingSpinner />
                 </div>
               ) : error ? (
-                <div className="bg-red-50 p-4 rounded-lg text-red-700">
+                <div className="bg-red-50 p-3 md:p-4 rounded-lg text-red-700 text-sm md:text-base">
                   Une erreur est survenue lors du chargement des produits.
                 </div>
               ) : products.length === 0 ? (
-                <div className="bg-gray-50 p-8 rounded-lg text-center">
-                  <p className="text-lg font-medium text-gray-700">Aucun produit trouvé</p>
-                  <p className="mt-2 text-gray-500">Essayez de modifier vos filtres ou votre recherche.</p>
+                <div className="bg-gray-50 p-6 md:p-8 rounded-lg text-center">
+                  <p className="text-base md:text-lg font-medium text-gray-700">Aucun produit trouvé</p>
+                  <p className="mt-2 text-gray-500 text-sm md:text-base">Essayez de modifier vos filtres ou votre recherche.</p>
                   <button
                     onClick={resetFilters}
-                    className="mt-4 px-4 py-2 bg-logo-lime/20 text-dark-green-7 rounded-lg hover:bg-logo-lime/30 border border-logo-lime/30"
+                    className="mt-4 px-3 md:px-4 py-2 bg-logo-lime/20 text-dark-green-7 rounded-lg hover:bg-logo-lime/30 border border-logo-lime/30 text-sm md:text-base"
                   >
                     <Icon name="arrowclockwise" size="xs" className="mr-1" />
                     Réinitialiser
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-x-4 gap-y-6 auto-rows-fr justify-items-center">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-x-2 md:gap-x-4 gap-y-4 md:gap-y-6 auto-rows-fr justify-items-center">
                   {products.map((product) => (
                     <ShopProductCard
                       key={product.id}
@@ -1624,42 +1630,42 @@ const ShopPage = () => {
         <div className="fixed inset-0 z-50 overflow-hidden">
           <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setMobileFiltersOpen(false)}></div>
           <div className="absolute inset-y-0 right-0 max-w-full flex">
-            <div className="relative w-screen max-w-md">
-              <div className="h-full flex flex-col bg-white shadow-xl overflow-y-auto">
-                <div className="flex items-center justify-between p-4 border-b border-logo-lime/30 bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70">
-                  <h3 className="text-lg font-medium text-dark-green-7 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-logo-lime/15 border border-logo-lime/30 flex items-center justify-center">
-                      <Icon name="funnel" size="md" className="text-dark-green-7" />
+            <div className="relative w-screen max-w-sm">
+              <div className="h-full flex flex-col bg-white shadow-xl overflow-y-auto mt-16 md:mt-20">
+                <div className="flex items-center justify-between p-3 md:p-4 border-b border-logo-lime/30 bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70">
+                  <h3 className="text-base md:text-lg font-medium text-dark-green-7 flex items-center gap-2">
+                    <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/15 border border-logo-lime/30 flex items-center justify-center">
+                      <Icon name="funnel" size="xs" className="md:w-5 md:h-5 text-dark-green-7" />
                     </div>
                     Filtres
                     {activeFiltersCount() > 0 && (
-                      <span className="ml-2 flex items-center justify-center h-6 w-6 bg-logo-lime/30 text-dark-green-7 text-xs rounded-full border border-logo-lime/30">
+                      <span className="ml-1 md:ml-2 flex items-center justify-center h-5 w-5 md:h-6 md:w-6 bg-logo-lime/30 text-dark-green-7 text-xs rounded-full border border-logo-lime/30">
                         {activeFiltersCount()}
                       </span>
                     )}
                   </h3>
                   <button
-                    className="p-1.5 rounded-full hover:bg-logo-lime/20 text-dark-green-7 border border-logo-lime/30"
+                    className="p-1 md:p-1.5 rounded-full hover:bg-logo-lime/20 text-dark-green-7 border border-logo-lime/30"
                     onClick={() => setMobileFiltersOpen(false)}
                     aria-label="Fermer les filtres"
                   >
-                    <Icon name="x" size="md" />
+                    <Icon name="x" size="xs" className="md:w-5 md:h-5" />
                   </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
                   {/* Results count */}
-                  <div className="px-4 py-2 bg-logo-lime/10 border-b border-logo-lime/20">
-                    <p className="text-sm text-dark-green-7 font-medium">
+                  <div className="px-3 md:px-4 py-2 bg-logo-lime/10 border-b border-logo-lime/20">
+                    <p className="text-xs md:text-sm text-dark-green-7 font-medium">
                       {totalProducts} variantes trouvées
                     </p>
                   </div>
 
                   {/* Search Input */}
-                  <div className="p-4 border-b border-gray-200">
-                    <label htmlFor="mobile-search" className="block text-sm font-medium mb-2 text-dark-green-7">Rechercher</label>
+                  <div className="p-3 md:p-4 border-b border-gray-200">
+                    <label htmlFor="mobile-search" className="block text-xs md:text-sm font-medium mb-2 text-dark-green-7">Rechercher</label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 md:pl-3 flex items-center pointer-events-none">
                         <Icon name="magnifying-glass" size="xs" className="text-dark-green-6" />
                       </div>
                       <input
@@ -1668,11 +1674,11 @@ const ShopPage = () => {
                         placeholder="Rechercher un produit..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 pr-10 py-3 w-full border border-logo-lime/30 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-logo-lime/50 bg-white"
+                        className="pl-8 md:pl-10 pr-8 md:pr-10 py-2 md:py-3 w-full border border-logo-lime/30 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-logo-lime/50 bg-white"
                       />
                       {searchQuery && (
                         <button
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          className="absolute inset-y-0 right-0 pr-2.5 md:pr-3 flex items-center"
                           onClick={() => setSearchQuery('')}
                         >
                           <Icon name="x" size="xs" className="text-dark-green-6" />
@@ -1842,17 +1848,17 @@ const ShopPage = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="border-t border-logo-lime/30 p-4 space-y-3 bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70">
+                <div className="border-t border-logo-lime/30 p-3 md:p-4 space-y-2 md:space-y-3 bg-gradient-to-br from-light-yellow-1 to-light-yellow-3/70">
                   <button
                     onClick={resetFilters}
-                    className="w-full py-3 flex justify-center items-center text-dark-green-7 bg-logo-lime/15 rounded-lg border border-logo-lime/30 hover:bg-logo-lime/25"
+                    className="w-full py-2.5 md:py-3 flex justify-center items-center text-dark-green-7 bg-logo-lime/15 rounded-lg border border-logo-lime/30 hover:bg-logo-lime/25 text-sm md:text-base"
                   >
                     <Icon name="arrowclockwise" size="xs" className="mr-1" />
                     Réinitialiser
                   </button>
                   <button
                     onClick={() => setMobileFiltersOpen(false)}
-                    className="w-full py-3 flex justify-center items-center bg-dark-green-7 text-white rounded-lg"
+                    className="w-full py-2.5 md:py-3 flex justify-center items-center bg-dark-green-7 text-white rounded-lg text-sm md:text-base"
                   >
                     Voir les résultats ({totalProducts})
                   </button>
