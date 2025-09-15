@@ -24,9 +24,9 @@ export default function FlagImage({
   const [hasError, setHasError] = useState(false);
   const [fallbackError, setFallbackError] = useState(false);
   
-  // Simple flag URL generation
+  // Simple flag URL generation - use higher resolution for crisp display
   const normalizedCode = countryCode?.toUpperCase() || 'XX';
-  const primary = `https://flagcdn.com/w20/${countryCode?.toLowerCase() || 'xx'}.png`;
+  const primary = `https://flagcdn.com/w80/${countryCode?.toLowerCase() || 'xx'}.png`;
 
   if (!primary) {
     return null;
@@ -54,15 +54,20 @@ export default function FlagImage({
 
   // If primary failed but we haven't tried fallback yet
   if (hasError && !fallbackError) {
-    // Use flagcdn.com as a reliable fallback
-    const fallbackUrl = `https://flagcdn.com/w20/${countryCode.toLowerCase()}.png`;
+    // Use flagcdn.com as a reliable fallback with higher resolution
+    const fallbackUrl = `https://flagcdn.com/w80/${countryCode.toLowerCase()}.png`;
     
     return (
       <img
         src={fallbackUrl}
         alt={alt || `${countryCode} flag`}
         className={className}
-        style={style}
+        style={{
+          imageRendering: 'crisp-edges',
+          WebkitImageRendering: 'crisp-edges',
+          MozImageRendering: 'crisp-edges',
+          ...style
+        }}
         onError={() => {
           console.warn(`[FlagImage] Fallback flag failed for ${countryCode}`);
           setFallbackError(true);
@@ -78,7 +83,12 @@ export default function FlagImage({
       src={primary}
       alt={alt || `${countryCode} flag`}
       className={className}
-      style={style}
+      style={{
+        imageRendering: 'crisp-edges',
+        WebkitImageRendering: 'crisp-edges',
+        MozImageRendering: 'crisp-edges',
+        ...style
+      }}
       onError={(e) => {
         console.warn(`[FlagImage] Primary flag failed for ${countryCode}, using fallback`);
         setHasError(true);

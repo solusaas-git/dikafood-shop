@@ -8,12 +8,12 @@ import dynamic from 'next/dynamic';
 const ClientOnlyFormInputs = dynamic(() => Promise.resolve(({ children }) => <>{children}</>), {
   ssr: false,
   loading: () => (
-    <div className="space-y-4">
+    <div className="space-y-3 md:space-y-4">
       <div className="animate-pulse">
-        <div className="h-12 bg-gray-200 rounded-lg"></div>
+        <div className="h-10 md:h-12 bg-gray-200 rounded-lg"></div>
       </div>
       <div className="animate-pulse">
-        <div className="h-12 bg-gray-200 rounded-lg"></div>
+        <div className="h-10 md:h-12 bg-gray-200 rounded-lg"></div>
       </div>
     </div>
   )
@@ -98,10 +98,10 @@ const SimpleContactForm = ({
 
   const headerContent = (
     <div className="flex items-center gap-2">
-      <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-        <User size={18} weight="duotone" className="text-dark-green-1" />
+      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+        <User size={14} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />
       </div>
-      <span className="text-dark-green-1 font-medium">Informations de contact</span>
+      <span className="text-dark-green-1 font-medium text-sm md:text-base">Informations de contact</span>
     </div>
   );
 
@@ -115,79 +115,78 @@ const SimpleContactForm = ({
       cancelText="Retour"
       onCancel={prevStep}
       loading={isLoading}
+      variant="condensed"
     >
-      <ClientOnlyFormInputs>
-        <Form.Group layout="inline">
-          <Form.InputWithIcon
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            placeholder="Prénom"
-            icon={<User size={18} weight="duotone" className="text-dark-green-1" />}
-            error={errors.firstName}
-            required
-          />
-          <Form.InputWithIcon
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder="Nom"
-            icon={<User size={18} weight="duotone" className="text-dark-green-1" />}
-            error={errors.lastName}
-            required
-          />
-        </Form.Group>
-      </ClientOnlyFormInputs>
+      {/* Personal Information */}
+      <Form.Group layout="inline">
+        <Form.InputWithIcon
+          type="text"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          placeholder="Prénom"
+          icon={<User size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
+          error={errors.firstName}
+          required
+        />
+        <Form.InputWithIcon
+          type="text"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          placeholder="Nom"
+          icon={<User size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
+          error={errors.lastName}
+          required
+        />
+      </Form.Group>
 
-      <ClientOnlyFormInputs>
+      <Form.Group layout="inline">
         <Form.InputWithIcon
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           placeholder="Email"
-          icon={<Mail size={18} weight="duotone" className="text-dark-green-1" />}
+          icon={<Mail size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
           error={errors.email}
           required
         />
-
         <Form.InputWithIcon
           type="tel"
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          placeholder="Téléphone (ex: 0612345678)"
-          icon={<Phone size={18} weight="duotone" className="text-dark-green-1" />}
+          placeholder="Téléphone"
+          icon={<Phone size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
           error={errors.phone}
           required
         />
-      </ClientOnlyFormInputs>
+      </Form.Group>
 
+      {/* Address Information */}
       <Form.InputWithIcon
         type="text"
         name="address"
         value={formData.address}
         onChange={handleChange}
         placeholder="Rue / Adresse"
-        icon={<MapPin size={18} weight="duotone" className="text-dark-green-1" />}
+        icon={<MapPin size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
         error={errors.address}
         required
       />
 
-      <Form.Select
-        name="country"
-        value={formData.country || 'MA'}
-        onChange={handleChange}
-        options={countries}
-        placeholder="Sélectionnez un pays"
-        icon={<MapPin size={18} weight="duotone" className="text-dark-green-1" />}
-        error={errors.country}
-        required
-      />
-
       <Form.Group layout="inline">
+        <Form.Select
+          name="country"
+          value={formData.country || 'MA'}
+          onChange={handleChange}
+          options={countries}
+          placeholder="Pays"
+          icon={<MapPin size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
+          error={errors.country}
+          required
+        />
         <Form.Select
           name="city"
           value={formData.city}
@@ -195,30 +194,30 @@ const SimpleContactForm = ({
           options={cities}
           placeholder={
             !formData.country 
-              ? "Sélectionnez d'abord un pays" 
+              ? "Pays d'abord" 
               : citiesLoading 
-                ? "Chargement des villes..." 
-                : "Sélectionnez une ville"
+                ? "Chargement..." 
+                : "Ville"
           }
-          icon={<MapPin size={18} weight="duotone" className="text-dark-green-1" />}
+          icon={<MapPin size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
           error={errors.city}
           disabled={!formData.country || citiesLoading}
           required
         />
-
-        <Form.InputWithIcon
-          type="text"
-          name="postalCode"
-          value={formData.postalCode}
-          onChange={handleChange}
-          placeholder="Code postal"
-          icon={<MapPin size={18} weight="duotone" className="text-dark-green-1" />}
-          error={errors.postalCode}
-          disabled={!formData.city}
-          readOnly
-          required
-        />
       </Form.Group>
+
+      <Form.InputWithIcon
+        type="text"
+        name="postalCode"
+        value={formData.postalCode}
+        onChange={handleChange}
+        placeholder="Code postal"
+        icon={<MapPin size={16} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />}
+        error={errors.postalCode}
+        disabled={!formData.city}
+        readOnly
+        required
+      />
     </Form>
   );
 };

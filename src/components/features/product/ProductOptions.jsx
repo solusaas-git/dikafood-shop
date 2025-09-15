@@ -11,7 +11,6 @@ import QuantitySelector from '@components/ui/inputs/QuantitySelector';
  * @param {Function} props.onVariantSelect - Callback function when a variant is selected
  * @param {number} props.quantity - Current quantity value
  * @param {Function} props.onQuantityChange - Callback function when quantity changes
- * @param {boolean} props.isMobile - Whether the component is rendered on mobile
  * @param {string} props.className - Additional class names
  */
 const ProductOptions = ({
@@ -20,11 +19,10 @@ const ProductOptions = ({
   onVariantSelect,
   quantity = 1,
   onQuantityChange,
-  isMobile = false,
   className = ""
 }) => {
   return (
-    <div className={`${isMobile ? 'hidden md:block' : ''} ${className}`}>
+    <div className={className}>
       <ContentContainer
         title="Options d'achat"
         variant="default"
@@ -32,7 +30,7 @@ const ProductOptions = ({
         collapsible
         defaultOpen={true}
       >
-        <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-4">
+        <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-3 md:gap-4">
           <ProductVariantSelector
             variants={variants}
             selectedVariant={selectedVariant}
@@ -41,7 +39,7 @@ const ProductOptions = ({
           />
 
           <div className="w-full md:w-auto">
-            <div className="font-medium mb-2">Quantité</div>
+            <div className="font-medium mb-2 text-sm md:text-base">Quantité</div>
             <QuantitySelector
               value={quantity}
               onChange={onQuantityChange}

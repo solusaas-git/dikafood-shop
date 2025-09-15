@@ -61,7 +61,7 @@ const ProductImageGallery = ({
 
   return (
     <div className={className}>
-      <div className={`border-2 border-logo-lime/20 rounded-lg ${isMobile ? 'p-2' : 'p-4'} bg-white mb-2 md:mb-4 ${isMobile ? 'h-56' : 'h-96'} flex items-center justify-center relative overflow-hidden mx-auto max-w-md`}>
+      <div className={`border-2 border-logo-lime/20 rounded-lg ${isMobile ? 'p-2' : 'p-3'} bg-white mb-2 md:mb-4 ${isMobile ? 'h-48' : 'h-72'} flex items-center justify-center relative overflow-hidden mx-auto max-w-sm`}>
         {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-light-yellow-1/5 to-logo-lime/5 pointer-events-none"></div>
 
@@ -69,13 +69,13 @@ const ProductImageGallery = ({
           <AsyncImage
             imageId={currentImage.imageId}
             alt={`${productName} - ${selectedVariant || ''}`}
-            className="max-w-[85%] max-h-full object-contain relative z-10"
+            className="max-w-[75%] max-h-[85%] object-contain relative z-10"
           />
         ) : (
           <img
             src={currentImage?.url || "/images/placeholder-product.png"}
             alt={`${productName} - ${selectedVariant || ''}`}
-            className="max-w-[85%] max-h-full object-contain relative z-10"
+            className="max-w-[75%] max-h-[85%] object-contain relative z-10"
           />
         )}
       </div>

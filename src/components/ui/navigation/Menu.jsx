@@ -340,9 +340,42 @@ function Menu(props) {
   };
 
   // Create menu content
-  const menuContent = (
+  const menuContent = isNavbarMobile ? (
+    <div className="fixed inset-0 pointer-events-none">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/20 backdrop-blur-sm pointer-events-auto"
+        onClick={() => {
+          if (onToggle) {
+            onToggle(false);
+          } else {
+            setInternalIsOpen(false);
+          }
+          if (onClose) onClose();
+        }}
+      />
+      {/* Menu */}
+      <div
+        className={`${styles.container({
+          variant,
+          position,
+          glass,
+          rounded,
+          isMobile,
+          isNavbarMobile,
+          className: containerClassName
+        })} navbar-dropdown-container animate-dropdown z-110 pointer-events-auto`}
+        onClick={(e) => e.stopPropagation()}
+        {...(containerProps || {})}
+      >
+        {renderHeader()}
+        {renderBody()}
+        {renderFooter()}
+      </div>
+    </div>
+  ) : (
     <div
-      className={`${styles.container({
+      className={styles.container({
         variant,
         position,
         glass,
@@ -350,7 +383,7 @@ function Menu(props) {
         isMobile,
         isNavbarMobile,
         className: containerClassName
-      })} ${isNavbarMobile ? 'navbar-dropdown-container animate-dropdown z-110' : ''}`}
+      })}
       onClick={(e) => e.stopPropagation()}
       {...(containerProps || {})}
     >

@@ -161,7 +161,7 @@ const BrandCard = ({
     return (
       <>
         <div
-          className={`relative w-[240px] h-52 flex items-center justify-center transition-all duration-200 ease-in-out hover:-translate-y-1 ${className}`}
+          className={`relative w-[200px] h-40 flex items-center justify-center transition-all duration-200 ease-in-out hover:-translate-y-1 ${className}`}
         >
           <Card
             variant="brandLime"
@@ -181,7 +181,7 @@ const BrandCard = ({
   return (
     <>
       <div
-        className={`relative w-[240px] h-52 flex items-center justify-center transition-all duration-200 ease-in-out ${isHovering ? '-translate-y-1' : ''} ${className}`}
+        className={`relative w-[220px] h-48 flex items-center justify-center transition-all duration-200 ease-in-out ${isHovering ? '-translate-y-1' : ''} ${className}`}
         onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}

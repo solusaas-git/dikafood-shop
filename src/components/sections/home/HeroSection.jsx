@@ -25,12 +25,15 @@ export default function HeroSection() {
   const titleText = t('title');
   const mobileTitle = t('mobile_title') || 'Welcome to DikaFood';
 
-  // Replace {break} with newline or space depending on language
-  const titleWithBreak = titleText.replace('{break}', locale === 'ar' ? ' ' : ' ');
-
-  // Split into parts to get the highlighted text
-  const [beforeHighlight, withHighlight] = titleWithBreak.split('<');
+  // Split the title into two parts for clean 2-line layout
+  const titleParts = titleText.split('{break}');
+  const firstLine = titleParts[0]?.trim() || '';
+  const secondLineWithHighlight = titleParts[1]?.trim() || '';
+  
+  // Extract highlighted text from second line
+  const [beforeHighlightSecondLine, withHighlight] = secondLineWithHighlight.split('<');
   const highlightedText = withHighlight ? withHighlight.replace('>', '') : '';
+  const secondLineStart = beforeHighlightSecondLine?.trim() || '';
 
   // Format mobile title with brand highlight
   const formatMobileTitle = (title) => {
@@ -112,37 +115,35 @@ export default function HeroSection() {
         <div className="container mx-auto">
           {/* Hero Title and CTA */}
           <div className={cn(
-            "w-full max-w-5xl mx-auto px-4 md:px-6 flex flex-col gap-5 md:gap-8 text-center transition-all duration-700",
+            "w-full max-w-5xl mx-auto px-4 md:px-6 flex flex-col gap-3 md:gap-5 text-center transition-all duration-700",
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           )}>
-            {/* Different titles for mobile and desktop */}
-            <h1 className="hidden md:block text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-medium font-heading text-white mb-6 md:mb-8 leading-tight">
-              {beforeHighlight}
-              <span className="block md:inline text-dark-yellow-1">{highlightedText}</span>
+            {/* Unified title for mobile and desktop - Clean 2-line layout */}
+            <h1 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-medium font-heading text-white mb-4 md:mb-6 leading-tight max-w-4xl mx-auto">
+              <span className="block text-white">{firstLine}</span>
+              <span className="block">
+                <span className="text-white">{secondLineStart} </span>
+                <span className="text-dark-yellow-1">{highlightedText}</span>
+              </span>
             </h1>
 
-            {/* Mobile title */}
-            <h1 className="block md:hidden text-4xl font-medium font-heading mb-3 leading-tight">
-              {formatMobileTitle(mobileTitle)}
-            </h1>
-
-            <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-2 mt-2 md:mt-4 mb-3 md:mb-0">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 md:gap-3 mt-1 md:mt-2">
               {/* Download catalog button */}
               <button
                 onClick={scrollToCatalogSection}
-                className="group inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 md:py-3 h-[44px] md:h-[52px] text-sm md:text-base rounded-full md:rounded-[26px] bg-dark-yellow-1 hover:bg-dark-yellow-2 text-dark-green-7 font-semibold shadow-sm hover:translate-y-[-1px] hover:shadow-md active:translate-y-[0.5px] active:shadow-sm transition-all duration-300 w-auto mx-auto max-w-[80%] md:max-w-none md:w-auto z-10 md:mr-1"
+                className="group inline-flex items-center justify-center gap-2 px-5 md:px-6 py-2.5 md:py-3 h-[42px] md:h-[48px] text-sm md:text-base rounded-full bg-dark-yellow-1 hover:bg-dark-yellow-2 text-dark-green-7 font-semibold shadow-sm hover:translate-y-[-1px] hover:shadow-md active:translate-y-[0.5px] active:shadow-sm transition-all duration-300 whitespace-nowrap min-w-fit"
               >
-                <FileArrowDown weight="duotone" size={16} className={`${locale === 'ar' ? 'ml-1' : 'mr-1'} transition-transform duration-300 group-hover:${locale === 'ar' ? 'translate-x-1' : '-translate-x-1'}`} />
-                <span className="truncate">{t('cta_primary')}</span>
+                <FileArrowDown weight="duotone" size={14} className={`${locale === 'ar' ? 'ml-1' : 'mr-1'} transition-transform duration-300 group-hover:${locale === 'ar' ? 'translate-x-1' : '-translate-x-1'}`} />
+                <span>{t('cta_primary')}</span>
               </button>
 
               {/* Discover products button */}
               <a
                 href="/shop"
-                className="group inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 md:py-3 h-[44px] md:h-[52px] text-sm md:text-base rounded-full md:rounded-[26px] bg-white/10 hover:bg-white/20 backdrop-filter backdrop-blur-sm text-white hover:text-white border border-white/20 font-semibold transition-all duration-300 hover:translate-y-[-1px] active:translate-y-[0.5px] w-auto mx-auto max-w-[80%] md:max-w-none md:w-auto md:ml-1"
+                className="group inline-flex items-center justify-center gap-2 px-5 md:px-6 py-2.5 md:py-3 h-[42px] md:h-[48px] text-sm md:text-base rounded-full bg-white/10 hover:bg-white/20 backdrop-filter backdrop-blur-sm text-white hover:text-white border border-white/20 font-semibold transition-all duration-300 hover:translate-y-[-1px] active:translate-y-[0.5px] whitespace-nowrap min-w-fit"
               >
-                <Storefront weight="duotone" size={16} className={`${locale === 'ar' ? 'ml-1' : 'mr-1'} transition-transform duration-300 group-hover:${locale === 'ar' ? 'translate-x-1' : '-translate-x-1'}`} />
-                <span className="truncate">{t('cta_secondary')}</span>
+                <Storefront weight="duotone" size={14} className={`${locale === 'ar' ? 'ml-1' : 'mr-1'} transition-transform duration-300 group-hover:${locale === 'ar' ? 'translate-x-1' : '-translate-x-1'}`} />
+                <span>{t('cta_secondary')}</span>
               </a>
             </div>
           </div>

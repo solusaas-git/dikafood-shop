@@ -31,10 +31,10 @@ const SimpleDeliveryForm = ({
 
   const headerContent = (
     <div className="flex items-center gap-2">
-      <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-        <Truck size={18} weight="duotone" className="text-dark-green-1" />
+      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+        <Truck size={14} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />
       </div>
-      <span className="text-dark-green-1 font-medium">Méthode de livraison</span>
+      <span className="text-dark-green-1 font-medium text-sm md:text-base">Méthode de livraison</span>
     </div>
   );
 
@@ -71,19 +71,20 @@ const SimpleDeliveryForm = ({
       cancelText="Retour"
       onCancel={prevStep}
       loading={isLoading}
+      variant="condensed"
     >
-      <div className="space-y-4">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+      <div className="space-y-3 md:space-y-4">
+        <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2 md:mb-3">
           Méthode de livraison
         </label>
         
         {loadingStates.deliveryMethods ? (
-          <div className="text-center p-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-logo-brown mx-auto"></div>
-            <span className="mt-2 text-sm text-gray-600">Chargement des méthodes de livraison...</span>
+          <div className="text-center p-6 md:p-8">
+            <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-b-2 border-logo-brown mx-auto"></div>
+            <span className="mt-2 text-xs md:text-sm text-gray-600">Chargement...</span>
           </div>
         ) : deliveryMethods.length > 0 ? (
-          <div className="grid gap-4">
+          <div className="grid gap-3 md:gap-4">
             {deliveryMethods.map((method) => {
               const isSelected = formData.deliveryMethodId === method._id;
               const timeDisplay = formatTimeDisplay(method.estimatedTime);
@@ -93,7 +94,7 @@ const SimpleDeliveryForm = ({
                   key={method._id}
                   onClick={() => updateFormData({ deliveryMethodId: method._id })}
                   className={`
-                    relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
+                    relative p-3 md:p-4 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all duration-200
                     ${isSelected 
                       ? 'border-logo-brown bg-logo-brown/5 shadow-md' 
                       : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
@@ -102,7 +103,7 @@ const SimpleDeliveryForm = ({
                 >
                   {/* Selection indicator */}
                   <div className={`
-                    absolute top-4 right-4 w-5 h-5 rounded-full border-2 transition-all
+                    absolute top-3 right-3 md:top-4 md:right-4 w-4 h-4 md:w-5 md:h-5 rounded-full border-2 transition-all
                     ${isSelected 
                       ? 'border-logo-brown bg-logo-brown' 
                       : 'border-gray-300'
@@ -110,16 +111,16 @@ const SimpleDeliveryForm = ({
                   `}>
                     {isSelected && (
                       <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                        <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex items-start gap-4 pr-8">
+                  <div className="flex items-start gap-3 md:gap-4 pr-6 md:pr-8">
                     {/* Logo or Icon */}
                     <div className="flex-shrink-0">
                       {method.logo ? (
-                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden border border-gray-200 bg-white">
                           <Image
                             src={method.logo}
                             alt={method.name}
@@ -129,11 +130,11 @@ const SimpleDeliveryForm = ({
                           />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
                           {method.type === 'pickup' ? (
-                            <Storefront size={24} weight="duotone" className="text-gray-600" />
+                            <Storefront size={20} className="md:w-6 md:h-6 text-gray-600" weight="duotone" />
                           ) : (
-                            <Truck size={24} weight="duotone" className="text-gray-600" />
+                            <Truck size={20} className="md:w-6 md:h-6 text-gray-600" weight="duotone" />
                           )}
                         </div>
                       )}
@@ -141,41 +142,41 @@ const SimpleDeliveryForm = ({
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold text-gray-900 text-lg">
+                      <div className="flex items-start justify-between mb-1.5 md:mb-2">
+                        <h3 className="font-semibold text-gray-900 text-base md:text-lg">
                           {method.name}
                         </h3>
                       </div>
 
                       {method.description && (
-                        <p className="text-sm text-gray-600 mb-3">
+                        <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3">
                           {method.description}
                         </p>
                       )}
 
-                      <div className="flex flex-wrap items-center gap-4 text-sm">
+                      <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm">
                         {/* Type */}
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1">
                           {method.type === 'pickup' ? (
-                            <Storefront size={16} weight="duotone" className="text-gray-500" />
+                            <Storefront size={14} className="md:w-4 md:h-4 text-gray-500" weight="duotone" />
                           ) : (
-                            <Truck size={16} weight="duotone" className="text-gray-500" />
+                            <Truck size={14} className="md:w-4 md:h-4 text-gray-500" weight="duotone" />
                           )}
                           <span className="text-gray-600">
-                            {method.type === 'pickup' ? 'Retrait en magasin' : 'Livraison à domicile'}
+                            {method.type === 'pickup' ? 'Retrait' : 'Livraison'}
                           </span>
                         </div>
 
                         {/* Time */}
                         {timeDisplay && (
-                          <div className="flex items-center gap-1.5">
-                            <Clock size={16} weight="duotone" className="text-gray-500" />
+                          <div className="flex items-center gap-1">
+                            <Clock size={14} className="md:w-4 md:h-4 text-gray-500" weight="duotone" />
                             <span className="text-gray-600">{timeDisplay}</span>
                           </div>
                         )}
 
                         {/* Price */}
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1">
                           <span className="font-medium text-gray-900">
                             {formatPrice(method.price, method.price > 0)}
                           </span>
@@ -209,13 +210,13 @@ const SimpleDeliveryForm = ({
 
       {/* Shop selection for pickup delivery */}
       {isPickupDelivery && availableShops.length > 0 && (
-        <div className="space-y-4 mt-6">
-          <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
-            <Storefront size={18} weight="duotone" className="text-gray-600" />
+        <div className="space-y-3 md:space-y-4 mt-4 md:mt-6">
+          <label className="flex items-center gap-1.5 text-xs md:text-sm font-medium text-gray-700">
+            <Storefront size={16} className="md:w-[18px] md:h-[18px] text-gray-600" weight="duotone" />
             <span>Magasin de retrait</span>
           </label>
           
-          <div className="grid gap-3">
+          <div className="grid gap-2 md:gap-3">
             {availableShops.map((shop, index) => {
               const shopId = shop._id || `shop-${index}`;
               const isSelected = formData.selectedShopId === shopId;
@@ -225,7 +226,7 @@ const SimpleDeliveryForm = ({
                   key={shopId}
                   onClick={() => updateFormData({ selectedShopId: shopId })}
                   className={`
-                    relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200
+                    relative p-3 md:p-4 rounded-lg border-2 cursor-pointer transition-all duration-200
                     ${isSelected 
                       ? 'border-logo-brown bg-logo-brown/5 shadow-sm' 
                       : 'border-gray-200 hover:border-gray-300'
@@ -234,7 +235,7 @@ const SimpleDeliveryForm = ({
                 >
                   {/* Selection indicator */}
                   <div className={`
-                    absolute top-3 right-3 w-4 h-4 rounded-full border-2 transition-all
+                    absolute top-2.5 right-2.5 md:top-3 md:right-3 w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border-2 transition-all
                     ${isSelected 
                       ? 'border-logo-brown bg-logo-brown' 
                       : 'border-gray-300'
@@ -242,23 +243,23 @@ const SimpleDeliveryForm = ({
                   `}>
                     {isSelected && (
                       <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                        <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-white rounded-full"></div>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex items-start gap-3 pr-6">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
-                      <Storefront size={16} weight="duotone" className="text-gray-600" />
+                  <div className="flex items-start gap-2.5 md:gap-3 pr-5 md:pr-6">
+                    <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                      <Storefront size={14} className="md:w-4 md:h-4 text-gray-600" weight="duotone" />
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-gray-900">{shop.name}</h4>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h4 className="font-medium text-gray-900 text-sm md:text-base">{shop.name}</h4>
+                      <p className="text-xs md:text-sm text-gray-600 mt-0.5 md:mt-1">
                         {shop.address}, {shop.city}
                       </p>
                       {shop.phone && (
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 mt-0.5 md:mt-1">
                           {shop.phone}
                         </p>
                       )}

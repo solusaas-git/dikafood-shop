@@ -35,6 +35,7 @@ export const PhoneInput = ({
   defaultCountry = 'ma', // Default to Morocco for DikaFood
   disabled = false,
   className = '',
+  compact = false, // Add compact prop to match other inputs
   ...props
 }) => {
   // Clean up any flag preload links created by react-international-phone to prevent console warnings
@@ -83,47 +84,79 @@ export const PhoneInput = ({
     };
   }, []);
 
+  // Define responsive sizing based on compact prop
+  const paddingY = compact ? 'py-2.5' : 'py-3';
+  const paddingX = compact ? 'px-3' : 'px-4';
+  const buttonPaddingY = compact ? 'py-2.5' : 'py-3';
+  const buttonPaddingX = compact ? 'px-2.5 pl-3 pr-2' : 'px-3 pl-4 pr-2';
+  const textSize = compact ? 'text-sm' : 'text-[0.9375rem]';
+  const separatorHeight = compact ? 'h-3' : 'h-4';
+
   return (
-    <div className={`phone-input-container ${error ? 'error' : ''} ${className}`}>
-      {/* Phone Input Field */}
+    <div className={`phone-input-container ${className}`}>
+      {/* Use exact same wrapper structure as EnhancedInputField */}
       <div className="relative">
-        <ReactInternationalPhoneInput
-          defaultCountry={defaultCountry}
-          value={value}
-          onChange={onChange}
-          onBlur={onBlur}
-          placeholder={placeholder}
-          disabled={disabled}
-          inputClassName={`
-            w-full py-3 px-4 text-dark-green-7 
-            bg-white border border-logo-lime/70 rounded-full
-            focus:outline-none focus:border-logo-lime focus:ring-1 focus:ring-logo-lime
-            placeholder:text-dark-green-6/70 text-[0.9375rem]
-            transition-all duration-200
-            ${error ? 'border-feedback-error/60 focus:border-feedback-error focus:ring-feedback-error/30' : ''}
-            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-          `}
-          countrySelectorStyleProps={{
-            buttonClassName: `
-              py-3 px-3 pl-4 pr-2 border-r border-logo-lime/30
-              hover:bg-logo-lime/5 transition-colors duration-200
-              focus:outline-none focus:bg-logo-lime/10
-              rounded-l-full flex items-center gap-2
-              text-dark-green-6/70
-              after:content-[""] after:absolute after:right-[-1px] after:top-1/2 after:-translate-y-1/2 after:w-px after:h-4 after:bg-logo-lime/30
-              ${error ? 'border-feedback-error/60 after:bg-feedback-error/30' : ''}
-              ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-            `,
-            dropdownStyleProps: {
-              className: `
-                bg-white border border-logo-lime/70 rounded-lg shadow-lg
-                max-h-48 overflow-y-auto z-50
-                animate-fade-in-down backdrop-blur-sm bg-white/95
-              `
-            }
-          }}
-          {...props}
-        />
+        <div className={`flex items-center relative rounded-full border bg-white overflow-hidden focus-within:border-logo-lime focus-within:ring-1 focus-within:ring-logo-lime ${
+          error ? 'border-feedback-error/60 focus-within:border-feedback-error focus-within:ring-feedback-error/30' : 'border-logo-lime/70'
+        }`}>
+          <ReactInternationalPhoneInput
+            defaultCountry={defaultCountry}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            placeholder={placeholder}
+            disabled={disabled}
+            inputClassName=""
+            inputStyle={{
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              padding: compact ? '0.625rem 0.75rem' : '0.75rem 1rem',
+              fontSize: compact ? '0.875rem' : '0.9375rem',
+              color: 'rgba(34, 69, 34, 1)',
+              width: '100%',
+              height: compact ? '2.5rem' : '3rem',
+              lineHeight: '1.5',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+            containerClassName=""
+            containerStyle={{
+              border: 'none',
+              background: 'transparent',
+              padding: 0,
+              margin: 0,
+              width: '100%',
+              height: compact ? '2.5rem' : '3rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+            countrySelectorStyleProps={{
+              buttonClassName: "",
+              buttonStyle: {
+                border: 'none',
+                background: 'transparent',
+                padding: compact ? '0.625rem 0.625rem 0.625rem 0.75rem' : '0.75rem 0.75rem 0.75rem 1rem',
+                borderRight: '1px solid rgba(139, 195, 74, 0.2)',
+                color: 'rgba(34, 69, 34, 0.7)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                height: compact ? '2.5rem' : '3rem',
+                lineHeight: '1.5'
+              },
+              dropdownStyleProps: {
+                className: `
+                  bg-white border border-logo-lime/70 rounded-lg shadow-lg
+                  max-h-48 overflow-y-auto z-50
+                  animate-fade-in-down backdrop-blur-sm bg-white/95
+                `
+              }
+            }}
+            {...props}
+          />
+        </div>
       </div>
 
       {/* Error Message - Consistent with other inputs */}

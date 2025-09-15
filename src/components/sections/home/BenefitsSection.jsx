@@ -102,7 +102,7 @@ const translations = {
 
 // Define unified styles for the benefit icons to match SectionHeader icon style
 const benefitIconStyles = tv({
-  base: 'w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ease-out mb-5 bg-logo-lime/15 border border-logo-lime/30',
+  base: 'w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-500 ease-out mb-4 md:mb-5 bg-logo-lime/15 border border-logo-lime/30',
   defaultVariants: {}
 });
 
@@ -120,15 +120,8 @@ const headerIconStyles = tv({
 
 // Main component content
 const BenefitsSectionContent = () => {
-  // State to track if mobile view (SSR safe)
-  const [isMobile, setIsMobile] = useState(false);
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const { t } = useTranslation(translations);
-
-  // Initialize mobile state after component mounts (SSR safe)
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
 
   // Preload benefit images
   useEffect(() => {
@@ -152,16 +145,6 @@ const BenefitsSectionContent = () => {
     };
 
     preloadImages();
-  }, []);
-
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Benefit data with icons and images
@@ -197,12 +180,12 @@ const BenefitsSectionContent = () => {
   const BenefitCard = ({ benefit }) => (
     <div
       key={benefit.id}
-      className="group bg-white/10 backdrop-blur-sm rounded-lg p-8 transition-all duration-300 hover:bg-white/15 relative overflow-hidden border border-white/10 hover:border-dark-yellow-1/30"
+      className="group bg-white/10 backdrop-blur-sm rounded-lg p-6 md:p-8 transition-all duration-300 hover:bg-white/15 relative overflow-hidden border border-white/10 hover:border-dark-yellow-1/30"
       role="article"
       aria-label={benefit.ariaLabel}
     >
-      {/* Background image that reveals on hover - preloaded for instant display */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-300 z-0 overflow-hidden">
+      {/* Background image that reveals on hover - always visible on mobile */}
+      <div className="absolute inset-0 opacity-10 md:opacity-0 md:group-hover:opacity-15 transition-opacity duration-300 z-0 overflow-hidden">
         <OptimizedImage
           src={benefit.image}
           alt=""
@@ -220,7 +203,7 @@ const BenefitsSectionContent = () => {
       </div>
 
       {/* Radial texture rays */}
-      <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-all duration-500 pointer-events-none z-0">
+      <div className="absolute inset-0 opacity-30 md:opacity-20 md:group-hover:opacity-40 transition-all duration-500 pointer-events-none z-0">
         <div
           className="w-[200%] h-[200%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-radial-gradient transition-transform duration-700 ease-out group-hover:rotate-[-25deg] group-hover:scale-110"
           style={{
@@ -232,13 +215,6 @@ const BenefitsSectionContent = () => {
         ></div>
       </div>
 
-      {/* Diagonal lines texture */}
-      <div className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500 z-0"
-        style={{
-          backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 1px, transparent 1px, transparent 10px)',
-          backgroundSize: '20px 20px'
-        }}
-      ></div>
 
       {/* Subtle color accent in corner */}
       <div className="absolute top-0 right-0 w-24 h-24 -mr-12 -mt-12 bg-dark-yellow-1/10 rounded-full transition-transform duration-700 ease-in-out group-hover:scale-125 group-hover:rotate-45"></div>
@@ -254,11 +230,11 @@ const BenefitsSectionContent = () => {
           />
         </div>
 
-        <h3 className="text-xl font-semibold text-light-yellow-1 mb-3 transition-all duration-300 group-hover:translate-y-[-2px]">
+        <h3 className="text-lg md:text-xl font-semibold text-light-yellow-1 mb-2 md:mb-3 transition-all duration-300 group-hover:translate-y-[-2px]">
           {benefit.title}
         </h3>
 
-        <p className="text-light-yellow-1 opacity-90 transition-all duration-300 group-hover:opacity-100">
+        <p className="text-sm md:text-base text-light-yellow-1 opacity-90 transition-all duration-300 group-hover:opacity-100">
           {benefit.description}
         </p>
       </div>
@@ -272,14 +248,13 @@ const BenefitsSectionContent = () => {
         title={t('sectionTitle')}
         subtitle={t('sectionSubtitle')}
         variant="dark"
-        isMobile={isMobile}
         customIconStyles={{
           containerClassName: benefitIconStyles(),
           iconClassName: headerIconStyles()
         }}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-6 mx-auto container">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 px-4 sm:px-6 mx-auto container">
         {benefits.map(benefit => (
           <BenefitCard key={benefit.id} benefit={benefit} />
         ))}
@@ -298,7 +273,7 @@ export default function BenefitsSection() {
       padding="large"
       overlayType="vignette"
       id="benefits"
-      className="relative overflow-hidden max-w-full mx-0"
+      className="relative overflow-hidden max-w-full mx-0 py-12 md:py-16"
     >
       {/* Section Decorations with white variant for dark background */}
       <SectionDecorations

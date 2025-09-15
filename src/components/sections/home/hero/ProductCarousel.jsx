@@ -4,7 +4,6 @@ import HeroProductCard from '../../../ui/product/HeroProductCard';
 import { useTranslation } from '../../../../utils/i18n';
 import translations from '../translations/ProductCarousel';
 import PropTypes from 'prop-types';
-import useBreakpoint from '../../../../hooks/useBreakpoint';
 import { api } from '@/services/api';
 
 // Caching variables to avoid repeated fetches
@@ -19,7 +18,6 @@ let activeVariantsCache = {};
  */
 const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
   const { t, locale } = useTranslation(translations);
-  const { isMobile, isTablet } = useBreakpoint();
   const [products, setProducts] = useState(productsCache);
   const [activeVariants, setActiveVariants] = useState(activeVariantsCache);
   const [isVisible, setIsVisible] = useState(productsCache.length > 0);
@@ -144,7 +142,7 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
     >
       <div className="container relative flex justify-center">
         <Carousel
-          itemWidth="clamp(260px, 70vw, 280px)"
+          itemWidth="clamp(260px, 30vw, 320px)"
           spacing="normal"
           snap="center"
           padding="default"
@@ -153,8 +151,8 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
           controlSize="small"
           controlVariant="lime"
           controlsPosition="middle"
-          controlsClassName="px-8"
-          className="product-carousel z-0 py-3 w-full mx-0 justify-center"
+          controlsClassName="px-3 md:px-8"
+          className="product-carousel z-0 py-2 md:py-3 w-full mx-0 justify-center"
           trackClassName="flex justify-center"
         >
           {products.map(product => (

@@ -7,37 +7,37 @@ import Button from '@components/ui/inputs/Button';
  * @param {Function} props.onAddToCart - Callback for add to cart button
  * @param {Function} props.onBuyNow - Callback for buy now button
  * @param {boolean} props.isOutOfStock - Whether the product is out of stock
- * @param {boolean} props.isMobile - Whether the component is rendered on mobile
  * @param {string} props.className - Additional class names
  */
 const ProductActionButtons = ({
   onAddToCart,
   onBuyNow,
   isOutOfStock = false,
-  isMobile = false,
   className = ""
 }) => {
   return (
-    <div className={`flex gap-4 ${isMobile ? 'hidden md:flex' : ''} ${className}`}>
+    <div className={`flex gap-3 md:gap-4 ${className}`}>
       <Button
         variant="lime"
-        size="md"
+        size="xs"
         iconName="shoppingbag"
         iconPosition="left"
         label="Acheter"
         onClick={onBuyNow}
         isFullWidth
         disabled={isOutOfStock}
+        className="text-xs md:text-sm"
       />
       <Button
         variant="limeOutline"
-        size="md"
+        size="xs"
         iconName="shoppingcart"
         iconPosition="left"
         label="Ajouter"
         onClick={onAddToCart}
         isFullWidth
         disabled={isOutOfStock}
+        className="text-xs md:text-sm"
       />
 
       {isOutOfStock && (

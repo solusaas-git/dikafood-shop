@@ -110,7 +110,7 @@ const ReviewCard = ({ review }) => {
     <Card
       variant="brandLime"
       padding="none"
-      className="w-full max-w-[360px] h-auto min-h-[280px] transition-all duration-300 hover:shadow-lg hover:shadow-logo-lime/10 hover:-translate-y-2 cursor-default"
+      className="w-full max-w-[320px] md:max-w-[360px] h-auto min-h-[260px] md:min-h-[280px] transition-all duration-300 hover:shadow-lg hover:shadow-logo-lime/10 hover:-translate-y-2 cursor-default"
     >
       <Card.Header
         hasDivider={true}
@@ -120,38 +120,39 @@ const ReviewCard = ({ review }) => {
         <div className="w-full space-y-1">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-lg font-medium text-dark-green-7 m-0">{review.author.name}</h3>
-              <p className="text-sm text-dark-green-6 m-0">{review.author.location}</p>
+              <h3 className="text-base md:text-lg font-medium text-dark-green-7 m-0">{review.author.name}</h3>
+              <p className="text-xs md:text-sm text-dark-green-6 m-0">{review.author.location}</p>
             </div>
             <RatingStars rating={review.rating} />
           </div>
 
           <div className="flex items-center justify-between">
             {review.verified ? (
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-white rounded-full border border-dark-yellow-1 text-dark-green-7 text-xs font-medium">
+              <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 bg-white rounded-full border border-dark-yellow-1 text-dark-green-7 text-[10px] md:text-xs font-medium">
                 <Icon name="checkCircle" size="xs" className="text-dark-green-7" />
-                <span>{t('verifiedPurchase')}</span>
+                <span className="hidden sm:inline">{t('verifiedPurchase')}</span>
+                <span className="sm:hidden">{t('verified')}</span>
               </div>
             ) : (
               <div></div>
             )}
-            <span className="text-xs text-dark-green-6">{formatRelativeTime(review.date, t)}</span>
+            <span className="text-[10px] md:text-xs text-dark-green-6">{formatRelativeTime(review.date, t)}</span>
           </div>
         </div>
       </Card.Header>
 
-      <Card.Body padding="medium" className="flex flex-col pt-3 pb-2 px-4">
-        <div className="flex flex-col relative px-1 pb-7">
+      <Card.Body padding="medium" className="flex flex-col pt-2 md:pt-3 pb-2 px-3 md:px-4">
+        <div className="flex flex-col relative px-1 pb-6 md:pb-7">
           <Icon
             name="quotes"
             weight="fill"
-            className="absolute top-0 left-0 text-logo-lime/40 border border-logo-lime/20 rounded-full p-1 -translate-x-2 -translate-y-1 shadow-sm bg-white/80"
-            sizeInPixels={20}
+            className="absolute top-0 left-0 text-logo-lime/40 border border-logo-lime/20 rounded-full p-0.5 md:p-1 -translate-x-1.5 md:-translate-x-2 -translate-y-1 shadow-sm bg-white/80"
+            sizeInPixels={16}
           />
 
           <div
             ref={textRef}
-            className={`text-base text-dark-green-7 leading-relaxed pt-1 px-2 ${!isExpanded ? 'line-clamp-4' : ''} relative z-10`}
+            className={`text-sm md:text-base text-dark-green-7 leading-relaxed pt-1 px-1.5 md:px-2 ${!isExpanded ? 'line-clamp-4' : ''} relative z-10`}
           >
             {review.comment}
           </div>
@@ -159,13 +160,13 @@ const ReviewCard = ({ review }) => {
           <Icon
             name="quotes"
             weight="fill"
-            className="absolute bottom-1 right-0 text-logo-lime/40 border border-logo-lime/20 rounded-full p-1 translate-x-2 translate-y-1 rotate-180 z-0 shadow-sm bg-white/80"
-            sizeInPixels={20}
+            className="absolute bottom-1 right-0 text-logo-lime/40 border border-logo-lime/20 rounded-full p-0.5 md:p-1 translate-x-1.5 md:translate-x-2 translate-y-1 rotate-180 z-0 shadow-sm bg-white/80"
+            sizeInPixels={16}
           />
 
           {needsTruncation && (
             <button
-              className="mt-1 z-10 flex items-center gap-1.5 text-xs font-medium text-logo-lime hover:text-dark-green-7 transition-colors self-start absolute bottom-0 left-2"
+              className="mt-1 z-10 flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs font-medium text-logo-lime hover:text-dark-green-7 transition-colors self-start absolute bottom-0 left-1.5 md:left-2"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <Icon
@@ -187,7 +188,6 @@ const ReviewCard = ({ review }) => {
  */
 export default function ReviewsSection() {
   const { t, locale } = useTranslation(translations);
-  const { isMobile } = useBreakpoint();
   const carouselRef = useRef(null);
 
   // Duplicate reviews for smoother infinite scrolling with unique keys
@@ -202,7 +202,7 @@ export default function ReviewsSection() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-white via-logo-lime/5 to-light-yellow-1/30 relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-gradient-to-br from-white via-logo-lime/5 to-light-yellow-1/30 relative overflow-hidden">
       {/* Top and bottom decorative borders */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 h-px bg-gradient-to-r from-transparent via-logo-lime/40 to-transparent" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 h-px bg-gradient-to-r from-transparent via-logo-lime/40 to-transparent" />
@@ -232,28 +232,26 @@ export default function ReviewsSection() {
       <div className="absolute top-1/2 right-[5%] w-16 h-16 rounded-full bg-gradient-to-tr from-dark-yellow-1/10 to-light-yellow-1/30 blur-xl opacity-80 animate-pulse [animation-duration:6s] [animation-delay:2s]"></div>
       <div className="absolute top-[30%] left-[15%] w-20 h-20 rounded-full bg-gradient-to-br from-dark-yellow-1/10 to-light-yellow-1/30 blur-xl opacity-50 animate-pulse [animation-duration:10s] [animation-delay:0.5s]"></div>
 
-      <div className="container mx-auto px-4 sm:px-6 mb-8 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 mb-6 md:mb-8 relative z-10">
         <SectionHeader
           icon="chatCircleText"
           title={t('title')}
           subtitle={t('subtitle')}
           variant="light"
           size="small"
-          isMobile={isMobile}
           hasDecorators={true}
           customIconStyles={{
-            containerClassName: `${isMobile ? 'w-9 h-9' : 'w-14 h-14'} rounded-full flex items-center justify-center bg-logo-lime/15 border border-logo-lime/30`,
+            containerClassName: 'w-9 h-9 md:w-14 md:h-14 rounded-full flex items-center justify-center bg-logo-lime/15 border border-logo-lime/30',
             iconClassName: 'text-dark-green-7'
           }}
-          className={isMobile ? "mb-6 [&_h2]:text-xl [&_p]:text-base" : ""}
         />
       </div>
 
-      <div className="relative z-10 mt-4 mx-auto max-w-[90%] md:max-w-[95%]">
+      <div className="relative z-10 mt-2 md:mt-4 mx-auto max-w-[95%] md:max-w-[95%]">
         <EmblaReviewCarousel
           reviews={reviews}
           renderReviewCard={renderReviewCard}
-          className="mt-4"
+          className="mt-2 md:mt-4"
           locale={locale}
           ref={carouselRef}
           autoScroll={true}

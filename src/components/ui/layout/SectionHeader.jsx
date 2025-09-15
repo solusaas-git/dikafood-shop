@@ -101,7 +101,7 @@ const titleIconStyles = tv({
 });
 
 const titleTextStyles = tv({
-  base: 'text-4xl font-medium m-0 text-center leading-tight transition-all duration-300',
+  base: 'text-4xl font-medium font-heading m-0 text-center leading-tight transition-all duration-300',
   variants: {
     variant: {
       light: 'text-dark-green-7',
@@ -127,7 +127,7 @@ const titleTextStyles = tv({
 });
 
 const subtitleStyles = tv({
-  base: 'text-xl leading-relaxed max-w-[600px] m-0 text-center font-normal transition-all duration-300',
+  base: 'text-xl leading-relaxed max-w-[600px] m-0 text-center font-normal font-heading transition-all duration-300',
   variants: {
     variant: {
       light: 'text-dark-green-6',

@@ -391,12 +391,12 @@ const CartMenu = memo(({
           </div>
         )}
         <div className="flex-1 overflow-y-auto">
-          <div className="px-4 py-2 space-y-3">
+          <div className="px-3 md:px-4 py-2 space-y-2 md:space-y-3">
             {cartData.items.map(item => (
-              <div key={item._id || item.id} className="relative bg-white border border-gray-200 rounded-xl p-4 hover:shadow-sm transition-all duration-200">
-                <div className="flex gap-4 items-start">
+              <div key={item._id || item.id} className="relative bg-white border border-gray-200 rounded-xl p-3 md:p-4 hover:shadow-sm transition-all duration-200">
+                <div className="flex gap-3 md:gap-4 items-start">
                   {/* Product Image */}
-                  <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200 flex-shrink-0">
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-200 flex-shrink-0">
                     <CartItemImage
                       imageId={item.variant?.imageUrl || item.image || item.product?.image}
                       imageUrl={item.variant?.imageUrl || item.variant?.imageUrls?.[0] || item.imageUrl || item.imageUrls?.[0] || item.product?.image}
@@ -408,13 +408,13 @@ const CartMenu = memo(({
                   {/* Product Info */}
                   <div className="flex-1 min-w-0">
                     {/* Product Name */}
-                    <h4 className="font-medium text-dark-green-7 text-sm leading-tight mb-2 truncate">
+                    <h4 className="font-medium text-dark-green-7 text-xs md:text-sm leading-tight mb-1.5 md:mb-2 truncate">
                       {item.name || item.product?.name}
                     </h4>
                     
                     {/* Product Details */}
                     {(item.variant?.size || item.size || item.brand) && (
-                      <div className="flex items-center gap-2 text-xs text-gray-600 mb-3">
+                      <div className="flex items-center gap-1.5 md:gap-2 text-xs text-gray-600 mb-2 md:mb-3">
                         {(item.variant?.size || item.size) && (
                           <span className="bg-gray-100 px-2 py-0.5 rounded-full">
                             {item.variant?.size || item.size}
@@ -431,22 +431,22 @@ const CartMenu = memo(({
                     {/* Price and Quantity Row */}
                     <div className="flex items-center justify-between">
                       {/* Quantity Controls */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 md:gap-3">
                         <div className="flex items-center border border-gray-200 rounded-lg">
                           <button
                             onClick={() => handleDecreaseQuantity(item._id || item.id)}
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-l-lg"
+                            className="w-9 h-9 md:w-8 md:h-8 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-l-lg"
                             aria-label={t('decrease_quantity')}
                             disabled={item.quantity <= 1 || isLoading}
                           >
                             <Icon name="minus" size="xs" className={`${item.quantity <= 1 || isLoading ? 'text-gray-400' : 'text-gray-600'}`} />
                           </button>
-                          <span className="w-10 text-center text-sm font-medium border-l border-r border-gray-200 py-1.5">
+                          <span className="w-9 md:w-10 text-center text-xs md:text-sm font-medium border-l border-r border-gray-200 py-1.5">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => handleIncreaseQuantity(item._id || item.id)}
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-r-lg"
+                            className="w-9 h-9 md:w-8 md:h-8 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-r-lg"
                             aria-label={t('increase_quantity')}
                             disabled={isLoading}
                           >
@@ -457,10 +457,10 @@ const CartMenu = memo(({
 
                       {/* Price */}
                       <div className="text-right">
-                        <div className="text-sm font-semibold text-dark-green-7">
+                        <div className="text-xs md:text-sm font-semibold text-dark-green-7">
                           {formatPrice(item.price * item.quantity)}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-[10px] md:text-xs text-gray-500">
                           {formatPrice(item.price)} × {item.quantity}
                         </div>
                       </div>
@@ -470,7 +470,7 @@ const CartMenu = memo(({
                   {/* Remove button - positioned to align with the center of the item */}
                   <button
                     onClick={() => handleRemoveItem(item._id || item.id)}
-                    className="w-7 h-7 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center transition-colors border border-red-200 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 mt-1"
+                    className="w-8 h-8 md:w-7 md:h-7 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center transition-colors border border-red-200 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 mt-1"
                     aria-label={t('remove_item')}
                     disabled={isLoading}
                     title={t('remove_item')}
@@ -519,10 +519,13 @@ const CartMenu = memo(({
             <LucideIcon name="shoppingCart" weight="duotone" size={isMobile ? "md" : "md"} />
             {cartData.itemsCount > 0 && (
               <span 
-                className={`absolute -top-2 -right-2 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full ${itemAdded ? 'animate-bounce' : ''}`}
+                className={`absolute -top-1 -right-1 md:-top-2 md:-right-2 text-[8px] md:text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full ${itemAdded ? 'animate-bounce' : ''}`}
                 style={{
                   backgroundColor: '#ebeb48',
-                  color: '#07451c'
+                  color: '#07451c',
+                  fontSize: isMobile ? '8px' : '10px',
+                  lineHeight: '1',
+                  border: '1px solid #07451c'
                 }}
               >
                 {cartData.itemsCount > 9 ? '9+' : cartData.itemsCount}
@@ -537,12 +540,17 @@ const CartMenu = memo(({
 
   // Create header element
   const headerElement = (
-    <div className="flex items-center gap-3 px-4 py-4 bg-gradient-to-br from-amber-50 to-amber-100/70 border-b border-logo-lime/20">
-      <div className="w-10 h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center">
-        <LucideIcon name="shoppingCart" weight="duotone" size="lg" className="text-dark-green-7" />
+    <div className="flex items-center gap-3 px-4 py-3 md:py-4 bg-gradient-to-br from-amber-50 to-amber-100/70 border-b border-logo-lime/20">
+      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center">
+        <LucideIcon name="shoppingCart" weight="duotone" size="md" className="text-dark-green-7" />
       </div>
       <div className="flex flex-col">
-        <h3 className="text-lg font-semibold text-dark-green-7">{t('cart')}</h3>
+        <h3 className="text-base md:text-lg font-semibold text-dark-green-7">{t('cart')}</h3>
+        {cartData.itemsCount > 0 && (
+          <span className="text-xs text-dark-green-6">
+            {cartData.itemsCount} {cartData.itemsCount === 1 ? 'article' : 'articles'}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -564,13 +572,13 @@ const CartMenu = memo(({
         />
         
         {/* Cart Panel */}
-        <div className={`w-[400px] max-w-[90vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
+        <div className={`w-[400px] max-w-[95vw] sm:max-w-[90vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full transition-all shadow-lg hover:shadow-xl border-2"
+            className="absolute top-3 right-3 md:top-4 md:right-4 z-10 w-10 h-10 md:w-8 md:h-8 flex items-center justify-center rounded-full transition-all shadow-lg hover:shadow-xl border-2"
             style={{ 
               backgroundColor: '#aacc02',
               borderColor: '#aacc02',
@@ -587,15 +595,15 @@ const CartMenu = memo(({
             aria-label="Fermer le panier"
           >
             <svg 
-              width="16" 
-              height="16" 
+              width="18" 
+              height="18" 
               viewBox="0 0 24 24" 
               fill="none" 
               stroke="#226600" 
               strokeWidth="3" 
               strokeLinecap="round" 
               strokeLinejoin="round"
-              className="lucide lucide-x"
+              className="lucide lucide-x md:w-4 md:h-4"
             >
               <path d="m18 6-12 12"/>
               <path d="m6 6 12 12"/>
@@ -606,7 +614,7 @@ const CartMenu = memo(({
           {headerElement}
           
           {/* Cart Content */}
-          <div className="h-[calc(100vh-80px)] overflow-y-auto">
+          <div className="h-[calc(100vh-70px)] md:h-[calc(100vh-80px)] overflow-y-auto">
             {renderContent()}
           </div>
         </div>

@@ -50,7 +50,7 @@ export default function FAQSection() {
   });
 
   return (
-    <section className="w-full py-20 px-4 sm:px-6 md:px-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-b from-dark-green-6 to-dark-green-7">
+    <section className="w-full py-12 md:py-20 px-4 sm:px-6 md:px-8 flex flex-col items-center relative overflow-hidden bg-gradient-to-b from-dark-green-6 to-dark-green-7">
       {/* Section Decorations with white variant for dark background */}
       <SectionDecorations
         variant="white"
@@ -77,7 +77,7 @@ export default function FAQSection() {
         customIconStyles={{
           iconClassName: 'text-white'
         }}
-        className="mb-10 relative z-10"
+        className="mb-6 md:mb-10 relative z-10"
       />
 
       <div className="w-full max-w-3xl relative z-10">

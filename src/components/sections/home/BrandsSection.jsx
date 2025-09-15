@@ -95,15 +95,9 @@ export default function BrandsSection() {
   const { t, locale } = useTranslation(translations);
   const [brands, setBrands] = useState(FALLBACK_BRANDS);
   const [loading, setLoading] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const brandsRef = useRef(null);
   const sectionRef = useRef(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  // Initialize mobile state after component mounts (SSR safe)
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
 
   // Watch for language changes and force refresh when language changes
   useEffect(() => {
@@ -119,22 +113,12 @@ export default function BrandsSection() {
     }
   }, [locale]);
 
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   return (
     <Section
       background="gradient"
       backgroundGradient="none"
       width="full"
-      className="relative overflow-visible px-0 w-full py-12 md:py-16 bg-lime-gradient"
+      className="relative overflow-visible px-0 w-full py-8 md:py-12 lg:py-16 bg-lime-gradient"
       padding="large"
       overlayType="none"
       id="brands-section"
@@ -147,7 +131,6 @@ export default function BrandsSection() {
         subtitle={t('subtitle')}
         variant="lime"
         size="small"
-        isMobile={isMobile}
         hasDecorators={true}
       />
 
@@ -155,7 +138,7 @@ export default function BrandsSection() {
         {/* Embla Carousel for both desktop and mobile */}
         <EmblaBrandCarousel
           brands={brands}
-          className="mt-4 w-full max-w-screen-xl"
+          className="mt-2 md:mt-4 w-full max-w-screen-xl"
           refreshTrigger={refreshTrigger}
           locale={locale}
         />

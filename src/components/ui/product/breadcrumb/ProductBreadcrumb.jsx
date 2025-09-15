@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Icon } from '@components/ui';
 
-const ProductBreadcrumb = ({ product, className, isMobile }) => {
+const ProductBreadcrumb = ({ product, className }) => {
   if (!product) return null;
 
   // Determine category path
@@ -15,18 +15,20 @@ const ProductBreadcrumb = ({ product, className, isMobile }) => {
   const categoryName = typeof product.category === 'object' ? product.category.name : product.category;
 
   return (
-    <div className={`fixed ${isMobile ? 'top-16' : 'top-24'} left-0 right-0 z-30 py-2 ${className || ''}`}>
-      <div className={`container max-w-6xl mx-auto ${isMobile ? 'px-4' : 'px-8 md:px-12 lg:px-16'} flex ${isMobile ? 'justify-center' : 'justify-center'}`}>
-        {isMobile ? (
-          // Mobile view - back to shop only with white sublayer
-          <div className="inline-flex bg-white rounded-full py-1 px-1 shadow-md">
-            <Link href="/shop" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-3 py-1 border border-logo-lime/20">
-              <Icon name="caretleft" size="sm" className="text-dark-green-7 mr-1" />
-              <span className="text-dark-green-7 font-medium">Retour</span>
+    <div className={`fixed top-16 md:top-20 left-0 right-0 z-30 py-1.5 md:py-2 ${className || ''}`}>
+      <div className="container max-w-6xl mx-auto px-3 md:px-8 lg:px-12 flex justify-center">
+        {/* Mobile view - back to shop only */}
+        <div className="md:hidden">
+          <div className="inline-flex bg-white rounded-full py-0.5 px-0.5 shadow-md">
+            <Link href="/shop" className="flex items-center bg-logo-lime/20 hover:bg-logo-lime/30 transition-colors rounded-full px-2.5 py-1 border border-logo-lime/20">
+              <Icon name="caretleft" size="xs" className="text-dark-green-7 mr-1" />
+              <span className="text-dark-green-7 font-medium text-sm">Retour</span>
             </Link>
           </div>
-        ) : (
-          // Desktop view - full breadcrumb
+        </div>
+        
+        {/* Desktop view - full breadcrumb */}
+        <div className="hidden md:block">
           <div className="inline-flex bg-white border border-logo-lime/30 rounded-full px-4 py-2 items-center gap-3 shadow-sm relative overflow-hidden">
             {/* Transparent lime green overlay */}
             <div className="absolute inset-0 bg-logo-lime/10"></div>
@@ -65,7 +67,7 @@ const ProductBreadcrumb = ({ product, className, isMobile }) => {
               </span>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -4,16 +4,16 @@ import { Plus, Minus } from "@phosphor-icons/react";
 
 const accordionStyles = tv({
   slots: {
-    container: 'flex flex-col gap-5 w-full',
+    container: 'flex flex-col gap-3 md:gap-5 w-full',
     item: 'bg-white/5 rounded-2xl overflow-hidden transition-all duration-300 border border-white/10 hover:translate-y-[-2px] hover:border-white/20 hover:bg-white/10',
     itemActive: 'bg-white/10 border-white/20',
-    trigger: 'w-full p-6 flex items-center justify-between gap-5 bg-transparent border-0 cursor-pointer transition-all duration-300 hover:bg-white/5 focus-visible:outline-light-green-6 focus-visible:outline-2 focus-visible:outline-offset-[-2px]',
+    trigger: 'w-full p-4 md:p-6 flex items-center justify-between gap-3 md:gap-5 bg-transparent border-0 cursor-pointer transition-all duration-300 hover:bg-white/5 focus-visible:outline-light-green-6 focus-visible:outline-2 focus-visible:outline-offset-[-2px]',
     triggerActive: 'border-b border-white/10',
-    title: 'flex-1 text-left text-lg font-medium text-light-green-6',
+    title: 'flex-1 text-left text-base md:text-lg font-medium text-light-green-6',
     icon: 'text-light-green-6 transition-all duration-300',
-    content: 'max-h-0 px-6 overflow-hidden transition-all duration-300 ease-out',
-    contentActive: 'max-h-[500px] p-6 pt-5 pb-7',
-    contentInner: 'text-light-green-6 text-base leading-relaxed opacity-90',
+    content: 'max-h-0 px-4 md:px-6 overflow-hidden transition-all duration-300 ease-out',
+    contentActive: 'max-h-[500px] p-4 md:p-6 pt-3 md:pt-5 pb-5 md:pb-7',
+    contentInner: 'text-light-green-6 text-sm md:text-base leading-relaxed opacity-90',
   },
   variants: {
     size: {
@@ -64,9 +64,9 @@ const Accordion = ({ items, size }) => {
             >
               <span className={styles.title()}>{item.title}</span>
               {isActive ? (
-                <Minus size={24} weight="bold" className={styles.icon()} />
+                <Minus size={20} weight="bold" className={`${styles.icon()} md:w-6 md:h-6`} />
               ) : (
-                <Plus size={24} weight="bold" className={styles.icon()} />
+                <Plus size={20} weight="bold" className={`${styles.icon()} md:w-6 md:h-6`} />
               )}
             </button>
 

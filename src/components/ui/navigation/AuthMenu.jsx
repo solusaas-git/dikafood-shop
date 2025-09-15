@@ -3,10 +3,12 @@ import { createPortal } from 'react-dom';
 import translations from './translations/AuthMenu';
 import Menu from './Menu';
 import MenuTrigger from './MenuTrigger';
+import Icon from '../icons/Icon';
 import LucideIcon from '../icons/LucideIcon';
 import Modal from '../feedback/Modal';
 import { LoginForm, SignupForm } from '../auth';
 import ResetPasswordForm from '../auth/ResetPasswordForm';
+import RealTimeElements from '../layout/RealTimeElements';
 import { useTranslation } from '../../../utils/i18n';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useCart } from '../../../contexts/CartContext';
@@ -367,11 +369,11 @@ const AuthMenu = ({
   const renderHeader = () => {
     if (isLoggedIn && user) {
       return (
-        <div className="flex items-center gap-3 py-3 bg-gradient-to-br from-amber-50 to-amber-100/70 border-b border-logo-lime/20">
-          <div className="w-10 h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center ml-3">
-            <LucideIcon name="user" size="lg" weight="duotone" className="text-dark-green-7" />
+        <div className="flex items-center gap-2 py-2 md:py-3 bg-gradient-to-br from-amber-50 to-amber-100/70 border-b border-logo-lime/20">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center ml-2 md:ml-3">
+            <LucideIcon name="user" size="md" weight="duotone" className="text-dark-green-7" />
           </div>
-          <h3 className="text-lg font-medium text-dark-green-7 truncate max-w-[220px]">{t('profile')}</h3>
+          <h3 className="text-base md:text-lg font-medium text-dark-green-7 truncate max-w-[220px]">{t('profile')}</h3>
         </div>
       );
     }
@@ -380,23 +382,23 @@ const AuthMenu = ({
     return (
       <div className="bg-gradient-to-br from-amber-50 to-amber-100/70 border-b border-logo-lime/20">
         {/* Title section */}
-        <div className="flex items-center gap-3 py-3">
-          <div className="w-10 h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center ml-3">
-            <LucideIcon name="user" size="lg" weight="duotone" className="text-dark-green-7" />
+        <div className="flex items-center gap-2 py-2 md:py-3">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center ml-2 md:ml-3">
+            <LucideIcon name="user" size="md" weight="duotone" className="text-dark-green-7" />
           </div>
-          <h3 className="text-lg font-medium text-dark-green-7 truncate max-w-[200px]">
+          <h3 className="text-base md:text-lg font-medium text-dark-green-7 truncate max-w-[200px]">
             {isResetPassword ? 'Nouveau mot de passe' : (isForgotPassword ? t('forgot_password_title') : (isRegistering ? t('register_title') : t('login')))}
           </h3>
         </div>
         
         {/* Toggle switch - Hide in forgot password and reset password modes */}
         {!isForgotPassword && !isResetPassword && (
-          <div className="flex items-center justify-center pb-3">
-            <div className="flex bg-white/50 border border-logo-lime/30 rounded-full p-1">
+          <div className="flex items-center justify-center pb-2 md:pb-3">
+            <div className="flex bg-white/50 border border-logo-lime/30 rounded-full p-0.5 md:p-1">
             <button
               type="button"
               onClick={() => setIsRegistering(false)}
-              className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+              className={`px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium rounded-full transition-all ${
                 !isRegistering 
                   ? 'bg-logo-lime/30 text-dark-green-7 shadow-sm' 
                   : 'text-dark-green-6 hover:text-dark-green-7'
@@ -407,7 +409,7 @@ const AuthMenu = ({
             <button
               type="button"
               onClick={() => setIsRegistering(true)}
-              className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+              className={`px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium rounded-full transition-all ${
                 isRegistering 
                   ? 'bg-logo-lime/30 text-dark-green-7 shadow-sm' 
                   : 'text-dark-green-6 hover:text-dark-green-7'
@@ -438,7 +440,7 @@ const AuthMenu = ({
 
   // Render login/register form or user profile based on authentication status
   // Forgot Password Form Component
-  const ForgotPasswordForm = ({ onSubmit, onBackToLogin, loading, error }) => {
+  const ForgotPasswordForm = ({ onSubmit, onBackToLogin, loading, error, compact = false }) => {
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
 
@@ -464,6 +466,75 @@ const AuthMenu = ({
       onSubmit(email);
     };
 
+    if (compact) {
+      return (
+        <div className="space-y-1.5 md:space-y-2">
+          {/* Description */}
+          <p className="text-xs md:text-sm text-dark-green-6 text-center leading-relaxed mb-2 md:mb-3">
+            {t('forgot_password_description')}
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-1.5 md:space-y-2">
+            {/* Email Input */}
+            <div className="relative">
+              <div className={`flex items-center relative rounded-full border bg-white overflow-hidden focus-within:border-logo-lime focus-within:ring-1 focus-within:ring-logo-lime ${
+                emailError ? 'border-feedback-error/60 focus-within:border-feedback-error focus-within:ring-feedback-error/30' : 'border-logo-lime/70'
+              }`}>
+                {/* Icon with subtle separator */}
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-dark-green-6/70 after:content-[''] after:absolute after:right-[-0.4rem] after:top-1/2 after:-translate-y-1/2 after:w-px after:h-3 after:bg-logo-lime/20">
+                  <Icon name="envelope" weight="duotone" size="sm" />
+                </div>
+
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t('email_reset_placeholder')}
+                  className="w-full py-2.5 px-3 pl-10 pr-3 text-dark-green-7 focus:outline-none bg-transparent placeholder:text-dark-green-6/70 text-sm"
+                  disabled={loading}
+                />
+              </div>
+              {emailError && (
+                <p className="mt-0.5 text-[10px] text-feedback-error flex items-center gap-0.5 ml-2">
+                  <Icon name="warning" size="xs" />
+                  {emailError}
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 md:py-2.5 px-3 md:px-4 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40 text-xs md:text-sm disabled:opacity-50"
+            >
+              {loading ? (
+                <>
+                  <LucideIcon name="loader" size="sm" className="mr-2 animate-spin" />
+                  {t('loading')}
+                </>
+              ) : (
+                <>
+                  <LucideIcon name="mail" size="sm" className="mr-2" />
+                  {t('send_reset_link')}
+                </>
+              )}
+            </button>
+
+            {/* Back to Login */}
+            <button
+              type="button"
+              onClick={onBackToLogin}
+              className="w-full py-1.5 text-xs md:text-sm text-logo-lime hover:underline"
+            >
+              {t('back_to_login_link')}
+            </button>
+          </form>
+        </div>
+      );
+    }
+
+    // Original form for non-compact mode
     return (
       <div className="p-6 space-y-4">
         {/* Description */}
@@ -596,10 +667,10 @@ const AuthMenu = ({
 
     // Compact Auth Forms
     return (
-      <div className="p-4">
+      <div className="p-3 md:p-4">
         {/* Error Message */}
         {formError && (
-          <div className="bg-feedback-error/10 border border-feedback-error/30 text-feedback-error p-3 rounded-lg mb-4 text-sm">
+          <div className="bg-feedback-error/10 border border-feedback-error/30 text-feedback-error p-2 md:p-3 rounded-lg mb-2 md:mb-3 text-xs md:text-sm">
             <div className="flex items-center gap-2">
               <LucideIcon name="warning" size="sm" weight="duotone" color="error" />
               <span className="font-medium">{formError}</span>
@@ -620,6 +691,7 @@ const AuthMenu = ({
             onBackToLogin={() => setIsForgotPassword(false)}
             loading={localLoading}
             error={formError}
+            compact={true}
           />
         ) : isRegistering ? (
           <SignupForm
@@ -650,7 +722,7 @@ const AuthMenu = ({
         isMobile={isMobile}
         isNavbarMobile={isNavbarMobile}
         withCaret={false}
-        withMobileIndicator={isMobile && isNavbarMobile && !isGrouped}
+        withMobileIndicator={false}
         isGrouped={isGrouped}
         isOpen={isOpen}
         className={!isMobile ? 'icon-text-separator' : ''}
@@ -665,273 +737,28 @@ const AuthMenu = ({
     </div>
   );
 
-  // Memoized Real-time Background Elements Component
-  const RealTimeElements = React.memo(() => {
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [locationInfo, setLocationInfo] = useState(null);
-    const [weatherInfo, setWeatherInfo] = useState(null);
-    const [currentHintIndex, setCurrentHintIndex] = useState(0);
 
-    // Olive oil tips and benefits in French
-    const oliveOilHints = [
-      {
-        icon: 'leaf',
-        text: "L'huile d'olive extra vierge contient plus de 30 composés phénoliques aux propriétés antioxydantes."
-      },
-      {
-        icon: 'heart',
-        text: "Consommer 2 cuillères à soupe d'huile d'olive par jour réduit le risque de maladies cardiovasculaires."
-      },
-      {
-        icon: 'star',
-        text: "L'huile d'olive marocaine est reconnue mondialement pour sa qualité exceptionnelle et son goût unique."
-      },
-      {
-        icon: 'sun',
-        text: "L'huile d'olive se conserve mieux dans un endroit frais et sombre, à l'abri de la lumière."
-      },
-      {
-        icon: 'droplets',
-        text: "L'acidité d'une huile d'olive extra vierge ne doit pas dépasser 0,8% pour garantir sa qualité."
-      },
-      {
-        icon: 'brain',
-        text: "Les antioxydants de l'huile d'olive protègent le cerveau et améliorent les fonctions cognitives."
-      },
-      {
-        icon: 'shield',
-        text: "L'huile d'olive renforce le système immunitaire grâce à ses propriétés anti-inflammatoires."
-      },
-      {
-        icon: 'sparkles',
-        text: "L'huile d'olive extra vierge à froid préserve tous ses bienfaits nutritionnels et son arôme."
-      },
-      {
-        icon: 'zap',
-        text: "L'huile d'olive augmente l'absorption des vitamines A, D, E et K par l'organisme."
-      },
-      {
-        icon: 'award',
-        text: "Le Maroc produit certaines des meilleures huiles d'olive au monde, notamment dans les régions de Meknès et Fès."
-      }
-    ];
-
-    // Update time every second
-    useEffect(() => {
-      const timer = setInterval(() => {
-        setCurrentTime(new Date());
-      }, 1000);
-      return () => clearInterval(timer);
-    }, []);
-
-    // Rotate olive oil hints every 5 seconds
-    useEffect(() => {
-      const hintTimer = setInterval(() => {
-        setCurrentHintIndex((prevIndex) => 
-          (prevIndex + 1) % oliveOilHints.length
-        );
-      }, 5000);
-      return () => clearInterval(hintTimer);
-    }, [oliveOilHints.length]);
-
-    // Get user location and weather - using fallback data to avoid CORS issues
-    useEffect(() => {
-      // Set fallback location and weather data
-      // In production, you could use a backend API to get this data
-      setLocationInfo({
-        city: 'Casablanca',
-        country: 'Maroc',
-        timezone: 'Africa/Casablanca'
-      });
-      
-      // Generate random weather data for demo
-      const conditions = ['Ensoleillé', 'Nuageux', 'Partiellement nuageux'];
-      const temps = [18, 19, 20, 21, 22, 23, 24, 25, 26];
-      
-      setWeatherInfo({
-        temp: temps[Math.floor(Math.random() * temps.length)],
-        condition: conditions[Math.floor(Math.random() * conditions.length)],
-        icon: '01d'
-      });
-    }, []);
-
-    const formatTime = (date) => {
-      return date.toLocaleTimeString('fr-FR', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        second: '2-digit'
-      });
-    };
-
-    const formatDate = (date) => {
-      return date.toLocaleDateString('fr-FR', { 
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
-      });
-    };
-
-    // Translate weather conditions to French
-    const translateWeatherCondition = (condition) => {
-      const translations = {
-        'Clear': 'Ensoleillé',
-        'Clouds': 'Nuageux',
-        'Rain': 'Pluvieux',
-        'Snow': 'Neigeux',
-        'Thunderstorm': 'Orageux',
-        'Drizzle': 'Bruine',
-        'Mist': 'Brumeux',
-        'Fog': 'Brouillard',
-        'Haze': 'Voilé',
-        'Sunny': 'Ensoleillé'
-      };
-      return translations[condition] || condition;
-    };
-
-    // Translate common country names to French
-    const translateCountryName = (country) => {
-      const translations = {
-        'Morocco': 'Maroc',
-        'France': 'France',
-        'Spain': 'Espagne',
-        'United States': 'États-Unis',
-        'United Kingdom': 'Royaume-Uni',
-        'Germany': 'Allemagne',
-        'Italy': 'Italie',
-        'Belgium': 'Belgique',
-        'Netherlands': 'Pays-Bas',
-        'Canada': 'Canada',
-        'Algeria': 'Algérie',
-        'Tunisia': 'Tunisie'
-      };
-      return translations[country] || country;
-    };
-
-    return (
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Right Side Panel - All Elements Vertically Stacked */}
-        <div className="absolute top-8 right-8 flex flex-col gap-4">
-          
-          {/* Location */}
-          {locationInfo && (
-            <div className="text-sm font-medium">
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/20">
-                <LucideIcon name="map-pin" size="sm" className="text-dark-green-7" />
-                <span className="text-dark-green-7">{locationInfo.city}, {translateCountryName(locationInfo.country)}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Weather */}
-          {weatherInfo && (
-            <div className="text-sm font-medium">
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/20">
-                <LucideIcon name="cloud" size="sm" className="text-dark-green-7" />
-                <span className="text-dark-green-7">{weatherInfo.temp}°C • {translateWeatherCondition(weatherInfo.condition)}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Time - Larger Card */}
-          <div className="font-medium">
-            <div className="bg-white/95 backdrop-blur-md rounded-2xl px-5 py-4 shadow-lg border border-white/30">
-              <div className="flex items-center gap-3">
-                <LucideIcon name="clock" size="md" className="text-logo-lime" />
-                <div>
-                  <div className="text-xl font-bold text-dark-green-7">{formatTime(currentTime)}</div>
-                  <div className="text-xs text-dark-green-6">{formatDate(currentTime)}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Brand Tag */}
-          <div className="text-xs">
-            <div className="flex items-center gap-2 bg-dark-green-7/90 backdrop-blur-md rounded-full px-3 py-2 shadow-lg border border-logo-lime/30">
-              <LucideIcon name="leaf" size="sm" className="text-logo-lime" />
-              <span className="text-white">DikaFood • Authenticité Marocaine</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Bottom Center - Dynamic Olive Oil Hints */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 max-w-2xl">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl px-6 py-4 text-center shadow-xl border border-white/30">
-            <div className="flex items-center justify-center gap-3">
-              <LucideIcon 
-                name={oliveOilHints[currentHintIndex].icon} 
-                size="md" 
-                className="text-logo-lime flex-shrink-0" 
-              />
-              <p className="text-sm font-medium leading-relaxed text-dark-green-7">
-                {oliveOilHints[currentHintIndex].text}
-              </p>
-            </div>
-            {/* Progress indicator */}
-            <div className="flex justify-center gap-1 mt-3">
-              {oliveOilHints.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-1 rounded-full transition-all duration-300 ${
-                    index === currentHintIndex 
-                      ? 'bg-logo-lime w-6' 
-                      : 'bg-dark-green-6/40'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  });
-
-  // Memoized Portal Modal Component to prevent unnecessary re-renders
-  const AuthModalPortal = React.useMemo(() => {
-    // Prevent rendering if not open
+  // Use the standard Modal component instead of custom portal
+  const AuthModalContent = React.useMemo(() => {
     if (!isOpen) return null;
 
-    return createPortal(
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-6">
-        {/* Backdrop with green-tinted blur */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-dark-green-7/30 via-logo-lime/20 to-dark-green-6/40 backdrop-blur-md"
-          onClick={(e) => {
-            // Only close if clicking directly on the backdrop, not on child elements
-            if (e.target === e.currentTarget && onClose) {
-              onClose();
-            }
-          }}
-        >
-          {/* Real-time elements overlay */}
-          <RealTimeElements />
-        </div>
-        
-        {/* Modal Content */}
-        <div className="relative w-full max-w-xl bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-logo-lime/30 overflow-hidden">
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/90 hover:bg-white text-dark-green-6 hover:text-dark-green-7 transition-all shadow-lg hover:shadow-xl border border-logo-lime/20"
-          >
-            <LucideIcon name="x" size="md" />
-          </button>
-
-          {renderHeader && (
-            <div className="border-b border-logo-lime/30 bg-gradient-to-r from-logo-lime/5 to-logo-lime/10">
-              {renderHeader()}
-            </div>
-          )}
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size={isRegistering ? "xl" : "md"}
+        showCloseButton={false}
+        closeOnOverlayClick={true}
+        overlayClassName="z-50" // Use standard z-index
+      >
+        <div className="flex flex-col">
+          {renderHeader && renderHeader()}
           
-          <div className="max-h-[75vh] overflow-y-auto p-2">
-            <div className="space-y-1">
-              {renderContent()}
-            </div>
-          </div>
+           <div className="max-h-[55vh] overflow-y-auto">
+             {renderContent()}
+           </div>
         </div>
-      </div>,
-      document.body
+      </Modal>
     );
   }, [isOpen, isRegistering, isForgotPassword, isResetPassword, formError, localLoading, resetToken]);
 
@@ -950,8 +777,16 @@ const AuthMenu = ({
         {triggerComponent}
       </div>
 
-      {/* Portal Modal */}
-      {AuthModalPortal}
+      {/* Standard Modal */}
+      {AuthModalContent}
+
+      {/* Conditional RealTimeElements overlay using portal - only when auth modal is open and user is not logged in */}
+      {isOpen && !isLoggedIn && createPortal(
+        <div className="fixed inset-0 pointer-events-none z-[65]">
+          <RealTimeElements />
+        </div>,
+        document.body
+      )}
 
       {/* Profile modal */}
       {isLoggedIn && user && (

@@ -139,43 +139,43 @@ export function ProductCard({
 
   // Determine image container height based on variant and size
   const getImageContainerHeight = () => {
-    if (variant === 'compact') return 'h-32';
-    if (variant === 'hero') return 'h-40 md:h-44'; // Further reduced for compact header
-    if (variant === 'featured') return 'h-36 md:h-44';
+    if (variant === 'compact') return 'h-32 md:h-36';
+    if (variant === 'hero') return 'h-44 md:h-48'; // Balanced for proper card proportions
+    if (variant === 'featured') return 'h-40 md:h-48';
 
     // Default sizes
     switch (size) {
-      case 'sm': return 'h-36';
+      case 'sm': return 'h-36 md:h-40';
       case 'lg': return 'h-48 md:h-56';
-      default: return 'h-40 md:h-48'; // md size
+      default: return 'h-42 md:h-48'; // md size
     }
   };
 
   // Determine product name text size based on variant and size
   const getProductNameClass = () => {
-    if (variant === 'compact') return 'text-sm pr-5';
-    if (variant === 'hero') return 'text-sm mb-0.5';
-    if (variant === 'featured') return 'text-sm';
+    if (variant === 'compact') return 'text-sm md:text-sm pr-5';
+    if (variant === 'hero') return 'text-sm md:text-base mb-1 font-medium';
+    if (variant === 'featured') return 'text-sm md:text-base';
 
     // Default sizes
     switch (size) {
-      case 'sm': return 'text-sm';
-      case 'lg': return 'text-lg';
-      default: return 'text-base'; // md size
+      case 'sm': return 'text-sm md:text-sm';
+      case 'lg': return 'text-base md:text-lg';
+      default: return 'text-sm md:text-base'; // md size
     }
   };
 
   // Determine price text size based on variant and size
   const getPriceClass = () => {
-    if (variant === 'compact') return 'text-base';
-    if (variant === 'hero') return 'text-lg';
-    if (variant === 'featured') return 'text-lg';
+    if (variant === 'compact') return 'text-sm md:text-base';
+    if (variant === 'hero') return 'text-base md:text-lg';
+    if (variant === 'featured') return 'text-base md:text-lg';
 
     // Default sizes
     switch (size) {
-      case 'sm': return 'text-lg';
-      case 'lg': return 'text-2xl';
-      default: return 'text-xl'; // md size
+      case 'sm': return 'text-base md:text-lg';
+      case 'lg': return 'text-lg md:text-2xl';
+      default: return 'text-lg md:text-xl'; // md size
     }
   };
 
@@ -196,16 +196,16 @@ export function ProductCard({
 
       const baseSize =
         variant === 'compact' || size === 'sm' ?
-          isLongText ? 'min-w-[36px] h-7 px-1.5 leading-7 text-xs' : 'w-7 h-7 leading-7 text-xs' :
+          isLongText ? 'min-w-[32px] h-7 px-1.5 leading-7 text-xs' : 'w-7 h-7 leading-7 text-xs' :
         variant === 'hero' || size === 'lg' ?
-          isLongText ? 'min-w-[38px] h-8 px-2 leading-8 text-xs' : 'w-8 h-8 leading-8 text-xs' :
-          isLongText ? 'min-w-[40px] h-9 px-2 leading-9 text-xs' : 'w-9 h-9 leading-9 text-xs';
+          isLongText ? 'min-w-[36px] h-8 px-2 leading-8 text-xs' : 'w-8 h-8 leading-8 text-xs' :
+          isLongText ? 'min-w-[38px] h-8 px-2 leading-8 text-xs' : 'w-8 h-8 leading-8 text-xs';
 
       return baseSize;
     };
 
     return (
-      <div className="absolute top-2 right-2 z-10 flex flex-col gap-0.5">
+      <div className="absolute top-1.5 right-1.5 z-10 flex flex-col gap-0.5">
         {availableVariants.map((variantItem) => {
           // Check if this variant is the active one
           const isActive = currentVariant?._id === variantItem._id;
@@ -291,8 +291,8 @@ export function ProductCard({
 
         {/* Product Content */}
         <CardContent className={cn(
-          variant === 'hero' ? 'p-1.5 pt-0.5 pb-0.5' : 'p-4 pt-3',
-          variant === 'hero' ? 'pb-0.5' : 'flex-grow flex flex-col'
+          variant === 'hero' ? 'p-3 pt-2 pb-1 md:p-3 md:pt-2 md:pb-1' : 'p-3 pt-2 md:p-4 md:pt-3',
+          variant === 'hero' ? 'pb-1' : 'flex-grow flex flex-col'
         )}>
           {/* Brand Badge */}
           {(product.brand || product.brandName) && (
@@ -300,8 +300,8 @@ export function ProductCard({
               <div className={cn(
                 "inline-flex items-center rounded-full font-medium",
                 "bg-logo-lime/15 text-dark-green-7 border border-logo-lime/25",
-                variant === 'hero' ? "px-2 py-0.5 text-[10px] mb-0.5" : "px-2.5 py-0.5 text-xs mb-1",
-                variant === 'compact' && "text-[10px] py-0.5 px-1.5"
+                variant === 'hero' ? "px-2 py-0.5 text-[10px] mb-1 md:text-[11px]" : "px-2.5 py-0.5 text-[10px] mb-1 md:text-xs",
+                variant === 'compact' && "text-[9px] py-0.5 px-1.5 md:text-[10px]"
               )}>
                 <Icon name="leaf" size="xs" weight="duotone" className="mr-1 text-dark-green-7" />
                 <span>{typeof product.brand === 'object' ? product.brand.name : (product.brand || product.brandName)}</span>
@@ -324,10 +324,10 @@ export function ProductCard({
         {/* Product Footer with Price and Action */}
         <CardFooter className={cn(
           "bg-dark-yellow-1 w-full mt-auto border-t border-dark-green-6/30 transition-all duration-300",
-          variant === 'compact' ? 'p-3 pt-3' : 'p-4 pt-4',
-          variant === 'hero' && 'p-4 pt-4',
-          variant === 'compact' ? 'group-hover:pb-4' : 'group-hover:pb-5',
-          variant === 'hero' && 'group-hover:pb-5'
+          variant === 'compact' ? 'p-2.5 pt-2.5 md:p-3 md:pt-3' : 'p-3 pt-3 md:p-3 md:pt-3',
+          variant === 'hero' && 'p-3 pt-3',
+          variant === 'compact' ? 'group-hover:pb-3 md:group-hover:pb-4' : 'group-hover:pb-3.5 md:group-hover:pb-4',
+          variant === 'hero' && 'group-hover:pb-3.5'
         )}>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">

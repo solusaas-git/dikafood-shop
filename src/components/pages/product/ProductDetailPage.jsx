@@ -30,7 +30,7 @@ import { eventBus, EVENTS, cartEvents } from '@/utils/eventBus';
 import { useTranslation } from '@/utils/i18n';
 import { scrollToTop } from '@/utils/scrollUtils';
 import { cn } from '@/utils/cn';
-import useBreakpoint from '@/hooks/useBreakpoint';
+// Removed useBreakpoint - using CSS-based responsive design
 
 // Custom styles for section headers
 const customSectionHeaderStyles = {
@@ -108,7 +108,6 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
     }
   }, [searchParams]); // Depend on searchParams
   const { addItem } = useCart();
-  const [isMobile, setIsMobile] = useState(false);
   const [product, setProduct] = useState(null);
   // Removed local loading state - using global navigation loader instead
   const [error, setError] = useState(null);
@@ -120,18 +119,7 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
 
-  // Add resize listener for mobile detection
-  useEffect(() => {
-    // Set initial mobile state
-    setIsMobile(window.innerWidth < 768);
-    
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // Removed JavaScript-based mobile detection - using CSS responsive design
 
   // Fetch product data when component mounts or productId changes
   useEffect(() => {
@@ -648,18 +636,11 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
   return (
     <>
       {/* Use the ProductBreadcrumb component */}
-      <ProductBreadcrumb product={product} isMobile={isMobile} className={isMobile ? "pt-4" : ""} />
-
-      {/* Mobile Product Title - Only visible on mobile */}
-      {isMobile && (
-        <div className="container max-w-7xl mx-auto px-4 mb-0 mt-0 !pt-[220px]">
-          <h1 className="text-2xl font-normal text-dark-green-7 mb-2 pb-2 border-b border-logo-lime/30">{product.name}</h1>
-        </div>
-      )}
+      <ProductBreadcrumb product={product} className="pt-4" />
 
       {/* Main product section */}
       <Section
-        className="py-4 md:py-8 relative overflow-hidden !pt-[220px] md:!pt-[300px]"
+        className="py-6 md:py-8 relative overflow-hidden pt-[180px] md:pt-[240px]"
         fullWidth
         width="full"
         style={{
@@ -679,10 +660,23 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
         />
 
         <div className="container max-w-6xl mx-auto px-4 md:px-8 lg:px-12 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 md:border-t md:border-logo-lime/30 md:pt-6">
+          {/* Product Title - Top of Page */}
+          <div className="mt-16 md:mt-20 mb-6 md:mb-8 text-center">
+            <div className="inline-block relative">
+              <h1 className="text-2xl md:text-4xl font-semibold text-dark-green-7 mb-3 px-6 md:px-8 relative z-10">
+                {product.name}
+              </h1>
+              {/* Decorative underline */}
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 md:w-20 h-1 bg-gradient-to-r from-logo-lime/60 via-logo-lime to-logo-lime/60 rounded-full"></div>
+              {/* Subtle background accent */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-logo-lime/5 to-transparent rounded-lg -mx-4 md:-mx-6 -my-2"></div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
             
             {/* Left Column: Product Images */}
-            <div className={`md:self-start ${isMobile ? '' : 'border-r border-logo-lime/30 pr-8'}`}>
+            <div className="md:self-start md:border-r md:border-logo-lime/30 md:pr-8">
               <ProductImageGallery
                 images={
                   Array.isArray(product.images) && product.images.length > 0
@@ -698,34 +692,17 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
                 selectedVariant={selectedVariant?.name || ''}
                 variants={product.variants || []}
                 onVariantSelect={handleVariantSelect}
-                isMobile={isMobile}
               />
 
-              {/* Rating below gallery */}
-              <div className="mt-6">
-                <ProductRatingCard
-                  rating={product.rating}
-                  reviewCount={product.reviewCount || 69}
-                  reviews={[]}
-                  useMockData={true}
-                />
-              </div>
             </div>
 
             {/* Right Column: Product Info */}
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               
               {/* Product Header */}
               <div>
-                <h1 className="text-2xl md:text-3xl font-normal text-dark-green-7 mb-4 pb-2 border-b border-logo-lime/30">{product.name}</h1>
-                
-                {/* Brand and Price Row */}
-                <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-                  <BrandDisplay
-                    brand={product.brand}
-                    size="large"
-                    className="flex-shrink-0"
-                  />
+                {/* Price with Brand */}
+                <div className="mb-4 md:mb-6">
                   <ProductPriceDisplay
                     price={selectedVariant 
                       ? (selectedVariant.promotionalPrice && selectedVariant.promotionalPrice > 0 && selectedVariant.promotionalPrice < selectedVariant.price 
@@ -735,8 +712,8 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
                     currency={product.currency || "MAD"}
                     isDiscounted={selectedVariant?.promotionalPrice > 0 && selectedVariant?.promotionalPrice < selectedVariant?.price}
                     originalPrice={selectedVariant?.price}
+                    brand={product.brand}
                     highlight={true}
-                    className="text-right"
                   />
                 </div>
 
@@ -749,19 +726,16 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
               </div>
 
               {/* Product Options */}
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Options</h3>
-                <ProductOptions
-                  variants={product.variants || []}
-                  selectedVariant={selectedVariant}
-                  onVariantSelect={handleVariantSelect}
-                  quantity={quantity}
-                  onQuantityChange={handleQuantityChange}
-                />
-              </div>
+              <ProductOptions
+                variants={product.variants || []}
+                selectedVariant={selectedVariant}
+                onVariantSelect={handleVariantSelect}
+                quantity={quantity}
+                onQuantityChange={handleQuantityChange}
+              />
 
               {/* Action Buttons */}
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+              <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm border border-gray-200">
                 <ProductActionButtons
                   onAddToCart={handleAddToCart}
                   onBuyNow={handleBuyNow}
@@ -772,7 +746,7 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
           </div>
 
           {/* Product Details Section - Full Width */}
-          <div className="mt-12 pt-8 border-t border-logo-lime/30">
+          <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-logo-lime/30">
             <ProductDetailsSection
               description={product.description}
               shortDescription={null} // Already shown above
@@ -784,6 +758,16 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
               isDetailsOpen={isDetailsOpen}
               setIsDetailsOpen={setIsDetailsOpen}
             />
+            
+            {/* Product Rating - After Allergen Card */}
+            <div className="mt-6">
+              <ProductRatingCard
+                rating={product.rating}
+                reviewCount={product.reviewCount || 69}
+                reviews={[]}
+                useMockData={true}
+              />
+            </div>
           </div>
         </div>
       </Section>
@@ -840,7 +824,7 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
       )}
 
       {/* Mobile Drawer Container for quick actions */}
-      {isMobile && (
+      <div className="md:hidden">
         <DrawerContainer
           product={product}
           selectedVariant={selectedVariant}
@@ -850,7 +834,7 @@ const ProductDetailPage = ({ productId, onLoadingChange }) => {
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
         />
-      )}
+      </div>
     </>
   );
 };

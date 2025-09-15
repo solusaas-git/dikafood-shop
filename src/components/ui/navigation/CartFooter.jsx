@@ -22,13 +22,13 @@ const CartFooter = ({
   totalText = 'Total'
 }) => {
   return (
-    <div className="p-4 border-t border-gray-200 bg-gray-50/50">
+    <div className="p-3 md:p-4 border-t border-gray-200 bg-gray-50/50">
       {/* Total Section */}
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-600 font-medium">
+      <div className="flex items-center justify-between mb-3 md:mb-4">
+        <span className="text-xs md:text-sm text-gray-600 font-medium">
           {totalText}
         </span>
-        <span className="text-xl font-bold text-dark-green-7">
+        <span className="text-lg md:text-xl font-bold text-dark-green-7">
           {formatPrice(totalAmount)}
         </span>
       </div>
@@ -36,18 +36,18 @@ const CartFooter = ({
       {/* Checkout Button - High Contrast Primary CTA */}
       <button
         onClick={onCheckout}
-        className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-logo-lime text-dark-green-7 font-bold rounded-full border-2 border-logo-lime hover:bg-logo-lime/90 hover:border-logo-lime/90 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        className="w-full flex items-center justify-center gap-2 md:gap-3 py-3.5 md:py-4 px-4 md:px-6 bg-logo-lime text-dark-green-7 font-bold rounded-full border-2 border-logo-lime hover:bg-logo-lime/90 hover:border-logo-lime/90 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm md:text-base"
         disabled={isLoading}
       >
         {isLoading ? (
           <>
             <div className="w-4 h-4 border-2 border-dark-green-7/30 border-t-dark-green-7 animate-spin rounded-full"></div>
-            Traitement...
+            <span className="text-sm md:text-base">Traitement...</span>
           </>
         ) : (
           <>
             <Icon name="shoppingbag" size="sm" className="text-dark-green-7" />
-            {checkoutText}
+            <span className="text-sm md:text-base">{checkoutText}</span>
           </>
         )}
       </button>

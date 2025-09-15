@@ -4,7 +4,6 @@ import HeroProductCard from '@/components/ui/product/HeroProductCard';
 import { useTranslation } from '@/utils/i18n';
 import translations from '@/components/sections/home/translations/ProductCarousel';
 import PropTypes from 'prop-types';
-import useBreakpoint from '@/hooks/useBreakpoint';
 import { api } from '@/services/api';
 
 // Caching variables to avoid repeated fetches
@@ -18,7 +17,6 @@ let activeVariantsCache = {};
  */
 const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
   const { t, locale } = useTranslation(translations);
-  const { isMobile, isTablet } = useBreakpoint();
   const [internalProducts, setInternalProducts] = useState(productsCache);
   const [activeVariants, setActiveVariants] = useState(activeVariantsCache);
   const [isVisible, setIsVisible] = useState(productsCache.length > 0);
@@ -163,32 +161,27 @@ const ProductCarousel = forwardRef(function ProductCarousel(props, ref) {
     return null;
   }
 
-  // Determine item width based on screen size
-  const getItemWidth = () => {
-    if (isMobile) {
-      return "clamp(260px, 85vw, 280px)";
-    }
-    return "clamp(260px, 70vw, 280px)";
-  };
+  // CSS-based responsive item width - single card on mobile, multiple on desktop
+  const itemWidth = "clamp(260px, 30vw, 320px)";
 
   return (
     <div
-      className={`w-full relative ${className || ''}`}
+      className={`w-full relative h-[340px] md:h-[360px] ${className || ''}`}
       ref={ref}
-      style={{ opacity: isVisible ? 1 : 0, height: 'var(--product-card-height)' }}
+      style={{ opacity: isVisible ? 1 : 0 }}
     >
       <Carousel
-        itemWidth={getItemWidth()}
-        spacing={isMobile ? "normal" : "wide"}
+        itemWidth={itemWidth}
+        spacing="normal"
         snap="center"
-        padding="wide"
+        padding="default"
         autoScroll={false}
         showControls={true}
-        controlSize={controlSize || (isMobile ? "small" : "medium")}
+        controlSize={controlSize || "small"}
         controlVariant="lime"
         controlsPosition={controlsPosition || "middle"}
-        controlsClassName={controlsClassName || "px-4 md:px-8"}
-        className="product-carousel z-0 py-3 w-full mx-auto h-full flex justify-center"
+        controlsClassName={controlsClassName || "px-3 md:px-8"}
+        className="product-carousel z-0 py-2 md:py-3 w-full mx-auto h-full flex justify-center"
         trackClassName={trackClassName || "justify-center items-center"}
       >
         {products.map(product => (

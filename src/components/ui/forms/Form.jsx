@@ -6,19 +6,19 @@ import ContentContainer from '../layout/ContentContainer';
  * Form component styles
  */
 const formStyles = tv({
-  base: 'space-y-6',
+  base: 'space-y-2 md:space-y-6',
   variants: {
     variant: {
       default: '',
-      condensed: 'space-y-4',
-      inline: 'flex flex-row gap-4 items-start',
-      stacked: 'flex flex-col gap-6',
+      condensed: 'space-y-1.5 md:space-y-4',
+      inline: 'flex flex-row gap-2 md:gap-4 items-start',
+      stacked: 'flex flex-col gap-2 md:gap-6',
     },
     padding: {
-      default: 'p-6',
+      default: 'p-4 md:p-6',
       none: 'p-0',
-      sm: 'p-4',
-      lg: 'p-8',
+      sm: 'p-3 md:p-4',
+      lg: 'p-6 md:p-8',
     }
   },
   defaultVariants: {
@@ -31,14 +31,14 @@ const formStyles = tv({
  * Form group container styles
  */
 const formGroupStyles = tv({
-  base: 'space-y-4',
+  base: 'space-y-1.5 md:space-y-4',
   variants: {
     layout: {
       default: 'grid grid-cols-1',
-      inline: 'grid grid-cols-1 md:grid-cols-2 gap-4 items-end',
-      stacked: 'flex flex-col gap-4',
-      grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start',
-      responsive: 'grid grid-cols-1 md:grid-cols-2 gap-4 items-start',
+      inline: 'grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-4 items-end',
+      stacked: 'flex flex-col gap-1.5 md:gap-4',
+      grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 md:gap-4 items-start',
+      responsive: 'grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-4 items-start',
     },
   },
   defaultVariants: {
@@ -50,7 +50,7 @@ const formGroupStyles = tv({
  * Form group footer styles
  */
 const formFooterStyles = tv({
-  base: 'flex mt-6',
+  base: 'flex mt-4 md:mt-6',
   variants: {
     align: {
       left: 'justify-start',
@@ -59,9 +59,9 @@ const formFooterStyles = tv({
       between: 'justify-between',
     },
     variant: {
-      default: 'pt-4 border-t border-amber-100',
+      default: 'pt-3 md:pt-4 border-t border-amber-100',
       clean: '',
-      colored: 'pt-4 border-t border-logo-lime/20',
+      colored: 'pt-3 md:pt-4 border-t border-logo-lime/20',
     }
   },
   defaultVariants: {
@@ -74,7 +74,7 @@ const formFooterStyles = tv({
  * Form button styles for primary action
  */
 const formButtonStyles = tv({
-  base: 'inline-flex items-center gap-1 px-5 py-2.5 rounded-full transition-colors font-medium text-sm shadow-sm',
+  base: 'inline-flex items-center gap-1 px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-colors font-medium text-xs md:text-sm shadow-sm',
   variants: {
     variant: {
       primary: 'bg-logo-lime hover:bg-logo-lime/90 text-dark-green-7 border border-logo-lime/70',
@@ -203,9 +203,9 @@ Form.Group = function FormGroup({
   ...props
 }) {
   return (
-    <div className="space-y-2" {...props}>
+    <div className="space-y-1.5 md:space-y-2" {...props}>
       {label && (
-        <h3 className="flex items-center gap-1.5 text-dark-green-1 font-medium">
+        <h3 className="flex items-center gap-1.5 text-dark-green-1 font-medium text-sm md:text-base">
           {typeof label === 'string' ? label : label}
         </h3>
       )}

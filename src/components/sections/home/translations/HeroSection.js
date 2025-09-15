@@ -4,7 +4,7 @@
 export default {
   // French translations
   fr: {
-    'title': 'L\'excellence alimentaire {break} <marocaine> à votre porte',
+    'title': 'L\'excellence alimentaire {break} <marocaine à votre porte>',
     'mobile_title': 'Bienvenue chez DikaFood',
     'cta_primary': 'Télécharger le catalogue',
     'cta_secondary': 'Découvrir nos produits',

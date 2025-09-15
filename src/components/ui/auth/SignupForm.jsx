@@ -133,8 +133,8 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
   if (compact) {
     return (
       <form onSubmit={handleSubmit} noValidate suppressHydrationWarning>
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-1.5 md:space-y-2">
+          <div className="grid grid-cols-2 gap-1 md:gap-1.5">
             <div>
               <EnhancedInputField
                 id="signup-firstName"
@@ -148,7 +148,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
                 required
               />
               {errors.firstName && (
-                <p className="mt-1 text-xs text-feedback-error flex items-center gap-1 ml-3">
+                <p className="mt-0.5 text-[10px] text-feedback-error flex items-center gap-0.5 ml-2">
                   <Icon name="warning" size="xs" />
                   {errors.firstName}
                 </p>
@@ -167,7 +167,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
                 required
               />
               {errors.lastName && (
-                <p className="mt-1 text-xs text-feedback-error flex items-center gap-1 ml-3">
+                <p className="mt-0.5 text-[10px] text-feedback-error flex items-center gap-0.5 ml-2">
                   <Icon name="warning" size="xs" />
                   {errors.lastName}
                 </p>
@@ -188,7 +188,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
               required
             />
             {errors.email && (
-              <p className="mt-1 text-xs text-feedback-error flex items-center gap-1 ml-3">
+              <p className="mt-0.5 text-[10px] text-feedback-error flex items-center gap-0.5 ml-2">
                 <Icon name="warning" size="xs" />
                 {errors.email}
               </p>
@@ -203,6 +203,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
               error={!!errors.phoneNumber}
               errorMessage={errors.phoneNumber}
               defaultCountry="ma"
+              compact={compact}
               className="phone-input-signup-compact"
             />
           </div>
@@ -220,7 +221,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
               required
             />
             {errors.password && (
-              <p className="mt-1 text-xs text-feedback-error flex items-center gap-1 ml-3">
+              <p className="mt-0.5 text-[10px] text-feedback-error flex items-center gap-0.5 ml-2">
                 <Icon name="warning" size="xs" />
                 {errors.password}
               </p>
@@ -240,7 +241,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
               required
             />
             {errors.confirmPassword && (
-              <p className="mt-1 text-xs text-feedback-error flex items-center gap-1 ml-3">
+              <p className="mt-0.5 text-[10px] text-feedback-error flex items-center gap-0.5 ml-2">
                 <Icon name="warning" size="xs" />
                 {errors.confirmPassword}
               </p>
@@ -248,7 +249,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
           </div>
         </div>
 
-        <div className="mt-3 mb-4">
+        <div className="mt-1.5 mb-2 md:mt-2 md:mb-3">
           <Checkbox
             id="signup-agreeTerms"
             name="agreeTerms"
@@ -265,7 +266,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
             }
           />
           {errors.agreeTerms && (
-            <p className="mt-1 text-xs text-feedback-error flex items-center gap-1 ml-3">
+            <p className="mt-0.5 text-[10px] text-feedback-error flex items-center gap-0.5 ml-2">
               <Icon name="warning" size="xs" />
               {errors.agreeTerms}
             </p>
@@ -274,7 +275,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
 
         <button
           type="submit"
-          className="w-full py-3 px-4 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40 text-sm"
+          className="w-full py-2 md:py-2.5 px-3 md:px-4 flex items-center justify-center bg-logo-lime/30 border border-logo-lime/70 text-dark-green-7 font-medium rounded-full transition-colors hover:bg-logo-lime/40 text-xs md:text-sm"
         >
           <Icon name="user" weight="duotone" size="sm" color="dark-green" className="mr-2" />
           {t('register_button')}
@@ -356,6 +357,7 @@ const SignupForm = ({ onSubmit, onClose, onBackToLogin, compact = false }) => {
             error={!!errors.phoneNumber}
             errorMessage={errors.phoneNumber}
             defaultCountry="ma"
+            compact={compact}
             className="phone-input-signup"
           />
         </div>

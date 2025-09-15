@@ -219,15 +219,15 @@ export default function Header() {
         <div className="md:hidden flex items-center w-full justify-center py-1.5 h-[var(--navbar-height-mobile)]">
           <div
             ref={mobileNavbarRef}
-            className="flex items-center justify-between w-full max-w-[280px] bg-dark-green-7/90 backdrop-blur-lg rounded-full border border-white/10 px-3 py-1.5 shadow-lg relative z-[150]"
+            className="flex items-center justify-between w-full max-w-[90%] bg-dark-green-7/90 backdrop-blur-lg rounded-full border border-white/10 px-3 py-1.5 shadow-lg relative z-[150]"
           >
             {/* Left section - Logo */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center justify-center h-8 w-8">
+              <Link href="/" className="flex items-center" onClick={() => handleNavClick('/')}>
                 <img
-                  src="/favicon.svg"
-                  alt="DikaFood"
-                  className="h-6 w-6"
+                  src="/images/logo-light.svg"
+                  alt="DikaFood Logo"
+                  className="h-7"
                   loading="eager"
                 />
               </Link>
@@ -303,27 +303,27 @@ export default function Header() {
           ></div>
           <div
             id="mobile-menu"
-            className="fixed top-[calc(var(--navbar-height-mobile)+12px)] right-4 left-4 max-h-[80vh] bg-dark-green-7/90 backdrop-blur-md rounded-2xl z-85 overflow-y-auto border border-white/10 shadow-lg"
+            className="fixed top-[calc(var(--navbar-height-mobile)+24px)] right-4 left-4 max-h-[70vh] bg-dark-green-7/95 backdrop-blur-md rounded-xl z-85 overflow-y-auto border border-white/10 shadow-lg"
           >
             {/* Close button */}
-            <div className="absolute top-4 right-4">
+            <div className="absolute top-3 right-3">
               <button
                 onClick={closeMenu}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center w-7 h-7 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
                 aria-label={t('close_menu')}
               >
                 <LucideIcon name="x" size="sm" />
               </button>
             </div>
 
-            <div className="p-6 flex flex-col gap-4">
+            <div className="pt-12 pb-4 px-4 flex flex-col gap-3">
               {/* Menu navigation items */}
-              <nav className="flex flex-col gap-1 mt-4">
+              <nav className="flex flex-col gap-0.5">
                 {menuItems.map((item) => (
                   <Link
                     key={item.path}
                     href={item.path}
-                    className={`flex items-center gap-3 text-white hover:text-dark-yellow-1 py-3.5 px-5 rounded-full transition-colors icon-text-separator mobile-nav-item ${
+                    className={`flex items-center gap-2.5 text-white hover:text-dark-yellow-1 py-2.5 px-4 rounded-lg transition-colors icon-text-separator mobile-nav-item ${
                       pathname === item.path ? 'bg-dark-yellow-1/20 text-dark-yellow-1' : ''
                     }`}
                     onClick={() => {
@@ -331,27 +331,27 @@ export default function Header() {
                       closeMenu();
                     }}
                   >
-                    <div className="flex items-center justify-center w-9 h-9 bg-white/10 rounded-full">
-                      <LucideIcon name={item.icon} size="md" className="shrink-0 text-dark-yellow-1" />
+                    <div className="flex items-center justify-center w-7 h-7 bg-white/10 rounded-full">
+                      <LucideIcon name={item.icon} size="sm" className="shrink-0 text-dark-yellow-1" />
                     </div>
-                    <span className="text-base font-medium">{t(item.labelKey)}</span>
+                    <span className="text-sm font-medium">{t(item.labelKey)}</span>
                   </Link>
                 ))}
               </nav>
 
               {/* Separator */}
-              <div className="h-px w-full bg-white/10 my-2"></div>
+              <div className="h-px w-full bg-white/10 my-1"></div>
 
               {/* CTA Button */}
-              <div className="mt-2 mb-4">
+              <div className="mt-1 mb-2">
                 <Button
                   to="/shop"
                   variant="primary"
-                  className="bg-dark-yellow-1 hover:bg-dark-yellow-2 text-dark-green-7 rounded-full w-full py-3.5 justify-center icon-text-separator"
+                  className="bg-dark-yellow-1 hover:bg-dark-yellow-2 text-dark-green-7 rounded-lg w-full py-2.5 justify-center icon-text-separator"
                   onClick={closeMenu}
                 >
-                  <LucideIcon name="shoppingbag" className="shrink-0" />
-                  <span className="font-semibold">{t('cta_products')}</span>
+                  <LucideIcon name="shoppingbag" size="sm" className="shrink-0" />
+                  <span className="font-medium text-sm">{t('cta_products')}</span>
                 </Button>
               </div>
             </div>

@@ -4,7 +4,6 @@ import HeroProductCard from '@/components/ui/product/HeroProductCard';
 import { useTranslation } from '@/utils/i18n';
 import translations from '@/components/sections/home/translations/ProductCarousel';
 import PropTypes from 'prop-types';
-import useBreakpoint from '@/hooks/useBreakpoint';
 import { api } from '@/services/api';
 import { Icon } from '@/components/ui/icons';
 import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
@@ -20,7 +19,6 @@ let activeVariantsCache = {};
  */
 const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(props, ref) {
   const { t, locale } = useTranslation(translations);
-  const { isMobile, isTablet } = useBreakpoint();
   const [internalProducts, setInternalProducts] = useState(productsCache);
   const [activeVariants, setActiveVariants] = useState(activeVariantsCache);
   const [isVisible, setIsVisible] = useState(true); // Always start visible for mock products
@@ -35,13 +33,14 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
     onAddToCart,
   } = props || {};
 
-  // Embla carousel setup with loop enabled and adjusted options based on screen size
+  // Embla carousel setup with proper configuration for multiple slides
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: isMobile ? 'center' : 'center',
-    containScroll: 'trimSnaps',
-    dragFree: !isMobile,
+    align: 'start',
+    containScroll: false,
+    dragFree: false,
     loop: true,
-    slidesToScroll: 1
+    slidesToScroll: 1,
+    startIndex: 0
   });
 
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(true);
@@ -287,17 +286,17 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
       ref={ref}
       style={{ opacity: isVisible ? 1 : 0 }}
     >
-      <div className="relative w-full mx-auto px-3 md:px-6" ref={carouselRef}>
+      <div className="relative w-full md:w-[1450px] mx-auto flex justify-center" ref={carouselRef}>
         {/* Viewport */}
-        <div className="overflow-hidden w-full" ref={emblaRef}>
+        <div className="overflow-hidden w-[248px] md:w-full md:max-w-[1500px]" ref={emblaRef}>
           {/* Container */}
-          <div className="flex select-none">
+          <div className="flex select-none pl-4 pr-4 md:pl-8 md:pr-8">
             {products.map(product => (
               <div
-                className={`relative min-w-0 ${isMobile ? 'pl-1.5 w-[calc(100%-6px)]' : 'pl-1.5 w-[240px]'} md:w-[240px] flex-shrink-0 h-[340px]`}
+                className="relative min-w-0 w-[240px] md:w-[260px] flex-shrink-0 h-[340px] md:h-[360px] mr-3 md:mr-4"
                 key={product._id || product.id || product.productId}
               >
-                <div className="relative overflow-hidden px-0.5 h-full pt-0.5">
+                <div className="relative overflow-hidden h-full">
                   <HeroProductCard
                     product={product}
                     activeVariant={activeVariants[product._id || product.id || product.productId] || (product.variants && product.variants[0])}
@@ -314,20 +313,20 @@ const EmblaProductCarousel = React.forwardRef(function EmblaProductCarousel(prop
         {shouldShowControls && (
           <>
               <button
-                className="absolute z-10 top-1/2 -translate-y-1/2 left-1 md:left-2 w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-light-yellow-2 focus:ring-offset-1 hover:border hover:border-logo-lime/60 active:border active:border-logo-lime active:shadow-[0_0_0_2px_rgba(203,245,0,0.3)]"
+                className="absolute z-10 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/95 hover:bg-white text-dark-green-7 shadow-lg hover:shadow-xl border border-dark-green-6/20 hover:border-dark-green-6/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-logo-lime/50 focus:ring-offset-2 backdrop-blur-sm left-4 md:left-8 lg:left-12 xl:left-16"
                 onClick={scrollPrev}
                 aria-label="Previous product"
                 type="button"
               >
-                <ArrowLeft weight="bold" size={16} className="text-dark-green-7" />
+                <ArrowLeft weight="bold" size={20} className="text-dark-green-7" />
               </button>
               <button
-                className="absolute z-10 top-1/2 -translate-y-1/2 right-1 md:right-2 w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-light-yellow-2 focus:ring-offset-1 hover:border hover:border-logo-lime/60 active:border active:border-logo-lime active:shadow-[0_0_0_2px_rgba(203,245,0,0.3)]"
+                className="absolute z-10 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/95 hover:bg-white text-dark-green-7 shadow-lg hover:shadow-xl border border-dark-green-6/20 hover:border-dark-green-6/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-logo-lime/50 focus:ring-offset-2 backdrop-blur-sm right-4 md:right-8 lg:right-12 xl:right-16"
                 onClick={scrollNext}
                 aria-label="Next product"
                 type="button"
               >
-                <ArrowRight weight="bold" size={16} className="text-dark-green-7" />
+                <ArrowRight weight="bold" size={20} className="text-dark-green-7" />
             </button>
           </>
         )}

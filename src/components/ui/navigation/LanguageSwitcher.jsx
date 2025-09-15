@@ -84,11 +84,18 @@ const LanguageSwitcher = ({
   // Render header for both menu types
   const renderHeader = () => {
     return (
-      <div className="flex items-center gap-3 py-3 bg-gradient-to-br from-amber-50 to-amber-100/70 border-b border-logo-lime/20">
-        <div className="w-10 h-10 rounded-full bg-logo-lime/20 border border-logo-lime/40 flex items-center justify-center ml-3">
-          <LucideIcon name="translate" size="lg" className="text-dark-green-7" />
+      <div className={`flex items-center gap-3 ${isNavbarMobile ? 'py-3 px-4' : 'py-4 px-5'} bg-gradient-to-r from-logo-lime/5 to-logo-lime/10 border-b border-logo-lime/15`}>
+        <div className={`${isNavbarMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-xl bg-gradient-to-br from-logo-lime/20 to-logo-lime/30 border border-logo-lime/40 flex items-center justify-center shadow-sm`}>
+          <LucideIcon name="globe" size={isNavbarMobile ? 'md' : 'lg'} className="text-dark-green-7" />
         </div>
-        <h3 className="text-lg font-medium text-dark-green-7 truncate max-w-[220px]">Langue / Language</h3>
+        <div className="flex-1 min-w-0">
+          <h3 className={`${isNavbarMobile ? 'text-base' : 'text-lg'} font-semibold text-dark-green-7 truncate`}>
+            {isNavbarMobile ? 'Language' : 'Select Language'}
+          </h3>
+          {!isNavbarMobile && (
+            <p className="text-xs text-dark-green-5 mt-0.5">Choose your preferred language</p>
+          )}
+        </div>
       </div>
     );
   };
@@ -104,7 +111,7 @@ const LanguageSwitcher = ({
           className="bg-dark-green-7/80 backdrop-blur-md border border-white/10 shadow-lg p-3 text-white hover:bg-dark-green-6/80 transition-colors"
           icon={
             <div className="flex items-center justify-center">
-              <LucideIcon name="translate" size="md" className="text-dark-yellow-1" />
+              <LucideIcon name="globe" size="md" className="text-dark-yellow-1" />
             </div>
           }
         />
@@ -188,38 +195,50 @@ const LanguageSwitcher = ({
       trigger={inlineTrigger}
       header={renderHeader}
       headerPadding="none"
-      containerClassName="w-96"
-      position={isNavbarMobile ? "right" : "right"}
+      containerClassName={isNavbarMobile ? "w-72 max-w-[calc(100vw-2rem)]" : "w-80"}
+      position={isNavbarMobile ? "center" : "right"}
       menuId={`lang-menu-${isNavbarMobile ? 'mobile' : 'desktop'}`}
-      bodyPadding="md"
+      bodyPadding="none"
     >
-      <div className="space-y-2">
+      <div className={`${isNavbarMobile ? 'space-y-1.5 p-2' : 'space-y-2 p-3'}`}>
         {LANGUAGES.map((lang) => (
           <button
             key={lang.code}
             onClick={() => handleSelectLanguage(lang.code)}
-            className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-colors rounded-lg ${
+            className={`group w-full ${isNavbarMobile ? 'px-3 py-3' : 'px-4 py-3.5'} text-left flex items-center gap-3 transition-all duration-200 rounded-xl border ${
               locale === lang.code
-                ? 'bg-logo-lime/10 text-dark-green-7 font-medium'
-                : 'text-dark-green-6 hover:bg-neutral-50'
+                ? 'bg-gradient-to-r from-logo-lime/15 to-logo-lime/10 border-logo-lime/30 text-dark-green-7 font-semibold shadow-sm'
+                : 'text-dark-green-6 hover:bg-gradient-to-r hover:from-neutral-50 hover:to-white border-transparent hover:border-neutral-200/60 hover:shadow-sm hover:text-dark-green-7'
             }`}
             aria-current={locale === lang.code ? 'true' : 'false'}
           >
-            <FlagImage 
-              countryCode={lang.flag} 
-              alt={`${lang.name} flag`}
-              className="w-6 h-4 rounded-sm object-cover shadow-sm"
-            />
-            <span className="text-sm">{lang.name}</span>
+            <div className={`${isNavbarMobile ? 'w-6 h-6' : 'w-8 h-8'} rounded-lg bg-white border border-neutral-200/60 shadow-sm flex items-center justify-center overflow-hidden group-hover:shadow-md transition-shadow`}>
+              <FlagImage 
+                countryCode={lang.flag} 
+                alt={`${lang.name} flag`}
+                className={`${isNavbarMobile ? 'w-5 h-3' : 'w-6 h-4'} rounded-sm object-cover`}
+                style={{
+                  imageRendering: 'crisp-edges',
+                  WebkitImageRendering: 'crisp-edges',
+                  MozImageRendering: 'crisp-edges'
+                }}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className={`${isNavbarMobile ? 'text-sm' : 'text-base'} font-medium block`}>{lang.name}</span>
+              {!isNavbarMobile && (
+                <span className="text-xs text-dark-green-5 block mt-0.5">
+                  {lang.code.toUpperCase()}
+                </span>
+              )}
+            </div>
             {locale === lang.code && (
-              <span className="ml-auto">
-                <LucideIcon name="check" size="sm" className="text-dark-green-7" />
-              </span>
+              <div className={`${isNavbarMobile ? 'w-5 h-5' : 'w-6 h-6'} rounded-full bg-logo-lime/20 border-2 border-logo-lime/60 flex items-center justify-center`}>
+                <LucideIcon name="check" size={isNavbarMobile ? 'xs' : 'sm'} className="text-dark-green-7" />
+              </div>
             )}
           </button>
         ))}
-
-
       </div>
     </Menu>
   );

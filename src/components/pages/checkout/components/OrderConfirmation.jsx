@@ -226,61 +226,61 @@ const OrderConfirmation = ({
   // Define order summary header content with icon
   const orderHeaderContent = (
     <div className="flex items-center gap-2">
-      <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-        <CheckCircle size={18} weight="duotone" className="text-logo-lime" />
+      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+        <CheckCircle size={14} className="md:w-[18px] md:h-[18px] text-logo-lime" weight="duotone" />
       </div>
-      <span>Résumé de la Commande</span>
+      <span className="text-sm md:text-base">Résumé de la Commande</span>
     </div>
   );
 
   // Define totals header content with icon
   const totalsHeaderContent = (
     <div className="flex items-center gap-2">
-      <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-        <CurrencyCircleDollar size={18} weight="duotone" className="text-logo-lime" />
+      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+        <CurrencyCircleDollar size={14} className="md:w-[18px] md:h-[18px] text-logo-lime" weight="duotone" />
       </div>
-      <span>Totaux</span>
+      <span className="text-sm md:text-base">Totaux</span>
     </div>
   );
 
   return (
     <div className="bg-white rounded-xl overflow-hidden">
       {/* Confirmation Header */}
-      <div className="flex flex-col items-center py-10 px-4 bg-gradient-to-br from-amber-50/50 to-amber-100/30 border-b border-amber-100">
-        <div className="w-16 h-16 flex items-center justify-center bg-logo-lime/10 text-logo-lime rounded-full mb-4">
-          <CheckCircle size={40} weight="duotone" />
+      <div className="flex flex-col items-center py-6 md:py-10 px-4 bg-gradient-to-br from-amber-50/50 to-amber-100/30 border-b border-amber-100">
+        <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-logo-lime/10 text-logo-lime rounded-full mb-3 md:mb-4">
+          <CheckCircle size={32} className="md:w-10 md:h-10" weight="duotone" />
         </div>
-        <h2 className="text-2xl font-medium text-logo-brown mb-2">Commande Confirmée</h2>
-        <p className="text-center text-gray-600 max-w-lg">
+        <h2 className="text-xl md:text-2xl font-medium text-logo-brown mb-2">Commande Confirmée</h2>
+        <p className="text-center text-gray-600 max-w-lg text-sm md:text-base">
           Merci pour votre commande ! Un e-mail de confirmation a été envoyé à <strong className="text-gray-800">{customerEmail}</strong>.
         </p>
       </div>
 
-      <div className="p-6 md:p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         {/* Order Information */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 border-b border-amber-100 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8 border-b border-amber-100 pb-4 md:pb-6">
           <div className="flex flex-col items-center md:items-start">
-            <div className="flex items-center gap-1.5 text-gray-500 mb-2">
-              <Hash size={16} weight="duotone" className="text-logo-lime" />
-              <span className="text-sm">Numéro de Commande</span>
+            <div className="flex items-center gap-1.5 text-gray-500 mb-1.5 md:mb-2">
+              <Hash size={14} className="md:w-4 md:h-4 text-logo-lime" weight="duotone" />
+              <span className="text-xs md:text-sm">Numéro de Commande</span>
             </div>
-            <p className="font-medium text-lg text-logo-brown">#{orderNumber}</p>
+            <p className="font-medium text-base md:text-lg text-logo-brown">#{orderNumber}</p>
           </div>
 
           <div className="flex flex-col items-center md:items-start">
-            <div className="flex items-center gap-1.5 text-gray-500 mb-2">
-              <CalendarBlank size={16} weight="duotone" className="text-logo-lime" />
-              <span className="text-sm">Date de Commande</span>
+            <div className="flex items-center gap-1.5 text-gray-500 mb-1.5 md:mb-2">
+              <CalendarBlank size={14} className="md:w-4 md:h-4 text-logo-lime" weight="duotone" />
+              <span className="text-xs md:text-sm">Date de Commande</span>
             </div>
-            <p className="font-medium text-lg text-logo-brown">{formatDate(orderDate)}</p>
+            <p className="font-medium text-base md:text-lg text-logo-brown">{formatDate(orderDate)}</p>
           </div>
 
           <div className="flex flex-col items-center md:items-start">
-            <div className="flex items-center gap-1.5 text-gray-500 mb-2">
-              <Receipt size={16} weight="duotone" className="text-logo-lime" />
-              <span className="text-sm">Total</span>
+            <div className="flex items-center gap-1.5 text-gray-500 mb-1.5 md:mb-2">
+              <Receipt size={14} className="md:w-4 md:h-4 text-logo-lime" weight="duotone" />
+              <span className="text-xs md:text-sm">Total</span>
             </div>
-            <p className="font-medium text-lg text-logo-brown">{formatCurrency(totals.total)}</p>
+            <p className="font-medium text-base md:text-lg text-logo-brown">{formatCurrency(totals.total)}</p>
           </div>
         </div>
 
@@ -288,8 +288,8 @@ const OrderConfirmation = ({
         <ContentContainer
           title={orderHeaderContent}
           headerVariant="default"
-          className="mb-8"
-          bodyClassName="p-4"
+          className="mb-6 md:mb-8"
+          bodyClassName="p-3 md:p-4"
         >
           <div className="divide-y divide-amber-100">
             {items.map((item, index) => {
@@ -350,21 +350,21 @@ const OrderConfirmation = ({
               };
               
               return (
-                <div key={item.id || item._id || index} className="flex py-4 first:pt-0">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-amber-50 flex-shrink-0">
+                <div key={item.id || item._id || index} className="flex py-3 md:py-4 first:pt-0">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-amber-50 flex-shrink-0">
                     <img src={itemImage} alt={itemName} className="w-full h-full object-contain p-1" />
                   </div>
 
-                  <div className="flex-1 ml-4">
-                    <h4 className="font-medium text-gray-800">{itemName}</h4>
-                    <div className="flex justify-between mt-2">
-                      <div className="text-gray-500 text-sm">
+                  <div className="flex-1 ml-3 md:ml-4">
+                    <h4 className="font-medium text-gray-800 text-sm md:text-base">{itemName}</h4>
+                    <div className="flex justify-between mt-1.5 md:mt-2">
+                      <div className="text-gray-500 text-xs md:text-sm">
                         <span className="block text-xs">{getVariantDisplay(item.variant)}</span>
                         <span>Qté: {itemQuantity}</span>
                       </div>
                       <div className="text-right">
                         {/* Show pricing with promotions if applicable */}
-                        <div className="text-sm">
+                        <div className="text-xs md:text-sm">
                           {promotionalPrice ? (
                             // Show both regular (crossed) and promotional price
                             <div className="flex flex-col items-end">
@@ -382,7 +382,7 @@ const OrderConfirmation = ({
                             </span>
                           )}
                         </div>
-                        <div className="font-medium text-logo-brown mt-1">
+                        <div className="font-medium text-logo-brown mt-1 text-sm md:text-base">
                           {formatCurrency(itemTotal)}
                         </div>
                       </div>
@@ -398,8 +398,8 @@ const OrderConfirmation = ({
         <ContentContainer
           title={totalsHeaderContent}
           headerVariant="default"
-          className="mb-8"
-          bodyClassName="p-4 bg-amber-50/30"
+          className="mb-6 md:mb-8"
+          bodyClassName="p-3 md:p-4 bg-amber-50/30"
         >
           <div className="space-y-2">
             {/* Sous-total (regular price) */}
@@ -448,27 +448,27 @@ const OrderConfirmation = ({
         </ContentContainer>
 
         {/* Delivery and Payment Method Details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
           {/* Delivery Method */}
           {order.deliveryMethod && (
             <ContentContainer
               title={
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-                    <ShoppingBag size={18} weight="duotone" className="text-logo-lime" />
+                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+                    <ShoppingBag size={14} className="md:w-[18px] md:h-[18px] text-logo-lime" weight="duotone" />
                   </div>
-                  <span>Méthode de livraison</span>
+                  <span className="text-sm md:text-base">Méthode de livraison</span>
                 </div>
               }
               headerVariant="default"
               className="h-full"
-              bodyClassName="p-4"
+              bodyClassName="p-3 md:p-4"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 md:gap-4">
                 {/* Logo or Icon */}
                 <div className="flex-shrink-0">
                   {order.deliveryMethod.logo ? (
-                    <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden border border-gray-200 bg-white">
                       <img
                         src={order.deliveryMethod.logo}
                         alt={order.deliveryMethod.name}
@@ -476,25 +476,25 @@ const OrderConfirmation = ({
                       />
                     </div>
                   ) : (
-                    <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
-                      <ShoppingBag size={24} weight="duotone" className="text-gray-500" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                      <ShoppingBag size={20} className="md:w-6 md:h-6 text-gray-500" weight="duotone" />
                     </div>
                   )}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 text-lg mb-1">
+                  <h3 className="font-semibold text-gray-900 text-base md:text-lg mb-1">
                     {order.deliveryMethod.name}
                   </h3>
                   
                   {order.deliveryMethod.description && (
-                    <p className="text-sm text-gray-600 mb-2">
+                    <p className="text-xs md:text-sm text-gray-600 mb-2">
                       {order.deliveryMethod.description}
                     </p>
                   )}
                   
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm text-gray-500">
                     {order.deliveryMethod.type && (
                       <span className="capitalize">
                         {order.deliveryMethod.type === 'delivery' ? 'Livraison' : 'Retrait'}
@@ -535,30 +535,30 @@ const OrderConfirmation = ({
           <ContentContainer
             title={
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-                  <CurrencyCircleDollar size={18} weight="duotone" className="text-logo-lime" />
+                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+                  <CurrencyCircleDollar size={14} className="md:w-[18px] md:h-[18px] text-logo-lime" weight="duotone" />
                 </div>
-                <span>Méthode de paiement</span>
+                <span className="text-sm md:text-base">Méthode de paiement</span>
               </div>
             }
             headerVariant="default"
             className="h-full"
-            bodyClassName="p-4"
+            bodyClassName="p-3 md:p-4"
           >
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-3 md:gap-4">
               {/* Payment Method Icon */}
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
                   {(() => {
                     switch (order.paymentMethod) {
                       case 'cash_on_delivery':
-                        return <CurrencyCircleDollar size={24} weight="duotone" className="text-green-600" />;
+                        return <CurrencyCircleDollar size={20} className="md:w-6 md:h-6 text-green-600" weight="duotone" />;
                       case 'bank_transfer':
-                        return <Receipt size={24} weight="duotone" className="text-blue-600" />;
+                        return <Receipt size={20} className="md:w-6 md:h-6 text-blue-600" weight="duotone" />;
                       case 'credit_card':
-                        return <CurrencyCircleDollar size={24} weight="duotone" className="text-purple-600" />;
+                        return <CurrencyCircleDollar size={20} className="md:w-6 md:h-6 text-purple-600" weight="duotone" />;
                       default:
-                        return <CurrencyCircleDollar size={24} weight="duotone" className="text-gray-500" />;
+                        return <CurrencyCircleDollar size={20} className="md:w-6 md:h-6 text-gray-500" weight="duotone" />;
                     }
                   })()}
                 </div>
@@ -566,7 +566,7 @@ const OrderConfirmation = ({
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 text-lg mb-1">
+                <h3 className="font-semibold text-gray-900 text-base md:text-lg mb-1">
                   {(() => {
                     switch (order.paymentMethod) {
                       case 'cash_on_delivery':
@@ -583,7 +583,7 @@ const OrderConfirmation = ({
                   })()}
                 </h3>
                 
-                <p className="text-sm text-gray-600">
+                <p className="text-xs md:text-sm text-gray-600">
                   {(() => {
                     switch (order.paymentMethod) {
                       case 'cash_on_delivery':
@@ -638,30 +638,30 @@ const OrderConfirmation = ({
           <ContentContainer
             title={
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-                  <User size={18} weight="duotone" className="text-logo-lime" />
+                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+                  <User size={14} className="md:w-[18px] md:h-[18px] text-logo-lime" weight="duotone" />
                 </div>
-                <span>Créer un Compte</span>
+                <span className="text-sm md:text-base">Créer un Compte</span>
               </div>
             }
             headerVariant="default"
-            className="mb-8"
-            bodyClassName="p-4"
+            className="mb-6 md:mb-8"
+            bodyClassName="p-3 md:p-4"
           >
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">
               Créez un compte pour suivre vos commandes et accéder à votre historique d'achats.
             </p>
-            <form onSubmit={handleCreateAccount} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleCreateAccount} className="space-y-3 md:space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
                   <div className="relative">
-                    <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Lock size={16} className="md:w-[18px] md:h-[18px] absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-logo-lime focus:border-transparent"
+                      className="w-full pl-9 md:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-logo-lime focus:border-transparent text-sm md:text-base"
                       placeholder="Votre mot de passe"
                       required
                       minLength="8"
@@ -673,14 +673,14 @@ const OrderConfirmation = ({
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
                   <div className="relative">
-                    <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Lock size={16} className="md:w-[18px] md:h-[18px] absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-logo-lime focus:border-transparent"
+                      className="w-full pl-9 md:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-logo-lime focus:border-transparent text-sm md:text-base"
                       placeholder="Confirmer le mot de passe"
                       required
                       minLength="8"
@@ -692,7 +692,7 @@ const OrderConfirmation = ({
               <button
                 type="submit"
                 disabled={isCreatingAccount}
-                className="w-full bg-logo-lime text-white py-2 px-4 rounded-lg hover:bg-logo-lime/90 transition font-medium disabled:opacity-50"
+                className="w-full bg-logo-lime text-white py-2 px-4 rounded-lg hover:bg-logo-lime/90 transition font-medium disabled:opacity-50 text-sm md:text-base"
               >
                 {isCreatingAccount ? 'Création en cours...' : 'Créer mon compte'}
               </button>
@@ -702,42 +702,42 @@ const OrderConfirmation = ({
           <ContentContainer
             title={
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-                  <User size={18} weight="duotone" className="text-logo-lime" />
+                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+                  <User size={14} className="md:w-[18px] md:h-[18px] text-logo-lime" weight="duotone" />
                 </div>
-                <span>Espace Client</span>
+                <span className="text-sm md:text-base">Espace Client</span>
               </div>
             }
             headerVariant="default"
-            className="mb-8"
-            bodyClassName="p-4"
+            className="mb-6 md:mb-8"
+            bodyClassName="p-3 md:p-4"
           >
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">
               Accédez à votre espace client pour suivre cette commande et consulter votre historique.
             </p>
             <button
               onClick={handleViewOrderDetails}
-              className="inline-flex items-center justify-center px-6 py-2.5 bg-logo-lime text-white rounded-full hover:bg-logo-lime/90 transition font-medium"
+              className="inline-flex items-center justify-center px-5 md:px-6 py-2 md:py-2.5 bg-logo-lime text-white rounded-full hover:bg-logo-lime/90 transition font-medium text-sm md:text-base"
             >
-              <Eye weight="duotone" className="mr-2" /> Voir les détails de la commande
+              <Eye weight="duotone" className="mr-2 w-4 h-4 md:w-5 md:h-5" /> Voir les détails de la commande
             </button>
           </ContentContainer>
         )}
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
           <button
-            className="inline-flex items-center justify-center px-6 py-2.5 border border-logo-brown/50 text-logo-brown rounded-full hover:bg-logo-brown/10 transition font-medium"
+            className="inline-flex items-center justify-center px-5 md:px-6 py-2 md:py-2.5 border border-logo-brown/50 text-logo-brown rounded-full hover:bg-logo-brown/10 transition font-medium text-sm md:text-base"
             onClick={handlePrintReceipt}
           >
-            <Printer weight="duotone" className="mr-2" /> Imprimer le Reçu
+            <Printer weight="duotone" className="mr-2 w-4 h-4 md:w-5 md:h-5" /> Imprimer le Reçu
           </button>
 
           <button
-            className="inline-flex items-center justify-center px-6 py-2.5 bg-logo-brown text-white rounded-full hover:bg-logo-brown/90 transition font-medium"
+            className="inline-flex items-center justify-center px-5 md:px-6 py-2 md:py-2.5 bg-logo-brown text-white rounded-full hover:bg-logo-brown/90 transition font-medium text-sm md:text-base"
             onClick={handleContinueShopping}
           >
-            Continuer les Achats <ShoppingBag weight="duotone" className="ml-2" />
+            Continuer les Achats <ShoppingBag weight="duotone" className="ml-2 w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
       </div>

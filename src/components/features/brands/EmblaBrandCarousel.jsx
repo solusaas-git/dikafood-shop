@@ -26,8 +26,8 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
 
   // Embla carousel options - show maximum brands on load
   const emblaOptions = {
-    align: isMobile ? 'center' : 'start',
-    containScroll: 'trimSnaps',
+    align: 'center',
+    containScroll: 'keepSnaps',
     dragFree: false,
     loop: true,
     slidesToScroll: 1,
@@ -85,6 +85,13 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
     }
   }, [emblaApi]);
 
+  // Update button states
+  const updateButtonStates = useCallback(() => {
+    if (!emblaApi) return;
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
   // Initial setup and event listeners
   useEffect(() => {
     if (!emblaApi) return;
@@ -93,9 +100,12 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
     window.addEventListener('resize', throttledCheckIfAllSlidesVisible, { passive: true });
     emblaApi.on('reInit', throttledCheckIfAllSlidesVisible);
     emblaApi.on('resize', throttledCheckIfAllSlidesVisible);
+    emblaApi.on('select', updateButtonStates);
+    emblaApi.on('reInit', updateButtonStates);
 
     // Initial check
     checkIfAllSlidesVisible();
+    updateButtonStates();
 
     // On desktop, if all slides fit, center them by going to a middle slide
     setTimeout(() => {
@@ -117,6 +127,8 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
       window.removeEventListener('resize', throttledCheckIfAllSlidesVisible);
       emblaApi.off('reInit', throttledCheckIfAllSlidesVisible);
       emblaApi.off('resize', throttledCheckIfAllSlidesVisible);
+      emblaApi.off('select', updateButtonStates);
+      emblaApi.off('reInit', updateButtonStates);
       
       // Clear any pending throttle timer
       if (checkIfAllSlidesVisible._throttleTimer) {
@@ -124,7 +136,7 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
         checkIfAllSlidesVisible._throttleTimer = null;
       }
     };
-  }, [emblaApi, checkIfAllSlidesVisible, throttledCheckIfAllSlidesVisible, isMobile, brands.length]);
+  }, [emblaApi, checkIfAllSlidesVisible, throttledCheckIfAllSlidesVisible, updateButtonStates, isMobile, brands.length]);
 
   // Empty state
   if (!brands || brands.length === 0) {
@@ -133,18 +145,19 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
 
   return (
     <div
-      className={`w-full relative flex justify-center items-center ${className || ''}`}
+      className={`w-full relative flex flex-col items-center ${className || ''}`}
       ref={ref}
       style={{ opacity: isVisible ? 1 : 0 }}
     >
-      <div className="relative w-full mx-auto px-8 md:px-12 flex justify-center" ref={carouselRef}>
+      {/* Carousel Container */}
+      <div className="relative w-full mx-auto px-4 md:px-8 flex justify-center" ref={carouselRef}>
         {/* Viewport */}
-        <div className={`overflow-visible w-full max-w-screen-xl flex justify-center`} ref={emblaRef}>
+        <div className={`overflow-hidden w-full ${isMobile ? 'max-w-[420px]' : 'max-w-[900px] md:max-w-[1100px] lg:max-w-screen-xl'}`} ref={emblaRef}>
           {/* Container */}
-          <div className={`flex select-none justify-center items-center`}>
+          <div className={`flex select-none items-center`}>
             {brands.map((brand, index) => (
-              <div className="relative flex-shrink-0 flex items-center justify-center px-2" key={`${brand.id}-${locale}-${refreshTrigger}-${index}`}>
-                <div className="relative h-full py-4 flex items-center justify-center">
+              <div className={`relative flex-shrink-0 flex items-center justify-center ${isMobile ? 'px-2' : 'px-2'}`} key={`${brand.id}-${locale}-${refreshTrigger}-${index}`}>
+                <div className={`relative h-full ${isMobile ? 'py-2' : 'py-4'} flex items-center justify-center`}>
                   <BrandCard
                     brand={brand}
                     className="mx-0 my-1 flex-shrink-0"
@@ -154,29 +167,31 @@ const EmblaBrandCarousel = React.forwardRef(function EmblaBrandCarousel(props, r
             ))}
           </div>
         </div>
-
-        {/* Navigation buttons - positioned outside the carousel content */}
-        {shouldShowControls && (
-          <>
-            <button
-              className="absolute z-10 top-1/2 -translate-y-1/2 -left-8 md:-left-12 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
-              onClick={scrollPrev}
-              aria-label="Previous brand"
-              type="button"
-            >
-              <ArrowLeft weight="bold" size={24} className="text-dark-green-7" />
-            </button>
-            <button
-              className="absolute z-10 top-1/2 -translate-y-1/2 -right-8 md:-right-12 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-light-yellow-1 hover:bg-light-yellow-2 text-dark-green-7 shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-light-yellow-2 focus:ring-offset-2 hover:border-2 hover:border-logo-lime/60 active:border-2 active:border-logo-lime active:shadow-[0_0_0_4px_rgba(203,245,0,0.3)]"
-              onClick={scrollNext}
-              aria-label="Next brand"
-              type="button"
-            >
-              <ArrowRight weight="bold" size={24} className="text-dark-green-7" />
-            </button>
-          </>
-        )}
       </div>
+
+      {/* Navigation buttons - positioned below the carousel */}
+      {shouldShowControls && (
+        <div className="flex items-center justify-center gap-4 mt-6">
+          <button
+            className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} flex items-center justify-center rounded-full bg-white/95 hover:bg-white text-dark-green-7 shadow-lg hover:shadow-xl border border-dark-green-6/20 hover:border-dark-green-6/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-logo-lime/50 focus:ring-offset-2 backdrop-blur-sm ${!prevBtnEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={scrollPrev}
+            disabled={!prevBtnEnabled}
+            aria-label="Previous brand"
+            type="button"
+          >
+            <ArrowLeft weight="bold" size={isMobile ? 18 : 22} className="text-dark-green-7" />
+          </button>
+          <button
+            className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} flex items-center justify-center rounded-full bg-white/95 hover:bg-white text-dark-green-7 shadow-lg hover:shadow-xl border border-dark-green-6/20 hover:border-dark-green-6/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-logo-lime/50 focus:ring-offset-2 backdrop-blur-sm ${!nextBtnEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={scrollNext}
+            disabled={!nextBtnEnabled}
+            aria-label="Next brand"
+            type="button"
+          >
+            <ArrowRight weight="bold" size={isMobile ? 18 : 22} className="text-dark-green-7" />
+          </button>
+        </div>
+      )}
     </div>
   );
 });

@@ -30,10 +30,10 @@ const SimplePaymentForm = ({
 
   const headerContent = (
     <div className="flex items-center gap-2">
-      <div className="w-8 h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
-        <CreditCard size={18} weight="duotone" className="text-dark-green-1" />
+      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-logo-lime/20 border border-logo-lime/30 flex items-center justify-center">
+        <CreditCard size={14} className="md:w-[18px] md:h-[18px] text-dark-green-1" weight="duotone" />
       </div>
-      <span className="text-dark-green-1 font-medium">Méthode de paiement</span>
+      <span className="text-dark-green-1 font-medium text-sm md:text-base">Méthode de paiement</span>
     </div>
   );
 
@@ -42,15 +42,15 @@ const SimplePaymentForm = ({
     switch (type) {
       case 'cash':
       case 'cash-on-delivery':
-        return <Money size={24} weight="duotone" className="text-gray-600" />;
+        return <Money size={20} className="md:w-6 md:h-6 text-gray-600" weight="duotone" />;
       case 'bank-transfer':
       case 'bank':
-        return <Bank size={24} weight="duotone" className="text-gray-600" />;
+        return <Bank size={20} className="md:w-6 md:h-6 text-gray-600" weight="duotone" />;
       case 'card':
       case 'stripe':
-        return <CreditCard size={24} weight="duotone" className="text-gray-600" />;
+        return <CreditCard size={20} className="md:w-6 md:h-6 text-gray-600" weight="duotone" />;
       default:
-        return <Money size={24} weight="duotone" className="text-gray-600" />;
+        return <Money size={20} className="md:w-6 md:h-6 text-gray-600" weight="duotone" />;
     }
   };
 
@@ -64,19 +64,20 @@ const SimplePaymentForm = ({
       cancelText="Retour"
       onCancel={prevStep}
       loading={isLoading}
+      variant="condensed"
     >
-      <div className="space-y-4">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+      <div className="space-y-3 md:space-y-4">
+        <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2 md:mb-3">
           Méthode de paiement
         </label>
         
         {loadingStates.paymentMethods ? (
-          <div className="text-center p-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-logo-brown mx-auto"></div>
-            <span className="mt-2 text-sm text-gray-600">Chargement des méthodes de paiement...</span>
+          <div className="text-center p-6 md:p-8">
+            <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-b-2 border-logo-brown mx-auto"></div>
+            <span className="mt-2 text-xs md:text-sm text-gray-600">Chargement...</span>
           </div>
         ) : paymentMethods.length > 0 ? (
-          <div className="grid gap-4">
+          <div className="grid gap-3 md:gap-4">
             {paymentMethods.map((method) => {
               const isSelected = formData.paymentMethod === method._id;
               
@@ -85,7 +86,7 @@ const SimplePaymentForm = ({
                   key={method._id}
                   onClick={() => updateFormData({ paymentMethod: method._id })}
                   className={`
-                    relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
+                    relative p-3 md:p-4 rounded-lg md:rounded-xl border-2 cursor-pointer transition-all duration-200
                     ${isSelected 
                       ? 'border-logo-brown bg-logo-brown/5 shadow-md' 
                       : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
@@ -94,7 +95,7 @@ const SimplePaymentForm = ({
                 >
                   {/* Selection indicator */}
                   <div className={`
-                    absolute top-4 right-4 w-5 h-5 rounded-full border-2 transition-all
+                    absolute top-3 right-3 md:top-4 md:right-4 w-4 h-4 md:w-5 md:h-5 rounded-full border-2 transition-all
                     ${isSelected 
                       ? 'border-logo-brown bg-logo-brown' 
                       : 'border-gray-300'
@@ -102,16 +103,16 @@ const SimplePaymentForm = ({
                   `}>
                     {isSelected && (
                       <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                        <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex items-start gap-4 pr-8">
+                  <div className="flex items-start gap-3 md:gap-4 pr-6 md:pr-8">
                     {/* Logo or Icon */}
                     <div className="flex-shrink-0">
                       {method.logo ? (
-                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden border border-gray-200 bg-white">
                           <Image
                             src={method.logo}
                             alt={method.name}
@@ -121,7 +122,7 @@ const SimplePaymentForm = ({
                           />
                         </div>
                       ) : (
-                        <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
                           {getPaymentIcon(method.type)}
                         </div>
                       )}
@@ -129,14 +130,14 @@ const SimplePaymentForm = ({
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold text-gray-900 text-lg">
+                      <div className="flex items-start justify-between mb-1.5 md:mb-2">
+                        <h3 className="font-semibold text-gray-900 text-base md:text-lg">
                           {method.name}
                         </h3>
                       </div>
 
                       {method.description && (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs md:text-sm text-gray-600">
                           {method.description}
                         </p>
                       )}
@@ -166,9 +167,9 @@ const SimplePaymentForm = ({
       })() && (
         <Form.Group label="Sélectionnez votre banque">
           {loadingStates.banks ? (
-            <div className="text-center p-4">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-logo-brown mx-auto"></div>
-              <span className="ml-2 text-sm text-gray-600">Chargement des banques...</span>
+            <div className="text-center p-3 md:p-4">
+              <div className="animate-spin rounded-full h-5 w-5 md:h-6 md:w-6 border-b-2 border-logo-brown mx-auto"></div>
+              <span className="ml-2 text-xs md:text-sm text-gray-600">Chargement...</span>
             </div>
           ) : banks.length > 0 ? (
             <Form.RadioGroup
@@ -178,20 +179,20 @@ const SimplePaymentForm = ({
               options={banks.map(bank => ({
                 value: bank.id || bank.bankAccountId,
                 label: (
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 md:gap-3">
                     {bank.hasLogo ? (
-                      <div className="w-8 h-8 rounded bg-white border border-gray-200 flex items-center justify-center">
-                        <Bank size={16} className="text-gray-400" />
+                      <div className="w-7 h-7 md:w-8 md:h-8 rounded bg-white border border-gray-200 flex items-center justify-center">
+                        <Bank size={14} className="md:w-4 md:h-4 text-gray-400" />
                       </div>
                     ) : (
-                      <div className="w-8 h-8 rounded bg-gray-100 border border-gray-200 flex items-center justify-center">
-                        <Bank size={16} className="text-gray-400" />
+                      <div className="w-7 h-7 md:w-8 md:h-8 rounded bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <Bank size={14} className="md:w-4 md:h-4 text-gray-400" />
                       </div>
                     )}
                     <div>
-                      <div className="font-medium text-dark-green-7">{bank.name || bank.bankName}</div>
+                      <div className="font-medium text-dark-green-7 text-sm md:text-base">{bank.name || bank.bankName}</div>
                       <div className="text-xs text-gray-500">
-                        {bank.accountHolder} • {bank.hasQRCode ? 'QR Code disponible' : 'Virement traditionnel'}
+                        {bank.accountHolder} • {bank.hasQRCode ? 'QR disponible' : 'Virement'}
                       </div>
                     </div>
                   </div>
@@ -199,11 +200,11 @@ const SimplePaymentForm = ({
                 icon: null
               }))}
               error={errors.selectedBankId}
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-1.5 md:gap-2"
             />
           ) : (
-            <div className="text-center p-4 border border-amber-200 rounded-lg bg-amber-50/30">
-              <p className="text-gray-500">Aucune banque disponible</p>
+            <div className="text-center p-3 md:p-4 border border-amber-200 rounded-lg bg-amber-50/30">
+              <p className="text-gray-500 text-sm">Aucune banque disponible</p>
             </div>
           )}
         </Form.Group>
@@ -214,13 +215,13 @@ const SimplePaymentForm = ({
         const selectedMethod = paymentMethods.find(m => m._id === formData.paymentMethod);
         return selectedMethod && (selectedMethod.type === 'card' || selectedMethod.type === 'stripe');
       })() && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4">
           <div className="flex items-center gap-2 text-blue-700">
-            <CreditCard size={16} />
-            <span className="text-sm font-medium">Paiement sécurisé</span>
+            <CreditCard size={14} className="md:w-4 md:h-4" />
+            <span className="text-xs md:text-sm font-medium">Paiement sécurisé</span>
           </div>
-          <p className="text-sm text-blue-600 mt-1">
-            Votre paiement sera traité de manière sécurisée via Stripe à l'étape suivante.
+          <p className="text-xs md:text-sm text-blue-600 mt-1">
+            Votre paiement sera traité de manière sécurisée via Stripe.
           </p>
         </div>
       )}
